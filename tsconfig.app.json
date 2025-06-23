@@ -15,14 +15,19 @@
         "jsx": "react-jsx",
         /* Linting */
         "strict": true,
-        "erasableSyntaxOnly": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
         "noImplicitOverride": true,
         "noUncheckedIndexedAccess": true,
-        "types": ["vitest/importMeta"]
+        "erasableSyntaxOnly": true,
+        "types": ["vitest/importMeta"],
+        "paths": {
+            "@blockly/workspace-backpack": [
+                "./node_modules/@blockly/workspace-backpack/dist/index"
+            ]
+        }
     },
     "include": ["src", "test"]
 }

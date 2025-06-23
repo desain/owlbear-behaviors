@@ -1,15 +1,28 @@
-import { Settings } from "@mui/icons-material";
-import { Box, CardHeader, IconButton, Tooltip } from "@mui/material";
-import { useActionResizer } from "owlbear-utils";
+import { Edit, Help, Settings, Stop } from "@mui/icons-material";
+import {
+    Box,
+    Button,
+    CardHeader,
+    IconButton,
+    Stack,
+    Tooltip,
+    Typography,
+} from "@mui/material";
+import { useActionResizer, useRehydrate } from "owlbear-utils";
 import { useRef } from "react";
+import { BEHAVIOR_REGISTRY } from "../behaviors/BehaviorRegistry";
+import { openHelp } from "../popoverHelp/openHelp";
 import { openSettings } from "../popoverSettings/openSettings";
 import { usePlayerStorage } from "../state/usePlayerStorage";
-import { useRehydrate } from "owlbear-utils";
+import { activateTool } from "../tool/tool";
+import { BroadcastList } from "./BroadcastList";
+import { SoundList } from "./SoundList";
+import { TagList } from "./TagList";
 
 export function Action() {
     const box: React.RefObject<HTMLElement | null> = useRef(null);
 
-    const BASE_HEIGHT = 300;
+    const BASE_HEIGHT = 10;
     const MAX_HEIGHT = 700;
     useActionResizer(BASE_HEIGHT, MAX_HEIGHT, box);
     useRehydrate(usePlayerStorage);
@@ -17,7 +30,7 @@ export function Action() {
     return (
         <Box ref={box}>
             <CardHeader
-                title={"TODO extension name"}
+                title={"Behaviors"}
                 slotProps={{
                     title: {
                         sx: {
@@ -29,13 +42,65 @@ export function Action() {
                     },
                 }}
                 action={
-                    <Tooltip title="Settings">
-                        <IconButton onClick={openSettings}>
-                            <Settings />
-                        </IconButton>
-                    </Tooltip>
+                    <Stack direction="row" spacing={1}>
+                        <Tooltip title="Help">
+                            <IconButton onClick={openHelp}>
+                                <Help />
+                            </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Settings">
+                            <IconButton onClick={openSettings}>
+                                <Settings />
+                            </IconButton>
+                        </Tooltip>
+                    </Stack>
                 }
             />
+            <Box sx={{ px: 2, py: 1 }}>
+                Right click a token to set its behaviors or tags.
+            </Box>
+            {/* Broadcasts Section */}
+            <Box sx={{ mt: 2 }}>
+                <BroadcastList />
+            </Box>
+            {/* Tags Section */}
+            <Box sx={{ mt: 2 }}>
+                <TagList />
+            </Box>
+            {/* Sounds Section */}
+            <Box sx={{ mt: 2 }}>
+                <SoundList />
+            </Box>
+            {/* Action Buttons */}
+            <Stack direction="column" spacing={2} sx={{ mt: 3, px: 2 }}>
+                <Button
+                    variant="text"
+                    startIcon={<Stop />}
+                    onClick={() => {
+                        BEHAVIOR_REGISTRY.stopAll();
+                    }}
+                >
+                    Stop all behaviors
+                </Button>
+                <Button
+                    variant="text"
+                    startIcon={<Edit />}
+                    onClick={activateTool}
+                >
+                    Edit directly
+                </Button>
+                <Typography
+                    variant="caption"
+                    sx={{
+                        display: "block",
+                        mt: 0.5,
+                        color: "text.secondary",
+                    }}
+                >
+                    Enables a tool that lets you click an item to edit its
+                    behaviors, without selecting it first
+                </Typography>
+            </Stack>
         </Box>
     );
 }

@@ -17,13 +17,17 @@ export default defineConfig({
             input: {
                 // must have a 'main' entry point
                 action: resolve(__dirname, "/src/action/action.html"),
-                background: resolve(
-                    __dirname,
-                    "/src/background/background.html",
-                ),
                 popoverSettings: resolve(
                     __dirname,
                     "/src/popoverSettings/popoverSettings.html",
+                ),
+                popoverHelp: resolve(
+                    __dirname,
+                    "/src/popoverHelp/popoverHelp.html",
+                ),
+                modalEditBehaviors: resolve(
+                    __dirname,
+                    "/src/modalEditBehaviors/modalEditBehaviors.html",
                 ),
             },
         },

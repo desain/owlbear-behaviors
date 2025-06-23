@@ -12,13 +12,13 @@
         "noEmit": true,
         /* Linting */
         "strict": true,
-        "erasableSyntaxOnly": true,
         "noUnusedLocals": true,
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "noImplicitReturns": true,
         "noImplicitOverride": true,
-        "noUncheckedIndexedAccess": true
+        "noUncheckedIndexedAccess": true,
+        "erasableSyntaxOnly": true
     },
     "include": ["vite.config.ts"]
 }

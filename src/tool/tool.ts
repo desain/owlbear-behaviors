@@ -1,43 +1,29 @@
 import OBR from "@owlbear-rodeo/sdk";
 import logo from "../../assets/logo.svg";
-import { TOOL_ID } from "../constants";
-import { usePlayerStorage } from "../state/usePlayerStorage";
+import { ID_TOOL, ID_TOOL_MODE_EDIT_BEHAVIORS } from "../constants";
+import { EditBehaviorsMode } from "./EditBehaviorsMode";
 
-export async function startWatchingToolEnabled(): Promise<VoidFunction> {
-    if (usePlayerStorage.getState().toolEnabled) {
-        await installTool();
-    }
-    return usePlayerStorage.subscribe(
-        (store) => store.toolEnabled,
-        async (enabled) => {
-            if (enabled) {
-                await installTool();
-            } else {
-                await uninstallTool();
-            }
-        },
-    );
-}
-
-async function installTool() {
+export async function activateTool() {
     await Promise.all([
         OBR.tool.create({
-            id: TOOL_ID,
-            shortcut: undefined,
+            id: ID_TOOL,
             icons: [
                 {
                     icon: logo,
-                    label: "TODO tool name",
+                    label: "Edit Behaviors Directly",
                 },
             ],
             defaultMetadata: {},
-            onClick: () => {
-                void OBR.notification.show("TOOL CLICKED");
-            },
+            defaultMode: ID_TOOL_MODE_EDIT_BEHAVIORS,
         }),
+        OBR.tool.createMode(new EditBehaviorsMode()),
     ]);
+    await OBR.tool.activateTool(ID_TOOL);
 }
 
-async function uninstallTool() {
-    await OBR.tool.remove(TOOL_ID);
+export function deactivateTool() {
+    return Promise.all([
+        OBR.tool.remove(ID_TOOL),
+        OBR.tool.removeMode(ID_TOOL_MODE_EDIT_BEHAVIORS),
+    ]);
 }

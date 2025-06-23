@@ -1,11 +1,12 @@
 {
-  "name": "owlbear-template",
+  "name": "owlbear-behaviors",
   "type": "module",
-  "version": "0.0.9",
-  "description": "TODO extension description",
+  "version": "0.0.7",
+  "description": "Bring tokens to life with block-based automated behavior inspired by Scratch.",
   "scripts": {
     "dev": "vite",
-    "build": "{ test \"$CF_PAGES\" '!=' 1 || test \"$SKIP_DEPENDENCY_INSTALL\" = 1; } || { echo 'SKIP_DEPENDENCY_INSTALL=1 must be set on Cloudflare Pages'; exit 1; } && tsc --build && vite build",
+    "build": "{ test \"$CF_PAGES\" '!=' 1 || test \"$SKIP_DEPENDENCY_INSTALL\" = 1; } || { echo 'SKIP_DEPENDENCY_INSTALL=1 must be set on Cloudflare Pages'; exit 1; } && node scripts/build-docs.js && tsc --build && vite build",
+    "docs": "node scripts/build-docs.js",
     "preview": "vite preview",
     "lint": "eslint .",
     "test": "vitest",
@@ -14,30 +15,48 @@
   "keywords": [],
   "author": "desain",
   "license": "GPL-3.0",
-  "packageManager": "pnpm@10.9.0+sha512.0486e394640d3c1fb3c9d43d49cf92879ff74f8516959c235308f5a8f62e2e19528a65cdc2a3058f587cde71eba3d5b56327c8c33a97e4c4051ca48a10ca2d5f",
   "devDependencies": {
-    "@eslint/js": "^9.27.0",
-    "@types/node": "^22.15.26",
+    "@eslint/js": "^9.28.0",
+    "@types/node": "^22.15.30",
     "@types/react": "^19.1.6",
-    "@types/react-dom": "^19.1.5",
-    "@vitejs/plugin-react": "^4.5.0",
-    "eslint": "^9.27.0",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.5.1",
+    "eslint": "^9.28.0",
     "eslint-config": "github:desain/eslint-config",
     "jsdom": "^26.1.0",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.33.0",
+    "typescript-eslint": "^8.33.1",
     "vite": "^6.3.5",
     "vite-plugin-mkcert": "^1.17.8",
-    "vitest": "^3.1.4"
+    "vitest": "^3.2.2"
   },
   "dependencies": {
-    "@mui/icons-material": "^7.1.0",
-    "@mui/material": "^7.1.0",
+    "@blockly/continuous-toolbox": "^7.0.1",
+    "@blockly/field-angle": "^6.0.1",
+    "@blockly/field-colour-hsv-sliders": "^6.0.1",
+    "@blockly/field-grid-dropdown": "^6.0.1",
+    "@blockly/field-slider": "^8.0.1",
+    "@blockly/workspace-backpack": "^7.0.1",
+    "@mui/icons-material": "^7.1.1",
+    "@mui/material": "^7.1.1",
     "@owlbear-rodeo/sdk": "^3.1.0",
+    "blockly": "^12.1.0",
     "immer": "^10.1.1",
     "owlbear-utils": "github:desain/owlbear-utils",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-markdown": "^10.1.0",
+    "simplify-js": "^1.2.4",
     "zustand": "^5.0.5"
-  }
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "true"
+    ],
+    "patchedDependencies": {
+      "@blockly/continuous-toolbox@7.0.1": "patches/@blockly__continuous-toolbox@7.0.1.patch"
+    }
+  },
+  "packageManager": "pnpm@10.12.1+sha512.f0dda8580f0ee9481c5c79a1d927b9164f2c478e90992ad268bbb2465a736984391d6333d2c327913578b2804af33474ca554ba29c04a8b13060a717675ae3ac"
 }

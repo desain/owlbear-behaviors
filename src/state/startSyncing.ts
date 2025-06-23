@@ -10,54 +10,77 @@ export function startSyncing(): [
     unsubscribe: VoidFunction,
 ] {
     // console.log("startSyncing");
-    const { setSceneReady } = usePlayerStorage.getState();
+    const {
+        setSceneReady,
+        handleThemeChange,
+        handleSceneMetadataChange,
+        handleItemsChange,
+        handleGridChange,
+        handleRoleChange,
+        handleSelectionChange,
+        handlePlayerIdChange,
+    } = usePlayerStorage.getState();
 
     const sceneReadyInitialized = OBR.scene.isReady().then(setSceneReady);
     const unsubscribeSceneReady = OBR.scene.onReadyChange((ready) => {
         setSceneReady(ready);
     });
 
-    // const roleInitialized = OBR.player.getRole().then(setRole);
-    // const playerIdInitialized = OBR.player.getId().then(setPlayerId);
-    // const selectionInitialized = OBR.player
-    //     .getSelection()
-    //     .then(store.setSelection);
-    // const unsubscribePlayer = OBR.player.onChange((player) => {
-    //     setRole(player.role);
-    //     setPlayerId(player.id);
-    //     void setSelection(player.selection);
-    // });
+    const themeInitialized = OBR.theme.getTheme().then(handleThemeChange);
+    const unsubscribeTheme = OBR.theme.onChange(handleThemeChange);
 
-    // const gridInitialized = Promise.all([
-    //     OBR.scene.grid.getDpi(),
-    //     OBR.scene.grid.getMeasurement(),
-    //     OBR.scene.grid.getType(),
-    // ]).then(([dpi, measurement, type]) =>
-    //     setGrid({ dpi, measurement, type }),
-    // );
-    // const unsubscribeGrid = OBR.scene.grid.onChange(setGrid);
+    const roleInitialized = OBR.player.getRole().then(handleRoleChange);
+    const playerIdInitialized = OBR.player.getId().then(handlePlayerIdChange);
+    const selectionInitialized = OBR.player
+        .getSelection()
+        .then(handleSelectionChange);
+    const unsubscribePlayer = OBR.player.onChange((player) => {
+        handleRoleChange(player.role);
+        handlePlayerIdChange(player.id);
+        handleSelectionChange(player.selection);
+    });
+
+    const gridInitialized = Promise.all([
+        OBR.scene.grid.getDpi(),
+        OBR.scene.grid.getMeasurement(),
+        OBR.scene.grid.getType(),
+    ]).then(([dpi, measurement, type]) =>
+        handleGridChange({ dpi, measurement, type }),
+    );
+    const unsubscribeGrid = OBR.scene.grid.onChange(handleGridChange);
 
     // const roomMetadataInitialized = OBR.room.getMetadata().then(handleRoomMetadataChange);
     // const unsubscribeRoomMetadata = OBR.room.onMetadataChange(handleRoomMetadataChange);
 
-    // const unsubscribeItems = OBR.scene.items.onChange((items) =>
-    //     updateItems(items),
-    // );
+    const sceneMetadataInitialized = OBR.scene
+        .getMetadata()
+        .then(handleSceneMetadataChange);
+    const unsubscribeSceneMetadata = OBR.scene.onMetadataChange(
+        handleSceneMetadataChange,
+    );
+
+    const itemsInitialized = OBR.scene.items.getItems().then(handleItemsChange);
+    const unsubscribeItems = OBR.scene.items.onChange(handleItemsChange);
 
     return [
         Promise.all([
             sceneReadyInitialized,
-            // roleInitialized,
-            // playerIdInitialized,
-            // selectionInitialized,
-            // gridInitialized,
+            themeInitialized,
+            sceneMetadataInitialized,
+            itemsInitialized,
+            roleInitialized,
+            playerIdInitialized,
+            selectionInitialized,
+            gridInitialized,
             // roomMetadataInitialized,
         ]).then(() => void 0),
         deferCallAll(
             unsubscribeSceneReady,
-            // unsubscribePlayer,
-            // unsubscribeGrid,
-            // unsubscribeItems,
+            unsubscribeTheme,
+            unsubscribeSceneMetadata,
+            unsubscribePlayer,
+            unsubscribeGrid,
+            unsubscribeItems,
             // unsubscribeRoomMetadata,
         ),
     ];

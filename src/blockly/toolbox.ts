@@ -1,0 +1,740 @@
+import { isCurve, isImage, isLine, isPath, isShape } from "@owlbear-rodeo/sdk";
+import type { Block } from "blockly";
+import { assumeHexColor, getName } from "owlbear-utils";
+import type { BehaviorItem } from "../BehaviorItem";
+import {
+    CUSTOM_DYNAMIC_CATEGORY_VARIABLES,
+    INPUT_BROADCAST,
+    INPUT_TAG,
+} from "../constants";
+import {
+    BLOCK_ADD_AURA,
+    BLOCK_ANGLE,
+    BLOCK_ANNOUNCEMENT,
+    BLOCK_ATTACH,
+    BLOCK_ATTACHED,
+    BLOCK_BROADCAST,
+    BLOCK_BROADCAST_MENU,
+    BLOCK_CHANGE_EFFECT_BY,
+    BLOCK_CHANGE_SIZE,
+    BLOCK_CLEAR_GRAPHIC_EFFECTS,
+    BLOCK_CLOSEST_TAGGED,
+    BLOCK_CONTAINS,
+    BLOCK_DESELECT,
+    BLOCK_DETACH,
+    BLOCK_EQUALS,
+    BLOCK_FACE,
+    BLOCK_FOREVER,
+    BLOCK_GET_FILL_COLOR,
+    BLOCK_GET_FILL_OPACITY,
+    BLOCK_GET_LABEL,
+    BLOCK_GET_LAYER,
+    BLOCK_GET_SIZE,
+    BLOCK_GET_STROKE_COLOR,
+    BLOCK_GET_STROKE_OPACITY,
+    BLOCK_GLIDE,
+    BLOCK_GLIDE_ROTATE_LEFT,
+    BLOCK_GLIDE_ROTATE_RIGHT,
+    BLOCK_GOTO,
+    BLOCK_GREATER_THAN,
+    BLOCK_HAS_TAG_OTHER,
+    BLOCK_HAS_TAG_SELF,
+    BLOCK_HIDE,
+    BLOCK_HOOT,
+    BLOCK_IF,
+    BLOCK_IF_ELSE,
+    BLOCK_IMMEDIATELY,
+    BLOCK_ITEM_MENU,
+    BLOCK_LAYER_MENU,
+    BLOCK_LESS_THAN,
+    BLOCK_LETTER_OF,
+    BLOCK_LOCK,
+    BLOCK_LOCKED,
+    BLOCK_MOVE_DIRECTION,
+    BLOCK_MY_PARENT,
+    BLOCK_OPACITY_SLIDER,
+    BLOCK_OTHER_SRC,
+    BLOCK_POINT_IN_DIRECTION,
+    BLOCK_RECEIVE_BROADCAST,
+    BLOCK_REMOVE_AURAS,
+    BLOCK_REMOVE_TAG,
+    BLOCK_REPEAT,
+    BLOCK_REPEAT_UNTIL,
+    BLOCK_REPLACE_IMAGE,
+    BLOCK_ROTATE_LEFT,
+    BLOCK_ROTATE_RIGHT,
+    BLOCK_ROTATION,
+    BLOCK_SAY,
+    BLOCK_SET_EFFECT_TO,
+    BLOCK_SET_FILL_COLOR,
+    BLOCK_SET_FILL_OPACITY,
+    BLOCK_SET_LABEL,
+    BLOCK_SET_LAYER,
+    BLOCK_SET_SIZE,
+    BLOCK_SET_STROKE_COLOR,
+    BLOCK_SET_STROKE_OPACITY,
+    BLOCK_SHOW,
+    BLOCK_SOUND_MENU,
+    BLOCK_SOUND_PLAY,
+    BLOCK_SOUND_PLAY_UNTIL_DONE,
+    BLOCK_STOP,
+    BLOCK_TAG,
+    BLOCK_TAG_MENU,
+    BLOCK_TOUCH,
+    BLOCK_UNLOCK,
+    BLOCK_VISIBLE,
+    BLOCK_WAIT,
+    BLOCK_WAIT_UNTIL,
+    BLOCK_WHEN_I,
+    BLOCK_X_POSITION,
+    BLOCK_Y_POSITION,
+} from "./blocks";
+import { FieldTokenImage } from "./FieldTokenImage";
+import { shadowColor, shadowDynamic, shadowNumber } from "./shadows";
+
+export function blockToDefinition(block: Pick<Block, "type">) {
+    return {
+        kind: "block",
+        type: block.type,
+    };
+}
+
+export const GAP50 = { kind: "sep", gap: 50 } as const;
+
+const SHADOW_TAG_MENU = {
+    [INPUT_TAG]: {
+        shadow: {
+            type: BLOCK_TAG_MENU.type,
+        },
+    },
+};
+
+/**
+ * Toolbox of default and custom blocks.
+ * Grab default ones from: https://blockly-demo.appspot.com/static/tests/playground.html?dir=ltr&toolbox=categories-typed-variables
+ * With source: https://github.com/google/blockly/blob/master/blocks
+ */
+export function createToolbox(target: BehaviorItem) {
+    return {
+        kind: "categoryToolbox",
+        contents: [
+            /* motion */ {
+                kind: "category",
+                name: "Motion",
+                categorystyle: "style_category_motion",
+                contents: [
+                    {
+                        kind: "block",
+                        type: BLOCK_ROTATE_RIGHT.type,
+                        inputs: {
+                            [BLOCK_ROTATE_RIGHT.args0[1].name]:
+                                shadowNumber(15),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_GLIDE_ROTATE_RIGHT.type,
+                        inputs: {
+                            [BLOCK_GLIDE_ROTATE_RIGHT.args0[0].name]:
+                                shadowNumber(1),
+                            [BLOCK_GLIDE_ROTATE_RIGHT.args0[2].name]:
+                                shadowNumber(90),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_ROTATE_LEFT.type,
+                        inputs: {
+                            [BLOCK_ROTATE_LEFT.args0[1].name]: shadowNumber(15),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_GLIDE_ROTATE_LEFT.type,
+                        inputs: {
+                            [BLOCK_GLIDE_ROTATE_LEFT.args0[0].name]:
+                                shadowNumber(1),
+                            [BLOCK_GLIDE_ROTATE_LEFT.args0[2].name]:
+                                shadowNumber(90),
+                        },
+                    },
+                    GAP50,
+                    {
+                        kind: "block",
+                        type: BLOCK_MOVE_DIRECTION.type,
+                        fields: {
+                            [BLOCK_MOVE_DIRECTION.args0[0].name]: "FORWARD",
+                        },
+                        inputs: {
+                            [BLOCK_MOVE_DIRECTION.args0[1].name]:
+                                shadowNumber(1),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_GOTO.type,
+                        inputs: {
+                            [BLOCK_GOTO.args0[0].name]: shadowNumber(
+                                Math.round(target.position.x),
+                            ),
+                            [BLOCK_GOTO.args0[1].name]: shadowNumber(
+                                Math.round(target.position.y),
+                            ),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_GLIDE.type,
+                        inputs: {
+                            [BLOCK_GLIDE.args0[0].name]: shadowNumber(1),
+                            [BLOCK_GLIDE.args0[1].name]: shadowNumber(
+                                Math.round(target.position.x),
+                            ),
+                            [BLOCK_GLIDE.args0[2].name]: shadowNumber(
+                                Math.round(target.position.y),
+                            ),
+                        },
+                    },
+                    GAP50,
+                    {
+                        kind: "block",
+                        type: BLOCK_POINT_IN_DIRECTION.type,
+                        inputs: {
+                            [BLOCK_POINT_IN_DIRECTION.args0[0].name]: {
+                                shadow: {
+                                    type: BLOCK_ANGLE.type,
+                                    fields: {
+                                        [BLOCK_ANGLE.args0[0].name]:
+                                            ((target.rotation % 360) + 360) %
+                                            360, // ensure 0-359
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    blockToDefinition(BLOCK_FACE),
+                    GAP50,
+                    blockToDefinition(BLOCK_ATTACH),
+                    blockToDefinition(BLOCK_DETACH),
+                    GAP50,
+                    blockToDefinition(BLOCK_LOCK),
+                    blockToDefinition(BLOCK_UNLOCK),
+                    GAP50,
+                    blockToDefinition(BLOCK_X_POSITION),
+                    blockToDefinition(BLOCK_Y_POSITION),
+                    blockToDefinition(BLOCK_ROTATION),
+                    blockToDefinition(BLOCK_MY_PARENT),
+                    blockToDefinition(BLOCK_LOCKED),
+                    blockToDefinition(BLOCK_ATTACHED),
+                ],
+            },
+            /* looks */ {
+                kind: "category",
+                name: "Looks",
+                categorystyle: "style_category_looks",
+                contents: [
+                    {
+                        kind: "block",
+                        type: BLOCK_SAY.type,
+                        inputs: {
+                            MESSAGE: shadowDynamic("Hello!"),
+                            SECS: shadowNumber(2),
+                        },
+                    },
+                    ...(isImage(target)
+                        ? [
+                              GAP50,
+                              {
+                                  kind: "block",
+                                  type: BLOCK_REPLACE_IMAGE.type,
+                                  fields: {
+                                      [BLOCK_REPLACE_IMAGE.args0[0].name]:
+                                          FieldTokenImage.valueFromImage(
+                                              target,
+                                          ),
+                                  },
+                              },
+                          ]
+                        : []),
+                    GAP50,
+                    {
+                        kind: "block",
+                        type: BLOCK_SET_SIZE.type,
+                        inputs: {
+                            [BLOCK_SET_SIZE.args0[0].name]: shadowNumber(100),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_CHANGE_SIZE.type,
+                        inputs: {
+                            [BLOCK_CHANGE_SIZE.args0[0].name]: shadowNumber(10),
+                        },
+                    },
+                    GAP50,
+                    // Only show effects-based blocks for shapes, curves, and paths
+                    ...(isShape(target) || isCurve(target) || isPath(target)
+                        ? [
+                              {
+                                  kind: "block",
+                                  type: BLOCK_CHANGE_EFFECT_BY.type,
+                                  inputs: {
+                                      [BLOCK_CHANGE_EFFECT_BY.args0[1].name]:
+                                          shadowNumber(25),
+                                  },
+                              },
+                              {
+                                  kind: "block",
+                                  type: BLOCK_SET_EFFECT_TO.type,
+                                  inputs: {
+                                      [BLOCK_SET_EFFECT_TO.args0[1].name]:
+                                          shadowNumber(100),
+                                  },
+                              },
+                              blockToDefinition(BLOCK_CLEAR_GRAPHIC_EFFECTS),
+                              GAP50,
+                          ]
+                        : []),
+                    blockToDefinition(BLOCK_SHOW),
+                    blockToDefinition(BLOCK_HIDE),
+                    GAP50,
+                    {
+                        kind: "block",
+                        type: BLOCK_SET_LAYER.type,
+                        inputs: {
+                            LAYER: {
+                                shadow: {
+                                    type: BLOCK_LAYER_MENU.type,
+                                    fields: {
+                                        [BLOCK_LAYER_MENU.args0[0].name]:
+                                            target.layer,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                    GAP50,
+                    ...(isImage(target)
+                        ? [
+                              {
+                                  kind: "block",
+                                  type: BLOCK_SET_LABEL.type,
+                                  inputs: {
+                                      [BLOCK_SET_LABEL.args0[0].name]:
+                                          shadowDynamic(getName(target)),
+                                  },
+                              },
+                              GAP50,
+                          ]
+                        : []),
+                    // Only show set fill color and fill opacity for shapes, curves, and paths (not lines)
+                    ...(isShape(target) || isCurve(target) || isPath(target)
+                        ? [
+                              {
+                                  kind: "block",
+                                  type: BLOCK_SET_FILL_COLOR.type,
+                                  inputs: {
+                                      [BLOCK_SET_FILL_COLOR.args0[0].name]:
+                                          shadowColor(
+                                              assumeHexColor(
+                                                  target.style.fillColor,
+                                              ),
+                                          ),
+                                  },
+                              },
+                              {
+                                  kind: "block",
+                                  type: BLOCK_SET_FILL_OPACITY.type,
+                                  inputs: {
+                                      [BLOCK_SET_FILL_OPACITY.args0[0].name]: {
+                                          shadow: {
+                                              type: BLOCK_OPACITY_SLIDER.type,
+                                              fields: {
+                                                  [BLOCK_OPACITY_SLIDER.args0[0]
+                                                      .name]:
+                                                      target.style.fillOpacity *
+                                                      100,
+                                              },
+                                          },
+                                      },
+                                  },
+                              },
+                          ]
+                        : []),
+                    // Only show set stroke color for supported types using OBR type guards
+                    ...(isLine(target) ||
+                    isShape(target) ||
+                    isCurve(target) ||
+                    isPath(target)
+                        ? [
+                              {
+                                  kind: "block",
+                                  type: BLOCK_SET_STROKE_COLOR.type,
+                                  inputs: {
+                                      [BLOCK_SET_STROKE_COLOR.args0[0].name]:
+                                          shadowColor(
+                                              assumeHexColor(
+                                                  target.style.strokeColor,
+                                              ),
+                                          ),
+                                  },
+                              },
+                              {
+                                  kind: "block",
+                                  type: BLOCK_SET_STROKE_OPACITY.type,
+                                  inputs: {
+                                      [BLOCK_SET_STROKE_OPACITY.args0[0].name]:
+                                          {
+                                              shadow: {
+                                                  type: BLOCK_OPACITY_SLIDER.type,
+                                                  fields: {
+                                                      [BLOCK_OPACITY_SLIDER
+                                                          .args0[0].name]:
+                                                          target.style
+                                                              .strokeOpacity *
+                                                          100,
+                                                  },
+                                              },
+                                          },
+                                  },
+                              },
+                              GAP50,
+                          ]
+                        : []),
+                    // Only show fill getters for items that support fill setters
+                    ...(isShape(target) || isCurve(target) || isPath(target)
+                        ? [
+                              blockToDefinition(BLOCK_GET_FILL_COLOR),
+                              blockToDefinition(BLOCK_GET_FILL_OPACITY),
+                          ]
+                        : []),
+                    // Only show stroke getters for items that support stroke setters
+                    ...(isLine(target) ||
+                    isShape(target) ||
+                    isCurve(target) ||
+                    isPath(target)
+                        ? [
+                              blockToDefinition(BLOCK_GET_STROKE_COLOR),
+                              blockToDefinition(BLOCK_GET_STROKE_OPACITY),
+                          ]
+                        : []),
+                    blockToDefinition(BLOCK_GET_SIZE),
+                    blockToDefinition(BLOCK_GET_LAYER),
+                    ...(isImage(target)
+                        ? [blockToDefinition(BLOCK_GET_LABEL)]
+                        : []),
+                    blockToDefinition(BLOCK_VISIBLE),
+                ],
+            },
+            /* sound */ {
+                kind: "category",
+                name: "Sound",
+                categorystyle: "style_category_sound",
+                contents: [
+                    {
+                        kind: "block",
+                        type: BLOCK_SOUND_PLAY.type,
+                        inputs: {
+                            [BLOCK_SOUND_PLAY.args0[0].name]: {
+                                shadow: {
+                                    type: BLOCK_SOUND_MENU.type,
+                                },
+                            },
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_SOUND_PLAY_UNTIL_DONE.type,
+                        inputs: {
+                            [BLOCK_SOUND_PLAY_UNTIL_DONE.args0[0].name]: {
+                                shadow: {
+                                    type: BLOCK_SOUND_MENU.type,
+                                },
+                            },
+                        },
+                    },
+                ],
+            },
+            /* events */ {
+                kind: "category",
+                name: "Events",
+                categorystyle: "style_category_events",
+                contents: [
+                    blockToDefinition(BLOCK_IMMEDIATELY),
+                    blockToDefinition(BLOCK_WHEN_I),
+                    blockToDefinition(BLOCK_RECEIVE_BROADCAST),
+                    {
+                        kind: "block",
+                        type: BLOCK_BROADCAST.type,
+                        inputs: {
+                            [INPUT_BROADCAST]: {
+                                shadow: {
+                                    type: BLOCK_BROADCAST_MENU.type,
+                                },
+                            },
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_TOUCH.type,
+                        inputs: {
+                            [BLOCK_TOUCH.args0[1].name]: {
+                                block: {
+                                    type: BLOCK_OTHER_SRC.type,
+                                },
+                            },
+                        },
+                    },
+                ],
+            },
+            /* control */ {
+                kind: "category",
+                name: "Control",
+                categorystyle: "style_category_control",
+                contents: [
+                    /* wait */ {
+                        kind: "block",
+                        type: BLOCK_WAIT.type,
+                        inputs: { [BLOCK_WAIT.args0[0].name]: shadowNumber(1) },
+                    },
+                    GAP50,
+                    /* repeat */ {
+                        kind: "block",
+                        type: BLOCK_REPEAT.type,
+                        inputs: { TIMES: shadowNumber(5) },
+                    },
+                    blockToDefinition(BLOCK_FOREVER),
+                    GAP50,
+                    blockToDefinition(BLOCK_IF),
+                    blockToDefinition(BLOCK_IF_ELSE),
+                    blockToDefinition(BLOCK_WAIT_UNTIL),
+                    blockToDefinition(BLOCK_REPEAT_UNTIL),
+                    // TODO: wait until?
+                    GAP50,
+                    blockToDefinition(BLOCK_STOP),
+                ],
+            },
+            /* events */ {
+                kind: "category",
+                name: "Sensing",
+                categorystyle: "style_category_sensing",
+                contents: [
+                    {
+                        kind: "block",
+                        type: BLOCK_TAG.type,
+                        inputs: {
+                            [BLOCK_TAG.args0[0].name]: {
+                                shadow: {
+                                    type: BLOCK_ITEM_MENU.type,
+                                },
+                            },
+                            ...SHADOW_TAG_MENU,
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_REMOVE_TAG.type,
+                        inputs: {
+                            [BLOCK_REMOVE_TAG.args0[0].name]: {
+                                shadow: {
+                                    type: BLOCK_ITEM_MENU.type,
+                                },
+                            },
+                            ...SHADOW_TAG_MENU,
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_HAS_TAG_SELF.type,
+                        inputs: SHADOW_TAG_MENU,
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_HAS_TAG_OTHER.type,
+                        inputs: SHADOW_TAG_MENU,
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_CLOSEST_TAGGED.type,
+                        inputs: SHADOW_TAG_MENU,
+                    },
+                    GAP50,
+                    blockToDefinition(BLOCK_DESELECT),
+                ],
+            },
+            /* operators */ {
+                kind: "category",
+                name: "Operators",
+                categorystyle: "style_category_operators",
+                contents: [
+                    {
+                        kind: "block",
+                        type: "math_arithmetic",
+                        inputs: {
+                            A: shadowNumber(),
+                            B: shadowNumber(),
+                        },
+                    },
+                    GAP50,
+                    {
+                        kind: "block",
+                        type: "math_random_int",
+                        inputs: {
+                            FROM: shadowNumber(1),
+                            TO: shadowNumber(10),
+                        },
+                    },
+                    GAP50,
+                    {
+                        kind: "block",
+                        type: BLOCK_GREATER_THAN.type,
+                        inputs: {
+                            [BLOCK_GREATER_THAN.args0[0].name]: shadowDynamic(),
+                            [BLOCK_GREATER_THAN.args0[1].name]: shadowDynamic(),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_LESS_THAN.type,
+                        inputs: {
+                            [BLOCK_LESS_THAN.args0[0].name]: shadowDynamic(),
+                            [BLOCK_LESS_THAN.args0[1].name]: shadowDynamic(),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_EQUALS.type,
+                        inputs: {
+                            [BLOCK_EQUALS.args0[0].name]: shadowDynamic(),
+                            [BLOCK_EQUALS.args0[1].name]: shadowDynamic(),
+                        },
+                    },
+                    GAP50,
+                    { kind: "block", type: "logic_operation" },
+                    { kind: "block", type: "logic_negate" },
+                    GAP50,
+                    {
+                        kind: "block",
+                        type: "operator_join",
+                        inputs: {
+                            STRING1: shadowDynamic("apple"),
+                            STRING2: shadowDynamic("banana"),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_LETTER_OF.type,
+                        inputs: {
+                            [BLOCK_LETTER_OF.args0[0].name]: shadowNumber(1),
+                            [BLOCK_LETTER_OF.args0[1].name]:
+                                shadowDynamic("apple"),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: "text_length",
+                        inputs: {
+                            VALUE: shadowDynamic("apple"),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_CONTAINS.type,
+                        inputs: {
+                            [BLOCK_CONTAINS.args0[0].name]:
+                                shadowDynamic("apple"),
+                            [BLOCK_CONTAINS.args0[1].name]: shadowDynamic("a"),
+                        },
+                    },
+                    GAP50,
+                    {
+                        kind: "block",
+                        type: "math_modulo",
+                        inputs: {
+                            DIVIDEND: shadowNumber(),
+                            DIVISOR: shadowNumber(10),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: "math_round",
+                        inputs: { NUM: shadowNumber() },
+                    },
+                    {
+                        kind: "block",
+                        type: "math_constrain",
+                        inputs: {
+                            VALUE: shadowNumber(),
+                            LOW: shadowNumber(0),
+                            HIGH: shadowNumber(100),
+                        },
+                    },
+                    GAP50,
+                    {
+                        kind: "block",
+                        type: "math_single",
+                        inputs: { NUM: shadowNumber() },
+                    },
+                    {
+                        kind: "block",
+                        type: "math_trig",
+                        inputs: { NUM: shadowNumber() },
+                    },
+                    GAP50,
+                    {
+                        kind: "block",
+                        type: "math_number_property",
+                        inputs: { NUMBER_TO_CHECK: shadowNumber() },
+                    },
+                    GAP50,
+                    // { kind: "block", type: "logic_boolean" },
+                    { kind: "block", type: "math_constant" },
+                    // { kind: "block", type: "math_number" },
+                ],
+            },
+            /* variables */ {
+                kind: CUSTOM_DYNAMIC_CATEGORY_VARIABLES,
+                name: "Variables",
+                categorystyle: "style_category_variables",
+            },
+            /* extensions */ {
+                kind: "category",
+                name: "Extensions",
+                categorystyle: "style_category_extensions",
+                contents: [
+                    { kind: "label", text: "Announcement extension" },
+                    {
+                        kind: "block",
+                        type: BLOCK_ANNOUNCEMENT.type,
+                        inputs: {
+                            [BLOCK_ANNOUNCEMENT.args0[1].name]:
+                                shadowDynamic("# *Hello*"),
+                            [BLOCK_ANNOUNCEMENT.args0[2].name]: shadowNumber(3),
+                        },
+                    },
+                    { kind: "label", text: "Auras and Emanations extension" },
+                    {
+                        kind: "block",
+                        type: BLOCK_ADD_AURA.type,
+                        inputs: {
+                            [BLOCK_ADD_AURA.args0[1].name]: shadowNumber(5),
+                            [BLOCK_ADD_AURA.args0[2].name]: shadowColor(
+                                assumeHexColor("#facade"),
+                            ),
+                        },
+                    },
+                    blockToDefinition(BLOCK_REMOVE_AURAS),
+                    { kind: "label", text: "Hoot extension" },
+                    {
+                        kind: "block",
+                        type: BLOCK_HOOT.type,
+                        inputs: {
+                            [BLOCK_HOOT.args0[1].name]: shadowDynamic(),
+                            [BLOCK_HOOT.args0[2].name]: shadowDynamic(),
+                        },
+                    },
+                ],
+            },
+        ],
+    };
+}

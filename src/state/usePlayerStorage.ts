@@ -1,72 +1,77 @@
-import OBR from "@owlbear-rodeo/sdk";
+import OBR, { type Item, type Metadata, type Theme } from "@owlbear-rodeo/sdk";
 import { enableMapSet } from "immer";
-import type { ExtractNonFunctions } from "owlbear-utils";
+import type {
+    ExtractNonFunctions,
+    GridParams,
+    GridParsed,
+    Role,
+} from "owlbear-utils";
 import { create } from "zustand";
 import { persist, subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { LOCAL_STORAGE_STORE_NAME } from "../constants";
+import { isBehaviorItem, type BehaviorItem } from "../BehaviorItem";
+import {
+    DROPDOWN_BROADCAST_DEFAULT,
+    DROPDOWN_SOUND_MEOW,
+    DROPDOWN_TAG_DEFAULT,
+    LOCAL_STORAGE_STORE_NAME,
+    METADATA_KEY_SCENE,
+} from "../constants";
+import { isSceneMetadata, type SceneMetadata } from "./SceneMetadata";
 
 enableMapSet();
 
-const SET_SENSIBLE = Symbol("SetSensible");
-
-const ObrSceneReady = new Promise<void>((resolve) => {
-    OBR.onReady(async () => {
-        if (await OBR.scene.isReady()) {
-            resolve();
-        } else {
-            const unsubscribeScene = OBR.scene.onReadyChange((ready) => {
-                if (ready) {
-                    unsubscribeScene();
-                    resolve();
-                }
-            });
-        }
-    });
-});
-
-/**
- * @returns Default values for persisted local storage that depend on an OBR scene.
- */
-async function fetchDefaults(): Promise<null> {
-    await ObrSceneReady;
-    return null;
-}
-
 interface LocalStorage {
-    readonly hasSensibleValues: boolean;
-    readonly toolEnabled: boolean;
+    // readonly toolEnabled: boolean;
     readonly contextMenuEnabled: boolean;
-    readonly [SET_SENSIBLE]: (this: void) => void;
-    readonly setToolEnabled: (this: void, toolEnabled: boolean) => void;
+    // readonly setToolEnabled: (this: void, toolEnabled: boolean) => void;
+    readonly backpackContents: string[];
     readonly setContextMenuEnabled: (
         this: void,
         contextMenuEnabled: boolean,
     ) => void;
+    readonly setBackpackContents: (
+        this: void,
+        backpackContents: string[],
+    ) => void;
 }
 function partializeLocalStorage({
-    hasSensibleValues,
-    toolEnabled,
+    // toolEnabled,
     contextMenuEnabled,
+    backpackContents,
 }: LocalStorage): ExtractNonFunctions<LocalStorage> {
-    return { hasSensibleValues, toolEnabled, contextMenuEnabled };
+    // console.log("partialize", window.location, backpackContents);
+    return { contextMenuEnabled, backpackContents };
 }
 
+export type BehaviorItemMap = Map<BehaviorItem["id"], BehaviorItem>;
 interface OwlbearStore {
     readonly sceneReady: boolean;
-    // readonly role: Role;
-    // readonly playerId: string;
-    // readonly grid: GridParsed;
+    readonly theme: Theme;
+    readonly role: Role;
+    readonly playerId: string;
+    readonly grid: GridParsed;
+    readonly selection: string[];
     // readonly lastNonemptySelection: string[];
     // readonly lastNonemptySelectionItems: Item[];
     // readonly roomMetadata: RoomMetadata;
+    readonly sceneMetadata: SceneMetadata;
+    readonly itemsOfInterest: BehaviorItemMap;
     readonly setSceneReady: (this: void, sceneReady: boolean) => void;
-    // readonly setRole: (this: void, role: Role) => void;
-    // readonly setPlayerId: (this: void, playerId: string) => void;
-    // readonly setGrid: (this: void, grid: GridParams) => Promise<void>;
-    // readonly setSelection: (this: void, selection: string[] | undefined) => Promise<void>;
-    // readonly handleItemsChange: (this: void, items: Item[]) => void;
+    readonly handleThemeChange: (this: void, theme: Theme) => void;
+    readonly handleRoleChange: (this: void, role: Role) => void;
+    readonly handlePlayerIdChange: (this: void, playerId: string) => void;
+    readonly handleGridChange: (this: void, grid: GridParams) => Promise<void>;
+    readonly handleSelectionChange: (
+        this: void,
+        selection: string[] | undefined,
+    ) => void;
+    readonly handleItemsChange: (this: void, items: Item[]) => void;
     // readonly handleRoomMetadataChange: (this: void, metadata: Metadata) => void;
+    readonly handleSceneMetadataChange: (
+        this: void,
+        metadata: Metadata,
+    ) => void;
 
     /*
     Notes on mirroring metadata:
@@ -100,46 +105,86 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
         persist(
             immer((set) => ({
                 // local storage
-                hasSensibleValues: false,
-                toolEnabled: false,
-                contextMenuEnabled: false,
-                [SET_SENSIBLE]: () => set({ hasSensibleValues: true }),
-                setToolEnabled: (toolEnabled) => set({ toolEnabled }),
+                // toolEnabled: false,
+                contextMenuEnabled: true,
+                // setToolEnabled: (toolEnabled) => set({ toolEnabled }),
+                backpackContents: [],
                 setContextMenuEnabled: (contextMenuEnabled) =>
                     set({ contextMenuEnabled }),
+                setBackpackContents: (backpackContents) =>
+                    set({ backpackContents }),
 
                 // owlbear store
                 sceneReady: false,
-                // role: "PLAYER",
-                // playerId: "NONE",
-                // grid: {
-                //     dpi: -1,
-                //     measurement: "CHEBYSHEV",
-                //     type: "SQUARE",
-                //     parsedScale: {
-                //         digits: 1,
-                //         unit: "ft",
-                //         multiplier: 5,
-                //     },
-                // },
+                theme: {
+                    background: {
+                        default: "#000000",
+                        paper: "#000000",
+                    },
+                    mode: "DARK",
+                    primary: {
+                        light: "#FFFFFF",
+                        dark: "#000000",
+                        contrastText: "#FFFFFF",
+                        main: "#FFFFFF",
+                    },
+                    secondary: {
+                        light: "#FFFFFF",
+                        dark: "#000000",
+                        contrastText: "#FFFFFF",
+                        main: "#FFFFFF",
+                    },
+                    text: {
+                        primary: "#FFFFFF",
+                        secondary: "#FFFFFF",
+                        disabled: "#FFFFFF",
+                    },
+                },
+
+                role: "PLAYER",
+                playerId: "NONE",
+                grid: {
+                    dpi: -1,
+                    measurement: "CHEBYSHEV",
+                    type: "SQUARE",
+                    parsedScale: {
+                        digits: 1,
+                        unit: "ft",
+                        multiplier: 5,
+                    },
+                },
+                selection: [],
                 // lastNonemptySelection: [],
                 // lastNonemptySelectionItems: [],
                 // roomMetadata: { _key: true },
+                sceneMetadata: {
+                    broadcasts: [DROPDOWN_BROADCAST_DEFAULT],
+                    tags: [DROPDOWN_TAG_DEFAULT],
+                    sounds: {
+                        [DROPDOWN_SOUND_MEOW]: {
+                            url: "https://cdn.freesound.org/previews/732/732520_13416215-lq.mp3",
+                        },
+                    },
+                },
+                itemsOfInterest: new Map(),
                 setSceneReady: (sceneReady: boolean) => set({ sceneReady }),
-                // setRole: (role: Role) => set({ role }),
-                // setPlayerId: (playerId: string) => set({ playerId }),
-                // setGrid: async (grid: GridParams) => {
-                //     const parsedScale = (await OBR.scene.grid.getScale())
-                //         .parsed;
-                //     return set({
-                //         grid: {
-                //             dpi: grid.dpi,
-                //             measurement: grid.measurement,
-                //             type: grid.type,
-                //             parsedScale,
-                //         },
-                //     });
-                // },
+                handleThemeChange: (theme: Theme) => set({ theme }),
+                handleRoleChange: (role: Role) => set({ role }),
+                handlePlayerIdChange: (playerId: string) => set({ playerId }),
+                handleGridChange: async (grid: GridParams) => {
+                    const parsedScale = (await OBR.scene.grid.getScale())
+                        .parsed;
+                    return set({
+                        grid: {
+                            dpi: grid.dpi,
+                            measurement: grid.measurement,
+                            type: grid.type,
+                            parsedScale,
+                        },
+                    });
+                },
+                handleSelectionChange: (selection: string[] | undefined) =>
+                    set({ selection: selection ?? [] }),
                 // setSelection: async (selection: string[] | undefined) => {
                 //     if (selection && selection.length > 0) {
                 //         return set({
@@ -159,30 +204,32 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 //             lastNonemptySelectionItems,
                 //         };
                 //     }),
+                handleItemsChange: (items: Item[]) => {
+                    const itemsOfInterest: OwlbearStore["itemsOfInterest"] =
+                        new Map();
+                    for (const item of items) {
+                        if (isBehaviorItem(item)) {
+                            itemsOfInterest.set(item.id, item);
+                        }
+                    }
+                    set({ itemsOfInterest });
+                },
                 // handleRoomMetadataChange: (metadata) => {
                 //     const roomMetadata = metadata[METADATA_KEY_ROOM];
                 //     if (isRoomMetadata(roomMetadata)) {
                 //         set({ roomMetadata });
                 //     }
                 // },
+                handleSceneMetadataChange: (metadata) => {
+                    const sceneMetadata = metadata[METADATA_KEY_SCENE];
+                    if (isSceneMetadata(sceneMetadata)) {
+                        set({ sceneMetadata });
+                    }
+                },
             })),
             {
                 name: LOCAL_STORAGE_STORE_NAME,
                 partialize: partializeLocalStorage,
-                onRehydrateStorage: () => (state, error) => {
-                    if (state) {
-                        if (!state.hasSensibleValues) {
-                            void fetchDefaults().then(() => {
-                                state[SET_SENSIBLE]();
-                            });
-                        }
-                    } else if (error) {
-                        console.error(
-                            "Error hydrating player settings store",
-                            error,
-                        );
-                    }
-                },
             },
         ),
     ),

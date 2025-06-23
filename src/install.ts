@@ -1,31 +1,36 @@
 import OBR from "@owlbear-rodeo/sdk";
-import { deferCallAll } from "owlbear-utils";
+import { deferCallAll, DO_NOTHING } from "owlbear-utils";
 import { version } from "../package.json";
+import { installBehaviorRunner } from "./behaviors/installBehaviorRunner";
+import { watchSelection } from "./behaviors/watchSelection";
+import { setupBlocklyGlobals } from "./blockly/setupBlocklyGlobals";
 import { installBroadcastListener } from "./broadcast/broadcast";
 import { startWatchingContextMenuEnabled } from "./contextmenu/contextmenu";
 import { startSyncing } from "./state/startSyncing";
-import { startWatchingToolEnabled } from "./tool/tool";
 
 export function install() {
-    let uninstall: VoidFunction = () => {
-        // nothing to uninstall
-    };
+    let uninstall: VoidFunction = DO_NOTHING;
+
+    // Blockly setup
+    setupBlocklyGlobals();
 
     async function installExtension(): Promise<VoidFunction> {
-        console.log(`TODO extension name version ${version}`);
+        console.log(`Behaviors version ${version}`);
 
         const [storeInitialized, stopSyncing] = startSyncing();
         await storeInitialized;
-        const stopWatchingTool = await startWatchingToolEnabled();
         const stopWatchingContextMenu = await startWatchingContextMenuEnabled();
         const uninstallBroadcastListener = installBroadcastListener();
+        const uninstallBehaviorRunner = installBehaviorRunner();
+        const stopWatchingSelection = watchSelection();
 
         return deferCallAll(
-            () => console.log("Uninstalling TODO extension name"),
+            () => console.log("Uninstalling Behaviors"),
             stopSyncing,
-            stopWatchingTool,
             stopWatchingContextMenu,
             uninstallBroadcastListener,
+            uninstallBehaviorRunner,
+            stopWatchingSelection,
         );
     }
 
