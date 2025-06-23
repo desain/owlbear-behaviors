@@ -1,7 +1,7 @@
 {
   "name": "owlbear-template",
   "type": "module",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "TODO extension description",
   "scripts": {
     "dev": "vite",
