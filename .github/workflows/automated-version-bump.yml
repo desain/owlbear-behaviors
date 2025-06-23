@@ -1,0 +1,30 @@
+# This workflow will automatically bump the version when changes are pushed to main
+# See: https://github.com/marketplace/actions/automated-version-bump
+
+name: Automated Version Bump
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - 'src/**'
+
+jobs:
+    version-bump:
+        runs-on: ubuntu-latest
+        permissions:
+            # Give the default GITHUB_TOKEN write permission to commit and push the
+            # added or changed files to the repository.
+            contents: write
+        steps:
+            - uses: actions/checkout@v4
+            - uses: phips28/gh-action-bump-version@v11.0.7
+            - uses: sergeysova/jq-action@v2
+              id: version
+              with:
+                  cmd: "jq .version package.json -r"
+            - uses: sergeysova/jq-action@v2
+              with:
+                  cmd: 'jq ''.version = "${{ steps.version.outputs.value }}"'' < public/manifest.json > public/manifest.json.new && mv public/manifest.json{.new,}'
+            - run: 'git commit -a -m "ci: update manifest version" && git push'
