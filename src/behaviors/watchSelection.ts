@@ -1,8 +1,8 @@
 import { notifyGmOfNewSelections } from "../broadcast/broadcast";
 import { usePlayerStorage } from "../state/usePlayerStorage";
-import { BEHAVIOR_REGISTRY } from "./BehaviorRegistry";
+import { type BehaviorRegistry } from "./BehaviorRegistry";
 
-export function watchSelection() {
+export function watchSelection(behaviorRegistry: BehaviorRegistry) {
     return usePlayerStorage.subscribe(
         (store) => store.selection,
         (selection, previousSelection) => {
@@ -16,7 +16,7 @@ export function watchSelection() {
             selection.forEach((item) => deselectedSet.delete(item));
 
             if (usePlayerStorage.getState().role === "GM") {
-                BEHAVIOR_REGISTRY.handleNewSelection(
+                behaviorRegistry.handleNewSelection(
                     newlySelectedSet,
                     deselectedSet,
                 );

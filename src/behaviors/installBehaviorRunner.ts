@@ -9,9 +9,13 @@ import {
 import { diffItemSets } from "../watcher/diffItemSets";
 import { EffectsWatcher } from "../watcher/EffectsWatcher";
 import { Watcher } from "../watcher/Watcher";
-import { BEHAVIOR_REGISTRY, type NewBehaviorConfig } from "./BehaviorRegistry";
+import {
+    type BehaviorRegistry,
+    type NewBehaviorConfig,
+} from "./BehaviorRegistry";
 
 function handleItemsChange(
+    behaviorRegistry: BehaviorRegistry,
     watcher: Watcher,
     collisionEngine: CollisionEngine,
     oldItems: BehaviorItemMap,
@@ -25,11 +29,11 @@ function handleItemsChange(
     // Default to stopping everything, and exempt items that have not changed.
     // This ensures that items that are deleted or have changed behavior
     // are stopped, while items that have not changed continue to run.
-    const toStop = BEHAVIOR_REGISTRY.getBehaviorItemIds();
+    const toStop = behaviorRegistry.getBehaviorItemIds();
     const newBehaviors: NewBehaviorConfig[] = [];
     const moved: BehaviorItem["id"][] = [];
     const propertyChanges: Parameters<
-        (typeof BEHAVIOR_REGISTRY)["handlePropertyChange"]
+        BehaviorRegistry["handlePropertyChange"]
     >[] = [];
 
     for (const item of newItems.values()) {
@@ -79,74 +83,78 @@ function handleItemsChange(
     }
 
     for (const id of toStop) {
-        BEHAVIOR_REGISTRY.stopBehaviorsForItem(id);
+        behaviorRegistry.stopBehaviorsForItem(id);
     }
 
     for (const newBehavior of newBehaviors) {
-        BEHAVIOR_REGISTRY.startBehavior(newBehavior);
+        behaviorRegistry.startBehavior(newBehavior);
     }
 
     for (const propertyChange of propertyChanges) {
-        BEHAVIOR_REGISTRY.handlePropertyChange(...propertyChange);
+        behaviorRegistry.handlePropertyChange(...propertyChange);
     }
 
     // if (newCollisions.length > 0) {
     //     console.log("newCollisions", newCollisions);
     // }
     for (const newCollision of newCollisions) {
-        BEHAVIOR_REGISTRY.handleCollisionUpdate(newCollision, true);
+        behaviorRegistry.handleCollisionUpdate(newCollision, true);
     }
 
     // if (finishedCollisions.length > 0) {
     //     console.log("finishedCollision", finishedCollisions);
     // }
     for (const finishedCollision of finishedCollisions) {
-        BEHAVIOR_REGISTRY.handleCollisionUpdate(finishedCollision, false);
+        behaviorRegistry.handleCollisionUpdate(finishedCollision, false);
     }
 }
 
-function startRunning(): VoidFunction {
+function startRunning(behaviorRegistry: BehaviorRegistry): VoidFunction {
     const watcher = new Watcher();
     const collisionEngine = new CollisionEngine();
     watcher.addWatcher(EffectsWatcher);
-    BEHAVIOR_REGISTRY.stopAll();
 
     handleItemsChange(
+        behaviorRegistry,
         watcher,
         collisionEngine,
         new Map(),
         usePlayerStorage.getState().itemsOfInterest,
     );
-    const stopWatchingItemsChange = usePlayerStorage.subscribe(
+    return usePlayerStorage.subscribe(
         (store) => store.itemsOfInterest,
         (newItems, oldItems) =>
-            handleItemsChange(watcher, collisionEngine, oldItems, newItems),
+            handleItemsChange(
+                behaviorRegistry,
+                watcher,
+                collisionEngine,
+                oldItems,
+                newItems,
+            ),
     );
-    return () => {
-        stopWatchingItemsChange();
-        BEHAVIOR_REGISTRY.stopAll();
-    };
 }
 
-export function installBehaviorRunner() {
+export function installBehaviorRunner(behaviorRegistry: BehaviorRegistry) {
     const state = usePlayerStorage.getState();
     let uninstall: VoidFunction | undefined;
     if (state.role === "GM") {
-        uninstall = startRunning();
+        uninstall = startRunning(behaviorRegistry);
     }
     const stopWatchingRole = usePlayerStorage.subscribe(
         (state) => state.role,
         (role) => {
             if (role === "GM") {
                 uninstall?.();
-                uninstall = startRunning();
+                uninstall = startRunning(behaviorRegistry);
             } else {
                 uninstall?.();
+                uninstall = undefined;
             }
         },
     );
     return () => {
         stopWatchingRole();
         uninstall?.();
+        uninstall = undefined;
     };
 }

@@ -29,7 +29,7 @@ function executeTriggerHandler(
     void handler.behaviorFunction(handler.abortController.signal, other);
 }
 
-class BehaviorRegistry {
+export class BehaviorRegistry {
     readonly #immediateExecutions = new Map<Item["id"], AbortController[]>();
     readonly #triggerHandlers = new Map<Item["id"], TriggerHandler[]>();
 
@@ -176,5 +176,3 @@ class BehaviorRegistry {
                 ?.forEach((handler) => executeTriggerHandler(handler, b)),
         );
 }
-
-export const BEHAVIOR_REGISTRY = new BehaviorRegistry();

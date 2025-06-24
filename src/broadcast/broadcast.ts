@@ -1,7 +1,7 @@
 import OBR from "@owlbear-rodeo/sdk";
 import { isObject } from "owlbear-utils";
 import { BEHAVIORS_IMPL } from "../behaviors/BehaviorImpl";
-import { BEHAVIOR_REGISTRY } from "../behaviors/BehaviorRegistry";
+import { type BehaviorRegistry } from "../behaviors/BehaviorRegistry";
 import { CHANNEL_MESSAGE } from "../constants";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
@@ -111,7 +111,7 @@ export function broadcastPlaySound(soundName: string) {
     );
 }
 
-export function installBroadcastListener() {
+export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
     return OBR.broadcast.onMessage(CHANNEL_MESSAGE, ({ data }) => {
         const state = usePlayerStorage.getState();
         const isGm = state.role === "GM";
@@ -119,9 +119,9 @@ export function installBroadcastListener() {
             void OBR.player.deselect(data.ids);
         } else if (isGm && typeof data === "string") {
             // console.log("got behavior broadcast", data);
-            BEHAVIOR_REGISTRY.handleBroadcast(data);
+            behaviorRegistry.handleBroadcast(data);
         } else if (isGm && isNewSelectionMessage(data)) {
-            void BEHAVIOR_REGISTRY.handleNewSelection(
+            void behaviorRegistry.handleNewSelection(
                 data.newlySelected,
                 data.deselected,
             );

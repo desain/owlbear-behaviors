@@ -1067,7 +1067,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         const target = block.getFieldValue(
             BLOCK_DESELECT.args0[0].name,
         ) as (typeof BLOCK_DESELECT)["args0"][0]["options"][number][1];
-        const deselectArg = target === "THIS" ? `[${SELF}.id]` : "";
+        const deselectArg = target === "THIS" ? `[${PARAMETER_SELF_ID}]` : "";
         return [
             `await ${behave("deselect", deselectArg)};`,
             THROW_ON_ABORT,

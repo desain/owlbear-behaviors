@@ -10,8 +10,8 @@ import {
     Typography,
 } from "@mui/material";
 import { useActionResizer, useRehydrate } from "owlbear-utils";
-import { useRef } from "react";
-import { BEHAVIOR_REGISTRY } from "../behaviors/BehaviorRegistry";
+import { useEffect, useRef, useState } from "react";
+import { installExtension } from "../install";
 import { openHelp } from "../popoverHelp/openHelp";
 import { openSettings } from "../popoverSettings/openSettings";
 import { usePlayerStorage } from "../state/usePlayerStorage";
@@ -29,6 +29,24 @@ export function Action() {
     const box: React.RefObject<HTMLElement | null> = useRef(null);
     useActionResizer(BASE_HEIGHT, MAX_HEIGHT, box);
     useRehydrate(usePlayerStorage);
+
+    const [stopper, setStopper] = useState<VoidFunction | undefined>();
+    useEffect(() => {
+        let uninstallExtension: VoidFunction | undefined;
+        let unmounted = false;
+        void installExtension(setStopper).then((uninstall) => {
+            if (unmounted) {
+                uninstall();
+            } else {
+                uninstallExtension = uninstall;
+            }
+        });
+        return () => {
+            unmounted = true;
+            uninstallExtension?.();
+            uninstallExtension = undefined;
+        };
+    }, []);
 
     return (
         <Box ref={box}>
@@ -58,7 +76,7 @@ export function Action() {
                                 </IconButton>
                             </Tooltip>
                         </Stack>
-                    ) : undefined
+                    ) : null
                 }
             />
             {!sceneReady ? (
@@ -86,7 +104,7 @@ export function Action() {
                             variant="text"
                             startIcon={<Stop />}
                             onClick={() => {
-                                BEHAVIOR_REGISTRY.stopAll();
+                                stopper?.();
                             }}
                         >
                             Stop all behaviors

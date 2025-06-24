@@ -28,17 +28,13 @@ function TabPanel(props: TabPanelProps) {
 export function Help() {
     const [tabValue, setTabValue] = useState(0);
 
-    const handleTabChange = (
-        _event: React.SyntheticEvent,
-        newValue: number,
-    ) => {
-        setTabValue(newValue);
-    };
-
     return (
         <Box sx={{ width: "100%", height: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
-                <Tabs value={tabValue} onChange={handleTabChange}>
+                <Tabs
+                    value={tabValue}
+                    onChange={(_e, n: number) => setTabValue(n)}
+                >
                     <Tab label="🏁 Quick Start" />
                     <Tab label="📖 How to Use" />
                     <Tab label="💡 Ideas" />
