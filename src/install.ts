@@ -6,7 +6,6 @@ import { watchSelection } from "./behaviors/watchSelection";
 import { setupBlocklyGlobals } from "./blockly/setupBlocklyGlobals";
 import { installBroadcastListener } from "./broadcast/broadcast";
 import { startWatchingContextMenuEnabled } from "./contextmenu/contextmenu";
-import { startSyncing } from "./state/startSyncing";
 
 export function install() {
     let uninstall: VoidFunction = DO_NOTHING;
@@ -17,8 +16,8 @@ export function install() {
     async function installExtension(): Promise<VoidFunction> {
         console.log(`Behaviors version ${version}`);
 
-        const [storeInitialized, stopSyncing] = startSyncing();
-        await storeInitialized;
+        // const [storeInitialized, stopSyncing] = startSyncing();
+        // await storeInitialized;
         const stopWatchingContextMenu = await startWatchingContextMenuEnabled();
         const uninstallBroadcastListener = installBroadcastListener();
         const uninstallBehaviorRunner = installBehaviorRunner();
@@ -26,7 +25,7 @@ export function install() {
 
         return deferCallAll(
             () => console.log("Uninstalling Behaviors"),
-            stopSyncing,
+            // stopSyncing,
             stopWatchingContextMenu,
             uninstallBroadcastListener,
             uninstallBehaviorRunner,
@@ -48,9 +47,7 @@ export function install() {
                 uninstall = await installExtension();
             } else {
                 uninstall();
-                uninstall = () => {
-                    // nothing to uninstall anymore
-                };
+                uninstall = DO_NOTHING;
             }
         });
     });

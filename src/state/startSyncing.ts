@@ -2,6 +2,23 @@ import OBR from "@owlbear-rodeo/sdk";
 import { deferCallAll } from "owlbear-utils";
 import { usePlayerStorage } from "./usePlayerStorage";
 
+const sceneReady = new Promise<void>((resolve) => {
+    OBR.onReady(() => {
+        void OBR.scene.isReady().then((ready) => {
+            if (ready) {
+                resolve();
+            } else {
+                const uninstall = OBR.scene.onReadyChange((ready) => {
+                    if (ready) {
+                        uninstall();
+                        resolve();
+                    }
+                });
+            }
+        });
+    });
+});
+
 /**
  * @returns [Promise that resolves once store has initialized, function to stop syncing]
  */
@@ -40,26 +57,32 @@ export function startSyncing(): [
         handleSelectionChange(player.selection);
     });
 
-    const gridInitialized = Promise.all([
-        OBR.scene.grid.getDpi(),
-        OBR.scene.grid.getMeasurement(),
-        OBR.scene.grid.getType(),
-    ]).then(([dpi, measurement, type]) =>
-        handleGridChange({ dpi, measurement, type }),
-    );
+    const gridInitialized = sceneReady
+        .then(() =>
+            Promise.all([
+                OBR.scene.grid.getDpi(),
+                OBR.scene.grid.getMeasurement(),
+                OBR.scene.grid.getType(),
+            ]),
+        )
+        .then(([dpi, measurement, type]) =>
+            handleGridChange({ dpi, measurement, type }),
+        );
     const unsubscribeGrid = OBR.scene.grid.onChange(handleGridChange);
 
     // const roomMetadataInitialized = OBR.room.getMetadata().then(handleRoomMetadataChange);
     // const unsubscribeRoomMetadata = OBR.room.onMetadataChange(handleRoomMetadataChange);
 
-    const sceneMetadataInitialized = OBR.scene
-        .getMetadata()
+    const sceneMetadataInitialized = sceneReady
+        .then(() => OBR.scene.getMetadata())
         .then(handleSceneMetadataChange);
     const unsubscribeSceneMetadata = OBR.scene.onMetadataChange(
         handleSceneMetadataChange,
     );
 
-    const itemsInitialized = OBR.scene.items.getItems().then(handleItemsChange);
+    const itemsInitialized = sceneReady
+        .then(() => OBR.scene.items.getItems())
+        .then(handleItemsChange);
     const unsubscribeItems = OBR.scene.items.onChange(handleItemsChange);
 
     return [

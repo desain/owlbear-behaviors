@@ -7,7 +7,6 @@ import rotateRight from "../../assets/rotate-right.svg";
 import {
     EXTENSION_BROADCAST,
     EXTENSION_DRAG_TO_DUPE,
-    EXTENSION_MOVE_GRID,
     EXTENSION_SOUND,
     EXTENSION_TAG,
     INPUT_BROADCAST,
@@ -127,7 +126,6 @@ export const BLOCK_GOTO = {
 
 export const BLOCK_MOVE_DIRECTION = {
     style: "motion_blocks",
-    extensions: [EXTENSION_MOVE_GRID],
     type: "motion_move_direction",
     tooltip: "Move in a specified direction",
     helpUrl: "",
@@ -157,6 +155,7 @@ export const BLOCK_MOVE_DIRECTION = {
             type: "field_dropdown",
             name: "UNITS",
             options: [
+                ["%{BKY_OBR_GRID_UNIT}", "UNITS"],
                 ["cells", "CELLS"],
                 ["px", "PIXELS"],
             ],
@@ -657,8 +656,8 @@ export const BLOCK_CLEAR_GRAPHIC_EFFECTS = {
 } as const;
 
 export const EFFECT_OPTIONS = [
-    ["invert", "invert"],
     ["monochrome", "monochrome"],
+    ["invert", "invert"],
 ] as const;
 
 export const BLOCK_SET_EFFECT_TO = {
@@ -1444,7 +1443,7 @@ export const BLOCK_ADD_AURA = {
     type: "extension_auras_add",
     tooltip: "Add an aura using the Auras & Emanations extension",
     helpUrl: "",
-    message0: "%1 add %2 ft %3 %4 aura",
+    message0: "%1 add %2 %{BKY_OBR_GRID_UNIT} %3 %4 aura",
     args0: [
         {
             type: "field_image",

@@ -354,7 +354,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         const [newParent, initNewParent] = generateVariable(
             generator,
             "newParent",
-            `${item}?.id`,
+            `${item}`,
         );
         return [
             initNewParent,
@@ -751,7 +751,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             BLOCK_BROADCAST.args0[0].name,
             javascript.Order.NONE,
         );
-        return `void ${behave("sendBroadcast", broadcast)};\n`;
+        return `void ${behave("sendMessage", broadcast)};\n`;
     },
     event_immediately: (block, generator) =>
         `${CONSTANT_BEHAVIOR_DEFINITION}.immediately.push(${getHatBlockBehaviorFunction(

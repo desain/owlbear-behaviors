@@ -38,6 +38,7 @@ Behaviors is an extension for the Owlbear Rodeo VTT that allows the user to spec
 ### Tags
 
 -   **Add tags** to tokens to group them or create specialized behaviors
+-   Edit tags from the right-click behaviors menu for an item
 -   Tags are visible in the main Behaviors panel for easy management
 
 ### Broadcasting Messages
@@ -72,6 +73,10 @@ Behaviors is an extension for the Owlbear Rodeo VTT that allows the user to spec
 -   'When I am selected' blocks fire no matter who selects the token
 -   'Deselect' blocks apply to all players
 
+### Other Extensions
+
+-   Behaviors can integrate with other extensions. Blocks for controlling other extensions are in the 'extensions' section of the block toolbox. You must have the other extension installed in order for Behaviors to integrate with it.
+
 ## Tips
 
 ### Best Practices
@@ -80,6 +85,17 @@ Behaviors is an extension for the Owlbear Rodeo VTT that allows the user to spec
 -   **Test frequently**: Save and test your behaviors often to catch issues early
 -   **Use comments**: Add comment blocks to document complex behaviors
 -   **Organize blocks**: Keep related blocks close together for easier reading
+-   **Don't overwhelm Owlbear Rodeo**: Running many behaviors at once (especially animations) may cause the VTT to glitch out or drop updates.
+
+### Sharing Behaviors
+
+To share behavior scripts between tokens, you have a few options:
+
+-   **Duplicate a token**. The easy option. When you duplicate a token, its behaviors are copied.
+-   **Prefabs**. To share tokens with behaviors between scenes, save the token as a prefab with the Prefabs extension. When you insert the prefab, the behaviors come with it.
+-   **Backpack**. You can drag scripts to the backpack icon in the top right of your block workspace to put them in your backpack, and click the backpack to open it while editing any token. Block stacks saved to your backpack are saved to your browser's local storage, so they'll persist across scenes and even rooms.
+
+![Using the Backpack](https://owlbear-behaviors.pages.dev/docs/assets/backpack.gif)
 
 ## Support
 
@@ -117,16 +133,22 @@ To make a production build run:
 
 ## To do
 
+-   Fix new instance received?
+-   Request autoplay permission for sfx?
+-   I want to add a new feature called 'Auto Tags' to this extension. This feature would allow users to associate specific token image URLs with tags, so that all tokens with that image would be considered to have those tags (without needing to update the token metadata to have those tags). I'd like to store those auto-tags in the room metadata, and display an editor for them in this EditBehaviors modal, which appears for a specific token. I want the modal to display all tags for the current token, and if the token is an Image type, display an option to manage auto-tags (maybe using MUI's Autocomplete component) for that image type.
 -   Blocks
     -   Motion
         -   snap to grid?
     -   Sound
         -   Stop all sounds
+    -   Looks
+        -   Set text on text and note items
     -   Extensions
         -   Codeo
             -   Run Script
         -   Smoke and spectre / dynamic fog
             -   Has Light
+            -   add () ft light
     -   Control
         -   Create a clone of (myself v)
             -   Sets isClone metadata to true
@@ -158,6 +180,7 @@ To make a production build run:
 ## Known Bugs
 
 -   Dragging directly from the 'other' block in the touch hat block to the flyout deletes the hat block
+-   Animations can be choppy when the action window is not open
 
 ## License
 

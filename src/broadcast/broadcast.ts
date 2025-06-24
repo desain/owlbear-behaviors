@@ -1,34 +1,14 @@
 import OBR from "@owlbear-rodeo/sdk";
 import { isObject } from "owlbear-utils";
+import { BEHAVIORS_IMPL } from "../behaviors/BehaviorImpl";
 import { BEHAVIOR_REGISTRY } from "../behaviors/BehaviorRegistry";
 import { CHANNEL_MESSAGE } from "../constants";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
-const BEHAVIOR_BROADCAST = "BEHAVIOR_BROADCAST";
-interface BehaviorBroadcastMessage {
-    readonly type: typeof BEHAVIOR_BROADCAST;
-    readonly name: string;
-}
-function isBehaviorBroadcastMessage(
-    message: unknown,
-): message is BehaviorBroadcastMessage {
-    return (
-        isObject(message) &&
-        "type" in message &&
-        message.type === BEHAVIOR_BROADCAST &&
-        "name" in message &&
-        typeof message.name === "string"
-    );
-}
-
-export function sendBroadcast(name: string) {
-    return OBR.broadcast.sendMessage(
-        CHANNEL_MESSAGE,
-        { type: BEHAVIOR_BROADCAST, name } satisfies BehaviorBroadcastMessage,
-        {
-            destination: "LOCAL",
-        },
-    );
+export function sendMessage(name: string) {
+    return OBR.broadcast.sendMessage(CHANNEL_MESSAGE, name, {
+        destination: "LOCAL",
+    });
 }
 
 const NEW_SELECTION = "NEW_SELECTION";
@@ -102,22 +82,54 @@ export function notifyPlayersToDeselect(ids?: string[]) {
     );
 }
 
+const PLAY_SOUND = "PLAY_SOUND";
+interface PlaySoundMessage {
+    readonly type: typeof PLAY_SOUND;
+    readonly soundName: string;
+}
+
+function isPlaySoundMessage(message: unknown): message is PlaySoundMessage {
+    return (
+        isObject(message) &&
+        "type" in message &&
+        message.type === PLAY_SOUND &&
+        "soundName" in message &&
+        typeof message.soundName === "string"
+    );
+}
+
+/**
+ * Play a sound on other instances.
+ */
+export function broadcastPlaySound(soundName: string) {
+    return OBR.broadcast.sendMessage(
+        CHANNEL_MESSAGE,
+        { type: PLAY_SOUND, soundName } satisfies PlaySoundMessage,
+        {
+            destination: "REMOTE",
+        },
+    );
+}
+
 export function installBroadcastListener() {
     return OBR.broadcast.onMessage(CHANNEL_MESSAGE, ({ data }) => {
         const state = usePlayerStorage.getState();
         const isGm = state.role === "GM";
         if (!isGm && isDeselectMessage(data)) {
             void OBR.player.deselect(data.ids);
-        } else if (isGm && isBehaviorBroadcastMessage(data)) {
+        } else if (isGm && typeof data === "string") {
             // console.log("got behavior broadcast", data);
-            BEHAVIOR_REGISTRY.handleBroadcast(data.name);
+            BEHAVIOR_REGISTRY.handleBroadcast(data);
         } else if (isGm && isNewSelectionMessage(data)) {
             void BEHAVIOR_REGISTRY.handleNewSelection(
                 data.newlySelected,
                 data.deselected,
             );
-            // } else if (isGm && isUpdateBackpackMessage(data)) {
-            //     state.setBackpackContents(data.contents);
+        } else if (isPlaySoundMessage(data)) {
+            void BEHAVIORS_IMPL.playSoundUntilDone(
+                new AbortController().signal,
+                data.soundName,
+            );
         } else {
             console.warn(
                 "Received unknown broadcast message",

@@ -1,0 +1,1 @@
+ffmpeg -i $1 -vf "fps=10,scale=1024:-1:flags=lanczos,split[s0][s1];[s0]palettegen=max_colors=64[p];[s1][p]paletteuse=dither=none" output.gif

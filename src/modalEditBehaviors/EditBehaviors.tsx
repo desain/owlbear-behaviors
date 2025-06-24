@@ -18,7 +18,9 @@ import { getTags, isBehaviorItem } from "../BehaviorItem";
 import { BehaviorConnectionChecker } from "../blockly/BehaviorConnectionChecker";
 import { BehaviorVariableMap } from "../blockly/BehaviorVariableMap";
 import { BLOCK_IMMEDIATELY } from "../blockly/blocks";
+import { installGetExtensionCallback } from "../blockly/getExtensionButton";
 import { handleNewSceneMetadata } from "../blockly/handleNewSceneMetadata";
+import { setupBlocklyGlobals } from "../blockly/setupBlocklyGlobals";
 import { createBlocklyTheme, GRID_COLOR } from "../blockly/theme";
 import { createToolbox } from "../blockly/toolbox";
 import {
@@ -48,6 +50,7 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
     const setBackpackContents = usePlayerStorage(
         (state) => state.setBackpackContents,
     );
+    const grid = usePlayerStorage((state) => state.grid);
 
     const [item, setItem] = useState<BehaviorItem | null>(null);
     const [workspace, setWorkspace] = useState<Blockly.WorkspaceSvg | null>(
@@ -116,11 +119,12 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
         };
 
         if (blocklyArea && blocklyDiv && !workspace && item) {
-            // console.log("injecting Blockly");
+            console.log("injecting Blockly");
+            setupBlocklyGlobals();
             const workspace = Blockly.inject(blocklyDiv, {
                 // https://developers.google.com/blockly/guides/configure/web/configuration_struct
                 renderer: catBlocks ? RENDERER_CAT : "zelos", // Scratch styling
-                toolbox: createToolbox(item),
+                toolbox: createToolbox(item, grid),
                 theme: createBlocklyTheme(theme),
                 trashcan: false,
                 move: {
@@ -148,6 +152,7 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
                         BehaviorConnectionChecker,
                 },
             });
+            installGetExtensionCallback(workspace);
             setWorkspace(workspace);
 
             // Load workspace content
@@ -200,6 +205,7 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
         theme,
         backpackContents,
         catBlocks,
+        grid,
     ]);
 
     // Update the workspace when scene metadata changes
@@ -213,27 +219,41 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
         // save the backpack to local storage, not the workspace
         if (backpack) {
             setBackpackContents(backpack.getContents());
-            // await updateBackpackContents(backpack.getContents());
             backpack.setContents([]);
         }
 
         if (save) {
             // Save the workspace serialized to JSON in the item behavior key
             if (workspace && item) {
-                const serialized =
-                    Blockly.serialization.workspaces.save(workspace);
                 await OBR.scene.items.updateItems([item], (items) =>
                     items.forEach((item) => {
-                        item.metadata[METADATA_KEY_BEHAVIORS] = {
-                            lastModified: Date.now(),
-                            workspace: serialized,
-                        };
-                        item.metadata[METADATA_KEY_TAGS] = pendingTags;
+                        if (
+                            workspace.getAllBlocks().length > 0 ||
+                            workspace.getVariableMap().getAllVariables()
+                                .length > 0
+                        ) {
+                            item.metadata[METADATA_KEY_BEHAVIORS] = {
+                                lastModified: Date.now(),
+                                workspace:
+                                    Blockly.serialization.workspaces.save(
+                                        workspace,
+                                    ),
+                            };
+                        } else {
+                            delete item.metadata[METADATA_KEY_BEHAVIORS];
+                        }
+
+                        if (pendingTags.length > 0) {
+                            item.metadata[METADATA_KEY_TAGS] = pendingTags;
+                        } else {
+                            delete item.metadata[METADATA_KEY_TAGS];
+                        }
                     }),
                 );
 
                 // Add any new tags to scene metadata
-                const availableTags = usePlayerStorage.getState().sceneMetadata.tags;
+                const availableTags =
+                    usePlayerStorage.getState().sceneMetadata.tags;
                 await addTags(
                     ...pendingTags.filter(
                         (tag) => !availableTags.includes(tag),

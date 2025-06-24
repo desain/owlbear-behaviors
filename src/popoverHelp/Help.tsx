@@ -39,9 +39,9 @@ export function Help() {
         <Box sx={{ width: "100%", height: "100%" }}>
             <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                 <Tabs value={tabValue} onChange={handleTabChange}>
-                    <Tab label="Quick Start" />
-                    <Tab label="How to Use" />
-                    <Tab label="Ideas" />
+                    <Tab label="🏁 Quick Start" />
+                    <Tab label="📖 How to Use" />
+                    <Tab label="💡 Ideas" />
                 </Tabs>
             </Box>
             <Box sx={{ height: "calc(100% - 48px)", overflow: "auto" }}>

@@ -1,21 +1,25 @@
 import OBR from "@owlbear-rodeo/sdk";
-import { DO_NOTHING } from "owlbear-utils";
 import logo from "../../assets/logo.svg";
 import { BEHAVIOR_ITEM_TYPES } from "../BehaviorItem";
 import { CONTEXT_MENU_ID } from "../constants";
 import { openEditBehaviors } from "../modalEditBehaviors/openEditBehaviors";
-import { usePlayerStorage } from "../state/usePlayerStorage";
+import {
+    usePlayerStorage,
+    type LocalStorage,
+    type OwlbearStore,
+} from "../state/usePlayerStorage";
+
+function shouldShowContextMenu(state: LocalStorage & OwlbearStore) {
+    return state.role === "GM" && state.contextMenuEnabled;
+}
 
 export async function startWatchingContextMenuEnabled(): Promise<VoidFunction> {
-    const state = usePlayerStorage.getState();
-    if (state.role !== "GM") {
-        return DO_NOTHING; // No context menu for players
-    }
-    if (state.contextMenuEnabled) {
+    const store = usePlayerStorage.getState();
+    if (shouldShowContextMenu(store)) {
         await installContextMenu();
     }
     return usePlayerStorage.subscribe(
-        (store) => store.contextMenuEnabled,
+        (store) => shouldShowContextMenu(store),
         async (enabled) => {
             if (enabled && usePlayerStorage.getState().role === "GM") {
                 await installContextMenu();

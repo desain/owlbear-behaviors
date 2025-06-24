@@ -1,6 +1,6 @@
 import { Add, Send } from "@mui/icons-material";
 import { Box, IconButton, List, Tooltip, Typography } from "@mui/material";
-import { sendBroadcast } from "../broadcast/broadcast";
+import { sendMessage } from "../broadcast/broadcast";
 import {
     addBroadcast,
     promptBroadcast,
@@ -45,11 +45,7 @@ export function BroadcastList() {
                         key={broadcast}
                         name={broadcast}
                         onDelete={async () => {
-                            if (
-                                confirm(
-                                    `Delete message "${broadcast}"?`,
-                                )
-                            ) {
+                            if (confirm(`Delete message "${broadcast}"?`)) {
                                 await removeBroadcast(broadcast);
                             }
                         }}
@@ -58,7 +54,7 @@ export function BroadcastList() {
                             <Tooltip title="Send Message">
                                 <IconButton
                                     edge="end"
-                                    onClick={() => sendBroadcast(broadcast)}
+                                    onClick={() => sendMessage(broadcast)}
                                     size="small"
                                 >
                                     <Send />

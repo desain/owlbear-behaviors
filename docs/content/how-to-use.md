@@ -24,6 +24,7 @@
 ### Tags
 
 -   **Add tags** to tokens to group them or create specialized behaviors
+-   Edit tags from the right-click behaviors menu for an item
 -   Tags are visible in the main Behaviors panel for easy management
 
 ### Broadcasting Messages
@@ -58,6 +59,10 @@
 -   'When I am selected' blocks fire no matter who selects the token
 -   'Deselect' blocks apply to all players
 
+### Other Extensions
+
+-   Behaviors can integrate with other extensions. Blocks for controlling other extensions are in the 'extensions' section of the block toolbox. You must have the other extension installed in order for Behaviors to integrate with it.
+
 ## Tips
 
 ### Best Practices
@@ -66,3 +71,14 @@
 -   **Test frequently**: Save and test your behaviors often to catch issues early
 -   **Use comments**: Add comment blocks to document complex behaviors
 -   **Organize blocks**: Keep related blocks close together for easier reading
+-   **Don't overwhelm Owlbear Rodeo**: Running many behaviors at once (especially animations) may cause the VTT to glitch out or drop updates.
+
+### Sharing Behaviors
+
+To share behavior scripts between tokens, you have a few options:
+
+-   **Duplicate a token**. The easy option. When you duplicate a token, its behaviors are copied.
+-   **Prefabs**. To share tokens with behaviors between scenes, save the token as a prefab with the Prefabs extension. When you insert the prefab, the behaviors come with it.
+-   **Backpack**. You can drag scripts to the backpack icon in the top right of your block workspace to put them in your backpack, and click the backpack to open it while editing any token. Block stacks saved to your backpack are saved to your browser's local storage, so they'll persist across scenes and even rooms.
+
+![Using the Backpack](https://owlbear-behaviors.pages.dev/docs/assets/backpack.gif)

@@ -16,7 +16,11 @@ import {
 } from "owlbear-utils";
 import { isBehaviorItem, type BehaviorItem } from "../BehaviorItem";
 import type { BLOCK_MOVE_DIRECTION } from "../blockly/blocks";
-import { notifyPlayersToDeselect, sendBroadcast } from "../broadcast/broadcast";
+import {
+    broadcastPlaySound,
+    notifyPlayersToDeselect,
+    sendMessage,
+} from "../broadcast/broadcast";
 import { getBounds, isBoundableItem } from "../collision/getBounds";
 import { METADATA_KEY_EFFECT, METADATA_KEY_TAGS } from "../constants";
 import { Announcement } from "../extensions/Announcement";
@@ -106,7 +110,7 @@ function loopTrap(loopCheck: number): number {
 }
 
 export const BEHAVIORS_IMPL = {
-    sendBroadcast,
+    sendMessage,
     isHexColor,
 
     addTag: async (
@@ -175,7 +179,13 @@ export const BEHAVIORS_IMPL = {
         const grid = usePlayerStorage.getState().grid;
         const vec =
             DIRECTIONS[units === "CELLS" ? grid.type : "SQUARE"][direction];
-        const distanceMultiplier = units === "CELLS" ? grid.dpi : 1;
+
+        const distanceMultiplier = {
+            CELLS: grid.dpi,
+            PIXELS: 1,
+            UNITS: grid.dpi / grid.parsedScale.multiplier,
+        }[units];
+
         return {
             x: vec.x * amount * distanceMultiplier,
             y: vec.y * amount * distanceMultiplier,
@@ -209,7 +219,13 @@ export const BEHAVIORS_IMPL = {
         const forwardY = -Math.cos(angleRadians);
 
         const grid = usePlayerStorage.getState().grid;
-        const distanceMultiplier = units === "CELLS" ? grid.dpi : 1;
+
+        const distanceMultiplier = {
+            CELLS: grid.dpi,
+            PIXELS: 1,
+            UNITS: grid.dpi / grid.parsedScale.multiplier,
+        }[units];
+
         const distance = amount * distanceMultiplier;
 
         return {
@@ -304,6 +320,9 @@ export const BEHAVIORS_IMPL = {
             if (Object.keys(effectConfig).length === 0) {
                 delete draft.metadata[METADATA_KEY_EFFECT];
             } else {
+                // set fill opacity to a low value so effect can handle fill
+                // but user can still click in the shape
+                draft.style.fillOpacity = 0.1;
                 draft.metadata[METADATA_KEY_EFFECT] = effectConfig;
             }
         });
@@ -552,11 +571,17 @@ export const BEHAVIORS_IMPL = {
         soundNameUnknown: unknown,
     ): Promise<void> => {
         const soundName = String(soundNameUnknown);
-        const sound = usePlayerStorage.getState().sceneMetadata.sounds[soundName];
+        const state = usePlayerStorage.getState();
+        const sound = state.sceneMetadata.sounds[soundName];
         if (!sound) {
             console.warn(`[playSoundUntilDone] Sound not found: ${soundName}`);
             return;
         }
+
+        if (state.role === "GM") {
+            void broadcastPlaySound(soundName);
+        }
+
         await withTimeout(
             new Promise<void>((resolve, reject) => {
                 const handleAbort = () => {

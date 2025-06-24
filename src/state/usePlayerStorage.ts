@@ -21,7 +21,7 @@ import { isSceneMetadata, type SceneMetadata } from "./SceneMetadata";
 
 enableMapSet();
 
-interface LocalStorage {
+export interface LocalStorage {
     // readonly toolEnabled: boolean;
     readonly contextMenuEnabled: boolean;
     // readonly setToolEnabled: (this: void, toolEnabled: boolean) => void;
@@ -45,7 +45,7 @@ function partializeLocalStorage({
 }
 
 export type BehaviorItemMap = Map<BehaviorItem["id"], BehaviorItem>;
-interface OwlbearStore {
+export interface OwlbearStore {
     readonly sceneReady: boolean;
     readonly theme: Theme;
     readonly role: Role;

@@ -40,7 +40,9 @@ export function promptBroadcast() {
 export async function addBroadcast(broadcast: string) {
     const currentMetadata = usePlayerStorage.getState().sceneMetadata;
     const newMetadata = produce(currentMetadata, (draft) => {
-        draft.broadcasts.push(broadcast);
+        if (!draft.broadcasts.includes(broadcast)) {
+            draft.broadcasts.push(broadcast);
+        }
     });
     return OBR.scene.setMetadata({ [METADATA_KEY_SCENE]: newMetadata });
 }
@@ -48,7 +50,7 @@ export async function addBroadcast(broadcast: string) {
 export async function removeBroadcast(broadcast: string) {
     const currentMetadata = usePlayerStorage.getState().sceneMetadata;
     if (currentMetadata.broadcasts.length <= 1) {
-        throw new Error("Cannot delete the last broadcast");
+        throw Error("Cannot delete the last broadcast");
     }
     const newMetadata = produce(currentMetadata, (draft) => {
         draft.broadcasts = draft.broadcasts.filter((b) => b !== broadcast);
@@ -63,7 +65,11 @@ export function promptTag() {
 export async function addTags(...tags: string[]) {
     const currentMetadata = usePlayerStorage.getState().sceneMetadata;
     const newMetadata = produce(currentMetadata, (draft) => {
-        draft.tags.push(...tags);
+        for (const tag of tags) {
+            if (!draft.tags.includes(tag)) {
+                draft.tags.push(...tags);
+            }
+        }
     });
     return OBR.scene.setMetadata({ [METADATA_KEY_SCENE]: newMetadata });
 }
@@ -71,7 +77,7 @@ export async function addTags(...tags: string[]) {
 export async function removeTag(tag: string) {
     const currentMetadata = usePlayerStorage.getState().sceneMetadata;
     if (currentMetadata.tags.length <= 1) {
-        throw new Error("Cannot delete the last tag");
+        throw Error("Cannot delete the last tag");
     }
     const newMetadata = produce(currentMetadata, (draft) => {
         draft.tags = draft.tags.filter((t) => t !== tag);

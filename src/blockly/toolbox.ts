@@ -1,6 +1,6 @@
 import { isCurve, isImage, isLine, isPath, isShape } from "@owlbear-rodeo/sdk";
 import type { Block } from "blockly";
-import { assumeHexColor, getName } from "owlbear-utils";
+import { assumeHexColor, getName, type GridParsed } from "owlbear-utils";
 import type { BehaviorItem } from "../BehaviorItem";
 import {
     CUSTOM_DYNAMIC_CATEGORY_VARIABLES,
@@ -90,6 +90,7 @@ import {
     BLOCK_Y_POSITION,
 } from "./blocks";
 import { FieldTokenImage } from "./FieldTokenImage";
+import { extensionHeader } from "./getExtensionButton";
 import { shadowColor, shadowDynamic, shadowNumber } from "./shadows";
 
 export function blockToDefinition(block: Pick<Block, "type">) {
@@ -114,7 +115,7 @@ const SHADOW_TAG_MENU = {
  * Grab default ones from: https://blockly-demo.appspot.com/static/tests/playground.html?dir=ltr&toolbox=categories-typed-variables
  * With source: https://github.com/google/blockly/blob/master/blocks
  */
-export function createToolbox(target: BehaviorItem) {
+export function createToolbox(target: BehaviorItem, grid: GridParsed) {
     return {
         kind: "categoryToolbox",
         contents: [
@@ -164,10 +165,12 @@ export function createToolbox(target: BehaviorItem) {
                         type: BLOCK_MOVE_DIRECTION.type,
                         fields: {
                             [BLOCK_MOVE_DIRECTION.args0[0].name]: "FORWARD",
+                            [BLOCK_MOVE_DIRECTION.args0[2].name]: "UNITS",
                         },
                         inputs: {
-                            [BLOCK_MOVE_DIRECTION.args0[1].name]:
-                                shadowNumber(1),
+                            [BLOCK_MOVE_DIRECTION.args0[1].name]: shadowNumber(
+                                grid.parsedScale.multiplier,
+                            ),
                         },
                     },
                     {
@@ -702,7 +705,7 @@ export function createToolbox(target: BehaviorItem) {
                 name: "Extensions",
                 categorystyle: "style_category_extensions",
                 contents: [
-                    { kind: "label", text: "Announcement extension" },
+                    ...extensionHeader("Announcement"),
                     {
                         kind: "block",
                         type: BLOCK_ANNOUNCEMENT.type,
@@ -712,19 +715,21 @@ export function createToolbox(target: BehaviorItem) {
                             [BLOCK_ANNOUNCEMENT.args0[2].name]: shadowNumber(3),
                         },
                     },
-                    { kind: "label", text: "Auras and Emanations extension" },
+                    ...extensionHeader("Auras and Emanations"),
                     {
                         kind: "block",
                         type: BLOCK_ADD_AURA.type,
                         inputs: {
-                            [BLOCK_ADD_AURA.args0[1].name]: shadowNumber(5),
+                            [BLOCK_ADD_AURA.args0[1].name]: shadowNumber(
+                                grid.parsedScale.multiplier,
+                            ),
                             [BLOCK_ADD_AURA.args0[2].name]: shadowColor(
                                 assumeHexColor("#facade"),
                             ),
                         },
                     },
                     blockToDefinition(BLOCK_REMOVE_AURAS),
-                    { kind: "label", text: "Hoot extension" },
+                    ...extensionHeader("Hoot"),
                     {
                         kind: "block",
                         type: BLOCK_HOOT.type,

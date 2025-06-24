@@ -1,4 +1,3 @@
-import { DO_NOTHING } from "owlbear-utils";
 import type { BehaviorItem } from "../BehaviorItem";
 import "../blockly/blocks";
 import { CollisionEngine } from "../collision/CollisionEngine";
@@ -106,12 +105,7 @@ function handleItemsChange(
     }
 }
 
-export function installBehaviorRunner() {
-    const state = usePlayerStorage.getState();
-    if (state.role !== "GM") {
-        return DO_NOTHING; // Player instance does not run behaviors
-    }
-
+function startRunning(): VoidFunction {
     const watcher = new Watcher();
     const collisionEngine = new CollisionEngine();
     watcher.addWatcher(EffectsWatcher);
@@ -121,7 +115,7 @@ export function installBehaviorRunner() {
         watcher,
         collisionEngine,
         new Map(),
-        state.itemsOfInterest,
+        usePlayerStorage.getState().itemsOfInterest,
     );
     const stopWatchingItemsChange = usePlayerStorage.subscribe(
         (store) => store.itemsOfInterest,
@@ -131,5 +125,28 @@ export function installBehaviorRunner() {
     return () => {
         stopWatchingItemsChange();
         BEHAVIOR_REGISTRY.stopAll();
+    };
+}
+
+export function installBehaviorRunner() {
+    const state = usePlayerStorage.getState();
+    let uninstall: VoidFunction | undefined;
+    if (state.role === "GM") {
+        uninstall = startRunning();
+    }
+    const stopWatchingRole = usePlayerStorage.subscribe(
+        (state) => state.role,
+        (role) => {
+            if (role === "GM") {
+                uninstall?.();
+                uninstall = startRunning();
+            } else {
+                uninstall?.();
+            }
+        },
+    );
+    return () => {
+        stopWatchingRole();
+        uninstall?.();
     };
 }

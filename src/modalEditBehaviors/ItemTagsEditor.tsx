@@ -1,5 +1,5 @@
 import { Autocomplete, TextField } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useState } from "react";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
 export interface ItemTagsEditorProps {
@@ -14,13 +14,6 @@ export const ItemTagsEditor: React.FC<ItemTagsEditorProps> = ({
     const availableTags = usePlayerStorage((state) => state.sceneMetadata.tags);
     const [inputValue, setInputValue] = useState("");
 
-    const handleTagsChange = useCallback(
-        (_event: unknown, newTags: string[]) => {
-            onTagsChange(newTags);
-        },
-        [onTagsChange],
-    );
-
     return (
         <Autocomplete
             multiple
@@ -31,7 +24,7 @@ export const ItemTagsEditor: React.FC<ItemTagsEditorProps> = ({
             onInputChange={(_event, newInputValue) => {
                 setInputValue(newInputValue);
             }}
-            onChange={handleTagsChange}
+            onChange={(_e, newTags) => onTagsChange(newTags)}
             renderInput={(params) => (
                 <TextField
                     {...params}

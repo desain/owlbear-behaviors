@@ -23,11 +23,15 @@ import type { Patcher } from "./Patcher";
 import type { ItemWatcher } from "./Watcher";
 
 export type EffectType = (typeof EFFECT_OPTIONS)[number][0];
+
+const COLOR_UNIFORM = "color";
+const OPACITY_UNIFORM = "opacity";
+
 /**
  * Maps effect type to intensity from 0 to 1
  */
-export type EffectConfig = Partial<Record<EffectType, number>>;
-export function isEffectConfig(obj: unknown): obj is EffectConfig {
+type EffectConfig = Partial<Record<EffectType, number>>;
+function isEffectConfig(obj: unknown): obj is EffectConfig {
     const validOptions: string[] = EFFECT_OPTIONS.map((opts) => opts[1]);
     return (
         isObject(obj) &&
@@ -39,7 +43,7 @@ export function isEffectConfig(obj: unknown): obj is EffectConfig {
     );
 }
 
-export type EffectTarget = (Shape | Curve | Path) &
+type EffectTarget = (Shape | Curve | Path) &
     HasParameterizedMetadata<
         typeof METADATA_KEY_EFFECT,
         EffectConfig | undefined
@@ -72,16 +76,16 @@ function createEffect(
                 value: hexToRgb(globalItem.style.fillColor)!,
             },
             {
-                name: OPACITy_UNIFORM,
+                name: OPACITY_UNIFORM,
                 value: intensity,
             },
         ])
         .sksl(
             [
                 `uniform vec3 ${COLOR_UNIFORM};`,
-                `uniform float ${OPACITy_UNIFORM};`,
+                `uniform float ${OPACITY_UNIFORM};`,
                 "vec4 main(in vec2 coord) {",
-                `\treturn vec4(${COLOR_UNIFORM}, ${OPACITy_UNIFORM});`,
+                `\treturn vec4(${COLOR_UNIFORM}, ${OPACITY_UNIFORM});`,
                 "}",
             ].join("\n"),
         )
@@ -90,9 +94,6 @@ function createEffect(
         .disableHit(true)
         .build();
 }
-
-const COLOR_UNIFORM = "color";
-const OPACITy_UNIFORM = "opacity";
 export class EffectsWatcher implements ItemWatcher<EffectTarget> {
     static isTarget = (item: Item): item is EffectTarget =>
         (isShape(item) || isCurve(item) || isPath(item)) &&
@@ -129,7 +130,7 @@ export class EffectsWatcher implements ItemWatcher<EffectTarget> {
                             uniform.value = hexToRgb(
                                 globalItem.style.fillColor,
                             )!;
-                        } else if (uniform.name === OPACITy_UNIFORM) {
+                        } else if (uniform.name === OPACITY_UNIFORM) {
                             uniform.value = newIntensity;
                         }
                     }

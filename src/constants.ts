@@ -59,6 +59,4 @@ export const DROPDOWN_SOUND_MEOW = "meow";
 
 export const EXTENSION_DRAG_TO_DUPE = "extension_drag_to_dupe";
 
-export const EXTENSION_MOVE_GRID = "extension_move_grid";
-
 export const RENDERER_CAT = "cat_zelos";
