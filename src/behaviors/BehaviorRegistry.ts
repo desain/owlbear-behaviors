@@ -1,5 +1,4 @@
 import type { Item } from "@owlbear-rodeo/sdk";
-import OBR from "@owlbear-rodeo/sdk";
 import * as Blockly from "blockly";
 import { executeObrFunction } from "owlbear-utils";
 import { type BehaviorItem } from "../BehaviorItem";
@@ -108,16 +107,7 @@ export class BehaviorRegistry {
     };
 
     readonly handleBroadcast = (broadcast: string) => {
-        this.#triggerHandlers.forEach(async (handlers, itemId) => {
-            const [item] = await OBR.scene.items.getItems<BehaviorItem>([
-                itemId,
-            ]);
-            if (!item) {
-                // console.warn("broadcast to deleted item", itemId);
-                this.stopBehaviorsForItem(itemId);
-                return;
-            }
-
+        this.#triggerHandlers.forEach((handlers) => {
             handlers
                 .filter(
                     (handler) =>

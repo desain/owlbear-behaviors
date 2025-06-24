@@ -5,6 +5,7 @@ import { METADATA_KEY_BEHAVIORS } from "../constants";
 import {
     usePlayerStorage,
     type BehaviorItemMap,
+    type OwlbearStore,
 } from "../state/usePlayerStorage";
 import { diffItemSets } from "../watcher/diffItemSets";
 import { EffectsWatcher } from "../watcher/EffectsWatcher";
@@ -134,16 +135,19 @@ function startRunning(behaviorRegistry: BehaviorRegistry): VoidFunction {
     );
 }
 
+function shouldEnable(state: OwlbearStore) {
+    return state.role === "GM" && state.sceneReady && state.sceneMetadataLoaded;
+}
+
 export function installBehaviorRunner(behaviorRegistry: BehaviorRegistry) {
-    const state = usePlayerStorage.getState();
     let uninstall: VoidFunction | undefined;
-    if (state.role === "GM") {
+    if (shouldEnable(usePlayerStorage.getState())) {
         uninstall = startRunning(behaviorRegistry);
     }
-    const stopWatchingRole = usePlayerStorage.subscribe(
-        (state) => state.role,
-        (role) => {
-            if (role === "GM") {
+    const stopWatchingEnabled = usePlayerStorage.subscribe(
+        (state) => shouldEnable(state),
+        (enabled) => {
+            if (enabled) {
                 uninstall?.();
                 uninstall = startRunning(behaviorRegistry);
             } else {
@@ -153,7 +157,7 @@ export function installBehaviorRunner(behaviorRegistry: BehaviorRegistry) {
         },
     );
     return () => {
-        stopWatchingRole();
+        stopWatchingEnabled();
         uninstall?.();
         uninstall = undefined;
     };

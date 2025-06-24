@@ -41,6 +41,7 @@ export function Action() {
                 uninstallExtension = uninstall;
             }
         });
+
         return () => {
             unmounted = true;
             uninstallExtension?.();

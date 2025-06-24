@@ -60,8 +60,9 @@ export function installBroadcastExtension() {
                 options.push(
                     ...usePlayerStorage
                         .getState()
-                        .sceneMetadata.broadcasts
-                        .map((b): [display: string, id: string] => [b, b]),
+                        .sceneMetadata.broadcasts.map(
+                            (b): [display: string, id: string] => [b, b],
+                        ),
                 );
                 // Always add "Create Message" option at the end
                 options.push(["New message", CREATE_NEW_BROADCAST]);

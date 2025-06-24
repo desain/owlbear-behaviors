@@ -186,14 +186,6 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
         }
 
         return () => {
-            if (backpack) {
-                backpack.dispose();
-                setBackpack(null);
-            }
-            if (workspace) {
-                // workspace.dispose();
-                setWorkspace(null);
-            }
             window.removeEventListener("resize", onresize, false);
         };
     }, [

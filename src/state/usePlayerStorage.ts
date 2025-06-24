@@ -55,6 +55,10 @@ export interface OwlbearStore {
     // readonly lastNonemptySelection: string[];
     // readonly lastNonemptySelectionItems: Item[];
     // readonly roomMetadata: RoomMetadata;
+    /**
+     * Whether the scene metadata has loaded since the last scene switch.
+     */
+    readonly sceneMetadataLoaded: boolean;
     readonly sceneMetadata: SceneMetadata;
     readonly itemsOfInterest: BehaviorItemMap;
     readonly setSceneReady: (this: void, sceneReady: boolean) => void;
@@ -157,6 +161,7 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 // lastNonemptySelection: [],
                 // lastNonemptySelectionItems: [],
                 // roomMetadata: { _key: true },
+                sceneMetadataLoaded: false,
                 sceneMetadata: {
                     broadcasts: [DROPDOWN_BROADCAST_DEFAULT],
                     tags: [DROPDOWN_TAG_DEFAULT],
@@ -167,7 +172,16 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                     },
                 },
                 itemsOfInterest: new Map(),
-                setSceneReady: (sceneReady: boolean) => set({ sceneReady }),
+                setSceneReady: (sceneReady: boolean) =>
+                    set({
+                        sceneReady,
+                        ...(sceneReady
+                            ? {}
+                            : {
+                                  itemsOfInterest: new Map(),
+                                  sceneMetadataLoaded: false,
+                              }),
+                    }),
                 handleThemeChange: (theme: Theme) => set({ theme }),
                 handleRoleChange: (role: Role) => set({ role }),
                 handlePlayerIdChange: (playerId: string) => set({ playerId }),
@@ -205,6 +219,7 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 //         };
                 //     }),
                 handleItemsChange: (items: Item[]) => {
+                    // console.log("new items", items);
                     const itemsOfInterest: OwlbearStore["itemsOfInterest"] =
                         new Map();
                     for (const item of items) {
@@ -221,9 +236,10 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 //     }
                 // },
                 handleSceneMetadataChange: (metadata) => {
+                    // console.log("new metadata", metadata);
                     const sceneMetadata = metadata[METADATA_KEY_SCENE];
                     if (isSceneMetadata(sceneMetadata)) {
-                        set({ sceneMetadata });
+                        set({ sceneMetadata, sceneMetadataLoaded: true });
                     }
                 },
             })),
