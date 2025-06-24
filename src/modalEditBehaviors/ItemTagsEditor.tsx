@@ -17,6 +17,7 @@ export const ItemTagsEditor: React.FC<ItemTagsEditorProps> = ({
     return (
         <Autocomplete
             multiple
+            size="small"
             freeSolo
             options={availableTags}
             value={tags}

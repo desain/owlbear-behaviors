@@ -81,6 +81,28 @@ type Generator = (
     generator: javascript.JavascriptGenerator,
 ) => [code: string, precedence: number] | string | null;
 
+function generateBlock(
+    generator: javascript.JavascriptGenerator,
+    prefix: string,
+    contents: string,
+    prefix2?: string,
+    contents2?: string,
+): string {
+    return [
+        `${prefix} {`,
+        generator.prefixLines(contents, generator.INDENT),
+        ...(prefix2 && contents2
+            ? [
+                  [
+                      `} ${prefix2} {`,
+                      generator.prefixLines(contents2, generator.INDENT),
+                      "}\n",
+                  ].join("\n"),
+              ]
+            : ["}\n"]),
+    ].join("\n");
+}
+
 function provideNum(generator: javascript.JavascriptGenerator): string {
     return generator.provideFunction_("num", [
         `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(x) {`,
@@ -141,15 +163,25 @@ function getHatBlockBehaviorFunction(
         typeof statementsResult === "string"
             ? statementsResult
             : statementsResult[0];
-    return [
-        `async (${PARAMETER_SIGNAL}, ${PARAMETER_OTHER_ID}) => {`,
-        generator.prefixLines(
-            `let ${VAR_LOOP_CHECK} = 10000;`,
-            generator.INDENT,
+
+    return generateBlock(
+        generator,
+        `async (${PARAMETER_SIGNAL}, ${PARAMETER_OTHER_ID}) =>`,
+        generateBlock(
+            generator,
+            "try",
+            [`let ${VAR_LOOP_CHECK} = 10_000;`, statementsCode].join("\n"),
+            "catch(e)",
+            `console.warn('error in block ${block.id}', e)\n` +
+                generateBlock(
+                    generator,
+                    "if (e instanceof Error)",
+                    'void OBR.notification.show(e.message, "ERROR")',
+                    "else if (e?.error?.message)",
+                    'void OBR.notification.show(e.error.message, "ERROR")',
+                ),
         ),
-        generator.prefixLines(statementsCode, generator.INDENT),
-        "}",
-    ].join("\n");
+    );
 }
 
 function generateAddTriggerHandler(handler: TriggerHandlerJson) {
@@ -873,10 +905,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_IF.args0[2].name,
         );
-        return `if (${condition}) {\n${generator.prefixLines(
-            statements,
-            generator.INDENT,
-        )}\n}\n`;
+        return generateBlock(generator, `if (${condition})`, statements);
     },
 
     control_behavior_if_else: (block, generator) => {
@@ -894,13 +923,13 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_IF_ELSE.args3[0].name,
         );
-        return [
-            `if (${condition}) {`,
-            generator.prefixLines(thenStatements, generator.INDENT),
-            `} else {`,
-            generator.prefixLines(elseStatements, generator.INDENT),
-            "}\n",
-        ].join("\n");
+        return generateBlock(
+            generator,
+            `if (${condition})`,
+            thenStatements,
+            "else",
+            elseStatements,
+        );
     },
 
     control_forever: (block, generator) => {
