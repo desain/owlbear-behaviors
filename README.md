@@ -61,7 +61,7 @@ Behaviors is an extension for the Owlbear Rodeo VTT that allows the user to spec
 
 -   Create variables to store and manipulate data
 -   Use variables for counters, scores, or state tracking
--   **Variables reset** when the page is loaded or a behavior script is saved.
+-   Variables reset when the page is reloaded or when you save the behavior script
 
 ### Motion
 
