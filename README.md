@@ -1,13 +1,5 @@
 # Behaviors
 
-Hello everyone, I have had my worst extension idea yet. Specifically: what if Owlbear Rodeo was also Scratch?
-
-Anyway, now that exists and it's called Behaviors and you can get it here: https://owlbear.rogue.pub/extension/https://owlbear-behaviors.pages.dev/manifest.json
-
-It gives you a drag-and-drop block-based scripting language for making tokens respond to events like broadcasts or being selected, with behaviors like moving / rotating / attaching / etc.
-
-Some demos of what you can do with it: make zombies chase the closest player (psst @), create a control system for piloting a ship around, give players the ability to pick up items by touching them and auto-leave them on drop points, create Blades in the Dark style clocks in the world that tick in response to messages.
-
 Behaviors is an extension for the Owlbear Rodeo VTT that allows the user to specify behavior for tokens using a block-based language similar to [Scratch](https://scratch.mit.edu/).
 
 ## Features
@@ -69,6 +61,7 @@ Behaviors is an extension for the Owlbear Rodeo VTT that allows the user to spec
 
 -   Create variables to store and manipulate data
 -   Use variables for counters, scores, or state tracking
+-   **Variables reset** when the page is loaded or a behavior script is saved.
 
 ### Motion
 
