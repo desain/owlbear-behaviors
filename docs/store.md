@@ -5,6 +5,8 @@ author: desain
 image: https://owlbear-behaviors.pages.dev/docs/assets/creating-first-behavior.gif
 icon: https://owlbear-behaviors.pages.dev/logo.svg
 learn-more: https://github.com/desain/owlbear-behaviors
+tags:
+    - automation
 manifest: https://owlbear-behaviors.pages.dev/manifest.json
 ---
 
