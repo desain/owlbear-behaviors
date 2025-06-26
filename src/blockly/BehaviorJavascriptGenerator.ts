@@ -814,6 +814,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
                     type: "position",
                     behaviorFunction,
                 });
+            case "rotation":
+                return generateAddTriggerHandler({
+                    type: "rotation",
+                    behaviorFunction,
+                });
             case "layer":
                 return generateAddTriggerHandler({
                     type: "layer",

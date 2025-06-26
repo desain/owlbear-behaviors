@@ -41,6 +41,7 @@ export type TriggerHandler =
     | BroadcastTriggerHandler
     | SelectedTriggerHandler
     | PropertyChanged<"position">
+    | PropertyChanged<"rotation">
     | PropertyChanged<"visible">
     | PropertyChanged<"locked">
     | PropertyChanged<"layer">

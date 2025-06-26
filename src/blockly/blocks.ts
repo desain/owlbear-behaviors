@@ -763,6 +763,7 @@ export const BLOCK_WHEN_I = {
             name: "NEW_VALUE",
             options: [
                 ["move", "position"],
+                ["rotate", "rotation"],
                 ["move between layers", "layer"],
                 ["lock", "locked:true"],
                 ["unlock", "locked:false"],

@@ -75,7 +75,7 @@ function handleItemsChange(
                 propertyChanges.push([item.id, "position"]);
             }
 
-            for (const key of ["visible", "locked", "layer"] as const) {
+            for (const key of ["visible", "locked", "layer", "rotation"] as const) {
                 if (oldItem[key] !== item[key]) {
                     propertyChanges.push([item.id, key, item[key]]);
                 }
