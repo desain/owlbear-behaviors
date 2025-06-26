@@ -61,7 +61,11 @@ export class ItemProxy {
         return this.#scheduleFlush();
     };
 
-    get = async (id: Item["id"]): Promise<Item> => {
+    get = async (id?: Item["id"]): Promise<Item | undefined> => {
+        if (!id) {
+            return undefined;
+        }
+
         const cached = this.#cache.get(id);
         if (cached) {
             return cached;
@@ -74,9 +78,6 @@ export class ItemProxy {
         }
 
         const [item] = await OBR.scene.items.getItems([id]);
-        if (!item) {
-            throw Error(`Failed to get item ${id}`);
-        }
         return item;
     };
 

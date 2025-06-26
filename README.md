@@ -159,8 +159,6 @@ To make a production build run:
             -   Is like immediately but for clones
         -   Delete this token
         -   tell other to?
-    -   Sensing
-        -   Distance to item
     -   Events
         -   When I'm updated in any way?
         -   When I am tagged (tag1 v)?

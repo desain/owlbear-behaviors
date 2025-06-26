@@ -56,6 +56,7 @@ import {
     BLOCK_ROTATE_LEFT,
     BLOCK_ROTATE_RIGHT,
     BLOCK_SAY,
+    BLOCK_SENSING_OF,
     BLOCK_SET_EFFECT_TO,
     BLOCK_SET_FILL_COLOR,
     BLOCK_SET_FILL_OPACITY,
@@ -1110,6 +1111,36 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
 
     sensing_other_src: () => "",
     sensing_other_val: () => [PARAMETER_OTHER_ID, javascript.Order.ATOMIC],
+
+    sensing_of: (block, generator) => {
+        const property = block.getFieldValue(
+            BLOCK_SENSING_OF.args0[0].name,
+        ) as (typeof BLOCK_SENSING_OF)["args0"][0]["options"][number][1];
+        const item =
+            generator.valueToCode(
+                block,
+                BLOCK_SENSING_OF.args0[1].name,
+                javascript.Order.NONE,
+            ) || "undefined";
+
+        switch (property) {
+            case "X_POSITION":
+                return [
+                    `(await ${PARAMETER_ITEM_PROXY}.get(${item}))?.position?.x ?? 0`,
+                    javascript.Order.LOGICAL_OR,
+                ];
+            case "Y_POSITION":
+                return [
+                    `(await ${PARAMETER_ITEM_PROXY}.get(${item}))?.position?.y ?? 0`,
+                    javascript.Order.LOGICAL_OR,
+                ];
+            case "ROTATION":
+                return [
+                    `(await ${PARAMETER_ITEM_PROXY}.get(${item}))?.rotation ?? 0`,
+                    javascript.Order.LOGICAL_OR,
+                ];
+        }
+    },
 
     // Operator blocks
     operator_join: (block, generator) => {

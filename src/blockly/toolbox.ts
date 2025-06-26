@@ -55,6 +55,7 @@ import {
     BLOCK_OPACITY_SLIDER,
     BLOCK_OTHER_SRC,
     BLOCK_POINT_IN_DIRECTION,
+    BLOCK_SENSING_OF,
     BLOCK_RECEIVE_BROADCAST,
     BLOCK_REMOVE_AURAS,
     BLOCK_REMOVE_TAG,
@@ -563,6 +564,18 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     },
                     GAP50,
                     blockToDefinition(BLOCK_DESELECT),
+                    GAP50,
+                    {
+                        kind: "block",
+                        type: BLOCK_SENSING_OF.type,
+                        inputs: {
+                            [BLOCK_SENSING_OF.args0[1].name]: {
+                                shadow: {
+                                    type: BLOCK_ITEM_MENU.type,
+                                },
+                            },
+                        },
+                    },
                 ],
             },
             /* operators */ {

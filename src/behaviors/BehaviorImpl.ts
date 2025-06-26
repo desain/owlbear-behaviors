@@ -157,7 +157,7 @@ export const BEHAVIORS_IMPL = {
         tagUnknown: unknown,
     ): Promise<boolean> => {
         const item = await ItemProxy.getInstance().get(String(selfIdUnknown));
-        if (!isBehaviorItem(item)) {
+        if (!item || !isBehaviorItem(item)) {
             return false;
         }
         signal.throwIfAborted();
@@ -207,6 +207,9 @@ export const BEHAVIORS_IMPL = {
         const selfItem = await ItemProxy.getInstance().get(
             String(selfIdUnknown),
         );
+        if (!selfItem) {
+            return ORIGIN;
+        }
         signal.throwIfAborted();
 
         // Convert rotation to radians
@@ -261,7 +264,7 @@ export const BEHAVIORS_IMPL = {
         const selfItem = await ItemProxy.getInstance().get(
             String(selfIdUnknown),
         );
-        if (!isBoundableItem(selfItem)) {
+        if (!selfItem || !isBoundableItem(selfItem)) {
             return;
         }
         const bounds = getBounds(selfItem, usePlayerStorage.getState().grid);
@@ -340,6 +343,13 @@ export const BEHAVIORS_IMPL = {
         xUnknown: unknown,
         yUnknown: unknown,
     ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        if (!selfItem) {
+            console.warn(`[glide] self does not exist`);
+            return loopCheck;
+        }
         const duration = Number(durationUnknown);
         if (!isFinite(duration) || isNaN(duration) || duration < 0) {
             console.warn(`[glide] duration invalid: ${duration}`);
@@ -358,9 +368,6 @@ export const BEHAVIORS_IMPL = {
 
         let stop;
         try {
-            const selfItem = await ItemProxy.getInstance().get(
-                String(selfIdUnknown),
-            );
             const startPosition = selfItem.position;
             if (duration > 0) {
                 const interaction = await OBR.interaction.startItemInteraction([
@@ -419,6 +426,13 @@ export const BEHAVIORS_IMPL = {
         durationUnknown: unknown,
         thetaUnknown: unknown,
     ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        if (!selfItem) {
+            console.warn(`[glide] self does not exist`);
+            return loopCheck;
+        }
         const duration = Number(durationUnknown);
         if (!isFinite(duration) || isNaN(duration) || duration < 0) {
             console.warn(`[glideRotate] duration invalid: ${duration}`);
@@ -432,9 +446,6 @@ export const BEHAVIORS_IMPL = {
 
         let stop;
         try {
-            const selfItem = await ItemProxy.getInstance().get(
-                String(selfIdUnknown),
-            );
             const startRotation = selfItem.rotation;
             if (duration > 0) {
                 const interaction = await OBR.interaction.startItemInteraction([
@@ -634,10 +645,14 @@ export const BEHAVIORS_IMPL = {
         selfIdUnknown: unknown,
         tagUnknown: unknown,
     ): Promise<BehaviorItem["id"] | undefined> => {
-        const tag = String(tagUnknown);
         const selfItem = await ItemProxy.getInstance().get(
             String(selfIdUnknown),
         );
+        if (!selfItem) {
+            return undefined;
+        }
+        const tag = String(tagUnknown);
+
         signal.throwIfAborted();
         const itemsOfInterest = usePlayerStorage.getState().itemsOfInterest;
 
@@ -683,6 +698,9 @@ export const BEHAVIORS_IMPL = {
         const selfItem = await ItemProxy.getInstance().get(selfId);
         const targetItem = await ItemProxy.getInstance().get(targetId);
         signal.throwIfAborted();
+        if (!selfItem || !targetItem) {
+            return;
+        }
 
         // Calculate direction vector
         const dx = targetItem.position.x - selfItem.position.x;

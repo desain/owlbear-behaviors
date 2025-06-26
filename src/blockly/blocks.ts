@@ -943,6 +943,32 @@ export const BLOCK_OTHER_VAL = {
     output: "ItemId",
 } as const;
 
+export const BLOCK_SENSING_OF = {
+    style: "sensing_blocks",
+    type: "sensing_of",
+    tooltip: "Get a property value of another item",
+    helpUrl: "",
+    message0: "%1 of %2",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "PROPERTY",
+            options: [
+                ["x position", "X_POSITION"],
+                ["y position", "Y_POSITION"], 
+                ["rotation", "ROTATION"],
+            ],
+        },
+        {
+            type: "input_value",
+            name: "ITEM",
+            check: "ItemId",
+        },
+    ],
+    output: "Number",
+    inputsInline: true,
+} as const;
+
 // Control
 export const BLOCK_WAIT = {
     style: "control_blocks",
@@ -1683,6 +1709,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_DESELECT,
     BLOCK_OTHER_SRC,
     BLOCK_OTHER_VAL,
+    BLOCK_SENSING_OF,
 
     // Operator blocks
     BLOCK_JOIN,
