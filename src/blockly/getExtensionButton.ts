@@ -2,20 +2,28 @@ import type * as Blockly from "blockly";
 
 const CALLBACK_KEY = "GetExtension";
 
-const MANIFESTS = {
-    "Auras and Emanations": "https://owlbear-emanation.pages.dev/manifest.json",
-    Hoot: "https://hoot.armindo.eu/manifest.json",
-    Announcement: "https://announcement.sharkbrain.dev/manifest.json",
+function rogue(manifest: string) {
+    return `https://owlbear.rogue.pub/extension/${manifest}`;
+}
+
+const LINKS = {
+    "Auras and Emanations": rogue(
+        "https://owlbear-emanation.pages.dev/manifest.json",
+    ),
+    Hoot: rogue("https://hoot.armindo.eu/manifest.json"),
+    Announcement: rogue("https://announcement.sharkbrain.dev/manifest.json"),
+    "Dynamic Fog": "https://extensions.owlbear.rodeo/dynamic-fog", // https://dynamic-fog.owlbear.rodeo/manifest.json
+    "Smoke and Spectre": "https://extensions.owlbear.rodeo/smoke",
 };
 
-export function extensionHeader(extension: keyof typeof MANIFESTS) {
+export function extensionHeader(extension: keyof typeof LINKS) {
     return [
         { kind: "label", text: `${extension} extension` },
         {
             kind: "button",
             text: `Get ${extension}`,
             callbackkey: CALLBACK_KEY,
-            manifest: MANIFESTS[extension],
+            extensionLink: LINKS[extension],
         },
     ];
 }
@@ -23,15 +31,10 @@ export function extensionHeader(extension: keyof typeof MANIFESTS) {
 export function installGetExtensionCallback(workspace: Blockly.WorkspaceSvg) {
     workspace.registerButtonCallback(CALLBACK_KEY, (button) => {
         if (
-            "manifest" in button.info &&
-            typeof button.info.manifest === "string"
+            "extensionLink" in button.info &&
+            typeof button.info.extensionLink === "string"
         ) {
-            window
-                .open(
-                    `https://owlbear.rogue.pub/extension/${button.info.manifest}`,
-                    "_blank",
-                )
-                ?.focus();
+            window.open(button.info.extensionLink, "_blank")?.focus();
         }
     });
 }

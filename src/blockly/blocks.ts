@@ -965,7 +965,7 @@ export const BLOCK_SENSING_OF = {
             name: "PROPERTY",
             options: [
                 ["x position", "X_POSITION"],
-                ["y position", "Y_POSITION"], 
+                ["y position", "Y_POSITION"],
                 ["rotation", "ROTATION"],
             ],
         },
@@ -1534,6 +1534,76 @@ export const BLOCK_REMOVE_AURAS = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_EXTENSION_FOG_LIT = {
+    style: "extension_blocks",
+    type: "extension_fog_lit",
+    tooltip: "Whether this token has a light from the Dynamic Fog extension",
+    helpUrl: "",
+    message0: "%1 I have a light?",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://dynamic-fog.owlbear.rodeo/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Dynamic Fog extension icon",
+        },
+    ],
+    output: "Boolean",
+} as const;
+
+export const BLOCK_EXTENSION_FOG_ADD = {
+    style: "extension_blocks",
+    type: "extension_fog_add",
+    tooltip: "Add a light using the Dynamic Fog extension",
+    helpUrl: "",
+    message0: "%1 add %2 %{BKY_OBR_GRID_UNIT} %3 light",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://dynamic-fog.owlbear.rodeo/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Dynamic Fog extension icon",
+        },
+        {
+            type: "input_value",
+            name: "RADIUS",
+            check: "Number",
+        },
+        {
+            type: "field_dropdown",
+            name: "SHAPE",
+            options: [
+                ["circle", "circle"],
+                ["cone", "cone"],
+            ],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_FOG_REMOVE = {
+    style: "extension_blocks",
+    type: "extension_fog_remove",
+    tooltip: "Remove Dynamic Fog light from this token",
+    helpUrl: "",
+    message0: "%1 remove light",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://dynamic-fog.owlbear.rodeo/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Dynamic Fog extension icon",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+} as const;
+
 // Menus
 export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
@@ -1735,6 +1805,9 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_HOOT,
     BLOCK_ADD_AURA,
     BLOCK_REMOVE_AURAS,
+    BLOCK_EXTENSION_FOG_LIT,
+    BLOCK_EXTENSION_FOG_ADD,
+    BLOCK_EXTENSION_FOG_REMOVE,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,

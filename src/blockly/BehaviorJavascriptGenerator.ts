@@ -31,6 +31,7 @@ import {
     BLOCK_DESELECT,
     BLOCK_DYNAMIC_VAL,
     BLOCK_EQUALS,
+    BLOCK_EXTENSION_FOG_ADD,
     BLOCK_FACE,
     BLOCK_FOREVER,
     BLOCK_GLIDE,
@@ -260,11 +261,8 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             ].join("\n"),
         );
     },
-    motion_snap: () => `await ${behave(
-        "snapToGrid",
-        PARAMETER_SIGNAL,
-        PARAMETER_SELF_ID,
-    )};\n`,
+    motion_snap: () =>
+        `await ${behave("snapToGrid", PARAMETER_SIGNAL, PARAMETER_SELF_ID)};\n`,
     motion_glidesecstoxy: (block, generator) => {
         const duration = generator.valueToCode(
             block,
@@ -1329,6 +1327,35 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             size,
         )}; ${PARAMETER_ITEM_PROXY}.invalidate();`;
     },
+
+    extension_fog_lit: () => [
+        `await ${behave("hasLight", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
+        javascript.Order.AWAIT,
+    ],
+
+    extension_fog_add: (block, generator) => {
+        const radius = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_FOG_ADD.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const shape: unknown = block.getFieldValue(
+            BLOCK_EXTENSION_FOG_ADD.args0[2].name,
+        );
+        if (typeof shape !== "string") {
+            throw Error("shape should be string");
+        }
+        return `await ${behave(
+            "addLight",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            radius,
+            generator.quote_(shape),
+        )};\n`;
+    },
+
+    extension_fog_remove: () =>
+        `await ${behave("removeLight", PARAMETER_SIGNAL, PARAMETER_SELF_ID)};`,
 
     // Utility blocks
     looks_opacity_slider: (block) => {

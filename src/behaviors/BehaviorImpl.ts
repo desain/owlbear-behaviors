@@ -11,6 +11,8 @@ import {
     isLayer,
     ORIGIN,
     SQRT_3,
+    units,
+    unitsToPixels,
     withTimeout,
     type ImageBuildParams,
 } from "owlbear-utils";
@@ -25,6 +27,7 @@ import { getBounds, isBoundableItem } from "../collision/getBounds";
 import { METADATA_KEY_EFFECT, METADATA_KEY_TAGS } from "../constants";
 import { Announcement } from "../extensions/Announcement";
 import { Auras } from "../extensions/Auras";
+import { Fog } from "../extensions/Fog";
 import { Hoot } from "../extensions/Hoot";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import { isEffectTarget, type EffectType } from "../watcher/EffectsWatcher";
@@ -766,6 +769,49 @@ export const BEHAVIORS_IMPL = {
         }
 
         await Auras.add(selfIdUnknown, String(styleUnknown), color, size);
+        signal.throwIfAborted();
+    },
+
+    hasLight: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<boolean> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return false;
+        }
+        return Fog.hasLight(selfItem);
+    },
+
+    addLight: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        radiusUnknown: unknown,
+        shape: "circle" | "cone",
+    ) => {
+        const radius = units(Number(radiusUnknown));
+        if (!isFinite(radius) || isNaN(radius) || radius < 0) {
+            console.warn(`[addLight] radius invalid: ${radius}`);
+            return;
+        }
+
+        // Convert from grid units to pixels
+        const grid = usePlayerStorage.getState().grid;
+        const radiusPixels = unitsToPixels(radius, grid);
+
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            Fog.addLight(self, radiusPixels, shape);
+        });
+        signal.throwIfAborted();
+    },
+
+    removeLight: async (signal: AbortSignal, selfIdUnknown: unknown) => {
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            Fog.removeLight(self);
+        });
         signal.throwIfAborted();
     },
 

@@ -139,8 +139,6 @@ To make a production build run:
 -   Make new tags in tags field show up in possible tags list in block immediately
 -   I want to add a new feature called 'Auto Tags' to this extension. This feature would allow users to associate specific token image URLs with tags, so that all tokens with that image would be considered to have those tags (without needing to update the token metadata to have those tags). I'd like to store those auto-tags in the room metadata, and display an editor for them in this EditBehaviors modal, which appears for a specific token. I want the modal to display all tags for the current token, and if the token is an Image type, display an option to manage auto-tags (maybe using MUI's Autocomplete component) for that image type.
 -   Blocks
-    -   Motion
-        -   snap to grid?
     -   Sound
         -   Stop all sounds
     -   Looks
@@ -148,7 +146,7 @@ To make a production build run:
     -   Extensions
         -   Codeo
             -   Run Script
-        -   Smoke and spectre / dynamic fog
+        -   Smoke and spectre
             -   Has Light
             -   add () ft light
     -   Control

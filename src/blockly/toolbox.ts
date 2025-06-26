@@ -23,6 +23,9 @@ import {
     BLOCK_DESELECT,
     BLOCK_DETACH,
     BLOCK_EQUALS,
+    BLOCK_EXTENSION_FOG_ADD,
+    BLOCK_EXTENSION_FOG_LIT,
+    BLOCK_EXTENSION_FOG_REMOVE,
     BLOCK_FACE,
     BLOCK_FOREVER,
     BLOCK_GET_FILL_COLOR,
@@ -730,6 +733,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                             [BLOCK_ANNOUNCEMENT.args0[2].name]: shadowNumber(3),
                         },
                     },
+
                     ...extensionHeader("Auras and Emanations"),
                     {
                         kind: "block",
@@ -744,6 +748,19 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         },
                     },
                     blockToDefinition(BLOCK_REMOVE_AURAS),
+
+                    ...extensionHeader("Dynamic Fog"),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_FOG_ADD.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_FOG_ADD.args0[1].name]:
+                                shadowNumber(grid.parsedScale.multiplier),
+                        },
+                    },
+                    blockToDefinition(BLOCK_EXTENSION_FOG_REMOVE),
+                    blockToDefinition(BLOCK_EXTENSION_FOG_LIT),
+
                     ...extensionHeader("Hoot"),
                     {
                         kind: "block",
