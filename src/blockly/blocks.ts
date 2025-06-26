@@ -366,6 +366,16 @@ export const BLOCK_ANGLE = {
     output: "Number",
 } as const;
 
+export const BLOCK_SNAP_TO_GRID = {
+    style: "motion_blocks",
+    type: "motion_snap",
+    tooltip: "Snap this token's position to the grid",
+    helpUrl: "",
+    message0: "snap to grid",
+    previousStatement: null,
+    nextStatement: null,
+} as const;
+
 // Looks
 export const BLOCK_SHOW = {
     style: "looks_blocks",
@@ -1648,6 +1658,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_ROTATION,
     BLOCK_POINT_IN_DIRECTION,
     BLOCK_FACE,
+    BLOCK_SNAP_TO_GRID,
 
     // Looks blocks
     BLOCK_SHOW,

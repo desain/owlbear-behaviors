@@ -92,3 +92,17 @@ Uses Owlbear Rodeo SDK with these patterns:
 -   Metadata keys prefixed with plugin ID
 -   Install/uninstall lifecycle managed in `install.ts`
 -   Extension setup via `setupBlocklyGlobals()`
+
+### Finding Owlbear Rodeo API Definitions
+
+When implementing new blocks that interact with the Owlbear Rodeo SDK:
+
+1. **Check TypeScript definitions in node_modules**: Look in `node_modules/.pnpm/@owlbear-rodeo+sdk@*/node_modules/@owlbear-rodeo/sdk/lib/api/` for API type definitions
+2. **Key API locations**:
+   - Scene grid API: `scene/SceneGridApi.d.ts` - Contains `snapPosition()`, `getScale()`, etc.
+   - Item manipulation: `items/ItemsApi.d.ts` - Item CRUD operations
+   - Player API: `player/PlayerApi.d.ts` - Player state and interactions
+3. **Common patterns**: Most OBR APIs are async and return Promises, use proper await handling
+4. **Grid snapping example**: `OBR.scene.grid.snapPosition(position)` returns snapped coordinates
+
+Always verify API signatures in the TypeScript definitions before implementing new behaviors.

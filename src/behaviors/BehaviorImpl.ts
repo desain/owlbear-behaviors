@@ -768,4 +768,24 @@ export const BEHAVIORS_IMPL = {
         await Auras.add(selfIdUnknown, String(styleUnknown), color, size);
         signal.throwIfAborted();
     },
+
+    snapToGrid: async (signal: AbortSignal, selfIdUnknown: unknown) => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        if (!selfItem) {
+            console.warn(`[snapToGrid] self does not exist`);
+            return;
+        }
+
+        const snappedPosition = await OBR.scene.grid.snapPosition(
+            selfItem.position,
+            1,
+        );
+
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            self.position = snappedPosition;
+        });
+        signal.throwIfAborted();
+    },
 };

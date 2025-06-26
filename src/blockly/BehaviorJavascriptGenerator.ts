@@ -260,6 +260,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             ].join("\n"),
         );
     },
+    motion_snap: () => `await ${behave(
+        "snapToGrid",
+        PARAMETER_SIGNAL,
+        PARAMETER_SELF_ID,
+    )};\n`,
     motion_glidesecstoxy: (block, generator) => {
         const duration = generator.valueToCode(
             block,
