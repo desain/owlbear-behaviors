@@ -37,6 +37,10 @@ interface CollisionTriggerHandler extends BaseTriggerHandler {
     readonly start: boolean;
 }
 
+interface GrimoireHpChangeTriggerHandler extends BaseTriggerHandler {
+    readonly type: "grimoire_hp_change";
+}
+
 export type TriggerHandler =
     | BroadcastTriggerHandler
     | SelectedTriggerHandler
@@ -45,4 +49,5 @@ export type TriggerHandler =
     | PropertyChanged<"visible">
     | PropertyChanged<"locked">
     | PropertyChanged<"layer">
-    | CollisionTriggerHandler;
+    | CollisionTriggerHandler
+    | GrimoireHpChangeTriggerHandler;

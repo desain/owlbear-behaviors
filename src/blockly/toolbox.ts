@@ -26,6 +26,11 @@ import {
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_FOG_LIT,
     BLOCK_EXTENSION_FOG_REMOVE,
+    BLOCK_EXTENSION_GRIMOIRE_AC,
+    BLOCK_EXTENSION_GRIMOIRE_HP,
+    BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE,
+    BLOCK_EXTENSION_GRIMOIRE_MAX_HP,
+    BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,
     BLOCK_FACE,
     BLOCK_FOREVER,
     BLOCK_GET_FILL_COLOR,
@@ -77,6 +82,7 @@ import {
     BLOCK_SET_SIZE,
     BLOCK_SET_STROKE_COLOR,
     BLOCK_SET_STROKE_OPACITY,
+    BLOCK_SET_VIEWPORT,
     BLOCK_SHOW,
     BLOCK_SNAP_TO_GRID,
     BLOCK_SOUND_MENU,
@@ -410,6 +416,19 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                               GAP50,
                           ]
                         : []),
+                    {
+                        kind: "block",
+                        type: BLOCK_SET_VIEWPORT.type,
+                        inputs: {
+                            [BLOCK_SET_VIEWPORT.args0[1].name]: shadowNumber(
+                                Math.round(target.position.x),
+                            ),
+                            [BLOCK_SET_VIEWPORT.args0[2].name]: shadowNumber(
+                                Math.round(target.position.y),
+                            ),
+                        },
+                    },
+                    GAP50,
                     // Only show fill getters for items that support fill setters
                     ...(isShape(target) || isCurve(target) || isPath(target)
                         ? [
@@ -760,6 +779,13 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     },
                     blockToDefinition(BLOCK_EXTENSION_FOG_REMOVE),
                     blockToDefinition(BLOCK_EXTENSION_FOG_LIT),
+
+                    ...extensionHeader("Game Master's Grimoire"),
+                    blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE),
+                    blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_HP),
+                    blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_MAX_HP),
+                    blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_TEMP_HP),
+                    blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_AC),
 
                     ...extensionHeader("Hoot"),
                     {

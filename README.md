@@ -143,6 +143,7 @@ To make a production build run:
         -   Stop all sounds
     -   Looks
         -   Set text on text and note items
+        -   center view on x: y:
     -   Extensions
         -   Codeo
             -   Run Script
@@ -157,6 +158,8 @@ To make a production build run:
             -   Is like immediately but for clones
         -   Delete this token
         -   tell other to?
+    -   Sensing
+        -   Distance to ?
     -   Events
         -   When I'm updated in any way?
         -   When I am tagged (tag1 v)?

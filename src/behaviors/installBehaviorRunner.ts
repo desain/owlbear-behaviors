@@ -2,6 +2,7 @@ import type { BehaviorItem } from "../BehaviorItem";
 import "../blockly/blocks";
 import { CollisionEngine } from "../collision/CollisionEngine";
 import { METADATA_KEY_BEHAVIORS } from "../constants";
+import { Grimoire } from "../extensions/Grimoire";
 import {
     usePlayerStorage,
     type BehaviorItemMap,
@@ -78,6 +79,15 @@ function handleItemsChange(
             for (const key of ["visible", "locked", "layer", "rotation"] as const) {
                 if (oldItem[key] !== item[key]) {
                     propertyChanges.push([item.id, key, item[key]]);
+                }
+            }
+
+            // Check for Grimoire HP changes
+            if (Grimoire.hasData(oldItem) && Grimoire.hasData(item)) {
+                const oldHp = Grimoire.getHp(oldItem);
+                const newHp = Grimoire.getHp(item);
+                if (oldHp !== newHp) {
+                    behaviorRegistry.handleGrimoireHpChange(item.id);
                 }
             }
         }

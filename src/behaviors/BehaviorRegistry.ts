@@ -153,6 +153,12 @@ export class BehaviorRegistry {
         }
     };
 
+    readonly handleGrimoireHpChange = (itemId: string) =>
+        this.#triggerHandlers
+            .get(itemId)
+            ?.filter((handler) => handler.type === "grimoire_hp_change")
+            ?.forEach((handler) => executeTriggerHandler(handler));
+
     /**
      * @param started Ture if new collision, false if finished collision.
      */

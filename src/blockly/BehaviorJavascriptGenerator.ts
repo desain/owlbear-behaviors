@@ -66,6 +66,7 @@ import {
     BLOCK_SET_SIZE,
     BLOCK_SET_STROKE_COLOR,
     BLOCK_SET_STROKE_OPACITY,
+    BLOCK_SET_VIEWPORT,
     BLOCK_SOUND_PLAY,
     BLOCK_SOUND_PLAY_UNTIL_DONE,
     BLOCK_TAG,
@@ -743,6 +744,32 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             `delete self.metadata["${METADATA_KEY_EFFECT}"];`,
         ),
 
+    looks_set_viewport: (block, generator) => {
+        const target: unknown = block.getFieldValue(
+            BLOCK_SET_VIEWPORT.args0[0].name,
+        );
+        if (typeof target !== "string") {
+            throw Error("target should be string");
+        }
+        const x = generator.valueToCode(
+            block,
+            BLOCK_SET_VIEWPORT.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const y = generator.valueToCode(
+            block,
+            BLOCK_SET_VIEWPORT.args0[2].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave(
+            "setViewport",
+            PARAMETER_SIGNAL,
+            generator.quote_(target),
+            x,
+            y,
+        )};\n`;
+    },
+
     // Sound blocks
     sound_play: (block, generator) => {
         const sound = generator.valueToCode(
@@ -1356,6 +1383,34 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
 
     extension_fog_remove: () =>
         `await ${behave("removeLight", PARAMETER_SIGNAL, PARAMETER_SELF_ID)};`,
+
+    extension_grimoire_hp: () => [
+        `await ${behave("getHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
+        javascript.Order.AWAIT,
+    ],
+
+    extension_grimoire_max_hp: () => [
+        `await ${behave("getMaxHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
+        javascript.Order.AWAIT,
+    ],
+
+    extension_grimoire_temp_hp: () => [
+        `await ${behave("getTempHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
+        javascript.Order.AWAIT,
+    ],
+
+    extension_grimoire_ac: () => [
+        `await ${behave("getArmorClass", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
+        javascript.Order.AWAIT,
+    ],
+
+    extension_grimoire_hp_change: (block, generator) => {
+        const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
+        return generateAddTriggerHandler({
+            type: "grimoire_hp_change",
+            behaviorFunction,
+        });
+    },
 
     // Utility blocks
     looks_opacity_slider: (block) => {

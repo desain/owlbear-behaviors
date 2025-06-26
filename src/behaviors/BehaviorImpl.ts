@@ -20,6 +20,7 @@ import { isBehaviorItem, type BehaviorItem } from "../BehaviorItem";
 import type { BLOCK_MOVE_DIRECTION } from "../blockly/blocks";
 import {
     broadcastPlaySound,
+    broadcastSetViewport,
     notifyPlayersToDeselect,
     sendMessage,
 } from "../broadcast/broadcast";
@@ -28,6 +29,7 @@ import { METADATA_KEY_EFFECT, METADATA_KEY_TAGS } from "../constants";
 import { Announcement } from "../extensions/Announcement";
 import { Auras } from "../extensions/Auras";
 import { Fog } from "../extensions/Fog";
+import { Grimoire } from "../extensions/Grimoire";
 import { Hoot } from "../extensions/Hoot";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import { isEffectTarget, type EffectType } from "../watcher/EffectsWatcher";
@@ -832,6 +834,90 @@ export const BEHAVIORS_IMPL = {
         await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
             self.position = snappedPosition;
         });
+        signal.throwIfAborted();
+    },
+
+    getHp: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return Grimoire.getHp(selfItem);
+    },
+
+    getMaxHp: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return Grimoire.getMaxHp(selfItem);
+    },
+
+    getTempHp: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return Grimoire.getTempHp(selfItem);
+    },
+
+    getArmorClass: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return Grimoire.getArmorClass(selfItem);
+    },
+
+    setViewport: async (
+        signal: AbortSignal,
+        targetUnknown: unknown,
+        xUnknown: unknown,
+        yUnknown: unknown,
+    ) => {
+        const target = String(targetUnknown);
+        if (target !== "MY" && target !== "EVERYONE") {
+            console.warn(`[setViewport] target invalid: ${target}`);
+            return;
+        }
+        
+        const x = Number(xUnknown);
+        if (!isFinite(x) || isNaN(x)) {
+            console.warn(`[setViewport] x invalid: ${x}`);
+            return;
+        }
+        const y = Number(yUnknown);
+        if (!isFinite(y) || isNaN(y)) {
+            console.warn(`[setViewport] y invalid: ${y}`);
+            return;
+        }
+
+        const destination = target === "MY" ? "LOCAL" : "ALL";
+        await broadcastSetViewport(x, y, destination);
         signal.throwIfAborted();
     },
 };

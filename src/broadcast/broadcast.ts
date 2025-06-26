@@ -1,4 +1,4 @@
-import OBR from "@owlbear-rodeo/sdk";
+import OBR, { Math2, type Vector2 } from "@owlbear-rodeo/sdk";
 import { isObject } from "owlbear-utils";
 import { BEHAVIORS_IMPL } from "../behaviors/BehaviorImpl";
 import { type BehaviorRegistry } from "../behaviors/BehaviorRegistry";
@@ -111,6 +111,74 @@ export function broadcastPlaySound(soundName: string) {
     );
 }
 
+const SET_VIEWPORT = "SET_VIEWPORT";
+interface SetViewportMessage {
+    readonly type: typeof SET_VIEWPORT;
+    readonly x: number;
+    readonly y: number;
+}
+
+function isSetViewportMessage(message: unknown): message is SetViewportMessage {
+    return (
+        isObject(message) &&
+        "type" in message &&
+        message.type === SET_VIEWPORT &&
+        "x" in message &&
+        typeof message.x === "number" &&
+        "y" in message &&
+        typeof message.y === "number"
+    );
+}
+
+/**
+ * Animate the viewport to center on specified coordinates.
+ */
+async function animateViewportTo(x: number, y: number): Promise<void> {
+    const [absolutePosition, viewportWidth, viewportHeight, scale] =
+        await Promise.all([
+            OBR.viewport.transformPoint({ x, y }),
+            OBR.viewport.getWidth(),
+            OBR.viewport.getHeight(),
+            OBR.viewport.getScale(),
+        ]);
+
+    // Get the center of the viewport in screen-space
+    const viewportCenter: Vector2 = {
+        x: viewportWidth / 2,
+        y: viewportHeight / 2,
+    };
+
+    // Offset the item center by the viewport center
+    const absoluteCenter = Math2.subtract(absolutePosition, viewportCenter);
+
+    // Convert the position to world-space
+    const relativeCenter = await OBR.viewport.inverseTransformPoint(
+        absoluteCenter,
+    );
+
+    // Invert and scale the world-space position to match a viewport position offset
+    const position = Math2.multiply(relativeCenter, -scale);
+
+    await OBR.viewport.animateTo({ position, scale });
+}
+
+/**
+ * Center viewport on coordinates.
+ */
+export function broadcastSetViewport(
+    x: number, 
+    y: number, 
+    destination: "LOCAL" | "ALL"
+) {
+    return OBR.broadcast.sendMessage(
+        CHANNEL_MESSAGE,
+        { type: SET_VIEWPORT, x, y } satisfies SetViewportMessage,
+        {
+            destination,
+        },
+    );
+}
+
 export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
     return OBR.broadcast.onMessage(CHANNEL_MESSAGE, ({ data }) => {
         const state = usePlayerStorage.getState();
@@ -130,6 +198,8 @@ export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
                 new AbortController().signal,
                 data.soundName,
             );
+        } else if (isSetViewportMessage(data)) {
+            void animateViewportTo(data.x, data.y);
         } else {
             console.warn(
                 "Received unknown broadcast message",
