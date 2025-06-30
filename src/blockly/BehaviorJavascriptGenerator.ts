@@ -75,6 +75,7 @@ import {
     BLOCK_WAIT_UNTIL,
     BLOCK_WHEN_I,
     type CustomBlockType,
+    BLOCK_DISTANCE_TO,
 } from "./blocks";
 
 const THROW_ON_ABORT = `${PARAMETER_SIGNAL}.throwIfAborted();\n`;
@@ -1170,6 +1171,24 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
                     javascript.Order.LOGICAL_OR,
                 ];
         }
+    },
+
+    sensing_distance_to: (block, generator) => {
+        const item =
+            generator.valueToCode(
+                block,
+                BLOCK_DISTANCE_TO.args0[0].name,
+                javascript.Order.NONE,
+            ) || "undefined";
+        return [
+            `await ${behave(
+                "distanceTo",
+                PARAMETER_SIGNAL,
+                PARAMETER_SELF_ID,
+                item,
+            )}`,
+            javascript.Order.AWAIT,
+        ];
     },
 
     // Operator blocks

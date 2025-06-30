@@ -159,7 +159,7 @@ To make a production build run:
         -   Delete this token
         -   tell other to?
     -   Sensing
-        -   Distance to ?
+        -   Distance to ?: Outputs the distance to the specified token.
         -   touching ()
     -   Events
         -   When I'm updated in any way?

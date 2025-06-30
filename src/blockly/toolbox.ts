@@ -99,6 +99,7 @@ import {
     BLOCK_WHEN_I,
     BLOCK_X_POSITION,
     BLOCK_Y_POSITION,
+    BLOCK_DISTANCE_TO,
 } from "./blocks";
 import { FieldTokenImage } from "./FieldTokenImage";
 import { extensionHeader } from "./getExtensionButton";
@@ -477,6 +478,17 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                             [BLOCK_SOUND_PLAY_UNTIL_DONE.args0[0].name]: {
                                 shadow: {
                                     type: BLOCK_SOUND_MENU.type,
+                                },
+                            },
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_DISTANCE_TO.type,
+                        inputs: {
+                            [BLOCK_DISTANCE_TO.args0[0].name]: {
+                                shadow: {
+                                    type: BLOCK_ITEM_MENU.type,
                                 },
                             },
                         },

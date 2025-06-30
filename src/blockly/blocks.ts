@@ -1009,6 +1009,23 @@ export const BLOCK_SENSING_OF = {
   inputsInline: true,
 } as const;
 
+export const BLOCK_DISTANCE_TO = {
+  style: "sensing_blocks",
+  type: "sensing_distance_to",
+  tooltip: "Outputs the distance to the specified token",
+  helpUrl: "",
+  message0: "distance to %1",
+  args0: [
+    {
+      type: "input_value",
+      name: "ITEM",
+      check: "ItemId",
+    },
+  ],
+  output: "Number",
+  inputsInline: true,
+} as const;
+
 // Control
 export const BLOCK_WAIT = {
   style: "control_blocks",
@@ -1912,6 +1929,7 @@ export const CUSTOM_JSON_BLOCKS = [
   BLOCK_OTHER_SRC,
   BLOCK_OTHER_VAL,
   BLOCK_SENSING_OF,
+  BLOCK_DISTANCE_TO,
 
   // Operator blocks
   BLOCK_JOIN,

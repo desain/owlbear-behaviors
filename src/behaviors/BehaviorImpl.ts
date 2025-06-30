@@ -920,4 +920,27 @@ export const BEHAVIORS_IMPL = {
         await broadcastSetViewport(x, y, destination);
         signal.throwIfAborted();
     },
+
+    distanceTo: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        targetIdUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        const targetItem = await ItemProxy.getInstance().get(
+            String(targetIdUnknown),
+        );
+        signal.throwIfAborted();
+
+        if (!selfItem || !targetItem) {
+            // Return a large number if either item is not found
+            return Infinity;
+        }
+
+        const dx = targetItem.position.x - selfItem.position.x;
+        const dy = targetItem.position.y - selfItem.position.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    },
 };
