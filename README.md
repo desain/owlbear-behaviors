@@ -160,6 +160,7 @@ To make a production build run:
         -   tell other to?
     -   Sensing
         -   Distance to ?
+        -   touching ()
     -   Events
         -   When I'm updated in any way?
         -   When I am tagged (tag1 v)?
