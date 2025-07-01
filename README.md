@@ -151,6 +151,7 @@ To make a production build run:
             -   Has Light
             -   add () ft light
     -   Control
+        -   switch? https://groups.google.com/g/blockly/c/djhO2jUb0Xs
         -   Create a clone of (myself v)
             -   Sets isClone metadata to true
                 -   This metadata disables the immediately block
