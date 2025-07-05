@@ -16,16 +16,16 @@
   "author": "desain",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@eslint/js": "^9.29.0",
-    "@types/node": "^22.15.33",
+    "@eslint/js": "^9.30.1",
+    "@types/node": "^22.16.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
     "@vitejs/plugin-react": "^4.6.0",
-    "eslint": "^9.29.0",
+    "eslint": "^9.30.1",
     "eslint-config": "github:desain/eslint-config",
     "jsdom": "^26.1.0",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.35.0",
+    "typescript-eslint": "^8.35.1",
     "vite": "^6.3.5",
     "vite-plugin-mkcert": "^1.17.8",
     "vitest": "^3.2.4"
@@ -33,12 +33,12 @@
   "dependencies": {
     "@blockly/continuous-toolbox": "^7.0.1",
     "@blockly/field-angle": "^6.0.1",
-    "@blockly/field-colour-hsv-sliders": "^6.0.2",
-    "@blockly/field-grid-dropdown": "^6.0.1",
+    "@blockly/field-colour-hsv-sliders": "^6.0.3",
+    "@blockly/field-grid-dropdown": "^6.0.2",
     "@blockly/field-slider": "^8.0.1",
     "@blockly/workspace-backpack": "^7.0.1",
-    "@mui/icons-material": "^7.1.2",
-    "@mui/material": "^7.1.2",
+    "@mui/icons-material": "^7.2.0",
+    "@mui/material": "^7.2.0",
     "@owlbear-rodeo/sdk": "^3.1.0",
     "blockly": "^12.1.0",
     "immer": "^10.1.1",
@@ -47,7 +47,7 @@
     "react-dom": "^19.1.0",
     "react-markdown": "^10.1.0",
     "simplify-js": "^1.2.4",
-    "zustand": "^5.0.5"
+    "zustand": "^5.0.6"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
