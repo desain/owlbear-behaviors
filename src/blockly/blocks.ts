@@ -1012,7 +1012,7 @@ export const BLOCK_SENSING_OF = {
 
 export const BLOCK_DISTANCE_TO = {
     style: "sensing_blocks",
-    type: "sensing_distance_to",
+    type: "sensing_distanceto",
     tooltip:
         "Distance to token, in grid units using current measurement system",
     helpUrl: "",
@@ -1025,6 +1025,23 @@ export const BLOCK_DISTANCE_TO = {
         },
     ],
     output: "Number",
+    inputsInline: true,
+} as const;
+
+export const BLOCK_TOUCHING = {
+    style: "sensing_blocks",
+    type: "sensing_touchingobject",
+    tooltip: "Whether this token is touching another token",
+    helpUrl: "",
+    message0: "touching %1 ?",
+    args0: [
+        {
+            type: "input_value",
+            name: "ITEM",
+            check: "ItemId",
+        },
+    ],
+    output: "Boolean",
     inputsInline: true,
 } as const;
 
@@ -1934,6 +1951,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_OTHER_VAL,
     BLOCK_SENSING_OF,
     BLOCK_DISTANCE_TO,
+    BLOCK_TOUCHING,
 
     // Operator blocks
     BLOCK_JOIN,

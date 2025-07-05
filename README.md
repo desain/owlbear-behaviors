@@ -144,6 +144,7 @@ To make a production build run:
         -   Stop all sounds
     -   Looks
         -   Set text on text and note items
+        -   Go to (front/back) of current layer
     -   Extensions
         -   Codeo
             -   Run Script
@@ -164,7 +165,7 @@ To make a production build run:
         -   Delete this token
         -   tell other to?
     -   Sensing
-        -   touching ()
+        -   Current (year/month/day of month/hour/minute/second/unix timestamp)
     -   Events
         -   When I'm updated in any way?
         -   When I am tagged (tag1 v)?

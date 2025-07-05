@@ -29,6 +29,7 @@ import {
     BLOCK_COLOR_PICKER,
     BLOCK_CONTAINS,
     BLOCK_DESELECT,
+    BLOCK_DISTANCE_TO,
     BLOCK_DYNAMIC_VAL,
     BLOCK_EQUALS,
     BLOCK_EXTENSION_FOG_ADD,
@@ -71,11 +72,11 @@ import {
     BLOCK_SOUND_PLAY_UNTIL_DONE,
     BLOCK_TAG,
     BLOCK_TOUCH,
+    BLOCK_TOUCHING,
     BLOCK_WAIT,
     BLOCK_WAIT_UNTIL,
     BLOCK_WHEN_I,
     type CustomBlockType,
-    BLOCK_DISTANCE_TO,
 } from "./blocks";
 
 const THROW_ON_ABORT = `${PARAMETER_SIGNAL}.throwIfAborted();\n`;
@@ -1173,7 +1174,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         }
     },
 
-    sensing_distance_to: (block, generator) => {
+    sensing_distanceto: (block, generator) => {
         const item =
             generator.valueToCode(
                 block,
@@ -1183,6 +1184,24 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         return [
             `await ${behave(
                 "distanceTo",
+                PARAMETER_SIGNAL,
+                PARAMETER_SELF_ID,
+                item,
+            )}`,
+            javascript.Order.AWAIT,
+        ];
+    },
+
+    sensing_touchingobject: (block, generator) => {
+        const item =
+            generator.valueToCode(
+                block,
+                BLOCK_TOUCHING.args0[0].name,
+                javascript.Order.NONE,
+            ) || "undefined";
+        return [
+            `await ${behave(
+                "touching",
                 PARAMETER_SIGNAL,
                 PARAMETER_SELF_ID,
                 item,

@@ -93,6 +93,7 @@ import {
     BLOCK_TAG,
     BLOCK_TAG_MENU,
     BLOCK_TOUCH,
+    BLOCK_TOUCHING,
     BLOCK_UNLOCK,
     BLOCK_VISIBLE,
     BLOCK_WAIT,
@@ -548,17 +549,8 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                 name: "Sensing",
                 categorystyle: "style_category_sensing",
                 contents: [
-                    {
-                        kind: "block",
-                        type: BLOCK_DISTANCE_TO.type,
-                        inputs: {
-                            [BLOCK_DISTANCE_TO.args0[0].name]: {
-                                shadow: {
-                                    type: BLOCK_ITEM_MENU.type,
-                                },
-                            },
-                        },
-                    },
+                    blockToDefinition(BLOCK_TOUCHING),
+                    blockToDefinition(BLOCK_DISTANCE_TO),
                     GAP50,
                     {
                         kind: "block",

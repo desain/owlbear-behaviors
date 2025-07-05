@@ -20,7 +20,10 @@ interface CollisionUpdate {
     readonly finishedCollisions: readonly Collision[];
 }
 
-function checkBoundingBoxOverlap(a: BoundingBox, b: BoundingBox): boolean {
+export function checkBoundingBoxOverlap(
+    a: BoundingBox,
+    b: BoundingBox,
+): boolean {
     // AABB collision: overlaps if NOT separated on any axis
     return !(
         (

@@ -26,6 +26,7 @@ import {
     notifyPlayersToDeselect,
     sendMessage,
 } from "../broadcast/broadcast";
+import { checkBoundingBoxOverlap } from "../collision/CollisionEngine";
 import { getBounds, isBoundableItem } from "../collision/getBounds";
 import { METADATA_KEY_EFFECT, METADATA_KEY_TAGS } from "../constants";
 import { Announcement } from "../extensions/Announcement";
@@ -945,5 +946,32 @@ export const BEHAVIORS_IMPL = {
         signal.throwIfAborted();
 
         return cellsToUnits(cells(cellDist), usePlayerStorage.getState().grid);
+    },
+
+    touching: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        targetIdUnknown: unknown,
+    ): Promise<boolean> => {
+        const [selfItem, targetItem] = await Promise.all([
+            ItemProxy.getInstance().get(String(selfIdUnknown)),
+            ItemProxy.getInstance().get(String(targetIdUnknown)),
+        ]);
+        signal.throwIfAborted();
+
+        if (
+            !selfItem ||
+            !targetItem ||
+            !isBoundableItem(selfItem) ||
+            !isBoundableItem(targetItem)
+        ) {
+            return false;
+        }
+
+        const grid = usePlayerStorage.getState().grid;
+        const selfBounds = getBounds(selfItem, grid);
+        const targetBounds = getBounds(targetItem, grid);
+
+        return checkBoundingBoxOverlap(selfBounds, targetBounds);
     },
 };
