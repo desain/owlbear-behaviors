@@ -7,6 +7,8 @@ import OBR, {
 import {
     ANGLE_DIMETRIC_RADIANS,
     assertItem,
+    cells,
+    cellsToUnits,
     isHexColor,
     isLayer,
     ORIGIN,
@@ -904,7 +906,7 @@ export const BEHAVIORS_IMPL = {
             console.warn(`[setViewport] target invalid: ${target}`);
             return;
         }
-        
+
         const x = Number(xUnknown);
         if (!isFinite(x) || isNaN(x)) {
             console.warn(`[setViewport] x invalid: ${x}`);
@@ -919,5 +921,29 @@ export const BEHAVIORS_IMPL = {
         const destination = target === "MY" ? "LOCAL" : "ALL";
         await broadcastSetViewport(x, y, destination);
         signal.throwIfAborted();
+    },
+
+    distanceTo: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        targetIdUnknown: unknown,
+    ): Promise<number> => {
+        const [selfItem, targetItem] = await Promise.all([
+            ItemProxy.getInstance().get(String(selfIdUnknown)),
+            ItemProxy.getInstance().get(String(targetIdUnknown)),
+        ]);
+
+        if (!selfItem || !targetItem) {
+            // Return a large number if either item is not found
+            return Infinity;
+        }
+
+        const cellDist = await OBR.scene.grid.getDistance(
+            selfItem.position,
+            targetItem.position,
+        );
+        signal.throwIfAborted();
+
+        return cellsToUnits(cells(cellDist), usePlayerStorage.getState().grid);
     },
 };

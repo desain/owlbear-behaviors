@@ -22,6 +22,7 @@ import {
     BLOCK_CONTAINS,
     BLOCK_DESELECT,
     BLOCK_DETACH,
+    BLOCK_DISTANCE_TO,
     BLOCK_EQUALS,
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_FOG_LIT,
@@ -547,6 +548,18 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                 name: "Sensing",
                 categorystyle: "style_category_sensing",
                 contents: [
+                    {
+                        kind: "block",
+                        type: BLOCK_DISTANCE_TO.type,
+                        inputs: {
+                            [BLOCK_DISTANCE_TO.args0[0].name]: {
+                                shadow: {
+                                    type: BLOCK_ITEM_MENU.type,
+                                },
+                            },
+                        },
+                    },
+                    GAP50,
                     {
                         kind: "block",
                         type: BLOCK_TAG.type,
