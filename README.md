@@ -144,13 +144,16 @@ To make a production build run:
         -   Stop all sounds
     -   Looks
         -   Set text on text and note items
-        -   center view on x: y:
     -   Extensions
         -   Codeo
             -   Run Script
         -   Smoke and spectre
             -   Has Light
             -   add () ft light
+        -   Game Master's Daggerheart
+            -   HP, change
+        -   Owl Trackers
+            -   HP, change
     -   Control
         -   switch? https://groups.google.com/g/blockly/c/djhO2jUb0Xs
         -   Create a clone of (myself v)
@@ -185,8 +188,7 @@ To make a production build run:
 
 -   Dragging directly from the 'other' block in the touch hat block to the flyout deletes the hat block
 -   Animations can be choppy when the action window is not open
--   Stacking in backpack
--   glide then lock not working?
+-   Stacking in backpack - happens when lots of (tall?) items, only on second time opening backpack
 
 ## License
 
