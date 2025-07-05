@@ -572,15 +572,41 @@ export const BEHAVIORS_IMPL = {
         selfIdUnknown: unknown,
         layerUnknown: unknown,
     ) => {
-        const layer = String(layerUnknown);
-        if (!isLayer(layer)) {
+        const selfId = String(selfIdUnknown);
+        const layer = String(layerUnknown).toUpperCase();
+
+        if (isLayer(layer)) {
+            await ItemProxy.getInstance().update(selfId, (self) => {
+                self.layer = layer;
+            });
+        } else if (layer === "BACK OF CURRENT") {
+            const self = await ItemProxy.getInstance().get(selfId);
+            const itemsOnCurrentLayer = await OBR.scene.items.getItems(
+                (item) => item.layer === self?.layer,
+            );
+            await ItemProxy.getInstance().update(selfId, (self) => {
+                self.zIndex =
+                    Math.min(
+                        0,
+                        ...itemsOnCurrentLayer.map((item) => item.zIndex),
+                    ) - 1;
+            });
+        } else if (layer === "FRONT OF CURRENT") {
+            const self = await ItemProxy.getInstance().get(selfId);
+            const itemsOnCurrentLayer = await OBR.scene.items.getItems(
+                (item) => item.layer === self?.layer,
+            );
+            await ItemProxy.getInstance().update(selfId, (self) => {
+                self.zIndex =
+                    Math.max(
+                        0,
+                        ...itemsOnCurrentLayer.map((item) => item.zIndex),
+                    ) + 1;
+            });
+        } else {
             console.warn(`[setLayer] invalid layer: ${layer}`);
             return;
         }
-
-        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
-            self.layer = layer;
-        });
 
         signal.throwIfAborted();
     },

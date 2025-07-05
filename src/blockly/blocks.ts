@@ -1789,6 +1789,8 @@ export const BLOCK_LAYER_MENU = {
                 // ["Post Process", "POST_PROCESS"],
                 // ["Control", "CONTROL"],
                 // ["Popover", "POPOVER"],
+                ["front of current", "FRONT OF CURRENT"],
+                ["back of current", "BACK OF CURRENT"],
             ],
         },
     ],

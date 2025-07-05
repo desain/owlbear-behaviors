@@ -50,7 +50,6 @@ class BroadcastDropdown extends Blockly.FieldDropdown {
                         (t): [display: string, id: string] => [t, t],
                     ),
             );
-            options.sort(([a], [b]) => a.localeCompare(b));
             options.push(["New broadcast", CREATE_NEW_RESOURCE]);
             return options;
         };

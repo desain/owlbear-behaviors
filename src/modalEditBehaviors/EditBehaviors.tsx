@@ -119,7 +119,7 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
         };
 
         if (blocklyArea && blocklyDiv && !workspace && item) {
-            console.log("injecting Blockly");
+            // console.log("injecting Blockly");
             setupBlocklyGlobals();
             const workspace = Blockly.inject(blocklyDiv, {
                 // https://developers.google.com/blockly/guides/configure/web/configuration_struct

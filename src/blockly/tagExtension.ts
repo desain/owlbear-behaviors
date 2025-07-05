@@ -44,7 +44,6 @@ class TagDropdown extends Blockly.FieldDropdown {
                         (t): [display: string, id: string] => [t, t],
                     ),
             );
-            options.sort(([a], [b]) => a.localeCompare(b));
             options.push(["New tag", CREATE_NEW_RESOURCE]);
             return options;
         };

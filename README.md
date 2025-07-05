@@ -146,7 +146,6 @@ To make a production build run:
         -   Stop all sounds
     -   Looks
         -   Set text on text and note items
-        -   Go to (front/back) of current layer
     -   Extensions
         -   Codeo
             -   Run Script
