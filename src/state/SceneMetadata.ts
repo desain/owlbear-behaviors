@@ -69,6 +69,7 @@ export async function addBroadcasts(...broadcasts: string[]) {
                 draft.broadcasts.push(broadcast);
             }
         }
+        draft.broadcasts.sort();
     });
     return OBR.scene.setMetadata({ [METADATA_KEY_SCENE]: newMetadata });
 }
@@ -96,6 +97,7 @@ export async function addTags(...tags: string[]) {
                 draft.tags.push(...tags);
             }
         }
+        draft.tags.sort();
     });
     return OBR.scene.setMetadata({ [METADATA_KEY_SCENE]: newMetadata });
 }

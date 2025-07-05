@@ -40,30 +40,32 @@ export function SoundList() {
                 </Tooltip>
             </Box>
             <List dense>
-                {Object.keys(sounds).map((name) => (
-                    <EditableListItem
-                        key={name}
-                        name={name}
-                        onRename={(newName) => renameSound(name, newName)}
-                        onDelete={() => {
-                            if (confirm(`Delete sound "${name}"?`)) {
-                                void removeSound(name);
+                {Object.keys(sounds)
+                    .sort()
+                    .map((name) => (
+                        <EditableListItem
+                            key={name}
+                            name={name}
+                            onRename={(newName) => renameSound(name, newName)}
+                            onDelete={() => {
+                                if (confirm(`Delete sound "${name}"?`)) {
+                                    void removeSound(name);
+                                }
+                            }}
+                            deleteDisabled={Object.keys(sounds).length <= 1}
+                            secondaryAction={
+                                <Tooltip title="Play Sound">
+                                    <IconButton
+                                        edge="end"
+                                        onClick={() => void playSound(name)}
+                                        size="small"
+                                    >
+                                        <PlayArrow />
+                                    </IconButton>
+                                </Tooltip>
                             }
-                        }}
-                        deleteDisabled={Object.keys(sounds).length <= 1}
-                        secondaryAction={
-                            <Tooltip title="Play Sound">
-                                <IconButton
-                                    edge="end"
-                                    onClick={() => void playSound(name)}
-                                    size="small"
-                                >
-                                    <PlayArrow />
-                                </IconButton>
-                            </Tooltip>
-                        }
-                    />
-                ))}
+                        />
+                    ))}
             </List>
         </>
     );
