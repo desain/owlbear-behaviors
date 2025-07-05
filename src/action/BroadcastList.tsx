@@ -2,7 +2,7 @@ import { Add, Send } from "@mui/icons-material";
 import { Box, IconButton, List, Tooltip, Typography } from "@mui/material";
 import { sendMessage } from "../broadcast/broadcast";
 import {
-    addBroadcast,
+    addBroadcasts,
     promptBroadcast,
     removeBroadcast,
 } from "../state/SceneMetadata";
@@ -31,7 +31,7 @@ export function BroadcastList() {
                         onClick={() => {
                             const broadcast = promptBroadcast();
                             if (broadcast) {
-                                void addBroadcast(broadcast);
+                                void addBroadcasts(broadcast);
                             }
                         }}
                     >

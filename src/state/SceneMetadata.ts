@@ -1,8 +1,12 @@
 import OBR from "@owlbear-rodeo/sdk";
 import { produce } from "immer";
 import { isObject } from "owlbear-utils";
-import { METADATA_KEY_SCENE } from "../constants";
-import { usePlayerStorage } from "./usePlayerStorage";
+import {
+    DROPDOWN_BROADCAST_DEFAULT,
+    DROPDOWN_SOUND_MEOW,
+    DROPDOWN_TAG_DEFAULT,
+    METADATA_KEY_SCENE,
+} from "../constants";
 
 export interface SoundDefinition {
     url: string;
@@ -33,22 +37,44 @@ export function isSceneMetadata(metadata: unknown): metadata is SceneMetadata {
     );
 }
 
+export const DEFAULT_SCENE_METADATA = {
+    broadcasts: [DROPDOWN_BROADCAST_DEFAULT],
+    tags: [DROPDOWN_TAG_DEFAULT],
+    sounds: {
+        [DROPDOWN_SOUND_MEOW]: {
+            url: "https://cdn.freesound.org/previews/732/732520_13416215-lq.mp3",
+        },
+    },
+} satisfies SceneMetadata;
+
+async function getSceneMetadata(): Promise<SceneMetadata> {
+    const currentMetadata =
+        (await OBR.scene.getMetadata())[METADATA_KEY_SCENE] ??
+        DEFAULT_SCENE_METADATA;
+    if (!isSceneMetadata(currentMetadata)) {
+        throw Error("Invalid scene metadata");
+    }
+    return currentMetadata;
+}
+
 export function promptBroadcast() {
     return prompt("New message name:")?.trim();
 }
 
-export async function addBroadcast(broadcast: string) {
-    const currentMetadata = usePlayerStorage.getState().sceneMetadata;
+export async function addBroadcasts(...broadcasts: string[]) {
+    const currentMetadata = await getSceneMetadata();
     const newMetadata = produce(currentMetadata, (draft) => {
-        if (!draft.broadcasts.includes(broadcast)) {
-            draft.broadcasts.push(broadcast);
+        for (const broadcast of broadcasts) {
+            if (!draft.broadcasts.includes(broadcast)) {
+                draft.broadcasts.push(broadcast);
+            }
         }
     });
     return OBR.scene.setMetadata({ [METADATA_KEY_SCENE]: newMetadata });
 }
 
 export async function removeBroadcast(broadcast: string) {
-    const currentMetadata = usePlayerStorage.getState().sceneMetadata;
+    const currentMetadata = await getSceneMetadata();
     if (currentMetadata.broadcasts.length <= 1) {
         throw Error("Cannot delete the last broadcast");
     }
@@ -63,7 +89,7 @@ export function promptTag() {
 }
 
 export async function addTags(...tags: string[]) {
-    const currentMetadata = usePlayerStorage.getState().sceneMetadata;
+    const currentMetadata = await getSceneMetadata();
     const newMetadata = produce(currentMetadata, (draft) => {
         for (const tag of tags) {
             if (!draft.tags.includes(tag)) {
@@ -75,7 +101,7 @@ export async function addTags(...tags: string[]) {
 }
 
 export async function removeTag(tag: string) {
-    const currentMetadata = usePlayerStorage.getState().sceneMetadata;
+    const currentMetadata = await getSceneMetadata();
     if (currentMetadata.tags.length <= 1) {
         throw Error("Cannot delete the last tag");
     }
@@ -86,7 +112,7 @@ export async function removeTag(tag: string) {
 }
 
 export async function addSound(name: string, sound: SoundDefinition) {
-    const currentMetadata = usePlayerStorage.getState().sceneMetadata;
+    const currentMetadata = await getSceneMetadata();
     const newMetadata = produce(currentMetadata, (draft) => {
         draft.sounds[name] = sound;
     });
@@ -94,7 +120,7 @@ export async function addSound(name: string, sound: SoundDefinition) {
 }
 
 export async function removeSound(soundName: string) {
-    const currentMetadata = usePlayerStorage.getState().sceneMetadata;
+    const currentMetadata = await getSceneMetadata();
     if (Object.keys(currentMetadata.sounds).length <= 1) {
         throw new Error("Cannot delete the last sound");
     }
@@ -108,7 +134,7 @@ export async function renameSound(
     oldName: string,
     newName: string,
 ): Promise<boolean> {
-    const currentMetadata = usePlayerStorage.getState().sceneMetadata;
+    const currentMetadata = await getSceneMetadata();
     if (currentMetadata.sounds[newName]) {
         console.warn(`Sound name ${newName} already exists`);
         return false;

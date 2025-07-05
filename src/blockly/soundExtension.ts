@@ -9,13 +9,12 @@ export function installSoundExtension() {
             const menuGenerator = () => {
                 const options: Blockly.MenuOption[] = [];
                 options.push(
-                    ...Object.keys(usePlayerStorage
-                        .getState()
-                        .sceneMetadata.sounds)
-                        .map((name): [display: string, id: string] => [
-                            name,
-                            name,
-                        ]),
+                    ...Object.keys(
+                        usePlayerStorage.getState().sceneMetadata.sounds,
+                    ).map((name): [display: string, id: string] => [
+                        name,
+                        name,
+                    ]),
                 );
                 return options;
             };

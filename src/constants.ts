@@ -39,9 +39,10 @@ export const PARAMETER_SIGNAL = "signal";
 export const PARAMETER_OTHER_ID = "otherId";
 export const VAR_LOOP_CHECK = "loopCheck";
 
-// Blockly
+// Blockly category
 export const CUSTOM_DYNAMIC_CATEGORY_VARIABLES = "BEHAVIOR_VARIABLES_DYNAMIC";
 
+// Blockly extensions
 export const EXTENSION_BROADCAST = "extension_broadcast";
 export const INPUT_BROADCAST = "INPUT_BROADCAST";
 export const FIELD_BROADCAST = "FIELD_BROADCAST";
@@ -59,4 +60,7 @@ export const DROPDOWN_SOUND_MEOW = "meow";
 
 export const EXTENSION_DRAG_TO_DUPE = "extension_drag_to_dupe";
 
+export const CREATE_NEW_RESOURCE = "__create_new__";
+
+// Blockly renderer
 export const RENDERER_CAT = "cat_zelos";

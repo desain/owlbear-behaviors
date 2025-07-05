@@ -4,6 +4,9 @@ import { executeObrFunction } from "owlbear-utils";
 import { type BehaviorItem } from "../BehaviorItem";
 import { BehaviorJavascriptGenerator } from "../blockly/BehaviorJavascriptGenerator";
 import type { Collision } from "../collision/CollisionEngine";
+import { FIELD_BROADCAST, FIELD_TAG } from "../constants";
+import { addBroadcasts, addTags } from "../state/SceneMetadata";
+import { usePlayerStorage } from "../state/usePlayerStorage";
 import { BEHAVIORS_IMPL } from "./BehaviorImpl";
 import { compileBehavior } from "./compileBehavior";
 import { ItemProxy } from "./ItemProxy";
@@ -26,6 +29,35 @@ function executeTriggerHandler(
     handler.abortController = new AbortController();
 
     void handler.behaviorFunction(handler.abortController.signal, other);
+}
+
+/**
+ * If this workspace came from a prefab, it might refer to resources that
+ * don't exist in the scene. The resources should be created
+ * so the editor displays them when the user opens it.
+ */
+async function addMissingResources(workspace: Blockly.Workspace) {
+    const extantTags = new Set(usePlayerStorage.getState().sceneMetadata.tags);
+    const newTags = workspace
+        .getAllBlocks()
+        .map((block) => block.getFieldValue(FIELD_TAG) as string | null)
+        .filter((tag) => tag !== null)
+        .filter((tag) => !extantTags.has(tag));
+    if (newTags.length > 0) {
+        await addTags(...newTags);
+    }
+
+    const extantBroadcasts = new Set(
+        usePlayerStorage.getState().sceneMetadata.broadcasts,
+    );
+    const newBroadcasts = workspace
+        .getAllBlocks()
+        .map((block) => block.getFieldValue(FIELD_BROADCAST) as string | null)
+        .filter((broadcast) => broadcast !== null)
+        .filter((broadcast) => !extantBroadcasts.has(broadcast));
+    if (newBroadcasts.length > 0) {
+        await addBroadcasts(...newBroadcasts);
+    }
 }
 
 export class BehaviorRegistry {
@@ -79,6 +111,7 @@ export class BehaviorRegistry {
         // Create a workspace and load blocks
         const workspace = new Blockly.Workspace();
         Blockly.serialization.workspaces.load(serializedWorkspace, workspace);
+        void addMissingResources(workspace);
 
         // Generate code
         const code = new BehaviorJavascriptGenerator().workspaceToCode(

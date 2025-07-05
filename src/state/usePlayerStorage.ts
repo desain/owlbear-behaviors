@@ -10,14 +10,12 @@ import { create } from "zustand";
 import { persist, subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { isBehaviorItem, type BehaviorItem } from "../BehaviorItem";
+import { LOCAL_STORAGE_STORE_NAME, METADATA_KEY_SCENE } from "../constants";
 import {
-    DROPDOWN_BROADCAST_DEFAULT,
-    DROPDOWN_SOUND_MEOW,
-    DROPDOWN_TAG_DEFAULT,
-    LOCAL_STORAGE_STORE_NAME,
-    METADATA_KEY_SCENE,
-} from "../constants";
-import { isSceneMetadata, type SceneMetadata } from "./SceneMetadata";
+    DEFAULT_SCENE_METADATA,
+    isSceneMetadata,
+    type SceneMetadata,
+} from "./SceneMetadata";
 
 enableMapSet();
 
@@ -162,15 +160,7 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 // lastNonemptySelectionItems: [],
                 // roomMetadata: { _key: true },
                 sceneMetadataLoaded: false,
-                sceneMetadata: {
-                    broadcasts: [DROPDOWN_BROADCAST_DEFAULT],
-                    tags: [DROPDOWN_TAG_DEFAULT],
-                    sounds: {
-                        [DROPDOWN_SOUND_MEOW]: {
-                            url: "https://cdn.freesound.org/previews/732/732520_13416215-lq.mp3",
-                        },
-                    },
-                },
+                sceneMetadata: DEFAULT_SCENE_METADATA,
                 itemsOfInterest: new Map(),
                 setSceneReady: (sceneReady: boolean) =>
                     set({
