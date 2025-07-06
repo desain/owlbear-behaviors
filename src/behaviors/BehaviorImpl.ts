@@ -31,6 +31,7 @@ import { getBounds, isBoundableItem } from "../collision/getBounds";
 import { METADATA_KEY_EFFECT, METADATA_KEY_TAGS } from "../constants";
 import { Announcement } from "../extensions/Announcement";
 import { Auras } from "../extensions/Auras";
+import { Codeo } from "../extensions/Codeo";
 import { Daggerheart } from "../extensions/Daggerheart";
 import { Fog } from "../extensions/Fog";
 import { Grimoire } from "../extensions/Grimoire";
@@ -1070,5 +1071,10 @@ export const BEHAVIORS_IMPL = {
             return false;
         }
         return OwlTrackers.isFieldChecked(selfItem, String(fieldNameUnknown));
+    },
+
+    runScript: async (signal: AbortSignal, scriptNameUnknown: unknown) => {
+        await Codeo.runScript(String(scriptNameUnknown));
+        signal.throwIfAborted();
     },
 };

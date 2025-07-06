@@ -32,10 +32,11 @@ import {
     BLOCK_DISTANCE_TO,
     BLOCK_DYNAMIC_VAL,
     BLOCK_EQUALS,
+    BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_FOG_ADD,
-    BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
+    BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_FACE,
@@ -1489,7 +1490,12 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             throw Error("Stat name should be a string");
         }
         return [
-            `await ${behave("getDaggerheartStat", PARAMETER_SIGNAL, PARAMETER_SELF_ID, generator.quote_(statName))}`,
+            `await ${behave(
+                "getDaggerheartStat",
+                PARAMETER_SIGNAL,
+                PARAMETER_SELF_ID,
+                generator.quote_(statName),
+            )}`,
             javascript.Order.AWAIT,
         ];
     },
@@ -1506,7 +1512,12 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             javascript.Order.ATOMIC,
         );
         return [
-            `await ${behave("getOwlTrackersField", PARAMETER_SIGNAL, PARAMETER_SELF_ID, String(fieldName))}`,
+            `await ${behave(
+                "getOwlTrackersField",
+                PARAMETER_SIGNAL,
+                PARAMETER_SELF_ID,
+                String(fieldName),
+            )}`,
             javascript.Order.AWAIT,
         ];
     },
@@ -1518,9 +1529,23 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             javascript.Order.ATOMIC,
         );
         return [
-            `await ${behave("isOwlTrackersFieldChecked", PARAMETER_SIGNAL, PARAMETER_SELF_ID, String(fieldName))}`,
+            `await ${behave(
+                "isOwlTrackersFieldChecked",
+                PARAMETER_SIGNAL,
+                PARAMETER_SELF_ID,
+                String(fieldName),
+            )}`,
             javascript.Order.AWAIT,
         ];
+    },
+
+    extension_codeo_run: (block, generator) => {
+        const scriptName = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_CODEO_RUN_SCRIPT.args0[1].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave("runScript", PARAMETER_SIGNAL, scriptName)};\n`;
     },
 
     // Utility blocks

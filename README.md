@@ -147,8 +147,6 @@ To make a production build run:
     -   Looks
         -   Set text on text and note items
     -   Extensions
-        -   Codeo
-            -   Run Script
         -   Smoke and spectre
             -   Has Light
             -   add () ft light

@@ -1933,6 +1933,31 @@ export const BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX = {
     output: "Boolean",
 } as const;
 
+export const BLOCK_EXTENSION_CODEO_RUN_SCRIPT = {
+    style: "extension_blocks",
+    type: "extension_codeo_run",
+    tooltip: "Run a script using the Codeo extension",
+    helpUrl: "",
+    message0: "%1 run script %2",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://owlbear-codeo.pages.dev/logo-bg.svg",
+            width: 24,
+            height: 24,
+            alt: "Codeo extension icon",
+        },
+        {
+            type: "input_value",
+            name: "SCRIPT_NAME",
+            check: ["String", "Number"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 // Menus
 export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
@@ -2153,6 +2178,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
+    BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,

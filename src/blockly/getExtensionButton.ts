@@ -17,6 +17,7 @@ const LINKS = {
     "Game Master's Daggerheart": rogue(
         "https://gmd.tabletop-almanac.com/manifest.json",
     ),
+    "Owlbear Codeo": rogue("https://owlbear-codeo.pages.dev/manifest.json"),
     "Owl Trackers": "https://extensions.owlbear.rodeo/owl-trackers",
     "Rumble!": "https://extensions.owlbear.rodeo/rumble",
     "Smoke and Spectre": "https://extensions.owlbear.rodeo/smoke",

@@ -24,6 +24,7 @@ import {
     BLOCK_DETACH,
     BLOCK_DISTANCE_TO,
     BLOCK_EQUALS,
+    BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_FOG_ADD,
@@ -778,6 +779,16 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         },
                     },
                     blockToDefinition(BLOCK_REMOVE_AURAS),
+
+                    ...extensionHeader("Owlbear Codeo"),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_CODEO_RUN_SCRIPT.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_CODEO_RUN_SCRIPT.args0[1].name]:
+                                shadowDynamic("My New Script"),
+                        },
+                    },
 
                     ...extensionHeader("Dynamic Fog"),
                     {
