@@ -14,6 +14,9 @@ const LINKS = {
     Announcement: rogue("https://announcement.sharkbrain.dev/manifest.json"),
     "Dynamic Fog": "https://extensions.owlbear.rodeo/dynamic-fog", // https://dynamic-fog.owlbear.rodeo/manifest.json
     "Game Master's Grimoire": "https://extensions.owlbear.rodeo/hp-tracker",
+    "Game Master's Daggerheart": rogue(
+        "https://gmd.tabletop-almanac.com/manifest.json",
+    ),
     "Rumble!": "https://extensions.owlbear.rodeo/rumble",
     "Smoke and Spectre": "https://extensions.owlbear.rodeo/smoke",
 };

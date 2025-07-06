@@ -31,6 +31,7 @@ import { getBounds, isBoundableItem } from "../collision/getBounds";
 import { METADATA_KEY_EFFECT, METADATA_KEY_TAGS } from "../constants";
 import { Announcement } from "../extensions/Announcement";
 import { Auras } from "../extensions/Auras";
+import { Daggerheart } from "../extensions/Daggerheart";
 import { Fog } from "../extensions/Fog";
 import { Grimoire } from "../extensions/Grimoire";
 import { Hoot } from "../extensions/Hoot";
@@ -1017,5 +1018,26 @@ export const BEHAVIORS_IMPL = {
     ): Promise<void> => {
         await Rumble.rollDice(String(notationUnknown));
         signal.throwIfAborted();
+    },
+
+    getDaggerheartStat: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        statUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return Daggerheart.getStat(selfItem, String(statUnknown));
+    },
+
+    getDaggerheartFear: async (signal: AbortSignal): Promise<number> => {
+        const fear = await Daggerheart.getFear();
+        signal.throwIfAborted();
+        return fear;
     },
 };

@@ -24,6 +24,8 @@ import {
     BLOCK_DETACH,
     BLOCK_DISTANCE_TO,
     BLOCK_EQUALS,
+    BLOCK_EXTENSION_DAGGERHEART_STAT,
+    BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_FOG_LIT,
     BLOCK_EXTENSION_FOG_REMOVE,
@@ -786,6 +788,10 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     },
                     blockToDefinition(BLOCK_EXTENSION_FOG_REMOVE),
                     blockToDefinition(BLOCK_EXTENSION_FOG_LIT),
+
+                    ...extensionHeader("Game Master's Daggerheart"),
+                    blockToDefinition(BLOCK_EXTENSION_DAGGERHEART_STAT),
+                    blockToDefinition(BLOCK_EXTENSION_DAGGERHEART_FEAR),
 
                     ...extensionHeader("Game Master's Grimoire"),
                     blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE),

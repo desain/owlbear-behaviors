@@ -32,6 +32,8 @@ import {
     BLOCK_DISTANCE_TO,
     BLOCK_DYNAMIC_VAL,
     BLOCK_EQUALS,
+    BLOCK_EXTENSION_DAGGERHEART_STAT,
+    BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
@@ -1477,6 +1479,24 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         );
         return `await ${behave("rumbleRoll", PARAMETER_SIGNAL, notation)};\n`;
     },
+
+    extension_daggerheart_stat: (block, generator) => {
+        const statName: unknown = block.getFieldValue(
+            BLOCK_EXTENSION_DAGGERHEART_STAT.args0[1].name,
+        );
+        if (typeof statName !== "string") {
+            throw Error("Stat name should be a string");
+        }
+        return [
+            `await ${behave("getDaggerheartStat", PARAMETER_SIGNAL, PARAMETER_SELF_ID, generator.quote_(statName))}`,
+            javascript.Order.AWAIT,
+        ];
+    },
+
+    extension_daggerheart_fear: () => [
+        `await ${behave("getDaggerheartFear", PARAMETER_SIGNAL)}`,
+        javascript.Order.AWAIT,
+    ],
 
     // Utility blocks
     looks_opacity_slider: (block) => {

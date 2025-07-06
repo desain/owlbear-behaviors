@@ -1820,6 +1820,72 @@ export const BLOCK_EXTENSION_RUMBLE_ROLL = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_EXTENSION_DAGGERHEART_STAT = {
+    style: "extension_blocks",
+    type: "extension_daggerheart_stat",
+    tooltip:
+        "Get a Daggerheart stat from the Game Master's Daggerheart extension",
+    helpUrl: "",
+    message0: "%1 my %2",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://gmd.tabletop-almanac.com/GMD_color.svg",
+            width: 24,
+            height: 24,
+            alt: "Game Master's Daggerheart extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "STAT",
+            options: [
+                ["HP", "hp_current"],
+                ["Max HP", "hp_max"],
+                "separator",
+                ["Stress", "stress_current"],
+                ["Max Stress", "stress_max"],
+                "separator",
+                ["Armor", "armor_current"],
+                ["Max Armor", "armor_max"],
+                "separator",
+                ["Hope", "hope"],
+                "separator",
+                ["Evasion", "evasion"],
+                ["Major Damage Threshold", "threshold_major"],
+                ["Severe Damage Threshold", "threshold_severe"],
+                "separator",
+                ["Agility", "agility"],
+                ["Strength", "strength"],
+                ["Finesse", "finesse"],
+                ["Instinct", "instinct"],
+                ["Presence", "presence"],
+                ["Knowledge", "knowledge"],
+                // ["Spotlight", "spotlight"],
+            ],
+        },
+    ],
+    output: "Number",
+} as const;
+
+export const BLOCK_EXTENSION_DAGGERHEART_FEAR = {
+    style: "extension_blocks",
+    type: "extension_daggerheart_fear",
+    tooltip:
+        "Get the current Fear value from the Game Master's Daggerheart extension",
+    helpUrl: "",
+    message0: "%1 fear",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://gmd.tabletop-almanac.com/GMD_color.svg",
+            width: 24,
+            height: 24,
+            alt: "Game Master's Daggerheart extension icon",
+        },
+    ],
+    output: "Number",
+} as const;
+
 // Menus
 export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
@@ -2036,6 +2102,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_RUMBLE_ROLL,
+    BLOCK_EXTENSION_DAGGERHEART_STAT,
+    BLOCK_EXTENSION_DAGGERHEART_FEAR,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,
