@@ -32,6 +32,8 @@ import {
     BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE,
     BLOCK_EXTENSION_GRIMOIRE_MAX_HP,
     BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,
+    BLOCK_EXTENSION_RUMBLE_ROLL,
+    BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_FACE,
     BLOCK_FOREVER,
     BLOCK_GET_FILL_COLOR,
@@ -799,6 +801,24 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         inputs: {
                             [BLOCK_HOOT.args0[1].name]: shadowDynamic(),
                             [BLOCK_HOOT.args0[2].name]: shadowDynamic(),
+                        },
+                    },
+
+                    ...extensionHeader("Rumble!"),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_RUMBLE_SAY.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_RUMBLE_SAY.args0[1].name]:
+                                shadowDynamic("Hello!"),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_RUMBLE_ROLL.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_RUMBLE_ROLL.args0[1].name]:
+                                shadowDynamic("1d20"),
                         },
                     },
                 ],

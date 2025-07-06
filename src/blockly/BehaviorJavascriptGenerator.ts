@@ -33,6 +33,8 @@ import {
     BLOCK_DYNAMIC_VAL,
     BLOCK_EQUALS,
     BLOCK_EXTENSION_FOG_ADD,
+    BLOCK_EXTENSION_RUMBLE_ROLL,
+    BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_FACE,
     BLOCK_FOREVER,
     BLOCK_GLIDE,
@@ -218,13 +220,14 @@ function generateVariable(
     generator: javascript.JavascriptGenerator,
     name: string,
     value: string,
+    mutable?: boolean,
 ): [varName: string, initVar: string] {
     const varName =
         generator.nameDB_?.getDistinctName(
             name,
             Blockly.Names.NameType.VARIABLE,
         ) ?? name;
-    const init = `const ${varName} = ${value};`;
+    const init = `${mutable ? "let" : "const"} ${varName} = ${value};`;
     return [varName, init];
 }
 
@@ -982,34 +985,33 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     control_repeat: (block, generator) => {
-        const countVar =
-            generator.nameDB_?.getDistinctName(
-                "count",
-                Blockly.Names.NameType.VARIABLE,
-            ) ?? "count";
+        const [countVar, initCountVar] = generateVariable(
+            generator,
+            "count",
+            "0",
+            true,
+        );
         const times = generator.valueToCode(
             block,
             BLOCK_REPEAT.args0[0].name,
             javascript.Order.RELATIONAL,
         );
-        let declareMax = "";
+        let prefix = "";
         let max = times;
         if (!/\d+/.exec(times)) {
-            const maxVar =
-                generator.nameDB_?.getDistinctName(
-                    "repeat_end",
-                    Blockly.Names.NameType.VARIABLE,
-                ) ?? "repeat_end";
-            declareMax = `const ${maxVar} = ${provideNum(
+            const [maxVar, initMaxVar] = generateVariable(
                 generator,
-            )}(${times});\n`;
+                "repeat_end",
+                `${provideNum(generator)}(${times})`,
+            );
             max = maxVar;
+            prefix = initMaxVar + "\n";
         }
         const statements = generator.statementToCode(
             block,
             BLOCK_REPEAT.args1[0].name,
         );
-        return `${declareMax}for (let ${countVar} = 0; ${countVar} < ${max}; ${countVar}++) {\n${generator.addLoopTrap(
+        return `${prefix}for (${initCountVar}; ${countVar} < ${max}; ${countVar}++) {\n${generator.addLoopTrap(
             statements,
             block,
         )}\n}\n`;
@@ -1295,7 +1297,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         );
         // 1-based index, fallback to empty string if out of range
         return [
-            `String(${string}).charAt(${letter} - 1)`,
+            `String(${string}).charAt(${provideNum(generator)}(${letter}) - 1)`,
             javascript.Order.FUNCTION_CALL,
         ];
     },
@@ -1448,6 +1450,32 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             type: "grimoire_hp_change",
             behaviorFunction,
         });
+    },
+
+    extension_rumble_say: (block, generator) => {
+        const message = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_RUMBLE_SAY.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const toSelf: unknown = block.getFieldValue(
+            BLOCK_EXTENSION_RUMBLE_SAY.args0[2].name,
+        );
+        return `await ${behave(
+            "rumbleSay",
+            PARAMETER_SIGNAL,
+            message,
+            String(toSelf === "true"),
+        )};\n`;
+    },
+
+    extension_rumble_roll: (block, generator) => {
+        const notation = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_RUMBLE_ROLL.args0[1].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave("rumbleRoll", PARAMETER_SIGNAL, notation)};\n`;
     },
 
     // Utility blocks

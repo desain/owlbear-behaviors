@@ -156,7 +156,6 @@ To make a production build run:
             -   HP, change
         -   Owl Trackers
             -   HP, change
-        -   Rumble
     -   Control
         -   switch? https://groups.google.com/g/blockly/c/djhO2jUb0Xs
         -   Create a clone of (myself v)
@@ -177,7 +176,6 @@ To make a production build run:
         -   Min, max
     -   Variables
         -   Scene-global variables
-        -   Maybe make tags and broadcasts variables using https://github.com/google/blockly/blob/develop/core/field_variable.ts?
         -   variables category
             -   registered in workspace constructor (can't override?): https://github.com/google/blockly/blob/02f89d6f96d27cea3e718a1e774c89f5589f155e/core/workspace_svg.ts#L394
             -   generated in https://github.com/google/blockly/blob/02f89d6f96d27cea3e718a1e774c89f5589f155e/core/variables_dynamic.ts#L26

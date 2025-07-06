@@ -25,17 +25,17 @@ export const BLOCK_GLIDE = {
         {
             type: "input_value",
             name: "DURATION",
-            check: "Number",
+            check: ["Number", "String"],
         },
         {
             type: "input_value",
             name: "X",
-            check: "Number",
+            check: ["Number", "String"],
         },
         {
             type: "input_value",
             name: "Y",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -53,7 +53,7 @@ export const BLOCK_GLIDE_ROTATE_LEFT = {
         {
             type: "input_value",
             name: "DURATION",
-            check: "Number",
+            check: ["Number", "String"],
         },
         {
             type: "field_image",
@@ -64,7 +64,7 @@ export const BLOCK_GLIDE_ROTATE_LEFT = {
         {
             type: "input_value",
             name: "DEGREES",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -82,7 +82,7 @@ export const BLOCK_GLIDE_ROTATE_RIGHT = {
         {
             type: "input_value",
             name: "DURATION",
-            check: "Number",
+            check: ["Number", "String"],
         },
         {
             type: "field_image",
@@ -93,7 +93,7 @@ export const BLOCK_GLIDE_ROTATE_RIGHT = {
         {
             type: "input_value",
             name: "DEGREES",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -111,12 +111,12 @@ export const BLOCK_GOTO = {
         {
             type: "input_value",
             name: "X",
-            check: "Number",
+            check: ["Number", "String"],
         },
         {
             type: "input_value",
             name: "Y",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -149,7 +149,7 @@ export const BLOCK_MOVE_DIRECTION = {
         {
             type: "input_value",
             name: "AMOUNT",
-            check: "Number",
+            check: ["Number", "String"],
         },
         {
             type: "field_dropdown",
@@ -275,7 +275,7 @@ export const BLOCK_ROTATE_LEFT = {
         {
             type: "input_value",
             name: "DEGREES",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -299,7 +299,7 @@ export const BLOCK_ROTATE_RIGHT = {
         {
             type: "input_value",
             name: "DEGREES",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -326,7 +326,7 @@ export const BLOCK_POINT_IN_DIRECTION = {
         {
             type: "input_value",
             name: "DIRECTION",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -412,7 +412,7 @@ export const BLOCK_SAY = {
         {
             type: "input_value",
             name: "SECS",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -430,7 +430,7 @@ export const BLOCK_SET_SIZE = {
         {
             type: "input_value",
             name: "SIZE",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -449,7 +449,7 @@ export const BLOCK_CHANGE_SIZE = {
         {
             type: "input_value",
             name: "CHANGE",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -575,7 +575,7 @@ export const BLOCK_SET_STROKE_OPACITY = {
         {
             type: "input_value",
             name: "OPACITY",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -611,7 +611,7 @@ export const BLOCK_SET_FILL_OPACITY = {
         {
             type: "input_value",
             name: "OPACITY",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -673,12 +673,12 @@ export const BLOCK_SET_VIEWPORT = {
         {
             type: "input_value",
             name: "X",
-            check: "Number",
+            check: ["Number", "String"],
         },
         {
             type: "input_value",
             name: "Y",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -716,7 +716,7 @@ export const BLOCK_SET_EFFECT_TO = {
         {
             type: "input_value",
             name: "VALUE",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -739,7 +739,7 @@ export const BLOCK_CHANGE_EFFECT_BY = {
         {
             type: "input_value",
             name: "VALUE",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -785,7 +785,7 @@ export const BLOCK_BROADCAST = {
         {
             type: "input_value",
             name: INPUT_BROADCAST,
-            check: "String",
+            check: ["String", "Number"],
         },
     ],
     previousStatement: null,
@@ -858,7 +858,7 @@ export const BLOCK_TAG = {
         {
             type: "input_value",
             name: INPUT_TAG,
-            check: "String",
+            check: ["String", "Number"],
         },
     ],
     previousStatement: null,
@@ -881,7 +881,7 @@ export const BLOCK_REMOVE_TAG = {
         {
             type: "input_value",
             name: INPUT_TAG,
-            check: "String",
+            check: ["String", "Number"],
         },
     ],
     previousStatement: null,
@@ -899,7 +899,7 @@ export const BLOCK_HAS_TAG_SELF = {
         {
             type: "input_value",
             name: INPUT_TAG,
-            check: "String",
+            check: ["String", "Number"],
         },
     ],
     output: "Boolean",
@@ -921,7 +921,7 @@ export const BLOCK_HAS_TAG_OTHER = {
         {
             type: "input_value",
             name: INPUT_TAG,
-            check: "String",
+            check: ["String", "Number"],
         },
     ],
     output: "Boolean",
@@ -938,7 +938,7 @@ export const BLOCK_CLOSEST_TAGGED = {
         {
             type: "input_value",
             name: INPUT_TAG,
-            check: "String",
+            check: ["String", "Number"],
         },
     ],
     output: "ItemId",
@@ -1056,7 +1056,7 @@ export const BLOCK_WAIT = {
         {
             type: "input_value",
             name: "DURATION",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -1179,7 +1179,7 @@ export const BLOCK_REPEAT = {
         {
             type: "input_value",
             name: "TIMES",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     args1: [
@@ -1408,7 +1408,7 @@ export const BLOCK_LETTER_OF = {
         {
             type: "input_value",
             name: "LETTER",
-            check: "Number",
+            check: ["Number", "String"],
         },
         {
             type: "input_value",
@@ -1453,7 +1453,7 @@ export const BLOCK_SOUND_PLAY = {
         {
             type: "input_value",
             name: "SOUND",
-            check: "String",
+            check: ["String", "Number"],
         },
     ],
     previousStatement: null,
@@ -1472,7 +1472,7 @@ export const BLOCK_SOUND_PLAY_UNTIL_DONE = {
         {
             type: "input_value",
             name: "SOUND",
-            check: "String",
+            check: ["String", "Number"],
         },
     ],
     previousStatement: null,
@@ -1503,7 +1503,7 @@ export const BLOCK_ANNOUNCEMENT = {
         {
             type: "input_value",
             name: "DURATION",
-            check: "Number",
+            check: ["Number", "String"],
         },
     ],
     previousStatement: null,
@@ -1528,12 +1528,12 @@ export const BLOCK_HOOT = {
         {
             type: "input_value",
             name: "TRACK",
-            check: ["String"],
+            check: ["String", "Number"],
         },
         {
             type: "input_value",
             name: "PLAYLIST",
-            check: ["String"],
+            check: ["String", "Number"],
         },
     ],
     previousStatement: null,
@@ -1558,7 +1558,7 @@ export const BLOCK_ADD_AURA = {
         {
             type: "input_value",
             name: "RADIUS",
-            check: "Number",
+            check: ["Number", "String"],
         },
         {
             type: "input_value",
@@ -1635,7 +1635,7 @@ export const BLOCK_EXTENSION_FOG_ADD = {
         {
             type: "input_value",
             name: "RADIUS",
-            check: "Number",
+            check: ["Number", "String"],
         },
         {
             type: "field_dropdown",
@@ -1758,6 +1758,64 @@ export const BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE = {
             alt: "Game Master's Grimoire extension icon",
         },
     ],
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_RUMBLE_SAY = {
+    style: "extension_blocks",
+    type: "extension_rumble_say",
+    tooltip: "Send a chat message using the Rumble! extension",
+    helpUrl: "",
+    message0: "%1 say %2 %3",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://rumble.battle-system.com/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Rumble! extension icon",
+        },
+        {
+            type: "input_value",
+            name: "MESSAGE",
+            check: ["String", "Number"],
+        },
+        {
+            type: "field_dropdown",
+            name: "TARGET",
+            options: [
+                ["to party", "false"],
+                ["to GM", "true"],
+            ],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_RUMBLE_ROLL = {
+    style: "extension_blocks",
+    type: "extension_rumble_roll",
+    tooltip: "Roll dice using the Rumble! extension",
+    helpUrl: "",
+    message0: "%1 roll %2",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://rumble.battle-system.com/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Rumble! extension icon",
+        },
+        {
+            type: "input_value",
+            name: "NOTATION",
+            check: ["String", "Number"],
+        },
+    ],
+    previousStatement: null,
     nextStatement: null,
     inputsInline: true,
 } as const;
@@ -1976,6 +2034,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,
     BLOCK_EXTENSION_GRIMOIRE_AC,
     BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE,
+    BLOCK_EXTENSION_RUMBLE_SAY,
+    BLOCK_EXTENSION_RUMBLE_ROLL,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,

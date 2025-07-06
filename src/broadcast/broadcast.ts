@@ -5,8 +5,8 @@ import { type BehaviorRegistry } from "../behaviors/BehaviorRegistry";
 import { CHANNEL_MESSAGE } from "../constants";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
-export function sendMessage(name: string) {
-    return OBR.broadcast.sendMessage(CHANNEL_MESSAGE, name, {
+export function sendMessage(name: unknown) {
+    return OBR.broadcast.sendMessage(CHANNEL_MESSAGE, String(name), {
         destination: "LOCAL",
     });
 }
@@ -166,9 +166,9 @@ async function animateViewportTo(x: number, y: number): Promise<void> {
  * Center viewport on coordinates.
  */
 export function broadcastSetViewport(
-    x: number, 
-    y: number, 
-    destination: "LOCAL" | "ALL"
+    x: number,
+    y: number,
+    destination: "LOCAL" | "ALL",
 ) {
     return OBR.broadcast.sendMessage(
         CHANNEL_MESSAGE,

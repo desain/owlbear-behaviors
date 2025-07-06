@@ -34,6 +34,7 @@ import { Auras } from "../extensions/Auras";
 import { Fog } from "../extensions/Fog";
 import { Grimoire } from "../extensions/Grimoire";
 import { Hoot } from "../extensions/Hoot";
+import { Rumble } from "../extensions/Rumble";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import { isEffectTarget, type EffectType } from "../watcher/EffectsWatcher";
 import { ItemProxy } from "./ItemProxy";
@@ -788,7 +789,7 @@ export const BEHAVIORS_IMPL = {
         }
 
         const size = Number(sizeUnknown);
-        if (!isFinite(size) || isNaN(size)) {
+        if (!isFinite(size) || isNaN(size) || size < 0) {
             console.warn(`[addAura] size invalid: ${size}`);
             return;
         }
@@ -999,5 +1000,22 @@ export const BEHAVIORS_IMPL = {
         const targetBounds = getBounds(targetItem, grid);
 
         return checkBoundingBoxOverlap(selfBounds, targetBounds);
+    },
+
+    rumbleSay: async (
+        signal: AbortSignal,
+        messageUnknown: unknown,
+        toSelf: boolean,
+    ): Promise<void> => {
+        await Rumble.sendChatMessage(String(messageUnknown), toSelf);
+        signal.throwIfAborted();
+    },
+
+    rumbleRoll: async (
+        signal: AbortSignal,
+        notationUnknown: unknown,
+    ): Promise<void> => {
+        await Rumble.rollDice(String(notationUnknown));
+        signal.throwIfAborted();
     },
 };
