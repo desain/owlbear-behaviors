@@ -4,36 +4,36 @@ const ROOM_METADATA_KEY = "com.tabletop-almanac.gmd/metadata";
 const METADATA_KEY = "com.tabletop-almanac.gmd/data";
 
 interface DaggerheartRoomData {
-    fear: number;
+    readonly fear: number;
 }
 
 interface DaggerheartData {
-    active: boolean;
-    agility: number;
-    strength: number;
-    finesse: number;
-    instinct: number;
-    presence: number;
-    knowledge: number;
-    evasion: number;
-    armor: {
-        current: number;
-        max: number;
+    readonly active: boolean;
+    readonly agility: number;
+    readonly strength: number;
+    readonly finesse: number;
+    readonly instinct: number;
+    readonly presence: number;
+    readonly knowledge: number;
+    readonly evasion: number;
+    readonly armor: {
+        readonly current: number;
+        readonly max: number;
     };
-    hp: {
-        current: number;
-        max: number;
+    readonly hp: {
+        readonly current: number;
+        readonly max: number;
     };
-    stress: {
-        current: number;
-        max: number;
+    readonly stress: {
+        readonly current: number;
+        readonly max: number;
     };
-    hope: number;
-    thresholds: {
-        major: number;
-        sever: number;
+    readonly hope: number;
+    readonly thresholds: {
+        readonly major: number;
+        readonly sever: number;
     };
-    spotlight: number;
+    readonly spotlight: number;
 }
 
 export const Daggerheart = {

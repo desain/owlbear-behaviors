@@ -35,6 +35,7 @@ import { Daggerheart } from "../extensions/Daggerheart";
 import { Fog } from "../extensions/Fog";
 import { Grimoire } from "../extensions/Grimoire";
 import { Hoot } from "../extensions/Hoot";
+import { OwlTrackers } from "../extensions/OwlTrackers";
 import { Rumble } from "../extensions/Rumble";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import { isEffectTarget, type EffectType } from "../watcher/EffectsWatcher";
@@ -1039,5 +1040,35 @@ export const BEHAVIORS_IMPL = {
         const fear = await Daggerheart.getFear();
         signal.throwIfAborted();
         return fear;
+    },
+
+    getOwlTrackersField: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        fieldNameUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return OwlTrackers.getFieldValue(selfItem, String(fieldNameUnknown));
+    },
+
+    isOwlTrackersFieldChecked: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        fieldNameUnknown: unknown,
+    ): Promise<boolean> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return false;
+        }
+        return OwlTrackers.isFieldChecked(selfItem, String(fieldNameUnknown));
     },
 };

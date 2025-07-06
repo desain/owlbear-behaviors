@@ -152,10 +152,7 @@ To make a production build run:
         -   Smoke and spectre
             -   Has Light
             -   add () ft light
-        -   Game Master's Daggerheart
-            -   HP, change
-        -   Owl Trackers
-            -   HP, change
+        -   On field change for Daggerheart, Owl Trackers
     -   Control
         -   switch? https://groups.google.com/g/blockly/c/djhO2jUb0Xs
         -   Create a clone of (myself v)

@@ -1886,6 +1886,53 @@ export const BLOCK_EXTENSION_DAGGERHEART_FEAR = {
     output: "Number",
 } as const;
 
+export const BLOCK_EXTENSION_OWL_TRACKERS_FIELD = {
+    style: "extension_blocks",
+    type: "extension_owl_trackers_field",
+    tooltip: "Get the value of a field from the Owl Trackers extension",
+    helpUrl: "",
+    message0: "%1 field %2",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://owl-trackers.onrender.com/owl-trackers-logo.svg",
+            width: 24,
+            height: 24,
+            alt: "Owl Trackers extension icon",
+        },
+        {
+            type: "input_value",
+            name: "FIELD_NAME",
+            check: ["String", "Number"],
+        },
+    ],
+    output: "Number",
+} as const;
+
+export const BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX = {
+    style: "extension_blocks",
+    type: "extension_owl_trackers_checkbox",
+    tooltip:
+        "Check if a checkbox field is checked in the Owl Trackers extension",
+    helpUrl: "",
+    message0: "%1 field %2 checked?",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://owl-trackers.onrender.com/owl-trackers-logo.svg",
+            width: 24,
+            height: 24,
+            alt: "Owl Trackers extension icon",
+        },
+        {
+            type: "input_value",
+            name: "FIELD_NAME",
+            check: ["String", "Number"],
+        },
+    ],
+    output: "Boolean",
+} as const;
+
 // Menus
 export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
@@ -2104,6 +2151,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_DAGGERHEART_FEAR,
+    BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
+    BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,

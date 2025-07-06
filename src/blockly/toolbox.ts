@@ -24,8 +24,8 @@ import {
     BLOCK_DETACH,
     BLOCK_DISTANCE_TO,
     BLOCK_EQUALS,
-    BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_DAGGERHEART_FEAR,
+    BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_FOG_LIT,
     BLOCK_EXTENSION_FOG_REMOVE,
@@ -34,6 +34,8 @@ import {
     BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE,
     BLOCK_EXTENSION_GRIMOIRE_MAX_HP,
     BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,
+    BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
+    BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_FACE,
@@ -807,6 +809,24 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         inputs: {
                             [BLOCK_HOOT.args0[1].name]: shadowDynamic(),
                             [BLOCK_HOOT.args0[2].name]: shadowDynamic(),
+                        },
+                    },
+
+                    ...extensionHeader("Owl Trackers"),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_OWL_TRACKERS_FIELD.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_OWL_TRACKERS_FIELD.args0[1].name]:
+                                shadowDynamic("HP"),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX.args0[1]
+                                .name]: shadowDynamic("checkbox"),
                         },
                     },
 
