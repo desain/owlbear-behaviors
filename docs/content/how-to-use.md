@@ -16,11 +16,22 @@
 
 ### Blocks
 
--   **Hat blocks** (hat-shaped): Trigger when something happens (like "when selected" or "when message received"). When the trigger occurrs, the blocks stacked underneath the hat block will run.
+Scripts in Behaviors are built by dragging blocks together.
+
+Here are the different kinds of blocks:
+
+-   **Hat blocks**: Trigger when something happens (like "when selected" or "when message received"). When the trigger occurrs, the blocks stacked underneath the hat block will run.
+    -   Example: ![Hat block example](https://owlbear-behaviors.pages.dev/docs/assets/hat-block-example.svg)
 -   **Stack blocks**: These blocks make your token do something (such as move, change appearance, or play sound). They can be stacked on top of each other, and run from top to bottom.
+    -   Example: ![Stack block example](https://owlbear-behaviors.pages.dev/docs/assets/stack-block-example.svg)
 -   **Cap blocks**: These blocks are like stack blocks, but never move on to the next block.
+    -   Example: ![Cap block example](https://owlbear-behaviors.pages.dev/docs/assets/cap-block-example.svg)
+-   **C blocks**: Some blocks are C-shaped, and contain spaces to put other blocks inside them, such as conditionals and loops.
+    -   Example: ![C block example](https://owlbear-behaviors.pages.dev/docs/assets/c-block-example.svg)
 -   **Reporter blocks**: These rounded blocks output a value, and can be plugged into other blocks to alter their behavior.
+    -   Example: ![Reporter block example](https://owlbear-behaviors.pages.dev/docs/assets/reporter-block-example.svg)
 -   **Boolean blocks**: Like reporter blocks, these hexagonal blocks output a value, but the value is either `true` or `false`. They can be used in control flow to check conditions.
+    -   Example: ![Boolean block example](https://owlbear-behaviors.pages.dev/docs/assets/boolean-block-example.svg)
 
 ### Tags
 
@@ -40,9 +51,9 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 
 ### Sounds
 
--   **Add sound effects** to make behaviors more engaging
--   Link audio files through the sound management panel
--   Use "play sound" blocks in your behaviors
+-   **Add sound effects** through the sound management panel in the action window
+-   See [FreeSound](https://freesound.org/) for a royalty-free sound effects library, or [Kevin MacLeod](https://incompetech.com/music/royalty-free/music.html) for royalty-free music.
+-   Sounds are loaded from URLs. You can upload sounds to a hosting service like Dropbox to get a persistent URL for them.
 
 ## Advanced Features
 
