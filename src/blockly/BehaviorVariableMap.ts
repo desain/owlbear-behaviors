@@ -245,9 +245,9 @@ export class BehaviorVariableMap
                 throw Error("potential map cannot delete globals");
             }
             void deleteVariable(variable.getId());
-        } else {
-            this.locals.deleteVariable(variable);
         }
+        // Local deletion logic clears away blocks
+        this.locals.deleteVariable(variable);
     };
 
     clear(): void {
