@@ -70,13 +70,13 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 -   See [FreeSound](https://freesound.org/) for a royalty-free sound effects library, or [Kevin MacLeod](https://incompetech.com/music/royalty-free/music.html) for royalty-free music.
 -   Sounds are loaded from URLs. You can upload sounds to a hosting service like Dropbox to get a persistent URL for them.
 
-## Advanced Features
+## Notes on Features
 
 ### Variables
 
 -   Create variables to store and manipulate data
 -   Variables accept any type of value, and can be used in place of any type of data
--   Variables reset when the page is reloaded or when you save the behavior script
+-   Variables reset when the page is reloaded or when you save a behavior script
 
 ### Motion
 
@@ -88,6 +88,10 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 
 -   'When I am selected' blocks fire no matter who selects the token
 -   'Deselect' blocks apply to all players
+
+### Cloning
+
+-   The clone block produces an effect the same as if you duplicated the object in Owlbear Rodeo - editing the original will not edit the clone, and variables for the clone will be reset to their undefined state.
 
 ### Other Extensions and Integrations
 
@@ -187,7 +191,6 @@ To make a production build run:
 -   Dragging directly from the 'other' block in the touch hat block to the flyout deletes the hat block
 -   Animations can be choppy when the action window is not open
 -   Stacking in backpack - happens when lots of (tall?) items, only on second time opening backpack
--   Deleting last variable doesn't work
 -   Sounds aren't restored when loading an item with behaviors from a prefab
 
 ## License
