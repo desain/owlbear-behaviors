@@ -145,18 +145,30 @@ export class VariableModal extends Modal {
 Blockly.Css.register(`
     .${CLASS_VARIABLE_MODAL} {
         color: rgb(92, 92, 92);
+
+        &.blocklyModalOverlay {
+            background: rgba(76, 151, 255, 0.9);
+        }
+
+        .blocklyModalContainer {
+            padding: 0;
+            box-shadow: none;
+        }
         
         .blocklyModalHeader {
             background: rgb(187, 153, 255);
             padding: 8px;
             color: white;
         }
+
+        .blocklyModalContent {
+            padding: 1em;
+        }
         
         .${CLASS_VARIABLE_MODAL_LABEL} {
             display: block;
             margin-bottom: 8px;
             font-weight: bold;
-            margin-top: 16px;
         }
         
         .${CLASS_VARIABLE_MODAL_INPUT} {
