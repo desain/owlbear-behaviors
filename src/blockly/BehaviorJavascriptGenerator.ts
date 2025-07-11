@@ -560,21 +560,21 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     looks_get_label: () => [
-        `${SELF}.text?.plainText ?? ""`,
-        javascript.Order.LOGICAL_OR,
+        `await ${behave("getText", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
+        javascript.Order.AWAIT,
     ],
 
     looks_set_label: (block, generator) => {
-        const label = generator.valueToCode(
+        const text = generator.valueToCode(
             block,
             BLOCK_SET_LABEL.args0[0].name,
             javascript.Order.NONE,
         );
         return `await ${behave(
-            "setName",
+            "setText",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
-            label,
+            text,
         )};\n`;
     },
 

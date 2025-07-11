@@ -1,6 +1,8 @@
 import OBR, {
     buildLabel,
     isImage,
+    isText,
+    type Descendant,
     type GridType,
     type Vector2,
 } from "@owlbear-rodeo/sdk";
@@ -559,17 +561,89 @@ export const BEHAVIORS_IMPL = {
         return null;
     },
 
-    setName: async (
+    getText: async (
         signal: AbortSignal,
         selfIdUnknown: unknown,
-        labelUnknown: unknown,
-    ) => {
-        const label = String(labelUnknown);
-        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
-            if (isImage(self)) {
-                self.text.plainText = label;
+    ): Promise<string> => {
+        const selfId = String(selfIdUnknown);
+        const self = await ItemProxy.getInstance().get(selfId);
+        signal.throwIfAborted();
+        if (!self) {
+            console.warn(`[getText] Item not found: ${selfId}`);
+            return "";
+        }
+
+        function descendantsText(
+            descendants: Descendant[],
+            between = "",
+            prefix = "",
+        ): string {
+            return descendants
+                .map((descendant) => descendantText(descendant, prefix))
+                .join(between);
+        }
+
+        function descendantText(descendant: Descendant, prefix = ""): string {
+            if ("text" in descendant) {
+                const surrounding =
+                    (descendant.bold ? "**" : "") +
+                    (descendant.italic ? "_" : "");
+                return (
+                    prefix +
+                    surrounding +
+                    descendant.text +
+                    surrounding.split("").reverse().join("")
+                );
             } else {
-                self.name = label;
+                switch (descendant.type) {
+                    case "paragraph":
+                    case "list-item": // the parent will set the right prefix
+                        return prefix + descendantsText(descendant.children);
+                    case "heading-one":
+                        return "# " + descendantsText(descendant.children);
+                    case "heading-two":
+                        return "## " + descendantsText(descendant.children);
+                    case "bulleted-list":
+                        return descendantsText(descendant.children, "\n", "- ");
+                    case "numbered-list":
+                        return descendant.children
+                            .map((descendant, i) =>
+                                descendantText(descendant, `${i + 1}. `),
+                            )
+                            .join("\n");
+                }
+            }
+        }
+
+        if (isImage(self) || isText(self)) {
+            return self.text.type === "PLAIN"
+                ? self.text.plainText
+                : descendantsText(self.text.richText, "\n");
+        }
+
+        return self.name;
+    },
+
+    setText: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        textUnknown: unknown,
+    ) => {
+        const text = String(textUnknown);
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            if (isImage(self) || isText(self)) {
+                switch (self.text.type) {
+                    case "PLAIN":
+                        self.text.plainText = text;
+                        break;
+                    case "RICH":
+                        self.text.richText = [
+                            { type: "paragraph", children: [{ text }] },
+                        ];
+                        break;
+                }
+            } else {
+                self.name = text;
             }
         });
         signal.throwIfAborted();

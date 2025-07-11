@@ -498,7 +498,7 @@ export const BLOCK_GET_LABEL = {
     type: "looks_get_label",
     tooltip: "Get the label of this token (or name if it's not an image)",
     helpUrl: "",
-    message0: "label",
+    message0: "text",
     output: "String",
 } as const;
 
@@ -507,7 +507,7 @@ export const BLOCK_SET_LABEL = {
     type: "looks_set_label",
     tooltip: "Set the label of this token (or name if it's not an image)",
     helpUrl: "",
-    message0: "set label to %1",
+    message0: "set text to %1",
     args0: [
         {
             type: "input_value",
