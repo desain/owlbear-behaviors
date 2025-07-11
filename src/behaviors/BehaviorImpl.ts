@@ -1203,7 +1203,7 @@ export const BEHAVIORS_IMPL = {
     ): Promise<string> => {
         const spreadsheetUrlOrId = String(spreadsheetUrlOrIdUnknown);
         const spreadsheetId =
-            /^https?:\/\/docs\.google\.com\/spreadsheets\/d\/([0-9a-zA-Z-]+)/.exec(
+            /^https?:\/\/docs\.google\.com\/spreadsheets\/d\/([0-9a-zA-Z_-]+)/.exec(
                 spreadsheetUrlOrId,
             )?.[1] ?? spreadsheetUrlOrId;
         const result = await Gapi.getSheetsValue(
