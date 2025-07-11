@@ -33,11 +33,7 @@ import {
 } from "../broadcast/broadcast";
 import { checkBoundingBoxOverlap } from "../collision/CollisionEngine";
 import { getBounds, isBoundableItem } from "../collision/getBounds";
-import {
-    METADATA_KEY_CLONE,
-    METADATA_KEY_EFFECT,
-    METADATA_KEY_TAGS,
-} from "../constants";
+import { METADATA_KEY_EFFECT, METADATA_KEY_TAGS } from "../constants";
 import { Announcement } from "../extensions/Announcement";
 import { Auras } from "../extensions/Auras";
 import { Codeo } from "../extensions/Codeo";
@@ -53,6 +49,7 @@ import { Weather } from "../extensions/Weather";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import { isEffectTarget, type EffectType } from "../watcher/EffectsWatcher";
 import { ItemProxy } from "./ItemProxy";
+import { CONTROL_BEHAVIORS } from "./impl/control";
 
 /**
  * Px to move the tail of the speech bubble down from the top of the token.
@@ -1196,23 +1193,7 @@ export const BEHAVIORS_IMPL = {
         signal.throwIfAborted();
     },
 
-    clone: async (signal: AbortSignal, itemIdUnknown: unknown) => {
-        const itemId = String(itemIdUnknown);
-        const [item] = await OBR.scene.items.getItems([itemId]);
-        signal.throwIfAborted();
-        if (!item) {
-            return;
-        }
-        item.metadata[METADATA_KEY_CLONE] = true;
-        await OBR.scene.items.addItems([{ ...item, id: crypto.randomUUID() }]);
-        signal.throwIfAborted();
-    },
-
-    delete: async (signal: AbortSignal, selfIdUnknown: unknown) => {
-        const selfId = String(selfIdUnknown);
-        await OBR.scene.items.deleteItems([selfId]);
-        signal.throwIfAborted();
-    },
+    ...CONTROL_BEHAVIORS,
 
     getSheetsValue: async (
         signal: AbortSignal,
