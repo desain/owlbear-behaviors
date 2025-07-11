@@ -48,8 +48,8 @@ export class VariableModal extends Modal {
 
         // Create radio buttons for scope
         const scopeRadios = [
-            { value: SCOPE_ALL, labelText: "For all tokens", checked: false },
-            { value: "token", labelText: "For this token only", checked: true },
+            // { value: SCOPE_ALL, labelText: "For all tokens", checked: false },
+            // { value: "token", labelText: "For this token only", checked: true },
         ].map(({ value, labelText, checked }) => {
             const radioContainer = document.createElement("div");
             radioContainer.className = CLASS_VARIABLE_MODAL_RADIO_CONTAINER;

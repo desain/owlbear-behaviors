@@ -54,7 +54,7 @@ const ${CONSTANT_BEHAVIOR_DEFINITION} /*: BehaviorDefinition */ = {
 }
 ${code}
 return ${CONSTANT_BEHAVIOR_DEFINITION};`;
-    console.log("compiling", behaviorDefinitionCode);
+    // console.log("compiling", behaviorDefinitionCode);
 
     return compileObrFunction(behaviorDefinitionCode, [
         PARAMETER_SELF_ID,
