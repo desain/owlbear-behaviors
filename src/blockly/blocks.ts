@@ -1047,6 +1047,31 @@ export const BLOCK_TOUCHING = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_CURRENT_TIME = {
+    style: "sensing_blocks",
+    type: "sensing_current_time",
+    tooltip: "Get the current time",
+    helpUrl: "",
+    message0: "current %1",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "UNIT",
+            options: [
+                ["year", "YEAR"],
+                ["month", "MONTH"],
+                ["date", "DATE"],
+                ["day of week", "DAY_OF_WEEK"],
+                ["hour", "HOUR"],
+                ["minute", "MINUTE"],
+                ["second", "SECOND"],
+            ],
+        },
+    ],
+    output: "Number",
+    inputsInline: true,
+} as const;
+
 // Control
 export const BLOCK_WAIT = {
     style: "control_blocks",
@@ -2616,6 +2641,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_SENSING_OF,
     BLOCK_DISTANCE_TO,
     BLOCK_TOUCHING,
+    BLOCK_CURRENT_TIME,
 
     // Operator blocks
     BLOCK_JOIN,

@@ -21,6 +21,7 @@ import {
     BLOCK_CLOSEST_TAGGED,
     BLOCK_CONTAINS,
     BLOCK_CREATE_CLONE_OF,
+    BLOCK_CURRENT_TIME,
     BLOCK_DELETE_THIS,
     BLOCK_DESELECT,
     BLOCK_DETACH,
@@ -624,6 +625,8 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                                 shadowItemMenu("sensing"),
                         },
                     },
+                    GAP50,
+                    blockToDefinition(BLOCK_CURRENT_TIME),
                 ],
             },
             /* operators */ {

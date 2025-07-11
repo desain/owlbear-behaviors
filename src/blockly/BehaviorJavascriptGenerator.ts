@@ -30,6 +30,7 @@ import {
     BLOCK_CONTAINS,
     BLOCK_CONTROL_ITEM_MENU,
     BLOCK_CREATE_CLONE_OF,
+    BLOCK_CURRENT_TIME,
     BLOCK_DESELECT,
     BLOCK_DISTANCE_TO,
     BLOCK_DYNAMIC_VAL,
@@ -1227,6 +1228,31 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
                     `(await ${PARAMETER_ITEM_PROXY}.get(${item}))?.rotation ?? 0`,
                     javascript.Order.LOGICAL_OR,
                 ];
+        }
+    },
+
+    sensing_current_time: (block) => {
+        const unit = block.getFieldValue(
+            BLOCK_CURRENT_TIME.args0[0].name,
+        ) as (typeof BLOCK_CURRENT_TIME)["args0"][0]["options"][number][1];
+        
+        switch (unit) {
+            case "YEAR":
+                return ["new Date().getFullYear()", javascript.Order.MEMBER];
+            case "MONTH":
+                return ["new Date().getMonth() + 1", javascript.Order.ADDITION];
+            case "DATE":
+                return ["new Date().getDate()", javascript.Order.MEMBER];
+            case "DAY_OF_WEEK":
+                return ["new Date().getDay() + 1", javascript.Order.ADDITION];
+            case "HOUR":
+                return ["new Date().getHours()", javascript.Order.MEMBER];
+            case "MINUTE":
+                return ["new Date().getMinutes()", javascript.Order.MEMBER];
+            case "SECOND":
+                return ["new Date().getSeconds()", javascript.Order.MEMBER];
+            default:
+                throw Error(`Unknown time unit ${unit}`);
         }
     },
 
