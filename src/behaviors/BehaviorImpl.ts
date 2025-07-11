@@ -1201,14 +1201,13 @@ export const BEHAVIORS_IMPL = {
         sheetUnknown: unknown,
         spreadsheetUrlOrIdUnknown: unknown,
     ): Promise<string> => {
-        const spreadsheetUrlOrId = String(spreadsheetUrlOrIdUnknown);
-        const spreadsheetId =
-            /^https?:\/\/docs\.google\.com\/spreadsheets\/d\/([0-9a-zA-Z_-]+)/.exec(
-                spreadsheetUrlOrId,
-            )?.[1] ?? spreadsheetUrlOrId;
+        const spreadsheetId = Gapi.getSpreadsheetId(
+            String(spreadsheetUrlOrIdUnknown),
+        );
         const result = await Gapi.getSheetsValue(
             spreadsheetId,
-            `'${String(sheetUnknown)}'!${String(cellUnknown)}`,
+            String(sheetUnknown),
+            String(cellUnknown),
         );
         signal.throwIfAborted();
         return result;

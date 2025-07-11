@@ -25,11 +25,19 @@ const GAPI_INITIALIZED = new Promise<void>((resolve, reject) => {
     }
 });
 
+const SPREADSHEET_REGEX =
+    /^https?:\/\/docs\.google\.com\/spreadsheets\/d\/([\w-]+)/;
+
 export const Gapi = {
+    getSpreadsheetId: (url: string): string =>
+        SPREADSHEET_REGEX.exec(url)?.[1] ?? url,
+
     getSheetsValue: async (
         spreadsheetId: string,
-        range: string,
+        sheet: string,
+        cell: string,
     ): Promise<string> => {
+        const range = `'${sheet.replace("'", "''")}'!${cell}`;
         try {
             await withTimeout(GAPI_INITIALIZED);
             const response = await gapi.client.sheets.spreadsheets.values.get({

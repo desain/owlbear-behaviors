@@ -372,23 +372,19 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         )};\n`;
     },
     motion_move_direction: (block, generator) => {
-        const direction: unknown = block.getFieldValue(
+        const direction = getStringFieldValue(
+            block,
             BLOCK_MOVE_DIRECTION.args0[0].name,
         );
-        if (typeof direction !== "string") {
-            throw Error("direction should be string");
-        }
         const amount = generator.valueToCode(
             block,
             BLOCK_MOVE_DIRECTION.args0[1].name,
             javascript.Order.NONE,
         );
-        const units: unknown = block.getFieldValue(
+        const units = getStringFieldValue(
+            block,
             BLOCK_MOVE_DIRECTION.args0[2].name,
         );
-        if (typeof units !== "string") {
-            throw Error("units should be string");
-        }
 
         if (direction === "FORWARD") {
             const [offsetVar, initOffset] = generateVariable(
@@ -732,12 +728,10 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     ],
 
     looks_seteffectto: (block, generator) => {
-        const effect: unknown = block.getFieldValue(
+        const effect = getStringFieldValue(
+            block,
             BLOCK_SET_EFFECT_TO.args0[0].name,
         );
-        if (typeof effect !== "string") {
-            throw Error("effect should be string");
-        }
 
         const intensity = generator.valueToCode(
             block,
@@ -756,12 +750,10 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     looks_changeeffectby: (block, generator) => {
-        const effect: unknown = block.getFieldValue(
+        const effect = getStringFieldValue(
+            block,
             BLOCK_CHANGE_EFFECT_BY.args0[0].name,
         );
-        if (typeof effect !== "string") {
-            throw Error("effect should be string");
-        }
 
         const intensity = generator.valueToCode(
             block,
@@ -786,12 +778,10 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         ),
 
     looks_set_viewport: (block, generator) => {
-        const target: unknown = block.getFieldValue(
+        const target = getStringFieldValue(
+            block,
             BLOCK_SET_VIEWPORT.args0[0].name,
         );
-        if (typeof target !== "string") {
-            throw Error("target should be string");
-        }
         const x = generator.valueToCode(
             block,
             BLOCK_SET_VIEWPORT.args0[1].name,
@@ -840,12 +830,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
 
     // Event blocks
     event_broadcast_menu: (block, generator) => {
-        const broadcastId: unknown = block.getFieldValue(FIELD_BROADCAST);
-        if (typeof broadcastId !== "string") {
-            throw Error(
-                `Expected broadcast ID to be a string, got ${typeof broadcastId}`,
-            );
-        }
+        const broadcastId = getStringFieldValue(block, FIELD_BROADCAST);
         return [generator.quote_(broadcastId), javascript.Order.ATOMIC];
     },
 
@@ -870,10 +855,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         )});\n`,
 
     event_whenbroadcastreceived: (block, generator) => {
-        const broadcastId: unknown = block.getFieldValue(FIELD_BROADCAST);
-        if (typeof broadcastId !== "string") {
-            throw Error("Expected broadcast ID to be a string");
-        }
+        const broadcastId = getStringFieldValue(block, FIELD_BROADCAST);
         return generateAddTriggerHandler({
             type: "broadcast",
             broadcast: broadcastId,
@@ -944,12 +926,10 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     event_whentouchingobject: (block, generator) => {
-        const touchState: unknown = block.getFieldValue(
+        const touchState = getStringFieldValue(
+            block,
             BLOCK_TOUCH.args0[0].name,
         );
-        if (typeof touchState !== "string") {
-            throw Error("touchState should be string");
-        }
 
         const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
         return generateAddTriggerHandler({
@@ -1433,7 +1413,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             javascript.Order.NONE,
         );
         const num = provideNum(generator);
-        return `${varRef} = (typeof ${varRef} === "number" ? ${varRef} : 0) + ${num}(${delta});\n`;
+        return `${varRef} = ${num}(${varRef}) + ${num}(${delta});\n`;
     },
 
     data_listcontents: (block, generator) => {
@@ -1961,9 +1941,6 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
 
     menu_tag: (block, generator) => {
         const tagId = getStringFieldValue(block, FIELD_TAG);
-        if (typeof tagId !== "string") {
-            throw Error(`Expected tag ID to be a string, got ${typeof tagId}`);
-        }
         return [generator.quote_(tagId), javascript.Order.ATOMIC];
     },
 
