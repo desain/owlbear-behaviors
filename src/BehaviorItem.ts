@@ -12,7 +12,11 @@ import {
     type Shape,
 } from "@owlbear-rodeo/sdk";
 import { isObject, type HasParameterizedMetadata } from "owlbear-utils";
-import { METADATA_KEY_BEHAVIORS, METADATA_KEY_TAGS } from "./constants";
+import {
+    METADATA_KEY_BEHAVIORS,
+    METADATA_KEY_CLONE,
+    METADATA_KEY_TAGS,
+} from "./constants";
 
 interface BehaviorData {
     lastModified: number;
@@ -33,7 +37,8 @@ export type BehaviorItem = (Image | Line | Curve | Shape | Path) &
     HasParameterizedMetadata<
         typeof METADATA_KEY_BEHAVIORS,
         BehaviorData | undefined
-    >;
+    > &
+    HasParameterizedMetadata<typeof METADATA_KEY_CLONE, true | undefined>;
 export function isBehaviorItem(item: Item): item is BehaviorItem {
     return (
         (isImage(item) ||
@@ -47,7 +52,9 @@ export function isBehaviorItem(item: Item): item is BehaviorItem {
                     (tag) => typeof tag === "string",
                 ))) &&
         (!(METADATA_KEY_BEHAVIORS in item.metadata) ||
-            isBehaviorData(item.metadata[METADATA_KEY_BEHAVIORS]))
+            isBehaviorData(item.metadata[METADATA_KEY_BEHAVIORS])) &&
+        (!(METADATA_KEY_CLONE in item.metadata) ||
+            item.metadata[METADATA_KEY_CLONE] === true)
     );
 }
 

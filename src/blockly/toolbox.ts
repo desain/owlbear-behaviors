@@ -20,6 +20,8 @@ import {
     BLOCK_CLEAR_GRAPHIC_EFFECTS,
     BLOCK_CLOSEST_TAGGED,
     BLOCK_CONTAINS,
+    BLOCK_CREATE_CLONE_OF,
+    BLOCK_DELETE_THIS,
     BLOCK_DESELECT,
     BLOCK_DETACH,
     BLOCK_DISTANCE_TO,
@@ -60,7 +62,6 @@ import {
     BLOCK_IF,
     BLOCK_IF_ELSE,
     BLOCK_IMMEDIATELY,
-    BLOCK_ITEM_MENU,
     BLOCK_LAYER_MENU,
     BLOCK_LESS_THAN,
     BLOCK_LETTER_OF,
@@ -106,12 +107,18 @@ import {
     BLOCK_WAIT,
     BLOCK_WAIT_UNTIL,
     BLOCK_WHEN_I,
+    BLOCK_WHEN_I_START_AS_CLONE,
     BLOCK_X_POSITION,
     BLOCK_Y_POSITION,
 } from "./blocks";
 import { FieldTokenImage } from "./FieldTokenImage";
 import { extensionHeader } from "./getExtensionButton";
-import { shadowColor, shadowDynamic, shadowNumber } from "./shadows";
+import {
+    shadowColor,
+    shadowDynamic,
+    shadowItemMenu,
+    shadowNumber,
+} from "./shadows";
 
 export function blockToDefinition(block: Pick<Block, "type">) {
     return {
@@ -546,9 +553,19 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     blockToDefinition(BLOCK_IF_ELSE),
                     blockToDefinition(BLOCK_WAIT_UNTIL),
                     blockToDefinition(BLOCK_REPEAT_UNTIL),
-                    // TODO: wait until?
                     GAP50,
                     blockToDefinition(BLOCK_STOP),
+                    GAP50,
+                    blockToDefinition(BLOCK_WHEN_I_START_AS_CLONE),
+                    {
+                        kind: "block",
+                        type: BLOCK_CREATE_CLONE_OF.type,
+                        inputs: {
+                            [BLOCK_CREATE_CLONE_OF.args0[0].name]:
+                                shadowItemMenu("control"),
+                        },
+                    },
+                    blockToDefinition(BLOCK_DELETE_THIS),
                 ],
             },
             /* events */ {
@@ -563,11 +580,8 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         kind: "block",
                         type: BLOCK_TAG.type,
                         inputs: {
-                            [BLOCK_TAG.args0[0].name]: {
-                                shadow: {
-                                    type: BLOCK_ITEM_MENU.type,
-                                },
-                            },
+                            [BLOCK_TAG.args0[0].name]:
+                                shadowItemMenu("sensing"),
                             ...SHADOW_TAG_MENU,
                         },
                     },
@@ -575,11 +589,8 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         kind: "block",
                         type: BLOCK_REMOVE_TAG.type,
                         inputs: {
-                            [BLOCK_REMOVE_TAG.args0[0].name]: {
-                                shadow: {
-                                    type: BLOCK_ITEM_MENU.type,
-                                },
-                            },
+                            [BLOCK_REMOVE_TAG.args0[0].name]:
+                                shadowItemMenu("sensing"),
                             ...SHADOW_TAG_MENU,
                         },
                     },
@@ -605,11 +616,8 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         kind: "block",
                         type: BLOCK_SENSING_OF.type,
                         inputs: {
-                            [BLOCK_SENSING_OF.args0[1].name]: {
-                                shadow: {
-                                    type: BLOCK_ITEM_MENU.type,
-                                },
-                            },
+                            [BLOCK_SENSING_OF.args0[1].name]:
+                                shadowItemMenu("sensing"),
                         },
                     },
                 ],

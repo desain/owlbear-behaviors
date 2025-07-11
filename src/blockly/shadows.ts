@@ -1,5 +1,10 @@
 import type { HexColor } from "owlbear-utils";
-import { BLOCK_COLOR_PICKER, BLOCK_DYNAMIC_VAL } from "./blocks";
+import {
+    BLOCK_COLOR_PICKER,
+    BLOCK_CONTROL_ITEM_MENU,
+    BLOCK_DYNAMIC_VAL,
+    BLOCK_SENSING_ITEM_MENU,
+} from "./blocks";
 
 export function shadowNumber(n?: number) {
     return {
@@ -30,6 +35,17 @@ export function shadowColor(color: HexColor) {
             fields: {
                 [BLOCK_COLOR_PICKER.args0[0].name]: color,
             },
+        },
+    };
+}
+
+export function shadowItemMenu(category: "sensing" | "control") {
+    return {
+        shadow: {
+            type:
+                category === "sensing"
+                    ? BLOCK_SENSING_ITEM_MENU.type
+                    : BLOCK_CONTROL_ITEM_MENU.type,
         },
     };
 }

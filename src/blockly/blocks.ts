@@ -1257,6 +1257,43 @@ export const BLOCK_REPEAT_UNTIL = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_WHEN_I_START_AS_CLONE = {
+    style: "control_blocks",
+    type: "control_start_as_clone",
+    tooltip: "Behavior to execute when this token starts as a clone",
+    helpUrl: "",
+    message0: "when I start as a clone",
+    nextStatement: null,
+} as const;
+
+export const BLOCK_CREATE_CLONE_OF = {
+    style: "control_blocks",
+    type: "control_create_clone_of",
+    tooltip: "Create a clone of the selected token",
+    helpUrl: "",
+    message0: "create clone of %1",
+    args0: [
+        {
+            type: "input_value",
+            name: "ITEM",
+            check: "ItemId",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_DELETE_THIS = {
+    style: "control_blocks",
+    type: "control_delete_this",
+    tooltip: "Delete this token",
+    helpUrl: "",
+    message0: "delete this token",
+    previousStatement: null,
+    inputsInline: true,
+} as const;
+
 // Operators
 export const BLOCK_JOIN = {
     style: "operators_blocks",
@@ -2044,9 +2081,25 @@ export const BLOCK_SOUND_MENU = {
     output: "String",
 } as const;
 
-export const BLOCK_ITEM_MENU = {
+export const BLOCK_SENSING_ITEM_MENU = {
     style: "sensing_blocks",
     type: "menu_item",
+    tooltip: "Choose a token",
+    helpUrl: "",
+    message0: "%1",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "ITEM",
+            options: [["myself", "MYSELF"]],
+        },
+    ],
+    output: "ItemId",
+} as const;
+
+export const BLOCK_CONTROL_ITEM_MENU = {
+    style: "control_blocks",
+    type: "control_menu_item",
     tooltip: "Choose a token",
     helpUrl: "",
     message0: "%1",
@@ -2137,6 +2190,9 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_REPEAT,
     BLOCK_WAIT_UNTIL,
     BLOCK_REPEAT_UNTIL,
+    BLOCK_WHEN_I_START_AS_CLONE,
+    BLOCK_CREATE_CLONE_OF,
+    BLOCK_DELETE_THIS,
 
     // Sensing blocks
     BLOCK_TAG,
@@ -2187,7 +2243,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_LAYER_MENU,
     BLOCK_TAG_MENU,
     BLOCK_SOUND_MENU,
-    BLOCK_ITEM_MENU,
+    BLOCK_SENSING_ITEM_MENU,
+    BLOCK_CONTROL_ITEM_MENU,
 ];
 
 export type CustomBlockType = (typeof CUSTOM_JSON_BLOCKS)[number]["type"];

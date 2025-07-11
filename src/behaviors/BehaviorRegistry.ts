@@ -4,7 +4,7 @@ import { executeObrFunction } from "owlbear-utils";
 import { type BehaviorItem } from "../BehaviorItem";
 import { BehaviorJavascriptGenerator } from "../blockly/BehaviorJavascriptGenerator";
 import type { Collision } from "../collision/CollisionEngine";
-import { FIELD_BROADCAST, FIELD_TAG } from "../constants";
+import { FIELD_BROADCAST, FIELD_TAG, METADATA_KEY_CLONE } from "../constants";
 import { addBroadcasts, addTags } from "../state/SceneMetadata";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import { BEHAVIORS_IMPL } from "./BehaviorImpl";
@@ -136,6 +136,19 @@ export class BehaviorRegistry {
                 return abortController;
             },
         );
+
+        // Start clone behaviors if this item is a clone
+        if (item.metadata[METADATA_KEY_CLONE]) {
+            const cloneExecutions = behaviorDefinition.startAsClone.map(
+                (behaviorFunction) => {
+                    const abortController = new AbortController();
+                    void behaviorFunction(abortController.signal);
+                    return abortController;
+                },
+            );
+            immediateExecutions.push(...cloneExecutions);
+        }
+
         this.#immediateExecutions.set(item.id, immediateExecutions);
     };
 

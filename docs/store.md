@@ -42,18 +42,21 @@ Behaviors is an extension for the Owlbear Rodeo VTT that allows the user to spec
 
 ### Blocks
 
--   **Event blocks** (hat-shaped): Trigger when something happens (like "when selected" or "when message received")
--   **Action blocks**: Make your token do something (move, change appearance, play sound)
--   **Control blocks**: Add logic like loops, conditions, and delays
--   **Sensing blocks**: Check conditions about the token or scene
+-   **Hat blocks** (hat-shaped): Trigger when something happens (like "when selected" or "when message received"). When the trigger occurrs, the blocks stacked underneath the hat block will run.
+-   **Stack blocks**: These blocks make your token do something (such as move, change appearance, or play sound). They can be stacked on top of each other, and run from top to bottom.
+-   **Cap blocks**: These blocks are like stack blocks, but never move on to the next block.
+-   **Reporter blocks**: These rounded blocks output a value, and can be plugged into other blocks to alter their behavior.
+-   **Boolean blocks**: Like reporter blocks, these hexagonal blocks output a value, but the value is either `true` or `false`. They can be used in control flow to check conditions.
 
 ### Tags
 
+Tokens can be labelled with tags, which are bits of text attached to a token.
+
 -   **Add tags** to tokens to group them or create specialized behaviors
 -   Edit tags from the right-click behaviors menu for an item
--   Tags are visible in the main Behaviors panel for easy management
+-   All tags in the scene are visible in the main Behaviors panel for easy management
 
-### Broadcasting Messages
+### Messages
 
 -   **Send messages** between tokens using broadcast blocks
 -   Create coordinated behaviors across multiple tokens

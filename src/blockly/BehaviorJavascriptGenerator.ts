@@ -28,6 +28,8 @@ import {
     BLOCK_CHANGE_SIZE,
     BLOCK_COLOR_PICKER,
     BLOCK_CONTAINS,
+    BLOCK_CONTROL_ITEM_MENU,
+    BLOCK_CREATE_CLONE_OF,
     BLOCK_DESELECT,
     BLOCK_DISTANCE_TO,
     BLOCK_DYNAMIC_VAL,
@@ -50,7 +52,6 @@ import {
     BLOCK_HOOT,
     BLOCK_IF,
     BLOCK_IF_ELSE,
-    BLOCK_ITEM_MENU,
     BLOCK_JOIN,
     BLOCK_LESS_THAN,
     BLOCK_LETTER_OF,
@@ -64,6 +65,7 @@ import {
     BLOCK_ROTATE_LEFT,
     BLOCK_ROTATE_RIGHT,
     BLOCK_SAY,
+    BLOCK_SENSING_ITEM_MENU,
     BLOCK_SENSING_OF,
     BLOCK_SET_EFFECT_TO,
     BLOCK_SET_FILL_COLOR,
@@ -831,6 +833,12 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             generator,
         )});\n`,
 
+    control_start_as_clone: (block, generator) =>
+        `${CONSTANT_BEHAVIOR_DEFINITION}.startAsClone.push(${getHatBlockBehaviorFunction(
+            block,
+            generator,
+        )});\n`,
+
     event_whenbroadcastreceived: (block, generator) => {
         const broadcastId: unknown = block.getFieldValue(FIELD_BROADCAST);
         if (typeof broadcastId !== "string") {
@@ -1055,6 +1063,22 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
         )}\n}\n`;
     },
+
+    control_create_clone_of: (block, generator) => {
+        const item = generator.valueToCode(
+            block,
+            BLOCK_CREATE_CLONE_OF.args0[0].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave("clone", PARAMETER_SIGNAL, item)};\n`;
+    },
+
+    control_delete_this: () =>
+        `await ${behave(
+            "delete",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+        )};\nreturn;\n`,
 
     // Sensing blocks
     sensing_tag: (block, generator) => {
@@ -1622,10 +1646,18 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     menu_item: (block) => {
-        // This block just outputs the color string from the field
         const ref = block.getFieldValue(
-            BLOCK_ITEM_MENU.args0[0].name,
-        ) as (typeof BLOCK_ITEM_MENU)["args0"][0]["options"][number][1];
+            BLOCK_SENSING_ITEM_MENU.args0[0].name,
+        ) as (typeof BLOCK_SENSING_ITEM_MENU)["args0"][0]["options"][number][1];
+        switch (ref) {
+            case "MYSELF":
+                return [PARAMETER_SELF_ID, javascript.Order.ATOMIC];
+        }
+    },
+    control_menu_item: (block) => {
+        const ref = block.getFieldValue(
+            BLOCK_CONTROL_ITEM_MENU.args0[0].name,
+        ) as (typeof BLOCK_CONTROL_ITEM_MENU)["args0"][0]["options"][number][1];
         switch (ref) {
             case "MYSELF":
                 return [PARAMETER_SELF_ID, javascript.Order.ATOMIC];

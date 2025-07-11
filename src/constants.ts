@@ -28,6 +28,7 @@ export const METADATA_KEY_TAGS = `${PLUGIN_ID}/tags`;
 export const METADATA_KEY_BEHAVIORS = `${PLUGIN_ID}/behaviors`;
 export const METADATA_KEY_SCENE = `${PLUGIN_ID}/sceneMetadata`;
 export const METADATA_KEY_EFFECT = `${PLUGIN_ID}/effect`;
+export const METADATA_KEY_CLONE = `${PLUGIN_ID}/clone`;
 
 // Behavior scripts
 export const PARAMETER_SELF_ID = "selfId";

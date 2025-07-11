@@ -28,7 +28,11 @@ import {
 } from "../broadcast/broadcast";
 import { checkBoundingBoxOverlap } from "../collision/CollisionEngine";
 import { getBounds, isBoundableItem } from "../collision/getBounds";
-import { METADATA_KEY_EFFECT, METADATA_KEY_TAGS } from "../constants";
+import {
+    METADATA_KEY_CLONE,
+    METADATA_KEY_EFFECT,
+    METADATA_KEY_TAGS,
+} from "../constants";
 import { Announcement } from "../extensions/Announcement";
 import { Auras } from "../extensions/Auras";
 import { Codeo } from "../extensions/Codeo";
@@ -1075,6 +1079,24 @@ export const BEHAVIORS_IMPL = {
 
     runScript: async (signal: AbortSignal, scriptNameUnknown: unknown) => {
         await Codeo.runScript(String(scriptNameUnknown));
+        signal.throwIfAborted();
+    },
+
+    clone: async (signal: AbortSignal, itemIdUnknown: unknown) => {
+        const itemId = String(itemIdUnknown);
+        const [item] = await OBR.scene.items.getItems([itemId]);
+        signal.throwIfAborted();
+        if (!item) {
+            return;
+        }
+        item.metadata[METADATA_KEY_CLONE] = true;
+        await OBR.scene.items.addItems([{ ...item, id: crypto.randomUUID() }]);
+        signal.throwIfAborted();
+    },
+
+    delete: async (signal: AbortSignal, selfIdUnknown: unknown) => {
+        const selfId = String(selfIdUnknown);
+        await OBR.scene.items.deleteItems([selfId]);
         signal.throwIfAborted();
     },
 };

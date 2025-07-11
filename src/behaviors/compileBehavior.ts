@@ -15,6 +15,7 @@ import type { TriggerHandler } from "./TriggerHandler";
  */
 export interface BehaviorDefinition {
     immediately: BehaviorFunction[];
+    startAsClone: BehaviorFunction[];
     triggerHandlers: TriggerHandler[];
 }
 
@@ -45,6 +46,7 @@ export function compileBehavior(code: string): BehaviorDefinitionFunction {
     const behaviorDefinitionCode = `
 const ${CONSTANT_BEHAVIOR_DEFINITION} /*: BehaviorDefinition */ = {
     immediately: [],
+    startAsClone: [],
     triggerHandlers: [],
 }
 ${code}
