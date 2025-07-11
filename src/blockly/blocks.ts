@@ -13,6 +13,7 @@ import {
     INPUT_BROADCAST,
     INPUT_SOUND,
     INPUT_TAG,
+    VARIABLE_TYPE_LIST,
 } from "../constants";
 
 // Motion
@@ -1534,6 +1535,301 @@ export const BLOCK_SOUND_PLAY_UNTIL_DONE = {
     inputsInline: true,
 } as const;
 
+// Data
+export const BLOCK_VARIABLE_REPORTER = {
+    style: "variable_blocks",
+    type: "data_variable",
+    tooltip: "%{BKY_VARIABLES_GET_TOOLTIP}",
+    message0: "%1",
+    args0: [
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [""],
+            defaultType: "",
+        },
+    ],
+    output: ["String", "Number", "ItemId"],
+    helpUrl: "%{BKY_VARIABLES_GET_HELPURL}",
+} as const;
+
+export const BLOCK_VARIABLE_SETTER = {
+    style: "variable_blocks",
+    type: "data_setvariableto",
+    message0: "set %1 to %2",
+    args0: [
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [""],
+            defaultType: "",
+        },
+        {
+            type: "input_value",
+            name: "VALUE",
+            check: ["String", "Number", "ItemId"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_VARIABLE_CHANGE = {
+    style: "variable_blocks",
+    type: "data_changevariableby",
+    message0: "change %1 by %2",
+    args0: [
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [""],
+            defaultType: "",
+        },
+        {
+            type: "input_value",
+            name: "DELTA",
+            check: ["Number", "String"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_LIST_REPORTER = {
+    style: "list_blocks",
+    type: "data_listcontents",
+    tooltip: "%{BKY_VARIABLES_GET_TOOLTIP}",
+    message0: "%1",
+    args0: [
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [VARIABLE_TYPE_LIST],
+            defaultType: VARIABLE_TYPE_LIST,
+        },
+    ],
+    output: "String",
+    helpUrl: "%{BKY_VARIABLES_GET_HELPURL}",
+} as const;
+
+export const BLOCK_LIST_ADD = {
+    style: "list_blocks",
+    type: "data_addtolist",
+    tooltip: "Add item to the end of list",
+    message0: "add %1 to %2",
+    args0: [
+        {
+            type: "input_value",
+            name: "ITEM",
+            check: ["String", "Number"],
+        },
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [VARIABLE_TYPE_LIST],
+            defaultType: VARIABLE_TYPE_LIST,
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_LIST_DELETE = {
+    type: "data_deleteoflist",
+    style: "list_blocks",
+    tooltip: "Delete item at index from list",
+    message0: "delete %1 of %2",
+    args0: [
+        {
+            type: "input_value",
+            name: "INDEX",
+            check: ["Number", "String"],
+        },
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [VARIABLE_TYPE_LIST],
+            defaultType: VARIABLE_TYPE_LIST,
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_LIST_CLEAR = {
+    style: "list_blocks",
+    type: "data_deletealloflist",
+    tooltip: "Delete all items from list",
+    message0: "delete all of %1",
+    args0: [
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [VARIABLE_TYPE_LIST],
+            defaultType: VARIABLE_TYPE_LIST,
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_LIST_INSERT = {
+    style: "list_blocks",
+    type: "data_insertatlist",
+    tooltip: "Insert item at index in list",
+    message0: "insert %1 at %2 of %3",
+    args0: [
+        {
+            type: "input_value",
+            name: "ITEM",
+            check: ["String", "Number"],
+        },
+        {
+            type: "input_value",
+            name: "INDEX",
+            check: ["Number", "String"],
+        },
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [VARIABLE_TYPE_LIST],
+            defaultType: VARIABLE_TYPE_LIST,
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_LIST_REPLACE = {
+    style: "list_blocks",
+    type: "data_replaceitemoflist",
+    tooltip: "Replace item at index in list",
+    message0: "replace item %1 of %2 with %3",
+    args0: [
+        {
+            type: "input_value",
+            name: "INDEX",
+            check: ["Number", "String"],
+        },
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [VARIABLE_TYPE_LIST],
+            defaultType: VARIABLE_TYPE_LIST,
+        },
+        {
+            type: "input_value",
+            name: "ITEM",
+            check: ["String", "Number"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_LIST_INDEX = {
+    style: "list_blocks",
+    type: "data_itemoflist",
+    tooltip: "Get item at index from list",
+    message0: "item %1 of %2",
+    args0: [
+        {
+            type: "input_value",
+            name: "INDEX",
+            check: ["Number", "String"],
+        },
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [VARIABLE_TYPE_LIST],
+            defaultType: VARIABLE_TYPE_LIST,
+        },
+    ],
+    output: ["String", "Number"],
+    inputsInline: true,
+} as const;
+
+export const BLOCK_LIST_INDEX_OF = {
+    type: "data_itemnumoflist",
+    tooltip: "Get index of item in list",
+    message0: "item # of %1 in %2",
+    args0: [
+        {
+            type: "input_value",
+            name: "ITEM",
+            check: ["String", "Number"],
+        },
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [VARIABLE_TYPE_LIST],
+            defaultType: VARIABLE_TYPE_LIST,
+        },
+    ],
+    output: "Number",
+    style: "list_blocks",
+    inputsInline: true,
+} as const;
+
+export const BLOCK_LIST_LENGTH = {
+    style: "list_blocks",
+    type: "data_lengthoflist",
+    tooltip: "Get number of items in list",
+    message0: "length of %1",
+    args0: [
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [VARIABLE_TYPE_LIST],
+            defaultType: VARIABLE_TYPE_LIST,
+        },
+    ],
+    output: "Number",
+    inputsInline: true,
+} as const;
+
+export const BLOCK_LIST_CONTAINS = {
+    type: "data_listcontainsitem",
+    tooltip: "Check if list contains item",
+    message0: "%1 contains %2 ?",
+    args0: [
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "%{BKY_VARIABLES_DEFAULT_NAME}",
+            variableTypes: [VARIABLE_TYPE_LIST],
+            defaultType: VARIABLE_TYPE_LIST,
+        },
+        {
+            type: "input_value",
+            name: "ITEM",
+            check: ["String", "Number"],
+        },
+    ],
+    output: "Boolean",
+    style: "list_blocks",
+    inputsInline: true,
+} as const;
+
 // Extensions
 export const BLOCK_ANNOUNCEMENT = {
     style: "extension_blocks",
@@ -2328,6 +2624,21 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_GREATER_THAN,
     BLOCK_LETTER_OF,
     BLOCK_CONTAINS,
+
+    // Variable blocks
+    BLOCK_VARIABLE_REPORTER,
+    BLOCK_VARIABLE_SETTER,
+    BLOCK_VARIABLE_CHANGE,
+    BLOCK_LIST_REPORTER,
+    BLOCK_LIST_ADD,
+    BLOCK_LIST_DELETE,
+    BLOCK_LIST_CLEAR,
+    BLOCK_LIST_INSERT,
+    BLOCK_LIST_REPLACE,
+    BLOCK_LIST_INDEX,
+    BLOCK_LIST_INDEX_OF,
+    BLOCK_LIST_LENGTH,
+    BLOCK_LIST_CONTAINS,
 
     // Extension blocks
     BLOCK_ANNOUNCEMENT,

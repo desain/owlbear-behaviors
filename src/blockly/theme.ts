@@ -9,21 +9,18 @@ export function createBlocklyTheme(obrTheme: Theme): Blockly.Theme {
         colourPrimary: "#59C059",
         colourSecondary: "#46B946",
         colourTertiary: "#389438",
-        // colourQuaternary: "#389438",
     };
 
     const controlBlocks = {
         colourPrimary: "#FFAB19",
         colourSecondary: "#EC9C13",
         colourTertiary: "#CF8B17",
-        // colourQuaternary: "#CF8B17",
     };
 
     const variableBlocks = {
         colourPrimary: "#FF8C1A",
         colourSecondary: "#FF8000",
         colourTertiary: "#DB6E00",
-        // colourQuaternary: "#DB6E00",
     };
 
     return Blockly.Theme.defineTheme("owlbear-rodeo", {
@@ -34,25 +31,21 @@ export function createBlocklyTheme(obrTheme: Theme): Blockly.Theme {
                 colourPrimary: "#4C97FF",
                 colourSecondary: "#4280D7",
                 colourTertiary: "#3373CC",
-                // colourQuaternary: "#3373CC",
             },
             looks_blocks: {
                 colourPrimary: "#9966FF",
                 colourSecondary: "#855CD6",
                 colourTertiary: "#774DCB",
-                // colourQuaternary: "#774DCB",
             },
             sound_blocks: {
                 colourPrimary: "#CF63CF",
                 colourSecondary: "#C94FC9",
                 colourTertiary: "#BD42BD",
-                // colourQuaternary: "#BD42BD",
             },
             event_blocks: {
                 colourPrimary: "#FFBF00",
                 colourSecondary: "#E6AC00",
                 colourTertiary: "#CC9900",
-                // colourQuaternary: "#CC9900",
                 // hat: "cap",
             },
             control_blocks: controlBlocks,
@@ -61,7 +54,6 @@ export function createBlocklyTheme(obrTheme: Theme): Blockly.Theme {
                 colourPrimary: "#5CB1D6",
                 colourSecondary: "#47A8D1",
                 colourTertiary: "#2E8EB8",
-                // colourQuaternary: "#2E8EB8",
             },
             text_blocks: operatorsBlocks,
             operators_blocks: operatorsBlocks,
@@ -69,11 +61,15 @@ export function createBlocklyTheme(obrTheme: Theme): Blockly.Theme {
             math_blocks: operatorsBlocks,
             variable_blocks: variableBlocks,
             variable_dynamic_blocks: variableBlocks,
+            list_blocks: {
+                colourPrimary: "#FF661A",
+                colourSecondary: "#FF5500",
+                colourTertiary: "#E64D00",
+            },
             extension_blocks: {
                 colourPrimary: "#0fBD8C",
                 colourSecondary: "#0DA57A",
                 colourTertiary: "#0B8E69",
-                // colourQuaternary: "#0B8E69",
             },
         },
         categoryStyles: {

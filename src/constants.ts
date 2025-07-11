@@ -40,8 +40,9 @@ export const PARAMETER_SIGNAL = "signal";
 export const PARAMETER_OTHER_ID = "otherId";
 export const VAR_LOOP_CHECK = "loopCheck";
 
-// Blockly category
+// Blockly variable category
 export const CUSTOM_DYNAMIC_CATEGORY_VARIABLES = "BEHAVIOR_VARIABLES_DYNAMIC";
+export const VARIABLE_TYPE_LIST = "List";
 
 // Blockly extensions
 export const EXTENSION_BROADCAST = "extension_broadcast";

@@ -89,6 +89,20 @@ import {
     BLOCK_WAIT_UNTIL,
     BLOCK_WHEN_I,
     type CustomBlockType,
+    BLOCK_LIST_REPORTER,
+    BLOCK_LIST_ADD,
+    BLOCK_LIST_DELETE,
+    BLOCK_LIST_CLEAR,
+    BLOCK_LIST_INSERT,
+    BLOCK_LIST_REPLACE,
+    BLOCK_LIST_INDEX,
+    BLOCK_LIST_INDEX_OF,
+    BLOCK_LIST_LENGTH,
+    BLOCK_LIST_CONTAINS,
+    BLOCK_VARIABLE_REPORTER,
+    BLOCK_VARIABLE_SETTER,
+    BLOCK_VARIABLE_CHANGE,
+    BLOCK_LAYER_MENU,
 } from "./blocks";
 
 const THROW_ON_ABORT = `${PARAMETER_SIGNAL}.throwIfAborted();\n`;
@@ -239,6 +253,14 @@ function generateVariable(
         ) ?? name;
     const init = `${mutable ? "let" : "const"} ${varName} = ${value};`;
     return [varName, init];
+}
+
+function getStringFieldValue(block: Blockly.Block, name: string): string {
+    const value: unknown = block.getFieldValue(name);
+    if (typeof value !== "string") {
+        throw Error(`${name} should be string`);
+    }
+    return value;
 }
 
 /**
@@ -1351,6 +1373,191 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         ];
     },
 
+    // Variable blocks
+    data_variable: (block, generator) => {
+        const varId = getStringFieldValue(
+            block,
+            BLOCK_VARIABLE_REPORTER.args0[0].name,
+        );
+        return [generator.getVariableName(varId), javascript.Order.ATOMIC];
+    },
+
+    data_setvariableto: (block, generator) => {
+        const varId = getStringFieldValue(
+            block,
+            BLOCK_VARIABLE_SETTER.args0[0].name,
+        );
+        const value = generator.valueToCode(
+            block,
+            BLOCK_VARIABLE_SETTER.args0[1].name,
+            javascript.Order.ASSIGNMENT,
+        );
+        return `${generator.getVariableName(varId)} = ${value};\n`;
+    },
+
+    data_changevariableby: (block, generator) => {
+        const varName = generator.getVariableName(
+            getStringFieldValue(block, BLOCK_VARIABLE_CHANGE.args0[0].name),
+        );
+        const delta = generator.valueToCode(
+            block,
+            BLOCK_VARIABLE_CHANGE.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const num = provideNum(generator);
+        return `${varName} = (typeof ${varName} === "number" ? ${varName} : 0) + ${num}(${delta});\n`;
+    },
+
+    data_listcontents: (block, generator) => {
+        const varId = getStringFieldValue(
+            block,
+            BLOCK_LIST_REPORTER.args0[0].name,
+        );
+        return [
+            `${generator.getVariableName(varId)}?.join(" ")`,
+            javascript.Order.FUNCTION_CALL,
+        ];
+    },
+
+    data_addtolist: (block, generator) => {
+        const item = generator.valueToCode(
+            block,
+            BLOCK_LIST_ADD.args0[0].name,
+            javascript.Order.NONE,
+        );
+        const varId = getStringFieldValue(block, BLOCK_LIST_ADD.args0[1].name);
+        const listName = generator.getVariableName(varId);
+        return [
+            `${listName} = ${listName} ?? [];`,
+            `${listName}.push(${item});\n`,
+        ].join("\n");
+    },
+
+    data_deleteoflist: (block, generator) => {
+        const index = generator.valueToCode(
+            block,
+            BLOCK_LIST_DELETE.args0[0].name,
+            javascript.Order.NONE,
+        );
+        const varId = getStringFieldValue(
+            block,
+            BLOCK_LIST_DELETE.args0[1].name,
+        );
+        const listName = generator.getVariableName(varId);
+        const num = provideNum(generator);
+        return `${listName}?.splice(${num}(${index}) - 1, 1);\n`;
+    },
+
+    data_deletealloflist: (block, generator) => {
+        const varId = getStringFieldValue(
+            block,
+            BLOCK_LIST_CLEAR.args0[0].name,
+        );
+        const listName = generator.getVariableName(varId);
+        return `${listName} = [];\n`;
+    },
+
+    data_insertatlist: (block, generator) => {
+        const item = generator.valueToCode(
+            block,
+            BLOCK_LIST_INSERT.args0[0].name,
+            javascript.Order.NONE,
+        );
+        const index = generator.valueToCode(
+            block,
+            BLOCK_LIST_INSERT.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const varId = getStringFieldValue(
+            block,
+            BLOCK_LIST_INSERT.args0[2].name,
+        );
+        const listName = generator.getVariableName(varId);
+        const num = provideNum(generator);
+        return [
+            `${listName} = ${listName} ?? [];`,
+            `${listName}?.splice(${num}(${index}) - 1, 0, ${item});\n`,
+        ].join("\n");
+    },
+
+    data_replaceitemoflist: (block, generator) => {
+        const index = generator.valueToCode(
+            block,
+            BLOCK_LIST_REPLACE.args0[0].name,
+            javascript.Order.NONE,
+        );
+        const item = generator.valueToCode(
+            block,
+            BLOCK_LIST_REPLACE.args0[2].name,
+            javascript.Order.NONE,
+        );
+        const varId = getStringFieldValue(
+            block,
+            BLOCK_LIST_REPLACE.args0[1].name,
+        );
+        const listName = generator.getVariableName(varId);
+        const num = provideNum(generator);
+        return `${listName}?.splice(${num}(${index}) - 1, 1, ${item});\n`;
+    },
+
+    data_itemoflist: (block, generator) => {
+        const index = generator.valueToCode(
+            block,
+            BLOCK_LIST_INDEX.args0[0].name,
+            javascript.Order.NONE,
+        );
+        const varId = getStringFieldValue(
+            block,
+            BLOCK_LIST_INDEX.args0[1].name,
+        );
+        const listName = generator.getVariableName(varId);
+        const num = provideNum(generator);
+        return [`${listName}?.[${num}(${index}) - 1]`, javascript.Order.MEMBER];
+    },
+
+    data_itemnumoflist: (block, generator) => {
+        const item = generator.valueToCode(
+            block,
+            BLOCK_LIST_INDEX_OF.args0[0].name,
+            javascript.Order.NONE,
+        );
+        const varId = getStringFieldValue(
+            block,
+            BLOCK_LIST_INDEX_OF.args0[1].name,
+        );
+        const listName = generator.getVariableName(varId);
+        return [
+            `(${listName}?.indexOf(${item}) ?? -1) + 1`,
+            javascript.Order.ADDITION,
+        ];
+    },
+
+    data_lengthoflist: (block, generator) => {
+        const varId = getStringFieldValue(
+            block,
+            BLOCK_LIST_LENGTH.args0[0].name,
+        );
+        const listName = generator.getVariableName(varId);
+        return [`(${listName} ?? []).length`, javascript.Order.MEMBER];
+    },
+
+    data_listcontainsitem: (block, generator) => {
+        const item = generator.valueToCode(
+            block,
+            BLOCK_LIST_CONTAINS.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const varId = getStringFieldValue(
+            block,
+            BLOCK_LIST_CONTAINS.args0[0].name,
+        );
+        const listName = generator.getVariableName(varId);
+        return [
+            `(${listName} ?? []).includes(${item})`,
+            javascript.Order.FUNCTION_CALL,
+        ];
+    },
+
     // Extension blocks
     extension_announcement: (block, generator) => {
         const content = generator.valueToCode(
@@ -1411,12 +1618,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             BLOCK_ADD_AURA.args0[2].name,
             javascript.Order.NONE,
         );
-        const style: unknown = block.getFieldValue(
-            BLOCK_ADD_AURA.args0[3].name,
-        );
-        if (typeof style !== "string") {
-            throw Error("style should be string");
-        }
+        const style = getStringFieldValue(block, BLOCK_ADD_AURA.args0[3].name);
         return `await ${behave(
             "addAura",
             PARAMETER_SIGNAL,
@@ -1438,12 +1640,10 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             BLOCK_EXTENSION_FOG_ADD.args0[1].name,
             javascript.Order.NONE,
         );
-        const shape: unknown = block.getFieldValue(
+        const shape = getStringFieldValue(
+            block,
             BLOCK_EXTENSION_FOG_ADD.args0[2].name,
         );
-        if (typeof shape !== "string") {
-            throw Error("shape should be string");
-        }
         return `await ${behave(
             "addLight",
             PARAMETER_SIGNAL,
@@ -1511,12 +1711,10 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     extension_daggerheart_stat: (block, generator) => {
-        const statName: unknown = block.getFieldValue(
+        const statName = getStringFieldValue(
+            block,
             BLOCK_EXTENSION_DAGGERHEART_STAT.args0[1].name,
         );
-        if (typeof statName !== "string") {
-            throw Error("Stat name should be a string");
-        }
         return [
             `await ${behave(
                 "getDaggerheartStat",
@@ -1658,12 +1856,10 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     behavior_dynamic_val: (block, generator) => {
-        const text: unknown = block.getFieldValue(
+        const text = getStringFieldValue(
+            block,
             BLOCK_DYNAMIC_VAL.args0[0].name,
         );
-        if (typeof text !== "string") {
-            throw Error("Text should be string");
-        }
 
         // Check if the raw input is a number
         const code =
@@ -1674,10 +1870,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     behavior_url: (block, generator) => {
-        const url: unknown = block.getFieldValue(BLOCK_URL.args0[0].name);
-        if (typeof url !== "string") {
-            throw Error("url should be string");
-        }
+        const url = getStringFieldValue(block, BLOCK_URL.args0[0].name);
         return [generator.quote_(url), javascript.Order.ATOMIC];
     },
 
@@ -1691,17 +1884,18 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
 
     color_hsv_sliders: (block, generator) => {
         // This block just outputs the color string from the field
-        const color: unknown = block.getFieldValue(
+        const color = getStringFieldValue(
+            block,
             BLOCK_COLOR_PICKER.args0[0].name,
         );
-        if (typeof color !== "string" || !isHexColor(color)) {
-            throw Error("Colour should be hex color string");
+        if (!isHexColor(color)) {
+            throw Error("Color should be hex color");
         }
         return [generator.quote_(color), javascript.Order.ATOMIC];
     },
 
     menu_tag: (block, generator) => {
-        const tagId: unknown = block.getFieldValue(FIELD_TAG);
+        const tagId = getStringFieldValue(block, FIELD_TAG);
         if (typeof tagId !== "string") {
             throw Error(`Expected tag ID to be a string, got ${typeof tagId}`);
         }
@@ -1709,20 +1903,15 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     menu_sound: (block, generator) => {
-        const soundId: unknown = block.getFieldValue(FIELD_SOUND);
-        if (typeof soundId !== "string") {
-            throw Error(
-                `Expected sound ID to be a string, got ${typeof soundId}`,
-            );
-        }
+        const soundId = getStringFieldValue(block, FIELD_SOUND);
         return [generator.quote_(soundId), javascript.Order.ATOMIC];
     },
 
     menu_layer: (block, generator) => {
-        const layer: unknown = block.getFieldValue("LAYER");
-        if (typeof layer !== "string") {
-            throw Error("layer should be string");
-        }
+        const layer = getStringFieldValue(
+            block,
+            BLOCK_LAYER_MENU.args0[0].name,
+        );
         return [generator.quote_(layer), javascript.Order.ATOMIC];
     },
 
@@ -1770,9 +1959,7 @@ export class BehaviorJavascriptGenerator extends javascript.JavascriptGenerator 
         );
 
         Object.entries(javascript.javascriptGenerator.forBlock).forEach(
-            ([blockType, generator]) => {
-                this.forBlock[blockType] = generator;
-            },
+            ([blockType, generator]) => (this.forBlock[blockType] = generator),
         );
         Object.entries(GENERATORS).forEach(
             ([blockType, generator]) => (this.forBlock[blockType] = generator),

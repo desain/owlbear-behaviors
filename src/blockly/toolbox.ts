@@ -681,7 +681,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         kind: "block",
                         type: "operator_join",
                         inputs: {
-                            STRING1: shadowDynamic("apple"),
+                            STRING1: shadowDynamic("apple "),
                             STRING2: shadowDynamic("banana"),
                         },
                     },
