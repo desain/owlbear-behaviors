@@ -158,3 +158,70 @@ export async function renameSound(
     await OBR.scene.setMetadata({ [METADATA_KEY_SCENE]: newMetadata });
     return true;
 }
+
+export async function createVariable(state: IVariableState) {
+    const currentMetadata = await getSceneMetadata();
+
+    if (
+        currentMetadata.vars?.some(
+            (v) => v.id === state.id || v.name === state.name,
+        )
+    ) {
+        throw Error("duplicate variable");
+    }
+
+    const newMetadata = produce(currentMetadata, (draft) => {
+        draft.vars = draft.vars ?? [];
+        draft.vars.push(state);
+    });
+
+    await OBR.scene.setMetadata({ [METADATA_KEY_SCENE]: newMetadata });
+}
+
+export async function deleteVariable(variableId: string) {
+    const currentMetadata = await getSceneMetadata();
+
+    const newMetadata = produce(currentMetadata, (draft) => {
+        draft.vars = draft.vars?.filter((v) => v.id !== variableId);
+    });
+
+    await OBR.scene.setMetadata({ [METADATA_KEY_SCENE]: newMetadata });
+}
+
+export async function renameVariable(
+    variableId: string,
+    newName: string,
+): Promise<void> {
+    const currentMetadata = await getSceneMetadata();
+
+    if (currentMetadata.vars?.some((v) => v.name === newName)) {
+        throw Error(`Variable name ${newName} already exists`);
+    }
+
+    const newMetadata = produce(currentMetadata, (draft) => {
+        draft.vars?.forEach((v) => {
+            if (v.id === variableId) {
+                v.name = newName;
+            }
+        });
+    });
+
+    await OBR.scene.setMetadata({ [METADATA_KEY_SCENE]: newMetadata });
+}
+
+export async function changeVariableType(
+    variableId: string,
+    newType: string,
+): Promise<void> {
+    const currentMetadata = await getSceneMetadata();
+
+    const newMetadata = produce(currentMetadata, (draft) => {
+        draft.vars?.forEach((v) => {
+            if (v.id === variableId) {
+                v.type = newType;
+            }
+        });
+    });
+
+    await OBR.scene.setMetadata({ [METADATA_KEY_SCENE]: newMetadata });
+}

@@ -2,6 +2,12 @@ import type { IVariableMap, IVariableModel, IVariableState } from "blockly";
 import * as Blockly from "blockly";
 import { VariableMap, VariableModel, type Workspace } from "blockly";
 import { getOrInsert } from "owlbear-utils";
+import {
+    changeVariableType,
+    createVariable,
+    deleteVariable,
+    renameVariable,
+} from "../state/SceneMetadata";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
 export function isGlobal(model: IVariableModel<IVariableState>) {
@@ -57,7 +63,7 @@ export class BehaviorVariableMap
     readonly globals = new Map<IVariableState["id"], IBehaviorVariableModel>();
 
     constructor(workspace: Workspace, potentialMap?: boolean) {
-        console.log("constructy", potentialMap);
+        // console.log("constructy", potentialMap);
         this.locals = new VariableMap(workspace, potentialMap);
     }
 
@@ -75,7 +81,7 @@ export class BehaviorVariableMap
                 ),
         );
 
-    readonly getGlobals = (): IBehaviorVariableModel[] =>
+    readonly #getGlobals = (): IBehaviorVariableModel[] =>
         // Potential maps don't include globals
         (this.locals.potentialMap
             ? []
@@ -87,7 +93,7 @@ export class BehaviorVariableMap
         if (local) {
             return local;
         }
-        return this.getGlobals().find((v) => v.getId() === id) ?? null;
+        return this.#getGlobals().find((v) => v.getId() === id) ?? null;
     };
 
     readonly getVariable = (
@@ -99,26 +105,26 @@ export class BehaviorVariableMap
             return local;
         }
         return (
-            this.getGlobals().find(
-                (v) => v.getName() === name && v.getType() === type,
+            this.#getGlobals().find(
+                (v) => v.getName() === name && v.getType() === (type ?? ""),
             ) ?? null
         );
     };
 
     readonly getAllVariables = (): IBehaviorVariableModel[] => [
         ...this.locals.getAllVariables(),
-        ...this.getGlobals(),
+        ...this.#getGlobals(),
     ];
 
     readonly getVariablesOfType = (type: string): IBehaviorVariableModel[] => [
         ...this.locals.getVariablesOfType(type),
-        ...this.getGlobals().filter((v) => v.getType() === type),
+        ...this.#getGlobals().filter((v) => v.getType() === type),
     ];
 
     getTypes = (): string[] => [
         ...new Set([
             ...this.locals.getTypes(),
-            ...this.getGlobals().map((v) => v.getType()),
+            ...this.#getGlobals().map((v) => v.getType()),
         ]),
     ];
 
@@ -128,6 +134,17 @@ export class BehaviorVariableMap
         opt_id?: string,
         sceneGlobal?: true,
     ): IBehaviorVariableModel {
+        const conflictVar = this.getVariable(name, opt_type);
+        if (conflictVar) {
+            if (opt_id && opt_id !== conflictVar.getId()) {
+                throw Error(`Name ${name} in use`);
+            } else {
+                return conflictVar;
+            }
+        } else if (opt_id && this.getVariableById(opt_id)) {
+            throw Error(`ID ${opt_id} in use`);
+        }
+
         if (sceneGlobal) {
             if (this.locals.potentialMap) {
                 throw Error("potential map cannot create globals");
@@ -135,9 +152,9 @@ export class BehaviorVariableMap
             const state: IVariableState = {
                 name,
                 id: opt_id ?? Blockly.utils.idGenerator.genUid(),
-                type: opt_type,
+                type: opt_type ?? "",
             };
-            // TODO add to scene
+            void createVariable(state);
             return this.#getGlobal(state);
         } else {
             return this.locals.createVariable(name, opt_type, opt_id);
@@ -149,7 +166,7 @@ export class BehaviorVariableMap
             if (this.locals.potentialMap) {
                 throw Error("potential map cannot create globals");
             }
-            // TODO add globally
+            void createVariable(variable.save());
         } else {
             this.locals.addVariable(variable);
         }
@@ -159,11 +176,48 @@ export class BehaviorVariableMap
         variable: IBehaviorVariableModel,
         newName: string,
     ): IBehaviorVariableModel => {
+        const conflictVar = this.getVariable(newName, variable.getType());
+        if (conflictVar && conflictVar.getId() !== variable.getId()) {
+            throw Error(`A variable named "${newName}" already exists.`);
+        }
+
         if (variable.isSceneGlobal?.()) {
             if (this.locals.potentialMap) {
                 throw Error("potential map cannot rename globals");
             }
-            throw Error("TODO");
+
+            void renameVariable(variable.getId(), newName);
+            variable.setName(newName);
+
+            // Apply to blocks
+            let existingGroup = "";
+            if (!this.locals.potentialMap) {
+                existingGroup = Blockly.Events.getGroup();
+                if (!existingGroup) {
+                    Blockly.Events.setGroup(true);
+                }
+            }
+
+            try {
+                if (!this.locals.potentialMap) {
+                    Blockly.Events.fire(
+                        new (Blockly.Events.get(Blockly.Events.VAR_RENAME))(
+                            variable,
+                            newName,
+                        ),
+                    );
+                }
+                variable.setName(newName);
+                for (const block of this.locals.workspace.getAllBlocks(false)) {
+                    block.updateVarName(variable);
+                }
+            } finally {
+                if (!this.locals.potentialMap) {
+                    Blockly.Events.setGroup(existingGroup);
+                }
+            }
+
+            return variable;
         } else {
             return this.locals.renameVariable(variable, newName);
         }
@@ -177,7 +231,9 @@ export class BehaviorVariableMap
             if (this.locals.potentialMap) {
                 throw Error("potential map cannot change globals");
             }
-            throw Error("TODO");
+            void changeVariableType(variable.getId(), newType);
+            variable.setType(newType);
+            return variable;
         } else {
             return this.locals.changeVariableType(variable, newType);
         }
@@ -188,7 +244,7 @@ export class BehaviorVariableMap
             if (this.locals.potentialMap) {
                 throw Error("potential map cannot delete globals");
             }
-            throw Error("TODO");
+            void deleteVariable(variable.getId());
         } else {
             this.locals.deleteVariable(variable);
         }
