@@ -1961,6 +1961,7 @@ export const BLOCK_EXTENSION_OWL_TRACKERS_FIELD = {
         },
     ],
     output: "Number",
+    inputsInline: true,
 } as const;
 
 export const BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX = {
@@ -1985,6 +1986,68 @@ export const BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX = {
         },
     ],
     output: "Boolean",
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD = {
+    style: "extension_blocks",
+    type: "extension_owl_trackers_set_field",
+    tooltip: "Set the value of a field in the Owl Trackers extension",
+    helpUrl: "",
+    message0: "%1 set field %2 to %3",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://owl-trackers.onrender.com/owl-trackers-logo.svg",
+            width: 24,
+            height: 24,
+            alt: "Owl Trackers extension icon",
+        },
+        {
+            type: "input_value",
+            name: "FIELD",
+            check: ["String", "Number"],
+        },
+        {
+            type: "input_value",
+            name: "VALUE",
+            check: ["Number", "String"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX = {
+    style: "extension_blocks",
+    type: "extension_owl_trackers_set_checkbox",
+    tooltip:
+        "Set the checked state of a checkbox in the Owl Trackers extension",
+    helpUrl: "",
+    message0: "%1 set checkbox %2 to %3",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://owl-trackers.onrender.com/owl-trackers-logo.svg",
+            width: 24,
+            height: 24,
+            alt: "Owl Trackers extension icon",
+        },
+        {
+            type: "input_value",
+            name: "FIELD",
+            check: ["String", "Number"],
+        },
+        {
+            type: "input_value",
+            name: "CHECKED",
+            check: ["Boolean"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
 } as const;
 
 export const BLOCK_EXTENSION_CODEO_RUN_SCRIPT = {
@@ -2285,6 +2348,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
+    BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
+    BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_SHEETS_GET,
 

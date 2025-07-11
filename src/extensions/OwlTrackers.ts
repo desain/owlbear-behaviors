@@ -1,4 +1,5 @@
 import { type Item } from "@owlbear-rodeo/sdk";
+import type { Draft } from "immer";
 
 const METADATA_KEY = "com.owl-trackers/trackers";
 
@@ -37,5 +38,41 @@ export const OwlTrackers = {
             ?.filter((t) => t.variant === "checkbox")
             ?.find((t) => t.name === fieldName);
         return tracker?.checked ?? false;
+    },
+
+    setFieldValue: (
+        item: Draft<Item>,
+        fieldName: string,
+        value: number,
+    ): void => {
+        const trackers =
+            (item.metadata[METADATA_KEY] as Draft<OwlTracker[] | undefined>) ??
+            [];
+
+        const tracker = trackers.find((t) => t.name === fieldName);
+
+        if (!tracker || tracker.variant === "checkbox") {
+            return;
+        }
+
+        tracker.value = value;
+    },
+
+    setFieldChecked: (
+        item: Draft<Item>,
+        fieldName: string,
+        checked: boolean,
+    ): void => {
+        const trackers =
+            (item.metadata[METADATA_KEY] as Draft<OwlTracker[] | undefined>) ??
+            [];
+
+        const tracker = trackers.find((t) => t.name === fieldName);
+
+        if (!tracker || tracker.variant !== "checkbox") {
+            return;
+        }
+
+        tracker.checked = checked;
     },
 };

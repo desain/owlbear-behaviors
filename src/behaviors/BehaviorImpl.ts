@@ -1152,6 +1152,36 @@ export const BEHAVIORS_IMPL = {
         return OwlTrackers.isFieldChecked(selfItem, String(fieldNameUnknown));
     },
 
+    setOwlTrackersField: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        fieldNameUnknown: unknown,
+        valueUnknown: unknown,
+    ): Promise<void> => {
+        const value = Number(valueUnknown);
+        if (!isFinite(value) || isNaN(value)) {
+            console.warn(`[setViewport] value invalid: ${value}`);
+            return;
+        }
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (draft) => {
+            OwlTrackers.setFieldValue(draft, String(fieldNameUnknown), value);
+        });
+        signal.throwIfAborted();
+    },
+
+    setOwlTrackersCheckbox: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        fieldNameUnknown: unknown,
+        checkedUnknown: unknown,
+    ): Promise<void> => {
+        const checked = Boolean(checkedUnknown);
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (draft) => {
+            OwlTrackers.setFieldChecked(draft, String(fieldNameUnknown), checked);
+        });
+        signal.throwIfAborted();
+    },
+
     runScript: async (signal: AbortSignal, scriptNameUnknown: unknown) => {
         await Codeo.runScript(String(scriptNameUnknown));
         signal.throwIfAborted();

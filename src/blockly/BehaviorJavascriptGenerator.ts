@@ -39,6 +39,8 @@ import {
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
+    BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
+    BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
@@ -1563,6 +1565,47 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             )}`,
             javascript.Order.AWAIT,
         ];
+    },
+
+    extension_owl_trackers_set_field: (block, generator) => {
+        const fieldName = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const value = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.args0[2].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave(
+            "setOwlTrackersField",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            fieldName,
+            value,
+        )};\n`;
+    },
+
+    extension_owl_trackers_set_checkbox: (block, generator) => {
+        const fieldName = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const checked =
+            generator.valueToCode(
+                block,
+                BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.args0[2].name,
+                javascript.Order.NONE,
+            ) || "false";
+        return `await ${behave(
+            "setOwlTrackersCheckbox",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            fieldName,
+            checked,
+        )};\n`;
     },
 
     extension_codeo_run: (block, generator) => {

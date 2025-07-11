@@ -44,7 +44,7 @@ export class CategoryVariables extends ContinuousCategory {
         const variables = this.workspace_.getVariableMap().getAllVariables();
 
         items.push(
-            ...variables
+            ...[...variables]
                 .sort(Blockly.Variables.compareByName)
                 .map((variable) => ({
                     kind: "block",

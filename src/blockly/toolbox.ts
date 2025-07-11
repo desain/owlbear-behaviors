@@ -39,6 +39,8 @@ import {
     BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
+    BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
+    BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
@@ -858,6 +860,24 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     },
 
                     ...extensionHeader("Owl Trackers"),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.args0[1]
+                                .name]: shadowDynamic("HP"),
+                            [BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.args0[2]
+                                .name]: shadowNumber(10),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.args0[1]
+                                .name]: shadowDynamic("checkbox"),
+                        },
+                    },
                     {
                         kind: "block",
                         type: BLOCK_EXTENSION_OWL_TRACKERS_FIELD.type,
