@@ -17,6 +17,9 @@
   "license": "GPL-3.0",
   "devDependencies": {
     "@eslint/js": "^9.30.1",
+    "@types/gapi": "^0.0.47",
+    "@types/gapi.auth2": "^0.0.61",
+    "@types/gapi.client.sheets-v4": "^0.0.4",
     "@types/node": "^22.16.0",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
@@ -41,6 +44,7 @@
     "@mui/material": "^7.2.0",
     "@owlbear-rodeo/sdk": "^3.1.0",
     "blockly": "^12.1.0",
+    "gapi-script": "^1.2.0",
     "immer": "^10.1.1",
     "owlbear-utils": "github:desain/owlbear-utils",
     "react": "^19.1.0",

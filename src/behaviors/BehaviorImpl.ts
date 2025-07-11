@@ -40,6 +40,7 @@ import { Auras } from "../extensions/Auras";
 import { Codeo } from "../extensions/Codeo";
 import { Daggerheart } from "../extensions/Daggerheart";
 import { Fog } from "../extensions/Fog";
+import { Gapi } from "../extensions/Gapi";
 import { Grimoire } from "../extensions/Grimoire";
 import { Hoot } from "../extensions/Hoot";
 import { OwlTrackers } from "../extensions/OwlTrackers";
@@ -1172,5 +1173,24 @@ export const BEHAVIORS_IMPL = {
         const selfId = String(selfIdUnknown);
         await OBR.scene.items.deleteItems([selfId]);
         signal.throwIfAborted();
+    },
+
+    getSheetsValue: async (
+        signal: AbortSignal,
+        cellUnknown: unknown,
+        sheetUnknown: unknown,
+        spreadsheetUrlOrIdUnknown: unknown,
+    ): Promise<string> => {
+        const spreadsheetUrlOrId = String(spreadsheetUrlOrIdUnknown);
+        const spreadsheetId =
+            /^https?:\/\/docs\.google\.com\/spreadsheets\/d\/([0-9a-zA-Z-]+)/.exec(
+                spreadsheetUrlOrId,
+            )?.[1] ?? spreadsheetUrlOrId;
+        const result = await Gapi.getSheetsValue(
+            spreadsheetId,
+            `'${String(sheetUnknown)}'!${String(cellUnknown)}`,
+        );
+        signal.throwIfAborted();
+        return result;
     },
 };

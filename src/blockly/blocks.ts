@@ -9,6 +9,7 @@ import {
     EXTENSION_DRAG_TO_DUPE,
     EXTENSION_SOUND,
     EXTENSION_TAG,
+    EXTENSION_URL,
     INPUT_BROADCAST,
     INPUT_SOUND,
     INPUT_TAG,
@@ -1336,6 +1337,22 @@ export const BLOCK_DYNAMIC_VAL = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_URL = {
+    type: "behavior_url",
+    extensions: [EXTENSION_URL],
+    tooltip: "Enter URL",
+    helpUrl: "",
+    message0: "%1",
+    args0: [
+        {
+            type: "field_input",
+            name: "URL",
+        },
+    ],
+    output: ["String"],
+    inputsInline: true,
+} as const;
+
 export const BLOCK_COLOR_PICKER = {
     style: "looks_blocks",
     type: "color_hsv_sliders",
@@ -1995,6 +2012,40 @@ export const BLOCK_EXTENSION_CODEO_RUN_SCRIPT = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_EXTENSION_SHEETS_GET = {
+    style: "extension_blocks",
+    type: "extension_sheets_get",
+    tooltip: "Get a cell from Google Sheets",
+    helpUrl: "",
+    message0: "%1 cell %2 of %3 in %4",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://upload.wikimedia.org/wikipedia/commons/a/ae/Google_Sheets_2020_Logo.svg",
+            width: 24,
+            height: 24,
+            alt: "Google Sheets icon",
+        },
+        {
+            type: "input_value",
+            name: "CELL",
+            check: ["String"],
+        },
+        {
+            type: "input_value",
+            name: "SHEET",
+            check: ["String", "Number"],
+        },
+        {
+            type: "input_value",
+            name: "ID",
+            check: ["String"],
+        },
+    ],
+    output: "String",
+    inputsInline: true,
+} as const;
+
 // Menus
 export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
@@ -2235,9 +2286,11 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
+    BLOCK_EXTENSION_SHEETS_GET,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,
+    BLOCK_URL,
     BLOCK_COLOR_PICKER,
     BLOCK_ANGLE,
     BLOCK_LAYER_MENU,

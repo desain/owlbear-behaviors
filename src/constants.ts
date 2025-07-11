@@ -60,6 +60,7 @@ export const FIELD_SOUND = "FIELD_SOUND";
 export const DROPDOWN_SOUND_MEOW = "meow";
 
 export const EXTENSION_DRAG_TO_DUPE = "extension_drag_to_dupe";
+export const EXTENSION_URL = "extension_url";
 
 export const CREATE_NEW_RESOURCE = "__create_new__";
 

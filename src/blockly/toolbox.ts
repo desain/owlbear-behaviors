@@ -41,6 +41,7 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
+    BLOCK_EXTENSION_SHEETS_GET,
     BLOCK_FACE,
     BLOCK_FOREVER,
     BLOCK_GET_FILL_COLOR,
@@ -103,6 +104,7 @@ import {
     BLOCK_TOUCH,
     BLOCK_TOUCHING,
     BLOCK_UNLOCK,
+    BLOCK_URL,
     BLOCK_VISIBLE,
     BLOCK_WAIT,
     BLOCK_WAIT_UNTIL,
@@ -820,6 +822,30 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_MAX_HP),
                     blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_TEMP_HP),
                     blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_AC),
+
+                    {
+                        kind: "label",
+                        text: "Google Sheets",
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_SHEETS_GET.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_SHEETS_GET.args0[1].name]:
+                                shadowDynamic("A1"),
+                            [BLOCK_EXTENSION_SHEETS_GET.args0[2].name]:
+                                shadowDynamic("Sheet1"),
+                            [BLOCK_EXTENSION_SHEETS_GET.args0[3].name]: {
+                                shadow: {
+                                    type: BLOCK_URL.type,
+                                    fields: {
+                                        [BLOCK_URL.args0[0].name]:
+                                            "https://docs.google.com/spreadsheets/d/1ZVKsRBdWjpWXt9c7cJSI2-EEiUOvBFDbNjmpa8m-9Gw",
+                                    },
+                                },
+                            },
+                        },
+                    },
 
                     ...extensionHeader("Hoot"),
                     {

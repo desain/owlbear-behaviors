@@ -22,7 +22,7 @@ export function shadowDynamic(s?: string) {
         shadow: {
             type: BLOCK_DYNAMIC_VAL.type,
             fields: {
-                TEXT: s,
+                [BLOCK_DYNAMIC_VAL.args0[0].name]: s,
             },
         },
     };

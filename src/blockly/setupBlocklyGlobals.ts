@@ -12,6 +12,7 @@ import { CategoryVariables } from "./CategoryVariables";
 import "./CatZelosRenderer";
 import { CatRenderer } from "./CatZelosRenderer";
 import { installExtensionDragToDupe } from "./extensionDragToDupe";
+import { installExtensionLimitIdLength } from "./extensionUrl";
 import { registerFieldTokenImage } from "./FieldTokenImage";
 import { installSoundExtension } from "./soundExtension";
 import { installTagExtension } from "./tagExtension";
@@ -50,6 +51,7 @@ export function setupBlocklyGlobals() {
     installSoundExtension();
     installTagExtension();
     installExtensionDragToDupe();
+    installExtensionLimitIdLength();
 
     blocklySetup = true;
 }

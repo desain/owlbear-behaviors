@@ -41,6 +41,7 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
+    BLOCK_EXTENSION_SHEETS_GET,
     BLOCK_FACE,
     BLOCK_FOREVER,
     BLOCK_GLIDE,
@@ -81,6 +82,7 @@ import {
     BLOCK_TAG,
     BLOCK_TOUCH,
     BLOCK_TOUCHING,
+    BLOCK_URL,
     BLOCK_WAIT,
     BLOCK_WAIT_UNTIL,
     BLOCK_WHEN_I,
@@ -1572,6 +1574,34 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         return `await ${behave("runScript", PARAMETER_SIGNAL, scriptName)};\n`;
     },
 
+    extension_sheets_get: (block, generator) => {
+        const cell = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_SHEETS_GET.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const sheet = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_SHEETS_GET.args0[2].name,
+            javascript.Order.NONE,
+        );
+        const spreadsheetId = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_SHEETS_GET.args0[3].name,
+            javascript.Order.NONE,
+        );
+        return [
+            `await ${behave(
+                "getSheetsValue",
+                PARAMETER_SIGNAL,
+                cell,
+                sheet,
+                spreadsheetId,
+            )}`,
+            javascript.Order.AWAIT,
+        ];
+    },
+
     // Utility blocks
     looks_opacity_slider: (block) => {
         // Output the slider value as a stringified number
@@ -1598,6 +1628,14 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
                 ? text
                 : generator.quote_(text);
         return [code, javascript.Order.ATOMIC];
+    },
+
+    behavior_url: (block, generator) => {
+        const url: unknown = block.getFieldValue(BLOCK_URL.args0[0].name);
+        if (typeof url !== "string") {
+            throw Error("url should be string");
+        }
+        return [generator.quote_(url), javascript.Order.ATOMIC];
     },
 
     math_angle: (block) => {

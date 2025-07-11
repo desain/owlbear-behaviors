@@ -52,14 +52,15 @@ Here are the different kinds of blocks:
 Tokens can be labelled with tags, which are bits of text attached to a token.
 
 -   **Add tags** to tokens to group them or create specialized behaviors
+-   Drag blocks onto the tag field in tag blocks to dynamically choose or construct tags at runtime
 -   Edit tags from the right-click behaviors menu for an item
 -   All tags in the scene are visible in the main Behaviors panel for easy management
 
 ### Messages
 
 -   **Send messages** between tokens using broadcast blocks
--   Create coordinated behaviors across multiple tokens
--   Send messages from the main Behaviors panel as well as from behavior scripts
+-   Broadcast messages from the main Behaviors panel as well as from behavior scripts
+-   Drag blocks onto the message field in message blocks to dynamically choose or construct tags at runtime
 
 ![Sending a Message](https://owlbear-behaviors.pages.dev/docs/assets/sending-message.gif)
 
@@ -74,7 +75,7 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 ### Variables
 
 -   Create variables to store and manipulate data
--   Use variables for counters, scores, or state tracking
+-   Variables accept any type of value, and can be used in place of any type of data
 -   Variables reset when the page is reloaded or when you save the behavior script
 
 ### Motion
@@ -88,9 +89,10 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 -   'When I am selected' blocks fire no matter who selects the token
 -   'Deselect' blocks apply to all players
 
-### Other Extensions
+### Other Extensions and Integrations
 
 -   Behaviors can integrate with other extensions. Blocks for controlling other extensions are in the 'extensions' section of the block toolbox. You must have the other extension installed in order for Behaviors to integrate with it.
+-   The Google Sheets integration pulls the current value of a cell, not the text of the formula that produced it.
 
 ## Tips
 
@@ -154,7 +156,7 @@ To make a production build run:
 -   Auto features
     -   auto-tags
     -   auto-behaviors
--   Support note items
+-   Support text items
 -   Context menus
     -   Copy and paste behaviors
     -   Mass tag
@@ -194,6 +196,7 @@ To make a production build run:
 -   Animations can be choppy when the action window is not open
 -   Stacking in backpack - happens when lots of (tall?) items, only on second time opening backpack
 -   Deleting last variable doesn't work
+-   Sounds aren't restored when loading an item with behaviors from a prefab
 
 ## License
 
