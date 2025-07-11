@@ -21,7 +21,6 @@ export const BLOCK_GLIDE = {
     style: "motion_blocks",
     type: "motion_glidesecstoxy",
     tooltip: "Smoothly move",
-    helpUrl: "",
     message0: "glide %1 secs to x: %2 y: %3",
     args0: [
         {
@@ -49,7 +48,6 @@ export const BLOCK_GLIDE_ROTATE_LEFT = {
     style: "motion_blocks",
     type: "motion_glide_turnleft",
     tooltip: "Smoothly turn this token to the left",
-    helpUrl: "",
     message0: "glide %1 secs %2 %3 degrees",
     args0: [
         {
@@ -78,7 +76,6 @@ export const BLOCK_GLIDE_ROTATE_RIGHT = {
     style: "motion_blocks",
     type: "motion_glide_turnright",
     tooltip: "Smoothly turn this token to the right",
-    helpUrl: "",
     message0: "glide %1 secs %2 %3 degrees",
     args0: [
         {
@@ -107,7 +104,6 @@ export const BLOCK_GOTO = {
     style: "motion_blocks",
     type: "motion_gotoxy",
     tooltip: "Jump immediately to a position",
-    helpUrl: "",
     message0: "go to x: %1 y: %2",
     args0: [
         {
@@ -130,7 +126,6 @@ export const BLOCK_MOVE_DIRECTION = {
     style: "motion_blocks",
     type: "motion_move_direction",
     tooltip: "Move in a specified direction",
-    helpUrl: "",
     message0: "go %1 %2 %3",
     args0: [
         {
@@ -172,7 +167,6 @@ export const BLOCK_X_POSITION = {
     style: "motion_blocks",
     type: "motion_xposition",
     tooltip: "X position of the current token",
-    helpUrl: "",
     message0: "x position",
     output: "Number",
 } as const;
@@ -181,7 +175,6 @@ export const BLOCK_Y_POSITION = {
     style: "motion_blocks",
     type: "motion_yposition",
     tooltip: "Y position of the current token",
-    helpUrl: "",
     message0: "y position",
     output: "Number",
 } as const;
@@ -190,7 +183,6 @@ export const BLOCK_ATTACH = {
     style: "motion_blocks",
     type: "motion_attach",
     tooltip: "Attach this token to another item",
-    helpUrl: "",
     message0: "attach to %1",
     args0: [
         {
@@ -208,7 +200,6 @@ export const BLOCK_DETACH = {
     style: "motion_blocks",
     type: "motion_detach",
     tooltip: "Detach this token from its parent",
-    helpUrl: "",
     message0: "detach",
     previousStatement: null,
     nextStatement: null,
@@ -218,7 +209,6 @@ export const BLOCK_MY_PARENT = {
     style: "motion_blocks",
     type: "motion_my_parent",
     tooltip: "The parent item that this token is attached to",
-    helpUrl: "",
     message0: "my parent",
     output: "ItemId",
 } as const;
@@ -227,7 +217,6 @@ export const BLOCK_ATTACHED = {
     style: "motion_blocks",
     type: "motion_attached",
     tooltip: "Whether this token is attached to a parent token",
-    helpUrl: "",
     message0: "attached?",
     output: "Boolean",
 } as const;
@@ -236,7 +225,6 @@ export const BLOCK_LOCK = {
     style: "motion_blocks",
     type: "looks_lock",
     tooltip: "Lock this token in place",
-    helpUrl: "",
     message0: "lock",
     previousStatement: null,
     nextStatement: null,
@@ -246,7 +234,6 @@ export const BLOCK_UNLOCK = {
     style: "motion_blocks",
     type: "looks_unlock",
     tooltip: "Unlock this token so it can be moved",
-    helpUrl: "",
     message0: "unlock",
     previousStatement: null,
     nextStatement: null,
@@ -256,7 +243,6 @@ export const BLOCK_LOCKED = {
     style: "motion_blocks",
     type: "looks_locked",
     tooltip: "Whether this token is locked",
-    helpUrl: "",
     message0: "locked?",
     output: "Boolean",
 } as const;
@@ -265,7 +251,6 @@ export const BLOCK_ROTATE_LEFT = {
     style: "motion_blocks",
     type: "motion_turnleft",
     tooltip: "Rotate this token to the left",
-    helpUrl: "",
     message0: "turn %1 %2 degrees",
     args0: [
         {
@@ -289,7 +274,6 @@ export const BLOCK_ROTATE_RIGHT = {
     style: "motion_blocks",
     type: "motion_turnright",
     tooltip: "Rotate this token to the right",
-    helpUrl: "",
     message0: "turn %1 %2 degrees",
     args0: [
         {
@@ -313,7 +297,6 @@ export const BLOCK_ROTATION = {
     style: "motion_blocks",
     type: "motion_direction",
     tooltip: "Rotation of the current token",
-    helpUrl: "",
     message0: "rotation",
     output: "Number",
 } as const;
@@ -322,7 +305,6 @@ export const BLOCK_POINT_IN_DIRECTION = {
     style: "motion_blocks",
     type: "motion_pointindirection",
     tooltip: "Set the rotation of the current direction",
-    helpUrl: "",
     message0: "point in direction %1",
     args0: [
         {
@@ -340,7 +322,6 @@ export const BLOCK_FACE = {
     style: "motion_blocks",
     type: "motion_pointtowards",
     tooltip: "Turn to face another token",
-    helpUrl: "",
     message0: "point towards %1",
     args0: [
         {
@@ -372,7 +353,6 @@ export const BLOCK_SNAP_TO_GRID = {
     style: "motion_blocks",
     type: "motion_snap",
     tooltip: "Snap this token's position to the grid",
-    helpUrl: "",
     message0: "snap to grid",
     previousStatement: null,
     nextStatement: null,
@@ -383,7 +363,6 @@ export const BLOCK_SHOW = {
     style: "looks_blocks",
     type: "looks_show",
     tooltip: "Make this token visible",
-    helpUrl: "",
     message0: "show",
     previousStatement: null,
     nextStatement: null,
@@ -393,7 +372,6 @@ export const BLOCK_HIDE = {
     style: "looks_blocks",
     type: "looks_hide",
     tooltip: "Make this token invisible",
-    helpUrl: "",
     message0: "hide",
     previousStatement: null,
     nextStatement: null,
@@ -403,7 +381,6 @@ export const BLOCK_SAY = {
     style: "looks_blocks",
     type: "looks_sayforsecs",
     tooltip: "Display a message above the token",
-    helpUrl: "",
     message0: "say %1 for %2 seconds",
     args0: [
         {
@@ -426,7 +403,6 @@ export const BLOCK_SET_SIZE = {
     style: "looks_blocks",
     type: "looks_setsizeto",
     tooltip: "Set the size of this token as a percentage of its original size",
-    helpUrl: "",
     message0: "set size to %1 %%",
     args0: [
         {
@@ -445,7 +421,6 @@ export const BLOCK_CHANGE_SIZE = {
     type: "looks_changesizeby",
     tooltip:
         "Change the size of this token by a percentage of its original size",
-    helpUrl: "",
     message0: "change size by %1 %%",
     args0: [
         {
@@ -464,7 +439,6 @@ export const BLOCK_GET_SIZE = {
     type: "looks_size",
     tooltip:
         "Get the current size of this token as a percentage of its original size",
-    helpUrl: "",
     message0: "size",
     output: "Number",
 } as const;
@@ -473,7 +447,6 @@ export const BLOCK_VISIBLE = {
     style: "looks_blocks",
     type: "looks_visible",
     tooltip: "Check if this token is visible",
-    helpUrl: "",
     message0: "visible?",
     output: "Boolean",
 } as const;
@@ -482,7 +455,6 @@ export const BLOCK_REPLACE_IMAGE = {
     style: "looks_blocks",
     type: "looks_replace_image",
     tooltip: "Change the token image",
-    helpUrl: "",
     message0: "replace image with %1",
     args0: [
         {
@@ -499,7 +471,6 @@ export const BLOCK_GET_LABEL = {
     style: "looks_blocks",
     type: "looks_get_label",
     tooltip: "Get the label of this token (or name if it's not an image)",
-    helpUrl: "",
     message0: "text",
     output: "String",
 } as const;
@@ -508,7 +479,6 @@ export const BLOCK_SET_LABEL = {
     style: "looks_blocks",
     type: "looks_set_label",
     tooltip: "Set the label of this token (or name if it's not an image)",
-    helpUrl: "",
     message0: "set text to %1",
     args0: [
         {
@@ -526,7 +496,6 @@ export const BLOCK_GET_LAYER = {
     style: "looks_blocks",
     type: "looks_get_layer",
     tooltip: "Get the current layer of this token",
-    helpUrl: "",
     message0: "layer",
     output: "String",
 } as const;
@@ -535,7 +504,6 @@ export const BLOCK_SET_LAYER = {
     style: "looks_blocks",
     type: "looks_set_layer",
     tooltip: "Set the layer of this token",
-    helpUrl: "",
     message0: "go to %1 layer",
     args0: [
         {
@@ -553,7 +521,6 @@ export const BLOCK_SET_STROKE_COLOR = {
     style: "looks_blocks",
     type: "looks_set_stroke_color",
     tooltip: "Set the stroke color of a line or shape",
-    helpUrl: "",
     message0: "set stroke color to %1",
     args0: [
         {
@@ -571,7 +538,6 @@ export const BLOCK_SET_STROKE_OPACITY = {
     style: "looks_blocks",
     type: "looks_set_stroke_opacity",
     tooltip: "Set the stroke opacity of a line or shape",
-    helpUrl: "",
     message0: "set stroke opacity to %1%%",
     args0: [
         {
@@ -589,7 +555,6 @@ export const BLOCK_SET_FILL_COLOR = {
     style: "looks_blocks",
     type: "looks_set_fill_color",
     tooltip: "Set the fill color of a shape",
-    helpUrl: "",
     message0: "set fill color to %1",
     args0: [
         {
@@ -607,7 +572,6 @@ export const BLOCK_SET_FILL_OPACITY = {
     style: "looks_blocks",
     type: "looks_set_fill_opacity",
     tooltip: "Set the fill opacity of a shape",
-    helpUrl: "",
     message0: "set fill opacity to %1%%",
     args0: [
         {
@@ -625,7 +589,6 @@ export const BLOCK_GET_STROKE_COLOR = {
     style: "looks_blocks",
     type: "looks_get_stroke_color",
     tooltip: "Current stroke color of a line or shape",
-    helpUrl: "",
     message0: "stroke color",
     output: "String",
 } as const;
@@ -634,7 +597,6 @@ export const BLOCK_GET_STROKE_OPACITY = {
     style: "looks_blocks",
     type: "looks_get_stroke_opacity",
     tooltip: "Current stroke opacity of a line or shape",
-    helpUrl: "",
     message0: "stroke opacity",
     output: "Number",
 } as const;
@@ -643,7 +605,6 @@ export const BLOCK_GET_FILL_COLOR = {
     style: "looks_blocks",
     type: "looks_get_fill_color",
     tooltip: "Current fill color of a shape",
-    helpUrl: "",
     message0: "fill color",
     output: "String",
 } as const;
@@ -652,7 +613,6 @@ export const BLOCK_GET_FILL_OPACITY = {
     style: "looks_blocks",
     type: "looks_get_fill_opacity",
     tooltip: "Current fill opacity of a shape",
-    helpUrl: "",
     message0: "fill opacity",
     output: "Number",
 } as const;
@@ -661,7 +621,6 @@ export const BLOCK_SET_VIEWPORT = {
     style: "looks_blocks",
     type: "looks_set_viewport",
     tooltip: "Center the viewport on specified coordinates",
-    helpUrl: "",
     message0: "center %1 view on x: %2 y: %3",
     args0: [
         {
@@ -692,7 +651,6 @@ export const BLOCK_CLEAR_GRAPHIC_EFFECTS = {
     style: "looks_blocks",
     type: "looks_cleargraphiceffects",
     tooltip: "Remove all graphic effects from this token",
-    helpUrl: "",
     message0: "clear graphic effects",
     previousStatement: null,
     nextStatement: null,
@@ -707,7 +665,6 @@ export const BLOCK_SET_EFFECT_TO = {
     style: "looks_blocks",
     type: "looks_seteffectto",
     tooltip: "Set a visual effect to a specific intensity (0-100%)",
-    helpUrl: "",
     message0: "set %1 effect to %2",
     args0: [
         {
@@ -730,7 +687,6 @@ export const BLOCK_CHANGE_EFFECT_BY = {
     style: "looks_blocks",
     type: "looks_changeeffectby",
     tooltip: "Change a visual effect intensity by a value (percentage)",
-    helpUrl: "",
     message0: "change %1 effect by %2",
     args0: [
         {
@@ -754,7 +710,6 @@ export const BLOCK_IMMEDIATELY = {
     style: "event_blocks",
     type: "event_immediately",
     tooltip: "Behavior to execute as soon as this script is saved",
-    helpUrl: "",
     message0: "immediately",
     nextStatement: null,
 } as const;
@@ -764,7 +719,6 @@ export const BLOCK_RECEIVE_BROADCAST = {
     extensions: [EXTENSION_BROADCAST],
     type: "event_whenbroadcastreceived",
     tooltip: "Runs the blocks below when the specified broadcast fires",
-    helpUrl: "",
     message0: "when I receive %1",
     args0: [
         {
@@ -781,7 +735,6 @@ export const BLOCK_BROADCAST = {
     // extensions: [EXTENSION_BROADCAST],
     type: "event_broadcast",
     tooltip: "Broadcast a message to all tokens",
-    helpUrl: "",
     message0: "broadcast %1",
     args0: [
         {
@@ -798,7 +751,6 @@ export const BLOCK_WHEN_I = {
     style: "event_blocks",
     type: "event_on_property_change",
     tooltip: "Define what to do whenever this token's properties change",
-    helpUrl: "",
     message0: "when I %1",
     args0: [
         {
@@ -824,7 +776,6 @@ export const BLOCK_TOUCH = {
     style: "event_blocks",
     type: "event_whentouchingobject",
     tooltip: "Define what to do when this token touches another",
-    helpUrl: "",
     message0: "when I %1 %2",
     args0: [
         {
@@ -849,7 +800,6 @@ export const BLOCK_TAG = {
     style: "sensing_blocks",
     type: "sensing_tag",
     tooltip: "Tag a token",
-    helpUrl: "",
     message0: "tag %1 as %2",
     args0: [
         {
@@ -872,7 +822,6 @@ export const BLOCK_REMOVE_TAG = {
     style: "sensing_blocks",
     type: "sensing_remove_tag",
     tooltip: "Remove a tag from a token",
-    helpUrl: "",
     message0: "untag %1 as %2",
     args0: [
         {
@@ -895,7 +844,6 @@ export const BLOCK_HAS_TAG_SELF = {
     style: "sensing_blocks",
     type: "sensing_has_tag_self",
     tooltip: "Whether this token has a tag",
-    helpUrl: "",
     message0: "I have tag %1 ?",
     args0: [
         {
@@ -912,7 +860,6 @@ export const BLOCK_HAS_TAG_OTHER = {
     style: "sensing_blocks",
     type: "sensing_has_tag_other",
     tooltip: "Whether another token has a tag",
-    helpUrl: "",
     message0: "%1 has tag %2 ?",
     args0: [
         {
@@ -934,7 +881,6 @@ export const BLOCK_CLOSEST_TAGGED = {
     style: "sensing_blocks",
     type: "sensing_closest_tagged",
     tooltip: "Find the closest token with a tag",
-    helpUrl: "",
     message0: "closest token tagged %1",
     args0: [
         {
@@ -951,7 +897,6 @@ export const BLOCK_DESELECT = {
     style: "sensing_blocks",
     type: "sensing_deselect",
     tooltip: "Deselect this or all tokens",
-    helpUrl: "",
     message0: "deselect %1",
     args0: [
         {
@@ -972,7 +917,6 @@ export const BLOCK_OTHER_SRC = {
     extensions: [EXTENSION_DRAG_TO_DUPE],
     type: "sensing_other_src",
     tooltip: "The token this token is touching (drag to use variable)",
-    helpUrl: "",
     message0: "other",
     output: "ItemId",
 } as const;
@@ -981,7 +925,6 @@ export const BLOCK_OTHER_VAL = {
     style: "sensing_blocks",
     type: "sensing_other_val",
     tooltip: "The token this token is touching",
-    helpUrl: "",
     message0: "other",
     output: "ItemId",
 } as const;
@@ -990,7 +933,6 @@ export const BLOCK_SENSING_OF = {
     style: "sensing_blocks",
     type: "sensing_of",
     tooltip: "Get a property value of another item",
-    helpUrl: "",
     message0: "%1 of %2",
     args0: [
         {
@@ -1017,7 +959,6 @@ export const BLOCK_DISTANCE_TO = {
     type: "sensing_distanceto",
     tooltip:
         "Distance to token, in grid units using current measurement system",
-    helpUrl: "",
     message0: "distance to %1",
     args0: [
         {
@@ -1034,7 +975,6 @@ export const BLOCK_TOUCHING = {
     style: "sensing_blocks",
     type: "sensing_touchingobject",
     tooltip: "Whether this token is touching another token",
-    helpUrl: "",
     message0: "touching %1 ?",
     args0: [
         {
@@ -1051,7 +991,6 @@ export const BLOCK_CURRENT_TIME = {
     style: "sensing_blocks",
     type: "sensing_current_time",
     tooltip: "Get the current time",
-    helpUrl: "",
     message0: "current %1",
     args0: [
         {
@@ -1077,7 +1016,6 @@ export const BLOCK_WAIT = {
     style: "control_blocks",
     type: "control_wait",
     tooltip: "Pause for the specified duration",
-    helpUrl: "",
     message0: "wait %1 seconds",
     args0: [
         {
@@ -1095,7 +1033,6 @@ export const BLOCK_STOP = {
     style: "control_blocks",
     type: "control_behavior_stop",
     tooltip: "Stop execution of scripts",
-    helpUrl: "",
     message0: "stop %1",
     args0: [
         {
@@ -1111,7 +1048,6 @@ export const BLOCK_IF = {
     style: "control_blocks",
     type: "control_behavior_if",
     tooltip: "%{BKY_CONTROLS_IF_TOOLTIP_1}",
-    helpUrl: "",
     message0: "if %1 then %2 %3",
     args0: [
         {
@@ -1136,7 +1072,6 @@ export const BLOCK_IF_ELSE = {
     style: "control_blocks",
     type: "control_behavior_if_else",
     tooltip: "%{BKY_CONTROLS_IF_TOOLTIP_2}",
-    helpUrl: "",
     message0: "if %1 then",
     message1: "%1",
     message2: "else",
@@ -1169,7 +1104,6 @@ export const BLOCK_FOREVER = {
     style: "control_blocks",
     type: "control_forever",
     tooltip: "Run statements over and over",
-    helpUrl: "",
     message0: "forever",
     message1: "%1", // Statement
     message2: "%1", // Icon
@@ -1288,7 +1222,6 @@ export const BLOCK_WHEN_I_START_AS_CLONE = {
     style: "control_blocks",
     type: "control_start_as_clone",
     tooltip: "Behavior to execute when this token starts as a clone",
-    helpUrl: "",
     message0: "when I start as a clone",
     nextStatement: null,
 } as const;
@@ -1297,7 +1230,6 @@ export const BLOCK_CREATE_CLONE_OF = {
     style: "control_blocks",
     type: "control_create_clone_of",
     tooltip: "Create a clone of the selected token",
-    helpUrl: "",
     message0: "create clone of %1",
     args0: [
         {
@@ -1315,7 +1247,6 @@ export const BLOCK_DELETE_THIS = {
     style: "control_blocks",
     type: "control_delete_this",
     tooltip: "Delete this token",
-    helpUrl: "",
     message0: "delete this token",
     previousStatement: null,
     inputsInline: true,
@@ -1326,7 +1257,6 @@ export const BLOCK_JOIN = {
     style: "operators_blocks",
     type: "operator_join",
     tooltip: "Join two values into a text string",
-    helpUrl: "",
     message0: "join %1 %2",
     args0: [
         {
@@ -1351,7 +1281,6 @@ export const BLOCK_JOIN = {
 export const BLOCK_DYNAMIC_VAL = {
     type: "behavior_dynamic_val",
     tooltip: "Text string",
-    helpUrl: "",
     message0: "%1",
     args0: [
         {
@@ -1367,7 +1296,6 @@ export const BLOCK_URL = {
     type: "behavior_url",
     extensions: [EXTENSION_URL],
     tooltip: "Enter URL",
-    helpUrl: "",
     message0: "%1",
     args0: [
         {
@@ -1383,7 +1311,6 @@ export const BLOCK_COLOR_PICKER = {
     style: "looks_blocks",
     type: "color_hsv_sliders",
     tooltip: "Pick a color using HSV sliders",
-    helpUrl: "",
     message0: "%1",
     args0: [
         {
@@ -1398,7 +1325,6 @@ export const BLOCK_OPACITY_SLIDER = {
     style: "looks_blocks",
     type: "looks_opacity_slider",
     tooltip: "Set opacity (0-100%)",
-    helpUrl: "",
     message0: "%1",
     args0: [
         {
@@ -1416,7 +1342,6 @@ export const BLOCK_EQUALS = {
     style: "operators_blocks",
     type: "operator_equals",
     tooltip: "True if both sides are equal",
-    helpUrl: "",
     message0: "%1 = %2",
     args0: [
         {
@@ -1438,7 +1363,6 @@ export const BLOCK_LESS_THAN = {
     style: "operators_blocks",
     type: "operator_lt",
     tooltip: "True if left side is less than right side",
-    helpUrl: "",
     message0: "%1 < %2",
     args0: [
         {
@@ -1460,7 +1384,6 @@ export const BLOCK_GREATER_THAN = {
     style: "operators_blocks",
     type: "operator_gt",
     tooltip: "True if left side is greater than right side",
-    helpUrl: "",
     message0: "%1 > %2",
     args0: [
         {
@@ -1482,7 +1405,6 @@ export const BLOCK_LETTER_OF = {
     style: "operators_blocks",
     type: "operator_letter_of",
     tooltip: "Get the letter at a given position in a string (1-based)",
-    helpUrl: "",
     message0: "letter %1 of %2",
     args0: [
         {
@@ -1504,7 +1426,6 @@ export const BLOCK_CONTAINS = {
     style: "operators_blocks",
     type: "operator_contains",
     tooltip: "Check if one string of text contains another",
-    helpUrl: "",
     message0: "%1 contains %2 ?",
     args0: [
         {
@@ -1527,7 +1448,6 @@ export const BLOCK_SOUND_PLAY = {
     type: "sound_play",
     tooltip:
         "Start playing a sound, and continue immediately to the next block.",
-    helpUrl: "",
     message0: "start sound %1",
     args0: [
         {
@@ -1546,7 +1466,6 @@ export const BLOCK_SOUND_PLAY_UNTIL_DONE = {
     type: "sound_playuntildone",
     tooltip:
         "Play a sound, and continue to the next block once it's done playing.",
-    helpUrl: "",
     message0: "play sound %1 until done",
     args0: [
         {
@@ -1860,7 +1779,6 @@ export const BLOCK_ANNOUNCEMENT = {
     style: "extension_blocks",
     type: "extension_announcement",
     tooltip: "Show an announcement using the Announcement extension",
-    helpUrl: "",
     message0: "%1 announce %2 for %3 secs",
     args0: [
         {
@@ -1890,7 +1808,6 @@ export const BLOCK_HOOT = {
     style: "extension_blocks",
     type: "extension_hoot_play",
     tooltip: "Play a sound using the Hoot extension",
-    helpUrl: "",
     message0: "%1 play track %2 from playlist %3",
     args0: [
         {
@@ -1920,7 +1837,6 @@ export const BLOCK_ADD_AURA = {
     style: "extension_blocks",
     type: "extension_auras_add",
     tooltip: "Add an aura using the Auras & Emanations extension",
-    helpUrl: "",
     message0: "%1 add %2 %{BKY_OBR_GRID_UNIT} %3 %4 aura",
     args0: [
         {
@@ -1959,7 +1875,6 @@ export const BLOCK_REMOVE_AURAS = {
     style: "extension_blocks",
     type: "extension_auras_remove",
     tooltip: "Remove all auras from the Auras & Emanations extension",
-    helpUrl: "",
     message0: "%1 remove auras",
     args0: [
         {
@@ -1979,7 +1894,6 @@ export const BLOCK_EXTENSION_FOG_LIT = {
     style: "extension_blocks",
     type: "extension_fog_lit",
     tooltip: "Whether this token has a light from the Dynamic Fog extension",
-    helpUrl: "",
     message0: "%1 I have a light?",
     args0: [
         {
@@ -1997,7 +1911,6 @@ export const BLOCK_EXTENSION_FOG_ADD = {
     style: "extension_blocks",
     type: "extension_fog_add",
     tooltip: "Add a light using the Dynamic Fog extension",
-    helpUrl: "",
     message0: "%1 add %2 %{BKY_OBR_GRID_UNIT} %3 light",
     args0: [
         {
@@ -2030,7 +1943,6 @@ export const BLOCK_EXTENSION_FOG_REMOVE = {
     style: "extension_blocks",
     type: "extension_fog_remove",
     tooltip: "Remove Dynamic Fog light from this token",
-    helpUrl: "",
     message0: "%1 remove light",
     args0: [
         {
@@ -2049,7 +1961,6 @@ export const BLOCK_EXTENSION_GRIMOIRE_HP = {
     style: "extension_blocks",
     type: "extension_grimoire_hp",
     tooltip: "Get current HP from Game Master's Grimoire extension",
-    helpUrl: "",
     message0: "%1 my HP",
     args0: [
         {
@@ -2067,7 +1978,6 @@ export const BLOCK_EXTENSION_GRIMOIRE_MAX_HP = {
     style: "extension_blocks",
     type: "extension_grimoire_max_hp",
     tooltip: "Get maximum HP from Game Master's Grimoire extension",
-    helpUrl: "",
     message0: "%1 my max HP",
     args0: [
         {
@@ -2085,7 +1995,6 @@ export const BLOCK_EXTENSION_GRIMOIRE_TEMP_HP = {
     style: "extension_blocks",
     type: "extension_grimoire_temp_hp",
     tooltip: "Get temporary HP from Game Master's Grimoire extension",
-    helpUrl: "",
     message0: "%1 my temp HP",
     args0: [
         {
@@ -2103,7 +2012,6 @@ export const BLOCK_EXTENSION_GRIMOIRE_AC = {
     style: "extension_blocks",
     type: "extension_grimoire_ac",
     tooltip: "Get armor class from Game Master's Grimoire extension",
-    helpUrl: "",
     message0: "%1 my AC",
     args0: [
         {
@@ -2122,7 +2030,6 @@ export const BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE = {
     type: "extension_grimoire_hp_change",
     tooltip:
         "Runs the blocks below when this token's HP changes in the Game Master's Grimoire extension",
-    helpUrl: "",
     message0: "%1 when my HP changes",
     args0: [
         {
@@ -2141,7 +2048,6 @@ export const BLOCK_EXTENSION_RUMBLE_SAY = {
     style: "extension_blocks",
     type: "extension_rumble_say",
     tooltip: "Send a chat message using the Rumble! extension",
-    helpUrl: "",
     message0: "%1 say %2 %3",
     args0: [
         {
@@ -2174,7 +2080,6 @@ export const BLOCK_EXTENSION_RUMBLE_ROLL = {
     style: "extension_blocks",
     type: "extension_rumble_roll",
     tooltip: "Roll dice using the Rumble! extension",
-    helpUrl: "",
     message0: "%1 roll %2",
     args0: [
         {
@@ -2200,7 +2105,6 @@ export const BLOCK_EXTENSION_DAGGERHEART_STAT = {
     type: "extension_daggerheart_stat",
     tooltip:
         "Get a Daggerheart stat from the Game Master's Daggerheart extension",
-    helpUrl: "",
     message0: "%1 my %2",
     args0: [
         {
@@ -2247,7 +2151,6 @@ export const BLOCK_EXTENSION_DAGGERHEART_FEAR = {
     type: "extension_daggerheart_fear",
     tooltip:
         "Get the current Fear value from the Game Master's Daggerheart extension",
-    helpUrl: "",
     message0: "%1 fear",
     args0: [
         {
@@ -2265,7 +2168,6 @@ export const BLOCK_EXTENSION_OWL_TRACKERS_FIELD = {
     style: "extension_blocks",
     type: "extension_owl_trackers_field",
     tooltip: "Get the value of a field from the Owl Trackers extension",
-    helpUrl: "",
     message0: "%1 field %2",
     args0: [
         {
@@ -2290,7 +2192,6 @@ export const BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX = {
     type: "extension_owl_trackers_checkbox",
     tooltip:
         "Check if a checkbox field is checked in the Owl Trackers extension",
-    helpUrl: "",
     message0: "%1 field %2 checked?",
     args0: [
         {
@@ -2314,7 +2215,6 @@ export const BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD = {
     style: "extension_blocks",
     type: "extension_owl_trackers_set_field",
     tooltip: "Set the value of a field in the Owl Trackers extension",
-    helpUrl: "",
     message0: "%1 set field %2 to %3",
     args0: [
         {
@@ -2345,7 +2245,6 @@ export const BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX = {
     type: "extension_owl_trackers_set_checkbox",
     tooltip:
         "Set the checked state of a checkbox in the Owl Trackers extension",
-    helpUrl: "",
     message0: "%1 set checkbox %2 to %3",
     args0: [
         {
@@ -2375,7 +2274,6 @@ export const BLOCK_EXTENSION_CODEO_RUN_SCRIPT = {
     style: "extension_blocks",
     type: "extension_codeo_run",
     tooltip: "Run a script using the Codeo extension",
-    helpUrl: "",
     message0: "%1 run script %2",
     args0: [
         {
@@ -2400,7 +2298,6 @@ export const BLOCK_EXTENSION_SHEETS_GET = {
     style: "extension_blocks",
     type: "extension_sheets_get",
     tooltip: "Get a cell from Google Sheets",
-    helpUrl: "",
     message0: "%1 cell %2 of %3 in %4",
     args0: [
         {
@@ -2434,7 +2331,6 @@ export const BLOCK_EXTENSION_WEATHER_ADD = {
     style: "extension_blocks",
     type: "extension_weather_add",
     tooltip: "Add weather effect to the current scene",
-    helpUrl: "",
     message0: "%1 add %2 %3 %4 %5",
     args0: [
         {
@@ -2501,7 +2397,6 @@ export const BLOCK_EXTENSION_WEATHER_REMOVE = {
     style: "extension_blocks",
     type: "extension_weather_remove",
     tooltip: "Remove weather effect from the current scene",
-    helpUrl: "",
     message0: "%1 remove weather",
     args0: [
         {
@@ -2520,7 +2415,6 @@ export const BLOCK_EXTENSION_WEATHER_HAS = {
     style: "extension_blocks",
     type: "extension_weather_has",
     tooltip: "Whether this token has weather from the Weather extension",
-    helpUrl: "",
     message0: "%1 I have weather?",
     args0: [
         {
@@ -2539,7 +2433,6 @@ export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
     type: "menu_layer",
     tooltip: "Select a layer",
-    helpUrl: "",
     message0: "%1",
     args0: [
         {
@@ -2574,7 +2467,6 @@ export const BLOCK_BROADCAST_MENU = {
     extensions: [EXTENSION_BROADCAST],
     type: "event_broadcast_menu",
     tooltip: "Select a broadcast to send",
-    helpUrl: "",
     message0: "%1",
     args0: [
         {
@@ -2593,7 +2485,6 @@ export const BLOCK_TAG_MENU = {
     extensions: [EXTENSION_TAG],
     type: "menu_tag",
     tooltip: "Select a tag to apply",
-    helpUrl: "",
     message0: "%1",
     args0: [
         {
@@ -2609,7 +2500,6 @@ export const BLOCK_SOUND_MENU = {
     extensions: [EXTENSION_SOUND],
     type: "menu_sound",
     tooltip: "Select a sound to play",
-    helpUrl: "",
     message0: "%1",
     args0: [
         {
@@ -2624,7 +2514,6 @@ export const BLOCK_SENSING_ITEM_MENU = {
     style: "sensing_blocks",
     type: "menu_item",
     tooltip: "Choose a token",
-    helpUrl: "",
     message0: "%1",
     args0: [
         {
@@ -2640,7 +2529,6 @@ export const BLOCK_CONTROL_ITEM_MENU = {
     style: "control_blocks",
     type: "control_menu_item",
     tooltip: "Choose a token",
-    helpUrl: "",
     message0: "%1",
     args0: [
         {

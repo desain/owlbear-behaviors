@@ -1455,10 +1455,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         );
         const varId = getStringFieldValue(block, BLOCK_LIST_ADD.args0[1].name);
         const listRef = generator.getVariableReference(varId);
-        return [
-            `${listRef} = ${listRef} ?? [];`,
-            `${listRef}.push(${item});\n`,
-        ].join("\n");
+        return `(${listRef} ??= []).push(${item});\n`;
     },
 
     data_deleteoflist: (block, generator) => {
@@ -1503,8 +1500,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         const listRef = generator.getVariableReference(varId);
         const num = provideNum(generator);
         return [
-            `${listRef} = ${listRef} ?? [];`,
-            `${listRef}?.splice(${num}(${index}) - 1, 0, ${item});\n`,
+            `(${listRef} ??= []).splice(${num}(${index}) - 1, 0, ${item});\n`,
         ].join("\n");
     },
 

@@ -1,23 +1,24 @@
 import { ContinuousCategory } from "@blockly/continuous-toolbox";
 import * as Blockly from "blockly";
-import { shadowDynamic, shadowNumber } from "./shadows";
 import { VARIABLE_TYPE_LIST } from "../constants";
 import {
-    BLOCK_LIST_REPORTER,
     BLOCK_LIST_ADD,
-    BLOCK_LIST_DELETE,
     BLOCK_LIST_CLEAR,
-    BLOCK_LIST_INSERT,
-    BLOCK_LIST_REPLACE,
+    BLOCK_LIST_CONTAINS,
+    BLOCK_LIST_DELETE,
     BLOCK_LIST_INDEX,
     BLOCK_LIST_INDEX_OF,
+    BLOCK_LIST_INSERT,
     BLOCK_LIST_LENGTH,
-    BLOCK_LIST_CONTAINS,
+    BLOCK_LIST_REPLACE,
+    BLOCK_LIST_REPORTER,
+    BLOCK_VARIABLE_CHANGE,
     BLOCK_VARIABLE_REPORTER,
     BLOCK_VARIABLE_SETTER,
-    BLOCK_VARIABLE_CHANGE,
 } from "./blocks";
+import { shadowDynamic, shadowNumber } from "./shadows";
 import { GAP50 } from "./toolbox";
+import { VariableModal } from "./VariableModal";
 
 /**
  * Returns the JSON definition for a variable field.
@@ -43,18 +44,18 @@ const CREATE_LIST = "CREATE_LIST";
 
 export class CategoryVariables extends ContinuousCategory {
     override getContents(): Blockly.utils.toolbox.FlyoutItemInfoArray {
-        // Adapted from https://github.com/google/blockly/blob/02f89d6f96d27cea3e718a1e774c89f5589f155e/core/variables.ts
-        this.workspace_.registerButtonCallback(CREATE_VARIABLE, (button) => {
-            Blockly.Variables.createVariableButtonHandler(
-                button.getTargetWorkspace(),
-            );
+        this.workspace_.registerButtonCallback(CREATE_VARIABLE, () => {
+            const modal = new VariableModal(this.workspace_, "");
+            modal.init();
+            modal.show();
         });
-        this.workspace_.registerButtonCallback(CREATE_LIST, (button) => {
-            Blockly.Variables.createVariableButtonHandler(
-                button.getTargetWorkspace(),
-                undefined,
+        this.workspace_.registerButtonCallback(CREATE_LIST, () => {
+            const modal = new VariableModal(
+                this.workspace_,
                 VARIABLE_TYPE_LIST,
             );
+            modal.init();
+            modal.show();
         });
 
         const items: Blockly.utils.toolbox.FlyoutItemInfoArray = [

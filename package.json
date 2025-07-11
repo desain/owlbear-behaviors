@@ -39,6 +39,7 @@
     "@blockly/field-colour-hsv-sliders": "^6.0.3",
     "@blockly/field-grid-dropdown": "^6.0.2",
     "@blockly/field-slider": "^8.0.1",
+    "@blockly/plugin-modal": "^8.0.1",
     "@blockly/workspace-backpack": "^7.0.1",
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.2.0",

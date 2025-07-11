@@ -28,6 +28,9 @@ importers:
       '@blockly/field-slider':
         specifier: ^8.0.1
         version: 8.0.1(blockly@12.1.0)
+      '@blockly/plugin-modal':
+        specifier: ^8.0.1
+        version: 8.0.1(blockly@12.1.0)
       '@blockly/workspace-backpack':
         specifier: ^7.0.1
         version: 7.0.1(blockly@12.1.0)
@@ -246,6 +249,12 @@ packages:
   '@blockly/field-slider@8.0.1':
     resolution: {integrity: sha512-NFuQr2Y+eKmY3eC3t8nfxmTIz90JvdXTK6b/qp1m3HcRByUZdHp3jmUsqAbNQgDsWuhqvdqxTNZHFz8H+DHVZg==}
     engines: {node: '>=8.0.0'}
+    peerDependencies:
+      blockly: ^12.0.0
+
+  '@blockly/plugin-modal@8.0.1':
+    resolution: {integrity: sha512-Py5t0Zt1WL1rPiT9p+5QdlzDwQYXISUsFINoXiVSxoi9JB/iqmQ/IlE7EVLT/Oa/oriQaAcr7pEHI45R5gKdIA==}
+    engines: {node: '>=8.17.0'}
     peerDependencies:
       blockly: ^12.0.0
 
@@ -568,8 +577,8 @@ packages:
   '@maxim_mazurok/gapi.client.discovery-v1@0.1.20200806':
     resolution: {integrity: sha512-Wl6UfmZVDdWbY3PUu8E2ULk9RPLjnMqp/iOA4tcK8Ne+U/GmlnWP/e34IaZNGArfl7iXJNOG+/3Rj9L9jQyF9Q==}
 
-  '@maxim_mazurok/gapi.client.sheets-v4@0.0.20250625':
-    resolution: {integrity: sha512-I2AoZ2nUTmOgR3+T8GRhQbBFp2eP0ROBe8CEaDyv/w/tqDBNoZLAnFWdXtXW4itqbOiintAmKqEdSY2doDNgCw==}
+  '@maxim_mazurok/gapi.client.sheets-v4@0.0.20250701':
+    resolution: {integrity: sha512-QkZYfipdKEF9fIWTkkEL1ouf2pIjXh3X7Fal5QT8t4xCKMm2IGvlgOyFtXxFoIr6r83H25S7L/1kGXWue38+JA==}
 
   '@mui/core-downloads-tracker@7.2.0':
     resolution: {integrity: sha512-d49s7kEgI5iX40xb2YPazANvo7Bx0BLg/MNRwv+7BVpZUzXj1DaVCKlQTDex3gy/0jsCb4w7AY2uH4t4AJvSog==}
@@ -2776,6 +2785,10 @@ snapshots:
     dependencies:
       blockly: 12.1.0
 
+  '@blockly/plugin-modal@8.0.1(blockly@12.1.0)':
+    dependencies:
+      blockly: 12.1.0
+
   '@blockly/workspace-backpack@7.0.1(blockly@12.1.0)':
     dependencies:
       blockly: 12.1.0
@@ -3040,7 +3053,7 @@ snapshots:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
 
-  '@maxim_mazurok/gapi.client.sheets-v4@0.0.20250625':
+  '@maxim_mazurok/gapi.client.sheets-v4@0.0.20250701':
     dependencies:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
@@ -3264,7 +3277,7 @@ snapshots:
 
   '@types/gapi.client.sheets-v4@0.0.4':
     dependencies:
-      '@maxim_mazurok/gapi.client.sheets-v4': 0.0.20250625
+      '@maxim_mazurok/gapi.client.sheets-v4': 0.0.20250701
 
   '@types/gapi.client@1.0.8': {}
 

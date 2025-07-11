@@ -132,7 +132,7 @@ export class BehaviorVariableMap
         name: string,
         opt_type?: string,
         opt_id?: string,
-        sceneGlobal?: true,
+        sceneGlobal?: boolean,
     ): IBehaviorVariableModel {
         const conflictVar = this.getVariable(name, opt_type);
         if (conflictVar) {
@@ -149,13 +149,20 @@ export class BehaviorVariableMap
             if (this.locals.potentialMap) {
                 throw Error("potential map cannot create globals");
             }
+
             const state: IVariableState = {
                 name,
                 id: opt_id ?? Blockly.utils.idGenerator.genUid(),
                 type: opt_type ?? "",
             };
             void createVariable(state);
-            return this.#getGlobal(state);
+            const variable = this.#getGlobal(state);
+
+            Blockly.Events.fire(
+                new (Blockly.Events.get(Blockly.Events.VAR_CREATE))(variable),
+            );
+
+            return variable;
         } else {
             return this.locals.createVariable(name, opt_type, opt_id);
         }
@@ -244,7 +251,12 @@ export class BehaviorVariableMap
             if (this.locals.potentialMap) {
                 throw Error("potential map cannot delete globals");
             }
+
+            this.globals.delete(variable.getId());
             void deleteVariable(variable.getId());
+            Blockly.Events.fire(
+                new (Blockly.Events.get(Blockly.Events.VAR_DELETE))(variable),
+            );
         }
         // Local deletion logic clears away blocks
         this.locals.deleteVariable(variable);
