@@ -12,6 +12,9 @@ import { compileBehavior } from "./compileBehavior";
 import { ItemProxy } from "./ItemProxy";
 import type { TriggerHandler } from "./TriggerHandler";
 
+type VariableValue = string | number | boolean;
+export type BehaviorGlobals = Record<string, VariableValue | VariableValue[]>;
+
 export interface NewBehaviorConfig {
     readonly item: BehaviorItem;
     readonly lastModified: number;
@@ -61,6 +64,7 @@ async function addMissingResources(workspace: Blockly.Workspace) {
 }
 
 export class BehaviorRegistry {
+    readonly #globals: BehaviorGlobals = {};
     readonly #immediateExecutions = new Map<Item["id"], AbortController[]>();
     readonly #triggerHandlers = new Map<Item["id"], TriggerHandler[]>();
 
@@ -125,6 +129,7 @@ export class BehaviorRegistry {
             item.id,
             BEHAVIORS_IMPL,
             ItemProxy.getInstance(),
+            this.#globals,
         );
         this.#triggerHandlers.set(item.id, behaviorDefinition.triggerHandlers);
 

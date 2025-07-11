@@ -3,10 +3,12 @@ import type { BehaviorItem } from "../BehaviorItem";
 import {
     CONSTANT_BEHAVIOR_DEFINITION,
     PARAMETER_BEHAVIOR_IMPL,
+    PARAMETER_GLOBALS,
     PARAMETER_ITEM_PROXY,
     PARAMETER_SELF_ID,
 } from "../constants";
 import type { BEHAVIORS_IMPL } from "./BehaviorImpl";
+import type { BehaviorGlobals } from "./BehaviorRegistry";
 import type { ItemProxy } from "./ItemProxy";
 import type { TriggerHandler } from "./TriggerHandler";
 
@@ -27,6 +29,7 @@ export type BehaviorDefinitionFunction = ObrFunction<
         self: BehaviorItem["id"],
         behaviors: typeof BEHAVIORS_IMPL,
         ItemProxy: ItemProxy,
+        globals: BehaviorGlobals,
     ],
     BehaviorDefinition
 >;
@@ -51,11 +54,12 @@ const ${CONSTANT_BEHAVIOR_DEFINITION} /*: BehaviorDefinition */ = {
 }
 ${code}
 return ${CONSTANT_BEHAVIOR_DEFINITION};`;
-    // console.log("compiling", behaviorDefinitionCode);
+    console.log("compiling", behaviorDefinitionCode);
 
     return compileObrFunction(behaviorDefinitionCode, [
         PARAMETER_SELF_ID,
         PARAMETER_BEHAVIOR_IMPL,
         PARAMETER_ITEM_PROXY,
+        PARAMETER_GLOBALS,
     ]);
 }

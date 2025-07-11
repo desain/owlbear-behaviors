@@ -6,6 +6,11 @@ import "@blockly/field-slider";
 import * as Blockly from "blockly";
 import { CUSTOM_DYNAMIC_CATEGORY_VARIABLES, RENDERER_CAT } from "../constants";
 import { usePlayerStorage } from "../state/usePlayerStorage";
+import {
+    BehaviorVariableMap,
+    BehaviorVariableModel,
+    BehaviorVariableSerializer,
+} from "./BehaviorVariableMap";
 import { CUSTOM_JSON_BLOCKS } from "./blocks";
 import { installBroadcastExtension } from "./broadcastExtension";
 import { CategoryVariables } from "./CategoryVariables";
@@ -20,19 +25,44 @@ import { installTagExtension } from "./tagExtension";
 let blocklySetup = false;
 
 export function setupBlocklyGlobals() {
-    // console.trace();
+    // Idempotency
     if (blocklySetup) {
         return; // no need to re-init
     }
 
+    // Blocks
     Blockly.common.defineBlocksWithJsonArray(CUSTOM_JSON_BLOCKS);
-    Blockly.ContextMenuItems.registerCommentOptions(); // Add workspace comment options to the context menu.
+
+    // Add workspace comment options to the context menu.
+    Blockly.ContextMenuItems.registerCommentOptions();
+
+    // Custom classes
     Blockly.registry.register(
         Blockly.registry.Type.TOOLBOX_ITEM,
         CUSTOM_DYNAMIC_CATEGORY_VARIABLES,
         CategoryVariables,
     );
     Blockly.blockRendering.register(RENDERER_CAT, CatRenderer);
+    Blockly.registry.register(
+        Blockly.registry.Type.VARIABLE_MODEL,
+        Blockly.registry.DEFAULT,
+        BehaviorVariableModel,
+        true,
+    );
+    Blockly.registry.register(
+        Blockly.registry.Type.VARIABLE_MAP,
+        Blockly.registry.DEFAULT,
+        BehaviorVariableMap,
+        true,
+    );
+    Blockly.registry.register(
+        Blockly.registry.Type.SERIALIZER,
+        "variables",
+        new BehaviorVariableSerializer(),
+        true,
+    );
+
+    // Display
     Blockly.Msg.OBR_GRID_UNIT =
         usePlayerStorage.getState().grid.parsedScale.unit;
 
@@ -44,6 +74,7 @@ export function setupBlocklyGlobals() {
         }
     `);
 
+    // Fields
     registerFieldTokenImage();
     registerFieldAngle();
     registerContinuousToolbox();

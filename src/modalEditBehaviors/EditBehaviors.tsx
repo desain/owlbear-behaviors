@@ -16,7 +16,6 @@ import { useCallback, useEffect, useState } from "react";
 import type { BehaviorItem } from "../BehaviorItem";
 import { getTags, isBehaviorItem } from "../BehaviorItem";
 import { BehaviorConnectionChecker } from "../blockly/BehaviorConnectionChecker";
-import { BehaviorVariableMap } from "../blockly/BehaviorVariableMap";
 import { BLOCK_IMMEDIATELY } from "../blockly/blocks";
 import { installGetExtensionCallback } from "../blockly/getExtensionButton";
 import { handleNewSceneMetadata } from "../blockly/handleNewSceneMetadata";
@@ -147,7 +146,7 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
                     flyoutsVerticalToolbox: "ContinuousFlyout",
                     metricsManager: "ContinuousMetrics",
                     toolbox: "ContinuousToolbox",
-                    variableMap: BehaviorVariableMap,
+                    // variableMap: BehaviorVariableMap,
                     [Blockly.registry.Type.CONNECTION_CHECKER.toString()]:
                         BehaviorConnectionChecker,
                 },

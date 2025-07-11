@@ -34,10 +34,10 @@ export const METADATA_KEY_CLONE = `${PLUGIN_ID}/clone`;
 export const PARAMETER_SELF_ID = "selfId";
 export const PARAMETER_BEHAVIOR_IMPL = "Behaviors";
 export const PARAMETER_ITEM_PROXY = "itemProxy";
-export const CONSTANT_BEHAVIOR_DEFINITION = "behaviorDefinition";
-
 export const PARAMETER_SIGNAL = "signal";
 export const PARAMETER_OTHER_ID = "otherId";
+export const PARAMETER_GLOBALS = "globals";
+export const CONSTANT_BEHAVIOR_DEFINITION = "behaviorDefinition";
 export const VAR_LOOP_CHECK = "loopCheck";
 
 // Blockly variable category

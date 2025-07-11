@@ -12,12 +12,14 @@ import {
     INPUT_TAG,
     METADATA_KEY_EFFECT,
     PARAMETER_BEHAVIOR_IMPL,
+    PARAMETER_GLOBALS,
     PARAMETER_ITEM_PROXY,
     PARAMETER_OTHER_ID,
     PARAMETER_SELF_ID,
     PARAMETER_SIGNAL,
     VAR_LOOP_CHECK,
 } from "../constants";
+import { isGlobal } from "./BehaviorVariableMap";
 import {
     BLOCK_ADD_AURA,
     BLOCK_ANGLE,
@@ -39,13 +41,13 @@ import {
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
-    BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
-    BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
+    BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
+    BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_FACE,
     BLOCK_FOREVER,
     BLOCK_GLIDE,
@@ -58,8 +60,19 @@ import {
     BLOCK_IF,
     BLOCK_IF_ELSE,
     BLOCK_JOIN,
+    BLOCK_LAYER_MENU,
     BLOCK_LESS_THAN,
     BLOCK_LETTER_OF,
+    BLOCK_LIST_ADD,
+    BLOCK_LIST_CLEAR,
+    BLOCK_LIST_CONTAINS,
+    BLOCK_LIST_DELETE,
+    BLOCK_LIST_INDEX,
+    BLOCK_LIST_INDEX_OF,
+    BLOCK_LIST_INSERT,
+    BLOCK_LIST_LENGTH,
+    BLOCK_LIST_REPLACE,
+    BLOCK_LIST_REPORTER,
     BLOCK_MOVE_DIRECTION,
     BLOCK_OPACITY_SLIDER,
     BLOCK_POINT_IN_DIRECTION,
@@ -87,35 +100,24 @@ import {
     BLOCK_TOUCH,
     BLOCK_TOUCHING,
     BLOCK_URL,
+    BLOCK_VARIABLE_CHANGE,
+    BLOCK_VARIABLE_REPORTER,
+    BLOCK_VARIABLE_SETTER,
     BLOCK_WAIT,
     BLOCK_WAIT_UNTIL,
     BLOCK_WHEN_I,
     type CustomBlockType,
-    BLOCK_LIST_REPORTER,
-    BLOCK_LIST_ADD,
-    BLOCK_LIST_DELETE,
-    BLOCK_LIST_CLEAR,
-    BLOCK_LIST_INSERT,
-    BLOCK_LIST_REPLACE,
-    BLOCK_LIST_INDEX,
-    BLOCK_LIST_INDEX_OF,
-    BLOCK_LIST_LENGTH,
-    BLOCK_LIST_CONTAINS,
-    BLOCK_VARIABLE_REPORTER,
-    BLOCK_VARIABLE_SETTER,
-    BLOCK_VARIABLE_CHANGE,
-    BLOCK_LAYER_MENU,
 } from "./blocks";
 
 const THROW_ON_ABORT = `${PARAMETER_SIGNAL}.throwIfAborted();\n`;
 
 type Generator = (
     block: Block,
-    generator: javascript.JavascriptGenerator,
+    generator: BehaviorJavascriptGenerator,
 ) => [code: string, precedence: number] | string | null;
 
 function generateBlock(
-    generator: javascript.JavascriptGenerator,
+    generator: BehaviorJavascriptGenerator,
     prefix: string,
     contents: string,
     prefix2?: string,
@@ -136,7 +138,7 @@ function generateBlock(
     ].join("\n");
 }
 
-function provideNum(generator: javascript.JavascriptGenerator): string {
+function provideNum(generator: BehaviorJavascriptGenerator): string {
     return generator.provideFunction_("num", [
         `function ${generator.FUNCTION_NAME_PLACEHOLDER_}(x) {`,
         generator.prefixLines(
@@ -151,7 +153,7 @@ function provideNum(generator: javascript.JavascriptGenerator): string {
 }
 
 function provideComparison(
-    generator: javascript.JavascriptGenerator,
+    generator: BehaviorJavascriptGenerator,
     op: "<" | "===" | ">",
 ) {
     const opName = {
@@ -188,7 +190,7 @@ type TriggerHandlerJson = DistributiveOmit<
 
 function getHatBlockBehaviorFunction(
     block: Blockly.Block,
-    generator: javascript.JavascriptGenerator,
+    generator: BehaviorJavascriptGenerator,
 ) {
     const nextBlock = block.getNextBlock();
     const statementsResult = nextBlock ? generator.blockToCode(nextBlock) : "";
@@ -231,7 +233,7 @@ function generateAddTriggerHandler(handler: TriggerHandlerJson) {
 }
 
 function generateSelfUpdate(
-    generator: javascript.JavascriptGenerator,
+    generator: BehaviorJavascriptGenerator,
     updateCode: string,
 ) {
     return [
@@ -243,7 +245,7 @@ function generateSelfUpdate(
 }
 
 function generateVariable(
-    generator: javascript.JavascriptGenerator,
+    generator: BehaviorJavascriptGenerator,
     name: string,
     value: string,
     mutable?: boolean,
@@ -1404,7 +1406,8 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_VARIABLE_REPORTER.args0[0].name,
         );
-        return [generator.getVariableName(varId), javascript.Order.ATOMIC];
+        // MEMBER since it could be a globals[id] access
+        return [generator.getVariableReference(varId), javascript.Order.MEMBER];
     },
 
     data_setvariableto: (block, generator) => {
@@ -1417,11 +1420,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             BLOCK_VARIABLE_SETTER.args0[1].name,
             javascript.Order.ASSIGNMENT,
         );
-        return `${generator.getVariableName(varId)} = ${value};\n`;
+        return `${generator.getVariableReference(varId)} = ${value};\n`;
     },
 
     data_changevariableby: (block, generator) => {
-        const varName = generator.getVariableName(
+        const varRef = generator.getVariableReference(
             getStringFieldValue(block, BLOCK_VARIABLE_CHANGE.args0[0].name),
         );
         const delta = generator.valueToCode(
@@ -1430,7 +1433,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             javascript.Order.NONE,
         );
         const num = provideNum(generator);
-        return `${varName} = (typeof ${varName} === "number" ? ${varName} : 0) + ${num}(${delta});\n`;
+        return `${varRef} = (typeof ${varRef} === "number" ? ${varRef} : 0) + ${num}(${delta});\n`;
     },
 
     data_listcontents: (block, generator) => {
@@ -1439,7 +1442,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             BLOCK_LIST_REPORTER.args0[0].name,
         );
         return [
-            `${generator.getVariableName(varId)}?.join(" ")`,
+            `${generator.getVariableReference(varId)}?.join(" ")`,
             javascript.Order.FUNCTION_CALL,
         ];
     },
@@ -1451,10 +1454,10 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             javascript.Order.NONE,
         );
         const varId = getStringFieldValue(block, BLOCK_LIST_ADD.args0[1].name);
-        const listName = generator.getVariableName(varId);
+        const listRef = generator.getVariableReference(varId);
         return [
-            `${listName} = ${listName} ?? [];`,
-            `${listName}.push(${item});\n`,
+            `${listRef} = ${listRef} ?? [];`,
+            `${listRef}.push(${item});\n`,
         ].join("\n");
     },
 
@@ -1468,9 +1471,9 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_LIST_DELETE.args0[1].name,
         );
-        const listName = generator.getVariableName(varId);
+        const listRef = generator.getVariableReference(varId);
         const num = provideNum(generator);
-        return `${listName}?.splice(${num}(${index}) - 1, 1);\n`;
+        return `${listRef}?.splice(${num}(${index}) - 1, 1);\n`;
     },
 
     data_deletealloflist: (block, generator) => {
@@ -1478,8 +1481,8 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_LIST_CLEAR.args0[0].name,
         );
-        const listName = generator.getVariableName(varId);
-        return `${listName} = [];\n`;
+        const listRef = generator.getVariableReference(varId);
+        return `${listRef} = [];\n`;
     },
 
     data_insertatlist: (block, generator) => {
@@ -1497,11 +1500,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_LIST_INSERT.args0[2].name,
         );
-        const listName = generator.getVariableName(varId);
+        const listRef = generator.getVariableReference(varId);
         const num = provideNum(generator);
         return [
-            `${listName} = ${listName} ?? [];`,
-            `${listName}?.splice(${num}(${index}) - 1, 0, ${item});\n`,
+            `${listRef} = ${listRef} ?? [];`,
+            `${listRef}?.splice(${num}(${index}) - 1, 0, ${item});\n`,
         ].join("\n");
     },
 
@@ -1520,9 +1523,9 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_LIST_REPLACE.args0[1].name,
         );
-        const listName = generator.getVariableName(varId);
+        const listRef = generator.getVariableReference(varId);
         const num = provideNum(generator);
-        return `${listName}?.splice(${num}(${index}) - 1, 1, ${item});\n`;
+        return `${listRef}?.splice(${num}(${index}) - 1, 1, ${item});\n`;
     },
 
     data_itemoflist: (block, generator) => {
@@ -1535,9 +1538,9 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_LIST_INDEX.args0[1].name,
         );
-        const listName = generator.getVariableName(varId);
+        const listRef = generator.getVariableReference(varId);
         const num = provideNum(generator);
-        return [`${listName}?.[${num}(${index}) - 1]`, javascript.Order.MEMBER];
+        return [`${listRef}?.[${num}(${index}) - 1]`, javascript.Order.MEMBER];
     },
 
     data_itemnumoflist: (block, generator) => {
@@ -1550,9 +1553,9 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_LIST_INDEX_OF.args0[1].name,
         );
-        const listName = generator.getVariableName(varId);
+        const listRef = generator.getVariableReference(varId);
         return [
-            `(${listName}?.indexOf(${item}) ?? -1) + 1`,
+            `(${listRef}?.indexOf(${item}) ?? -1) + 1`,
             javascript.Order.ADDITION,
         ];
     },
@@ -1562,8 +1565,8 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_LIST_LENGTH.args0[0].name,
         );
-        const listName = generator.getVariableName(varId);
-        return [`(${listName} ?? []).length`, javascript.Order.MEMBER];
+        const listRef = generator.getVariableReference(varId);
+        return [`(${listRef} ?? []).length`, javascript.Order.MEMBER];
     },
 
     data_listcontainsitem: (block, generator) => {
@@ -1576,9 +1579,9 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_LIST_CONTAINS.args0[0].name,
         );
-        const listName = generator.getVariableName(varId);
+        const listRef = generator.getVariableReference(varId);
         return [
-            `(${listName} ?? []).includes(${item})`,
+            `(${listRef} ?? []).includes(${item})`,
             javascript.Order.FUNCTION_CALL,
         ];
     },
@@ -2011,6 +2014,8 @@ function isHatBlock(block: Blockly.Block): boolean {
 }
 
 export class BehaviorJavascriptGenerator extends javascript.JavascriptGenerator {
+    readonly #globalIds = new Set<Blockly.IVariableState["id"]>();
+
     constructor() {
         super();
         this.addReservedWords(
@@ -2025,7 +2030,8 @@ export class BehaviorJavascriptGenerator extends javascript.JavascriptGenerator 
         );
 
         Object.entries(javascript.javascriptGenerator.forBlock).forEach(
-            ([blockType, generator]) => (this.forBlock[blockType] = generator),
+            ([blockType, generator]) =>
+                (this.forBlock[blockType] = generator as unknown as Generator),
         );
         Object.entries(GENERATORS).forEach(
             ([blockType, generator]) => (this.forBlock[blockType] = generator),
@@ -2038,10 +2044,77 @@ export class BehaviorJavascriptGenerator extends javascript.JavascriptGenerator 
     }
 
     /**
+     * Get either a variable name (for locals), or an index expression (for globals)
+     */
+    readonly getVariableReference = (
+        id: Blockly.IVariableState["id"],
+    ): string => {
+        if (this.#globalIds.has(id)) {
+            return `${PARAMETER_GLOBALS}[${this.quote_(id)}]`;
+        } else {
+            return this.getVariableName(id);
+        }
+    };
+
+    /**
+     * Mostly copied from https://github.com/google/blockly/blob/8580d763b34b10c961d43ae8a61ce76c8669548c/generators/javascript/javascript_generator.ts#L150
+     * @param workspace
+     */
+    override readonly init = (workspace: Workspace) => {
+        this.definitions_ = {};
+        this.functionNames_ = {};
+
+        if (!this.nameDB_) {
+            this.nameDB_ = new Blockly.Names(this.RESERVED_WORDS_);
+        } else {
+            this.nameDB_.reset();
+        }
+
+        this.nameDB_.setVariableMap(workspace.getVariableMap());
+        this.nameDB_.populateVariables(workspace);
+        this.nameDB_.populateProcedures(workspace);
+
+        const defvars = [];
+        // Add developer variables (not created or named by the user).
+        const devVarList = Blockly.Variables.allDeveloperVariables(workspace);
+        for (const devVar of devVarList) {
+            defvars.push(
+                this.nameDB_.getName(
+                    devVar,
+                    Blockly.Names.NameType.DEVELOPER_VARIABLE,
+                ),
+            );
+        }
+
+        // Add user variables, but only ones that are being used.
+        const variables = Blockly.Variables.allUsedVarModels(workspace);
+        this.#globalIds.clear();
+        for (const varModel of variables) {
+            // CHANGE: only generate non-globals, save IDs of globals
+            if (isGlobal(varModel)) {
+                this.#globalIds.add(varModel.getId());
+            } else {
+                defvars.push(
+                    this.nameDB_.getName(
+                        varModel.getId(),
+                        Blockly.Names.NameType.VARIABLE,
+                    ),
+                );
+            }
+        }
+
+        // Declare all of the variables.
+        if (defvars.length) {
+            this.definitions_.variables = "let " + defvars.join(", ") + ";"; // CHANGE: use 'let' not 'var'
+        }
+        this.isInitialized = true;
+    };
+
+    /**
      * Mostly copied from https://github.com/google/blockly/blob/3ccfba9c4b7d3953caec14a3cfc347c0205c9c06/core/generator.ts#L147
      * @returns Code for hat blocks only
      */
-    override workspaceToCode = (workspace?: Workspace): string => {
+    override readonly workspaceToCode = (workspace?: Workspace): string => {
         if (!workspace) {
             // Backwards compatibility from before there could be multiple workspaces.
             console.warn(

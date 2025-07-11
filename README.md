@@ -179,8 +179,6 @@ To make a production build run:
         -   Broadcast to myself / my children / other token?
     -   Operators
         -   Min, max
-    -   Variables
-        -   Scene-global variables
     -   Stop all / other scripts in token?
 
 ## Known Bugs

@@ -1,4 +1,5 @@
 import OBR from "@owlbear-rodeo/sdk";
+import type { IVariableState } from "blockly";
 import { produce } from "immer";
 import { isObject } from "owlbear-utils";
 import {
@@ -15,10 +16,12 @@ function isSoundDefinition(obj: unknown): obj is SoundDefinition {
     return isObject(obj) && "url" in obj && typeof obj.url === "string";
 }
 
+type SoundName = string;
 export interface SceneMetadata {
     broadcasts: string[];
     tags: string[];
-    sounds: Record</*sound name*/ string, SoundDefinition>;
+    sounds: Record<SoundName, SoundDefinition>;
+    vars?: IVariableState[];
 }
 export function isSceneMetadata(metadata: unknown): metadata is SceneMetadata {
     return (
@@ -33,7 +36,10 @@ export function isSceneMetadata(metadata: unknown): metadata is SceneMetadata {
         metadata.tags.every((tag) => typeof tag === "string") &&
         "sounds" in metadata &&
         isObject(metadata.sounds) &&
-        Object.values(metadata.sounds).every(isSoundDefinition)
+        Object.values(metadata.sounds).every(isSoundDefinition) &&
+        (!("vars" in metadata) ||
+            (Array.isArray(metadata.vars) &&
+                metadata.vars.every((v) => isObject(v)))) // TODO more specific check?
     );
 }
 
