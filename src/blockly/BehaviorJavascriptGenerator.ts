@@ -39,6 +39,7 @@ import {
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
+    BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
@@ -1235,7 +1236,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         const unit = block.getFieldValue(
             BLOCK_CURRENT_TIME.args0[0].name,
         ) as (typeof BLOCK_CURRENT_TIME)["args0"][0]["options"][number][1];
-        
+
         switch (unit) {
             case "YEAR":
                 return ["new Date().getFullYear()", javascript.Order.MEMBER];
@@ -1251,8 +1252,6 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
                 return ["new Date().getMinutes()", javascript.Order.MEMBER];
             case "SECOND":
                 return ["new Date().getSeconds()", javascript.Order.MEMBER];
-            default:
-                throw Error(`Unknown time unit ${unit}`);
         }
     },
 
@@ -1681,6 +1680,47 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
 
     extension_fog_remove: () =>
         `await ${behave("removeLight", PARAMETER_SIGNAL, PARAMETER_SELF_ID)};`,
+
+    extension_weather_add: (block, generator) => {
+        const direction = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_WEATHER_ADD.args0[1].name,
+        );
+        const speed = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_WEATHER_ADD.args0[2].name,
+        );
+        const density = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_WEATHER_ADD.args0[3].name,
+        );
+        const type = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_WEATHER_ADD.args0[4].name,
+        );
+
+        return `await ${behave(
+            "addWeather",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            generator.quote_(type),
+            generator.quote_(direction),
+            speed,
+            density,
+        )};\n`;
+    },
+
+    extension_weather_remove: () =>
+        `await ${behave(
+            "removeWeather",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+        )};\n`,
+
+    extension_weather_has: () => [
+        `await ${behave("hasWeather", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
+        javascript.Order.AWAIT,
+    ],
 
     extension_grimoire_hp: () => [
         `await ${behave("getHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,

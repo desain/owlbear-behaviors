@@ -2430,6 +2430,110 @@ export const BLOCK_EXTENSION_SHEETS_GET = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_EXTENSION_WEATHER_ADD = {
+    style: "extension_blocks",
+    type: "extension_weather_add",
+    tooltip: "Add weather effect to the current scene",
+    helpUrl: "",
+    message0: "%1 add %2 %3 %4 %5",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://weather.owlbear.rodeo/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Weather extension icon",
+        },
+        {
+            type: "field_grid_dropdown",
+            name: "DIRECTION",
+            options: [
+                ["↖️", "NORTHWEST"],
+                ["⬆️", "NORTH"],
+                ["↗️", "NORTHEAST"],
+                ["⬅️", "WEST"],
+                ["⏹️", "NONE"],
+                ["➡️", "EAST"],
+                ["↙️", "SOUTHWEST"],
+                ["⬇️", "SOUTH"],
+                ["↘️", "SOUTHEAST"],
+            ],
+        },
+        {
+            type: "field_dropdown",
+            name: "SPEED",
+            options: [
+                ["slow", "1"],
+                ["medium", "2"],
+                ["fast", "3"],
+                ["super fast", "4"],
+            ],
+        },
+        {
+            type: "field_dropdown",
+            name: "DENSITY",
+            options: [
+                ["light", "1"],
+                ["medium", "2"],
+                ["heavy", "3"],
+                ["super heavy", "4"],
+            ],
+        },
+        {
+            type: "field_dropdown",
+            name: "TYPE",
+            options: [
+                ["snow", "SNOW"],
+                ["rain", "RAIN"],
+                ["sand", "SAND"],
+                ["fire", "FIRE"],
+                ["cloud", "CLOUD"],
+                ["bloom", "BLOOM"],
+            ],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_WEATHER_REMOVE = {
+    style: "extension_blocks",
+    type: "extension_weather_remove",
+    tooltip: "Remove weather effect from the current scene",
+    helpUrl: "",
+    message0: "%1 remove weather",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://weather.owlbear.rodeo/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Weather extension icon",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+} as const;
+
+export const BLOCK_EXTENSION_WEATHER_HAS = {
+    style: "extension_blocks",
+    type: "extension_weather_has",
+    tooltip: "Whether this token has weather from the Weather extension",
+    helpUrl: "",
+    message0: "%1 I have weather?",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://weather.owlbear.rodeo/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Weather extension icon",
+        },
+    ],
+    output: "Boolean",
+} as const;
+
 // Menus
 export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
@@ -2689,6 +2793,9 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_SHEETS_GET,
+    BLOCK_EXTENSION_WEATHER_ADD,
+    BLOCK_EXTENSION_WEATHER_REMOVE,
+    BLOCK_EXTENSION_WEATHER_HAS,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,

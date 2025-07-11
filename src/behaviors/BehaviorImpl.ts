@@ -21,7 +21,10 @@ import {
     type ImageBuildParams,
 } from "owlbear-utils";
 import { isBehaviorItem, type BehaviorItem } from "../BehaviorItem";
-import type { BLOCK_MOVE_DIRECTION } from "../blockly/blocks";
+import type {
+    BLOCK_EXTENSION_WEATHER_ADD,
+    BLOCK_MOVE_DIRECTION,
+} from "../blockly/blocks";
 import {
     broadcastPlaySound,
     broadcastSetViewport,
@@ -45,6 +48,8 @@ import { Grimoire } from "../extensions/Grimoire";
 import { Hoot } from "../extensions/Hoot";
 import { OwlTrackers } from "../extensions/OwlTrackers";
 import { Rumble } from "../extensions/Rumble";
+import type { WeatherType } from "../extensions/Weather";
+import { Weather } from "../extensions/Weather";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import { isEffectTarget, type EffectType } from "../watcher/EffectsWatcher";
 import { ItemProxy } from "./ItemProxy";
@@ -1177,7 +1182,11 @@ export const BEHAVIORS_IMPL = {
     ): Promise<void> => {
         const checked = Boolean(checkedUnknown);
         await ItemProxy.getInstance().update(String(selfIdUnknown), (draft) => {
-            OwlTrackers.setFieldChecked(draft, String(fieldNameUnknown), checked);
+            OwlTrackers.setFieldChecked(
+                draft,
+                String(fieldNameUnknown),
+                checked,
+            );
         });
         signal.throwIfAborted();
     },
@@ -1222,5 +1231,73 @@ export const BEHAVIORS_IMPL = {
         );
         signal.throwIfAborted();
         return result;
+    },
+
+    addWeather: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        type: WeatherType,
+        direction: (typeof BLOCK_EXTENSION_WEATHER_ADD)["args0"][1]["options"][number][1],
+        speedUnknown: unknown,
+        densityUnknown: unknown,
+    ): Promise<void> => {
+        const speed = Number(speedUnknown);
+        const density = Number(densityUnknown);
+
+        if (!isFinite(speed) || isNaN(speed) || speed < 1 || speed > 4) {
+            console.warn(`[addWeather] speed invalid: ${speed}`);
+            return;
+        }
+
+        if (
+            !isFinite(density) ||
+            isNaN(density) ||
+            density < 1 ||
+            density > 4
+        ) {
+            console.warn(`[addWeather] density invalid: ${density}`);
+            return;
+        }
+
+        const directionVector = {
+            NORTHWEST: { x: -1, y: 1 },
+            NORTH: { x: 0, y: 1 },
+            NORTHEAST: { x: 1, y: 1 },
+            EAST: { x: 1, y: 0 },
+            SOUTHEAST: { x: 1, y: -1 },
+            SOUTH: { x: 0, y: -1 },
+            SOUTHWEST: { x: -1, y: -1 },
+            WEST: { x: -1, y: 0 },
+            NONE: { x: 0, y: 0 },
+        }[direction];
+
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (draft) => {
+            Weather.addWeather(draft, type, directionVector, speed, density);
+        });
+        signal.throwIfAborted();
+    },
+
+    removeWeather: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<void> => {
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (draft) => {
+            Weather.removeWeather(draft);
+        });
+        signal.throwIfAborted();
+    },
+
+    hasWeather: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<boolean> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return false;
+        }
+        return Weather.hasWeather(selfItem);
     },
 };
