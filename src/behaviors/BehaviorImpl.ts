@@ -640,9 +640,10 @@ export const BEHAVIORS_IMPL = {
                         self.text.plainText = text;
                         break;
                     case "RICH":
-                        self.text.richText = [
-                            { type: "paragraph", children: [{ text }] },
-                        ];
+                        self.text.richText = text.split("\n").map((t) => ({
+                            type: "paragraph",
+                            children: [{ text: t }],
+                        }));
                         break;
                 }
             } else {

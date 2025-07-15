@@ -3,12 +3,13 @@ import type { BehaviorItem } from "../BehaviorItem";
 import {
     CONSTANT_BEHAVIOR_DEFINITION,
     PARAMETER_BEHAVIOR_IMPL,
+    PARAMETER_BEHAVIOR_REGISTRY,
     PARAMETER_GLOBALS,
     PARAMETER_ITEM_PROXY,
     PARAMETER_SELF_ID,
 } from "../constants";
 import type { BEHAVIORS_IMPL } from "./BehaviorImpl";
-import type { BehaviorGlobals } from "./BehaviorRegistry";
+import type { BehaviorGlobals, BehaviorRegistry } from "./BehaviorRegistry";
 import type { ItemProxy } from "./ItemProxy";
 import type { TriggerHandler } from "./TriggerHandler";
 
@@ -30,6 +31,7 @@ export type BehaviorDefinitionFunction = ObrFunction<
         behaviors: typeof BEHAVIORS_IMPL,
         ItemProxy: ItemProxy,
         globals: BehaviorGlobals,
+        behaviorRegistry: BehaviorRegistry,
     ],
     BehaviorDefinition
 >;
@@ -61,5 +63,6 @@ return ${CONSTANT_BEHAVIOR_DEFINITION};`;
         PARAMETER_BEHAVIOR_IMPL,
         PARAMETER_ITEM_PROXY,
         PARAMETER_GLOBALS,
+        PARAMETER_BEHAVIOR_REGISTRY,
     ]);
 }

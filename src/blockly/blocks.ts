@@ -1038,7 +1038,11 @@ export const BLOCK_STOP = {
         {
             type: "field_dropdown",
             name: "STOP_TARGET",
-            options: [["this script", "THIS_SCRIPT"]],
+            options: [
+                ["all", "ALL"],
+                ["this script", "THIS_SCRIPT"],
+                // ["other scripts in token", "OTHER_SCRIPTS"],
+            ],
         },
     ],
     previousStatement: null,

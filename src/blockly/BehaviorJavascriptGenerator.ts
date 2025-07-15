@@ -3,6 +3,7 @@ import * as Blockly from "blockly";
 import * as javascript from "blockly/javascript";
 import { isHexColor, type DistributiveOmit } from "owlbear-utils";
 import type { BEHAVIORS_IMPL } from "../behaviors/BehaviorImpl";
+import type { BehaviorRegistry } from "../behaviors/BehaviorRegistry";
 import type { TriggerHandler } from "../behaviors/TriggerHandler";
 import {
     CONSTANT_BEHAVIOR_DEFINITION,
@@ -12,6 +13,7 @@ import {
     INPUT_TAG,
     METADATA_KEY_EFFECT,
     PARAMETER_BEHAVIOR_IMPL,
+    PARAMETER_BEHAVIOR_REGISTRY,
     PARAMETER_GLOBALS,
     PARAMETER_ITEM_PROXY,
     PARAMETER_OTHER_ID,
@@ -96,6 +98,7 @@ import {
     BLOCK_SET_VIEWPORT,
     BLOCK_SOUND_PLAY,
     BLOCK_SOUND_PLAY_UNTIL_DONE,
+    BLOCK_STOP,
     BLOCK_TAG,
     BLOCK_TOUCH,
     BLOCK_TOUCHING,
@@ -955,7 +958,26 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         ].join("\n");
     },
 
-    control_behavior_stop: () => "return;\n",
+    control_behavior_stop: (block) => {
+        const target = getStringFieldValue(
+            block,
+            BLOCK_STOP.args0[0].name,
+        ) as (typeof BLOCK_STOP)["args0"][0]["options"][number][1];
+        switch (target) {
+            case "THIS_SCRIPT":
+                return "return;\n";
+            case "ALL":
+                return [
+                    `${PARAMETER_BEHAVIOR_REGISTRY}.${
+                        "stopAll" satisfies keyof BehaviorRegistry
+                    }();`,
+                    "return;\n",
+                ].join("\n");
+            // case "OTHER_SCRIPTS": {
+            //     return `${PARAMETER_BEHAVIOR_REGISTRY}.stopBehaviorsForItem(${PARAMETER_SELF_ID}, ${PARAMETER_HAT_ID});\n`;
+            // }
+        }
+    },
 
     control_behavior_if: (block, generator) => {
         const condition =
@@ -1997,6 +2019,7 @@ export class BehaviorJavascriptGenerator extends javascript.JavascriptGenerator 
                 PARAMETER_SIGNAL,
                 PARAMETER_BEHAVIOR_IMPL,
                 PARAMETER_ITEM_PROXY,
+                PARAMETER_BEHAVIOR_REGISTRY,
                 CONSTANT_BEHAVIOR_DEFINITION,
                 VAR_LOOP_CHECK,
             ].join(","),

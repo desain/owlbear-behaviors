@@ -78,13 +78,13 @@ export class BehaviorRegistry {
         [...this.#immediateExecutions.values()]
             .flat()
             .forEach((abortController) =>
-                abortController.abort("Behavior registry cleared"),
+                abortController.abort("Behavior registry: stop all"),
             );
         this.#immediateExecutions.clear();
 
         this.#triggerHandlers.forEach((handlers) => {
             handlers.forEach(({ abortController }) => {
-                abortController?.abort("Behavior registry cleared");
+                abortController?.abort("Behavior registry: stop all");
             });
         });
         this.#triggerHandlers.clear();
@@ -130,6 +130,7 @@ export class BehaviorRegistry {
             BEHAVIORS_IMPL,
             ItemProxy.getInstance(),
             this.#globals,
+            this,
         );
         this.#triggerHandlers.set(item.id, behaviorDefinition.triggerHandlers);
 

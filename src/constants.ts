@@ -37,6 +37,7 @@ export const PARAMETER_ITEM_PROXY = "itemProxy";
 export const PARAMETER_SIGNAL = "signal";
 export const PARAMETER_OTHER_ID = "otherId";
 export const PARAMETER_GLOBALS = "globals";
+export const PARAMETER_BEHAVIOR_REGISTRY = "behaviorRegistry";
 export const CONSTANT_BEHAVIOR_DEFINITION = "behaviorDefinition";
 export const VAR_LOOP_CHECK = "loopCheck";
 
