@@ -105,6 +105,11 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 
 -   The clone block produces an effect the same as if you duplicated the object in Owlbear Rodeo - editing the original will not edit the clone, and variables for the clone will be reset to their undefined state.
 
+### Collision
+
+-   Items will be considered 'touching' each other if their rectangular bounding boxes overlap.
+-   'Text' type items don't support touching detection currently
+
 ### Other Extensions and Integrations
 
 -   Behaviors can integrate with other extensions. Blocks for controlling other extensions are in the 'extensions' section of the block toolbox. You must have the other extension installed in order for Behaviors to integrate with it.

@@ -137,13 +137,11 @@ export const VariableModal: React.FC<VariableModalProps> = ({
                                 control={<Radio />}
                                 label="For this token only"
                             />
-                            {import.meta.env.DEV && (
-                                <FormControlLabel
-                                    value={SCOPE_GLOBAL}
-                                    control={<Radio />}
-                                    label="For all tokens"
-                                />
-                            )}
+                            <FormControlLabel
+                                value={SCOPE_GLOBAL}
+                                control={<Radio />}
+                                label="For all tokens"
+                            />
                         </RadioGroup>
                     </FormControl>
                 </Stack>
