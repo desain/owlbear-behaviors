@@ -134,7 +134,7 @@ export const Fog = {
 -   Encapsulate metadata key constants within the module
 -   For extensions that use broadcast messaging (like Auras), use `OBR.broadcast.sendMessage`
 
-#### 2. **Behavior Functions** (`src/behaviors/BehaviorImpl.ts`)
+#### 2. **Behavior Functions** (`src/behaviors/BehaviorImpl.ts` and `src/behaviors/impl/<category>.ts`)
 
 Add behavior functions that use the extension utility:
 
@@ -142,7 +142,7 @@ Add behavior functions that use the extension utility:
 // Import the extension utility
 import { Fog } from "../extensions/Fog";
 
-// Add to BEHAVIORS_IMPL object
+// Add to BEHAVIORS_IMPL object or appropriate object for the block's category
 hasLight: async (
     signal: AbortSignal,
     selfIdUnknown: unknown,

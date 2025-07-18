@@ -22,7 +22,7 @@ import { METADATA_KEY_EFFECT } from "../constants";
 import type { Patcher } from "./Patcher";
 import type { ItemWatcher } from "./Watcher";
 
-export type EffectType = (typeof EFFECT_OPTIONS)[number][0];
+export type BehaviorEffectType = (typeof EFFECT_OPTIONS)[number][0];
 
 const COLOR_UNIFORM = "color";
 const OPACITY_UNIFORM = "opacity";
@@ -30,7 +30,7 @@ const OPACITY_UNIFORM = "opacity";
 /**
  * Maps effect type to intensity from 0 to 1
  */
-type EffectConfig = Partial<Record<EffectType, number>>;
+type EffectConfig = Partial<Record<BehaviorEffectType, number>>;
 function isEffectConfig(obj: unknown): obj is EffectConfig {
     const validOptions: string[] = EFFECT_OPTIONS.map((opts) => opts[1]);
     return (
@@ -56,13 +56,13 @@ export function isEffectTarget(item: Item): item is EffectTarget {
     );
 }
 
-function getBlendMode(effect: EffectType): BlendMode {
+function getBlendMode(effect: BehaviorEffectType): BlendMode {
     return effect === "invert" ? "DIFFERENCE" : "COLOR";
 }
 
 function createEffect(
     globalItem: EffectTarget,
-    effectType: EffectType,
+    effectType: BehaviorEffectType,
     intensity: number,
 ) {
     return buildEffect()
@@ -100,7 +100,7 @@ export class EffectsWatcher implements ItemWatcher<EffectTarget> {
         (!(METADATA_KEY_EFFECT in item.metadata) ||
             isEffectConfig(item.metadata[METADATA_KEY_EFFECT]));
 
-    readonly #effectIds: Partial<Record<EffectType, Effect["id"]>> = {};
+    readonly #effectIds: Partial<Record<BehaviorEffectType, Effect["id"]>> = {};
 
     readonly #fix = (globalItem: EffectTarget, patcher: Patcher) => {
         const effectConfig = globalItem.metadata[METADATA_KEY_EFFECT] ?? {};
@@ -150,7 +150,7 @@ export class EffectsWatcher implements ItemWatcher<EffectTarget> {
     handleItemDelete = (patcher: Patcher) => {
         Object.entries(this.#effectIds).forEach(([effectType, effectId]) => {
             patcher.deleteLocal(effectId);
-            delete this.#effectIds[effectType as EffectType];
+            delete this.#effectIds[effectType as BehaviorEffectType];
         });
     };
 }

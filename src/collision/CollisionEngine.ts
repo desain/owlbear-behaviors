@@ -1,17 +1,32 @@
-import type {
-    BoundingBox,
-    Curve,
-    Image,
-    Item,
-    Line,
-    Path,
-    Shape,
+import {
+    isCurve,
+    isImage,
+    isLine,
+    isPath,
+    isShape,
+    type BoundingBox,
+    type Curve,
+    type Image,
+    type Item,
+    type Line,
+    type Path,
+    type Shape,
 } from "@owlbear-rodeo/sdk";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import type { ItemDiff } from "../watcher/diffItemSets";
 import { getBounds } from "./getBounds";
 
 type CollisionItem = Image | Shape | Line | Curve | Path;
+
+function isCollisionItem(item: Item): item is CollisionItem {
+    return (
+        isImage(item) ||
+        isShape(item) ||
+        isLine(item) ||
+        isCurve(item) ||
+        isPath(item)
+    );
+}
 
 export type Collision = readonly [a: Item["id"], b: Item["id"]];
 
@@ -64,7 +79,7 @@ export class CollisionEngine {
         createdItems,
         updatedItems,
         deletedItems,
-    }: ItemDiff<CollisionItem>): CollisionUpdate {
+    }: ItemDiff): CollisionUpdate {
         const newCollisions: Collision[] = [];
         const finishedCollisions: Collision[] = [];
 
@@ -81,17 +96,21 @@ export class CollisionEngine {
 
         // Cache new bounding boxes
         for (const createdItem of createdItems) {
-            this.#boundsCache.set(
-                createdItem.id,
-                getBounds(createdItem, usePlayerStorage.getState().grid),
-            );
+            if (isCollisionItem(createdItem)) {
+                this.#boundsCache.set(
+                    createdItem.id,
+                    getBounds(createdItem, usePlayerStorage.getState().grid),
+                );
+            }
         }
 
         for (const updatedItem of updatedItems) {
-            this.#boundsCache.set(
-                updatedItem.id,
-                getBounds(updatedItem, usePlayerStorage.getState().grid),
-            );
+            if (isCollisionItem(updatedItem)) {
+                this.#boundsCache.set(
+                    updatedItem.id,
+                    getBounds(updatedItem, usePlayerStorage.getState().grid),
+                );
+            }
         }
 
         // Check for update collisions
@@ -107,7 +126,8 @@ export class CollisionEngine {
 
                 const boundsB = this.#boundsCache.get(bId);
                 if (!boundsA || !boundsB) {
-                    throw Error("Missing bounds");
+                    // if we don't have bounds, one of them must not be a collision item
+                    continue;
                 }
                 const wasCollided = !!this.#inProgress.get(a.id)?.has(bId);
                 const nowCollided = checkBoundingBoxOverlap(boundsA, boundsB);

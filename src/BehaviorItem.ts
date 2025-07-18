@@ -4,12 +4,14 @@ import {
     isLine,
     isPath,
     isShape,
+    isText,
     type Curve,
     type Image,
     type Item,
     type Line,
     type Path,
     type Shape,
+    type Text,
 } from "@owlbear-rodeo/sdk";
 import { isObject, type HasParameterizedMetadata } from "owlbear-utils";
 import {
@@ -32,7 +34,7 @@ function isBehaviorData(data: unknown): data is BehaviorData {
     );
 }
 
-export type BehaviorItem = (Image | Line | Curve | Shape | Path) &
+export type BehaviorItem = (Image | Line | Curve | Shape | Path | Text) &
     HasParameterizedMetadata<typeof METADATA_KEY_TAGS, string[] | undefined> &
     HasParameterizedMetadata<
         typeof METADATA_KEY_BEHAVIORS,
@@ -45,7 +47,8 @@ export function isBehaviorItem(item: Item): item is BehaviorItem {
             isLine(item) ||
             isCurve(item) ||
             isShape(item) ||
-            isPath(item)) &&
+            isPath(item) ||
+            isText(item)) &&
         (!(METADATA_KEY_TAGS in item.metadata) ||
             (Array.isArray(item.metadata[METADATA_KEY_TAGS]) &&
                 item.metadata[METADATA_KEY_TAGS].every(
@@ -64,6 +67,7 @@ export const BEHAVIOR_ITEM_TYPES = [
     "CURVE",
     "SHAPE",
     "PATH",
+    "TEXT",
 ] as const satisfies BehaviorItem["type"][];
 // This will error if BEHAVIOR_ITEM_TYPES is missing any BehaviorItem['type'] value
 type AssertAllTypesCovered = Exclude<

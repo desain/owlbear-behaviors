@@ -1,7 +1,15 @@
-import { isCurve, isImage, isLine, isPath, isShape } from "@owlbear-rodeo/sdk";
+import {
+    isCurve,
+    isImage,
+    isLine,
+    isPath,
+    isShape,
+    isText,
+} from "@owlbear-rodeo/sdk";
 import type { Block } from "blockly";
-import { assumeHexColor, getName, type GridParsed } from "owlbear-utils";
+import { assumeHexColor, type GridParsed } from "owlbear-utils";
 import type { BehaviorItem } from "../BehaviorItem";
+import { getText } from "../behaviors/impl/looks";
 import {
     CUSTOM_DYNAMIC_CATEGORY_MY_BLOCKS,
     CUSTOM_DYNAMIC_CATEGORY_VARIABLES,
@@ -56,11 +64,11 @@ import {
     BLOCK_FOREVER,
     BLOCK_GET_FILL_COLOR,
     BLOCK_GET_FILL_OPACITY,
-    BLOCK_GET_LABEL,
     BLOCK_GET_LAYER,
     BLOCK_GET_SIZE,
     BLOCK_GET_STROKE_COLOR,
     BLOCK_GET_STROKE_OPACITY,
+    BLOCK_GET_TEXT,
     BLOCK_GLIDE,
     BLOCK_GLIDE_ROTATE_LEFT,
     BLOCK_GLIDE_ROTATE_RIGHT,
@@ -97,11 +105,11 @@ import {
     BLOCK_SET_EFFECT_TO,
     BLOCK_SET_FILL_COLOR,
     BLOCK_SET_FILL_OPACITY,
-    BLOCK_SET_LABEL,
     BLOCK_SET_LAYER,
     BLOCK_SET_SIZE,
     BLOCK_SET_STROKE_COLOR,
     BLOCK_SET_STROKE_OPACITY,
+    BLOCK_SET_TEXT,
     BLOCK_SET_VIEWPORT,
     BLOCK_SHOW,
     BLOCK_SNAP_TO_GRID,
@@ -357,14 +365,14 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         },
                     },
                     GAP50,
-                    ...(isImage(target)
+                    ...(isImage(target) || isText(target)
                         ? [
                               {
                                   kind: "block",
-                                  type: BLOCK_SET_LABEL.type,
+                                  type: BLOCK_SET_TEXT.type,
                                   inputs: {
-                                      [BLOCK_SET_LABEL.args0[0].name]:
-                                          shadowDynamic(getName(target)),
+                                      [BLOCK_SET_TEXT.args0[0].name]:
+                                          shadowDynamic(getText(target)),
                                   },
                               },
                               GAP50,
@@ -476,8 +484,8 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         : []),
                     blockToDefinition(BLOCK_GET_SIZE),
                     blockToDefinition(BLOCK_GET_LAYER),
-                    ...(isImage(target)
-                        ? [blockToDefinition(BLOCK_GET_LABEL)]
+                    ...(isImage(target) || isText(target)
+                        ? [blockToDefinition(BLOCK_GET_TEXT)]
                         : []),
                     blockToDefinition(BLOCK_VISIBLE),
                 ],

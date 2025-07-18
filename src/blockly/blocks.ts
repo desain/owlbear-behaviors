@@ -471,18 +471,18 @@ export const BLOCK_REPLACE_IMAGE = {
     inputsInline: true,
 } as const;
 
-export const BLOCK_GET_LABEL = {
+export const BLOCK_GET_TEXT = {
     style: "looks_blocks",
     type: "looks_get_label",
-    tooltip: "Get the label of this token (or name if it's not an image)",
+    tooltip: "Get the text of this token (or name if it's not an image)",
     message0: "text",
     output: "String",
 } as const;
 
-export const BLOCK_SET_LABEL = {
+export const BLOCK_SET_TEXT = {
     style: "looks_blocks",
     type: "looks_set_label",
-    tooltip: "Set the label of this token (or name if it's not an image)",
+    tooltip: "Set the text of this token (or name if it's not an image)",
     message0: "set text to %1",
     args0: [
         {
@@ -2716,8 +2716,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_CHANGE_SIZE,
     BLOCK_GET_SIZE,
     BLOCK_REPLACE_IMAGE,
-    BLOCK_GET_LABEL,
-    BLOCK_SET_LABEL,
+    BLOCK_GET_TEXT,
+    BLOCK_SET_TEXT,
     BLOCK_GET_LAYER,
     BLOCK_SET_LAYER,
     BLOCK_SET_STROKE_COLOR,

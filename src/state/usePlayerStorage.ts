@@ -189,25 +189,6 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 },
                 handleSelectionChange: (selection: string[] | undefined) =>
                     set({ selection: selection ?? [] }),
-                // setSelection: async (selection: string[] | undefined) => {
-                //     if (selection && selection.length > 0) {
-                //         return set({
-                //             lastNonemptySelection: selection,
-                //             lastNonemptySelectionItems:
-                //                 await OBR.scene.items.getItems(selection),
-                //         });
-                //     }
-                // },
-                // handleItemsChange: (items: Item[]) =>
-                //     set((state) => {
-                //         const lastNonemptySelectionItems = items.filter(
-                //             (item) =>
-                //                 state.lastNonemptySelection.includes(item.id),
-                //         );
-                //         return {
-                //             lastNonemptySelectionItems,
-                //         };
-                //     }),
                 handleItemsChange: (items: Item[]) => {
                     // console.log("new items", items);
                     const itemsOfInterest: OwlbearStore["itemsOfInterest"] =

@@ -91,11 +91,11 @@ import {
     BLOCK_SET_EFFECT_TO,
     BLOCK_SET_FILL_COLOR,
     BLOCK_SET_FILL_OPACITY,
-    BLOCK_SET_LABEL,
     BLOCK_SET_LAYER,
     BLOCK_SET_SIZE,
     BLOCK_SET_STROKE_COLOR,
     BLOCK_SET_STROKE_OPACITY,
+    BLOCK_SET_TEXT,
     BLOCK_SET_VIEWPORT,
     BLOCK_SOUND_PLAY,
     BLOCK_SOUND_PLAY_UNTIL_DONE,
@@ -600,7 +600,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     looks_set_label: (block, generator) => {
         const text = generator.valueToCode(
             block,
-            BLOCK_SET_LABEL.args0[0].name,
+            BLOCK_SET_TEXT.args0[0].name,
             javascript.Order.NONE,
         );
         return `await ${behave(
@@ -2046,7 +2046,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         const code =
             text !== "" && /^-?\d*(\.\d+)?$/.exec(text)
                 ? text
-                : generator.quote_(text);
+                : generator.multiline_quote_(text);
         return [code, javascript.Order.ATOMIC];
     },
 

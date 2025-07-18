@@ -161,7 +161,6 @@ To make a production build run:
 -   Auto features
     -   auto-tags
     -   auto-behaviors
--   Support text items
 -   Context menus
     -   Copy and paste behaviors
     -   Mass tag
@@ -186,6 +185,7 @@ To make a production build run:
         -   Min, max
     -   Stop all / other scripts in token?
 -   Fix Blockly bug? [hideIfOwnerIsInWorkspace](https://github.com/google/blockly/blob/develop/core/widgetdiv.ts#L201) should initialize `currentWorkspace` to `ownerWorkspace`, and should reference itself in the loop.
+-   Figure out multiline text - https://www.npmjs.com/package/@blockly/field-multilineinput doesn't display correctly.
 
 ## Known Bugs
 
