@@ -42,7 +42,6 @@ import {
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_FOG_ADD,
-    BLOCK_EXTENSION_SMOKE_ADD,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
@@ -50,6 +49,7 @@ import {
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
+    BLOCK_EXTENSION_SMOKE_ADD,
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_FACE,
     BLOCK_FOREVER,
@@ -1574,7 +1574,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         );
         const listRef = generator.getVariableReference(varId);
         return [
-            `(${listRef}?.indexOf(${item}) ?? -1) + 1`,
+            `(${listRef}?.map(String)?.indexOf(String(${item})) ?? -1) + 1`,
             javascript.Order.ADDITION,
         ];
     },
@@ -1600,7 +1600,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         );
         const listRef = generator.getVariableReference(varId);
         return [
-            `(${listRef} ?? []).includes(${item})`,
+            `(${listRef} ?? []).map(String).includes(String(${item}))`,
             javascript.Order.FUNCTION_CALL,
         ];
     },
@@ -1790,7 +1790,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         )};\n`;
     },
     extension_smoke_remove: () =>
-        `await ${behave("disableVision", PARAMETER_SIGNAL, PARAMETER_SELF_ID)};`,
+        `await ${behave(
+            "disableVision",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+        )};`,
 
     extension_weather_add: (block, generator) => {
         const direction = getStringFieldValue(

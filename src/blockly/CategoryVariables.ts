@@ -104,13 +104,11 @@ export class CategoryVariables extends ContinuousCategory {
             });
         }
 
-        if (import.meta.env.DEV) {
-            items.push({
-                kind: "button",
-                text: "Make a List",
-                callbackkey: CREATE_LIST,
-            });
-        }
+        items.push({
+            kind: "button",
+            text: "Make a List",
+            callbackkey: CREATE_LIST,
+        });
 
         const listVariables = variables.filter(
             (v) => v.getType() === VARIABLE_TYPE_LIST,
