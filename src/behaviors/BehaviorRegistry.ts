@@ -10,7 +10,11 @@ import { usePlayerStorage } from "../state/usePlayerStorage";
 import { BEHAVIORS_IMPL } from "./BehaviorImpl";
 import { compileBehavior } from "./compileBehavior";
 import { ItemProxy } from "./ItemProxy";
-import type { TriggerHandler } from "./TriggerHandler";
+import {
+    propertyChangeTriggers,
+    type PropertyChanged,
+    type TriggerHandler,
+} from "./TriggerHandler";
 
 type VariableValue = string | number | boolean;
 export type BehaviorGlobals = Record<string, VariableValue | VariableValue[]>;
@@ -173,15 +177,18 @@ export class BehaviorRegistry {
     readonly handlePropertyChange = <K extends keyof BehaviorItem>(
         itemId: string,
         property: K,
-        newValue?: BehaviorItem[K],
+        newValue: BehaviorItem[K],
     ) =>
         this.#triggerHandlers
             .get(itemId)
             ?.filter(
                 (handler) =>
                     handler.type === property &&
-                    (handler.newValue === undefined ||
-                        handler.newValue === newValue),
+                    propertyChangeTriggers(
+                        // typescript isn't smart enough to figure out the above check narrows down this type
+                        handler as PropertyChanged<K>,
+                        newValue,
+                    ),
             )
             ?.forEach((handler) => executeTriggerHandler(handler));
 

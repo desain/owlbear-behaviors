@@ -18,14 +18,16 @@ interface SelectedTriggerHandler extends BaseTriggerHandler {
     readonly type: "selected";
     selectedState: boolean;
 }
-interface PropertyChanged<K extends keyof BehaviorItem>
+export interface PropertyChanged<K extends keyof BehaviorItem>
     extends BaseTriggerHandler {
     readonly type: K;
     /**
-     * New value of the property. If unset, all changes will
-     * trigger the handler.
+     * New value of the property.
+     * ANY: all values trigger the handler
+     * DEFINED: any non-undefined value triggers the handler
+     * EXACTLY: the value must be exactly the given value to trigger the handler
      */
-    readonly newValue?: BehaviorItem[K];
+    readonly newValue: "ANY" | "DEFINED" | { exactly: BehaviorItem[K] };
 }
 
 interface CollisionTriggerHandler extends BaseTriggerHandler {
@@ -49,5 +51,19 @@ export type TriggerHandler =
     | PropertyChanged<"visible">
     | PropertyChanged<"locked">
     | PropertyChanged<"layer">
+    | PropertyChanged<"attachedTo">
     | CollisionTriggerHandler
     | GrimoireHpChangeTriggerHandler;
+
+export function propertyChangeTriggers<K extends keyof BehaviorItem>(
+    handler: PropertyChanged<K>,
+    value: BehaviorItem[K],
+) {
+    if (handler.newValue === "ANY") {
+        return true;
+    } else if (handler.newValue === "DEFINED") {
+        return value !== undefined;
+    } else {
+        return handler.newValue.exactly === value;
+    }
+}

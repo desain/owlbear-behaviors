@@ -154,6 +154,7 @@ To make a production build run:
 
 ## To do
 
+-   make speech bubbles use local items and broadcasts
 -   Request autoplay permission for sfx?
 -   Make new tags in tags field show up in possible tags list in block immediately
 -   Dragging C blocks around statements like scratch does [here?](https://github.com/scratchfoundation/scratch-blocks/blob/develop/core/insertion_marker_manager.js#L43)
@@ -180,7 +181,6 @@ To make a production build run:
     -   Events
         -   When I'm updated in any way?
         -   When I am tagged (tag1 v)?
-        -   When I attach/detach
         -   Broadcast to myself / my children / other token?
     -   Operators
         -   Min, max

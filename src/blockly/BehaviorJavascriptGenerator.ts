@@ -878,41 +878,58 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             case "position":
                 return generateAddTriggerHandler({
                     type: "position",
+                    newValue: "ANY",
                     behaviorFunction,
                 });
             case "rotation":
                 return generateAddTriggerHandler({
                     type: "rotation",
+                    newValue: "ANY",
                     behaviorFunction,
                 });
             case "layer":
                 return generateAddTriggerHandler({
                     type: "layer",
+                    newValue: "ANY",
                     behaviorFunction,
                 });
             case "locked:true":
                 return generateAddTriggerHandler({
                     type: "locked",
-                    newValue: true,
+                    newValue: { exactly: true },
                     behaviorFunction,
                 });
             case "locked:false":
                 return generateAddTriggerHandler({
                     type: "locked",
-                    newValue: false,
+                    newValue: { exactly: false },
                     behaviorFunction,
                 });
             case "visible:true": {
                 return generateAddTriggerHandler({
                     type: "visible",
-                    newValue: true,
+                    newValue: { exactly: true },
                     behaviorFunction,
                 });
             }
             case "visible:false": {
                 return generateAddTriggerHandler({
                     type: "visible",
-                    newValue: false,
+                    newValue: { exactly: false },
+                    behaviorFunction,
+                });
+            }
+            case "attachedTo:defined": {
+                return generateAddTriggerHandler({
+                    type: "attachedTo",
+                    newValue: "DEFINED",
+                    behaviorFunction,
+                });
+            }
+            case "attachedTo:undefined": {
+                return generateAddTriggerHandler({
+                    type: "attachedTo",
+                    newValue: { exactly: undefined },
                     behaviorFunction,
                 });
             }

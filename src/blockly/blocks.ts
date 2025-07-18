@@ -768,6 +768,8 @@ export const BLOCK_WHEN_I = {
                 ["unlock", "locked:false"],
                 ["show", "visible:true"],
                 ["hide", "visible:false"],
+                ["attach", "attachedTo:defined"],
+                ["detach", "attachedTo:undefined"],
                 ["am selected", "SELECTED:true"],
                 ["am deselected", "SELECTED:false"],
             ],
