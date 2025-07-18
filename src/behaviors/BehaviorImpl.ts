@@ -44,6 +44,7 @@ import { Grimoire } from "../extensions/Grimoire";
 import { Hoot } from "../extensions/Hoot";
 import { OwlTrackers } from "../extensions/OwlTrackers";
 import { Rumble } from "../extensions/Rumble";
+import { SmokeAndSpectre } from "../extensions/SmokeAndSpectre";
 import type { WeatherType } from "../extensions/Weather";
 import { Weather } from "../extensions/Weather";
 import { usePlayerStorage } from "../state/usePlayerStorage";
@@ -928,6 +929,43 @@ export const BEHAVIORS_IMPL = {
     removeLight: async (signal: AbortSignal, selfIdUnknown: unknown) => {
         await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
             Fog.removeLight(self);
+        });
+        signal.throwIfAborted();
+    },
+
+    hasVision: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<boolean> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return false;
+        }
+        return SmokeAndSpectre.hasVision(selfItem);
+    },
+    addVision: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        radiusUnknown: unknown,
+        shape: "circle" | "cone",
+    ) => {
+        const radius = units(Number(radiusUnknown));
+        if (!isFinite(radius) || isNaN(radius) || radius < 0) {
+            console.warn(`[addVision] radius invalid: ${radius}`);
+            return;
+        }
+        // Convert from grid units to pixels
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            SmokeAndSpectre.addVision(self, radius, shape);
+        });
+        signal.throwIfAborted();
+    },
+    disableVision: async (signal: AbortSignal, selfIdUnknown: unknown) => {
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            SmokeAndSpectre.disableVision(self);
         });
         signal.throwIfAborted();
     },

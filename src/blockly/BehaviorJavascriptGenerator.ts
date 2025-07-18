@@ -42,6 +42,7 @@ import {
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_FOG_ADD,
+    BLOCK_EXTENSION_SMOKE_ADD,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
@@ -1766,6 +1767,30 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
 
     extension_fog_remove: () =>
         `await ${behave("removeLight", PARAMETER_SIGNAL, PARAMETER_SELF_ID)};`,
+    extension_smoke_vision: () => [
+        `await ${behave("hasVision", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
+        javascript.Order.AWAIT,
+    ],
+    extension_smoke_add: (block, generator) => {
+        const radius = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_SMOKE_ADD.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const shape = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_SMOKE_ADD.args0[2].name,
+        );
+        return `await ${behave(
+            "addVision",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            radius,
+            generator.quote_(shape),
+        )};\n`;
+    },
+    extension_smoke_remove: () =>
+        `await ${behave("disableVision", PARAMETER_SIGNAL, PARAMETER_SELF_ID)};`,
 
     extension_weather_add: (block, generator) => {
         const direction = getStringFieldValue(

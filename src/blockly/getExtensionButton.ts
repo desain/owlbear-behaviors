@@ -20,8 +20,8 @@ const LINKS = {
     "Owlbear Codeo": rogue("https://owlbear-codeo.pages.dev/manifest.json"),
     "Owl Trackers": "https://extensions.owlbear.rodeo/owl-trackers",
     "Rumble!": "https://extensions.owlbear.rodeo/rumble",
-    "Smoke and Spectre": "https://extensions.owlbear.rodeo/smoke",
-    "Weather": "https://extensions.owlbear.rodeo/weather",
+    "Smoke & Spectre!": "https://extensions.owlbear.rodeo/smoke",
+    Weather: "https://extensions.owlbear.rodeo/weather",
 };
 
 export function extensionHeader(extension: keyof typeof LINKS) {

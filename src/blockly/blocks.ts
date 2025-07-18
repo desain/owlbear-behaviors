@@ -2012,6 +2012,74 @@ export const BLOCK_EXTENSION_FOG_REMOVE = {
     nextStatement: null,
 } as const;
 
+export const BLOCK_EXTENSION_SMOKE_VISION = {
+    style: "extension_blocks",
+    type: "extension_smoke_vision",
+    tooltip:
+        "Whether this token has vision from the Smoke and Spectre extension",
+    message0: "%1 I have vision?",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://smoke.battle-system.com/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Smoke and Spectre extension icon",
+        },
+    ],
+    output: "Boolean",
+} as const;
+
+export const BLOCK_EXTENSION_SMOKE_ADD = {
+    style: "extension_blocks",
+    type: "extension_smoke_add",
+    tooltip: "Add vision using the Smoke and Spectre extension",
+    message0: "%1 add %2 %{BKY_OBR_GRID_UNIT} %3 vision",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://smoke.battle-system.com/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Smoke and Spectre extension icon",
+        },
+        {
+            type: "input_value",
+            name: "RADIUS",
+            check: ["Number", "String"],
+        },
+        {
+            type: "field_dropdown",
+            name: "SHAPE",
+            options: [
+                ["circle", "circle"],
+                ["cone", "cone"],
+            ],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_SMOKE_REMOVE = {
+    style: "extension_blocks",
+    type: "extension_smoke_remove",
+    tooltip: "Disable Smoke and Spectre vision from this token",
+    message0: "%1 disable vision",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://smoke.battle-system.com/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Smoke and Spectre extension icon",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+} as const;
+
 export const BLOCK_EXTENSION_GRIMOIRE_HP = {
     style: "extension_blocks",
     type: "extension_grimoire_hp",
@@ -2726,6 +2794,9 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_FOG_LIT,
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_FOG_REMOVE,
+    BLOCK_EXTENSION_SMOKE_VISION,
+    BLOCK_EXTENSION_SMOKE_ADD,
+    BLOCK_EXTENSION_SMOKE_REMOVE,
     BLOCK_EXTENSION_GRIMOIRE_HP,
     BLOCK_EXTENSION_GRIMOIRE_MAX_HP,
     BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,

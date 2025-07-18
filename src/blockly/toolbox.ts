@@ -46,6 +46,9 @@ import {
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
+    BLOCK_EXTENSION_SMOKE_ADD,
+    BLOCK_EXTENSION_SMOKE_REMOVE,
+    BLOCK_EXTENSION_SMOKE_VISION,
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_EXTENSION_WEATHER_HAS,
     BLOCK_EXTENSION_WEATHER_REMOVE,
@@ -910,6 +913,18 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                                 .name]: shadowDynamic("checkbox"),
                         },
                     },
+
+                    ...extensionHeader("Smoke & Spectre!"),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_SMOKE_ADD.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_SMOKE_ADD.args0[1].name]:
+                                shadowNumber(grid.parsedScale.multiplier),
+                        },
+                    },
+                    blockToDefinition(BLOCK_EXTENSION_SMOKE_REMOVE),
+                    blockToDefinition(BLOCK_EXTENSION_SMOKE_VISION),
 
                     ...extensionHeader("Rumble!"),
                     {
