@@ -16,9 +16,9 @@ import {
     BLOCK_VARIABLE_REPORTER,
     BLOCK_VARIABLE_SETTER,
 } from "./blocks";
+import { EventShowCreateVariable } from "./EventShowCreateVariable";
 import { shadowDynamic, shadowNumber } from "./shadows";
 import { GAP50 } from "./toolbox";
-import { VariableModal } from "./VariableModal";
 
 /**
  * Returns the JSON definition for a variable field.
@@ -44,19 +44,19 @@ const CREATE_LIST = "CREATE_LIST";
 
 export class CategoryVariables extends ContinuousCategory {
     override getContents(): Blockly.utils.toolbox.FlyoutItemInfoArray {
-        this.workspace_.registerButtonCallback(CREATE_VARIABLE, () => {
-            const modal = new VariableModal(this.workspace_, "");
-            modal.init();
-            modal.show();
-        });
-        this.workspace_.registerButtonCallback(CREATE_LIST, () => {
-            const modal = new VariableModal(
-                this.workspace_,
-                VARIABLE_TYPE_LIST,
-            );
-            modal.init();
-            modal.show();
-        });
+        this.workspace_.registerButtonCallback(CREATE_VARIABLE, () =>
+            Blockly.Events.fire(
+                new EventShowCreateVariable(this.workspace_, ""),
+            ),
+        );
+        this.workspace_.registerButtonCallback(CREATE_LIST, () =>
+            Blockly.Events.fire(
+                new EventShowCreateVariable(
+                    this.workspace_,
+                    VARIABLE_TYPE_LIST,
+                ),
+            ),
+        );
 
         const items: Blockly.utils.toolbox.FlyoutItemInfoArray = [
             {
@@ -104,11 +104,13 @@ export class CategoryVariables extends ContinuousCategory {
             });
         }
 
-        // items.push({
-        //     kind: "button",
-        //     text: "Make a List",
-        //     callbackkey: CREATE_LIST,
-        // });
+        if (import.meta.env.DEV) {
+            items.push({
+                kind: "button",
+                text: "Make a List",
+                callbackkey: CREATE_LIST,
+            });
+        }
 
         const listVariables = variables.filter(
             (v) => v.getType() === VARIABLE_TYPE_LIST,

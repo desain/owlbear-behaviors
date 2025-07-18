@@ -6,15 +6,19 @@ import rotateRight from "../../assets/rotate-right.svg";
 
 import {
     EXTENSION_BROADCAST,
-    EXTENSION_DRAG_TO_DUPE,
     EXTENSION_SOUND,
     EXTENSION_TAG,
     EXTENSION_URL,
+    FIELD_ARGUMENT_EDITOR_TEXT,
     INPUT_BROADCAST,
     INPUT_SOUND,
     INPUT_TAG,
+    MIXIN_DRAG_TO_DUPE,
     VARIABLE_TYPE_LIST,
 } from "../constants";
+import type { BLOCK_TYPE_ARGUMENT_REPORTER } from "./procedures/blockArgumentReporter";
+import type { BLOCK_TYPE_CALL } from "./procedures/blockCall";
+import type { BLOCK_TYPE_DEFINE } from "./procedures/blockDefine";
 
 // Motion
 export const BLOCK_GLIDE = {
@@ -914,15 +918,16 @@ export const BLOCK_DESELECT = {
 
 export const BLOCK_OTHER_SRC = {
     style: "sensing_blocks",
-    extensions: [EXTENSION_DRAG_TO_DUPE],
+    extensions: [MIXIN_DRAG_TO_DUPE],
     type: "sensing_other_src",
     tooltip: "The token this token is touching (drag to use variable)",
     message0: "other",
     output: "ItemId",
 } as const;
 
-export const BLOCK_OTHER_VAL = {
+export const BLOCK_OTHER = {
     style: "sensing_blocks",
+    extensions: [MIXIN_DRAG_TO_DUPE],
     type: "sensing_other_val",
     tooltip: "The token this token is touching",
     message0: "other",
@@ -1775,6 +1780,50 @@ export const BLOCK_LIST_CONTAINS = {
     ],
     output: "Boolean",
     style: "list_blocks",
+    inputsInline: true,
+} as const;
+
+// My Blocks
+export const BLOCK_PROCEDURE_PREVIEW = {
+    style: "my_blocks",
+    type: "procedures_declaration",
+    tooltip: "Define your custom block",
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+/**
+ * See:
+ * https://github.com/scratchfoundation/scratch-blocks/blob/e96b5d43c16e9afe939d22454dbf7e73f8e811ed/blocks_vertical/procedures.js#L954
+ */
+export const BLOCK_ARGUMENT_EDITOR_STRNUM = {
+    style: "my_blocks",
+    type: "argument_editor_string_number",
+    message0: "%1",
+    args0: [
+        {
+            type: "field_input_removable",
+            name: FIELD_ARGUMENT_EDITOR_TEXT,
+            text: "foo",
+        },
+    ],
+    output: ["String", "Number"],
+    inputsInline: true,
+} as const;
+
+export const BLOCK_ARGUMENT_EDITOR_BOOLEAN = {
+    style: "my_blocks",
+    type: "argument_editor_boolean",
+    message0: "%1",
+    args0: [
+        {
+            type: "field_input_removable",
+            name: FIELD_ARGUMENT_EDITOR_TEXT,
+            text: "bar",
+        },
+    ],
+    output: "Boolean",
     inputsInline: true,
 } as const;
 
@@ -2633,7 +2682,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_CLOSEST_TAGGED,
     BLOCK_DESELECT,
     BLOCK_OTHER_SRC,
-    BLOCK_OTHER_VAL,
+    BLOCK_OTHER,
     BLOCK_SENSING_OF,
     BLOCK_DISTANCE_TO,
     BLOCK_TOUCHING,
@@ -2661,6 +2710,11 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_LIST_INDEX_OF,
     BLOCK_LIST_LENGTH,
     BLOCK_LIST_CONTAINS,
+
+    // My Blocks
+    BLOCK_PROCEDURE_PREVIEW,
+    BLOCK_ARGUMENT_EDITOR_STRNUM,
+    BLOCK_ARGUMENT_EDITOR_BOOLEAN,
 
     // Extension blocks
     BLOCK_ANNOUNCEMENT,
@@ -2701,7 +2755,11 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_CONTROL_ITEM_MENU,
 ];
 
-export type CustomBlockType = (typeof CUSTOM_JSON_BLOCKS)[number]["type"];
+export type CustomBlockType =
+    | (typeof CUSTOM_JSON_BLOCKS)[number]["type"]
+    | typeof BLOCK_TYPE_CALL
+    | typeof BLOCK_TYPE_DEFINE
+    | typeof BLOCK_TYPE_ARGUMENT_REPORTER;
 
 // Todo: better way to do this?
 // This is intended to fail compilation if I forget to put 'as const'

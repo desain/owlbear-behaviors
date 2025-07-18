@@ -56,7 +56,12 @@ const ${CONSTANT_BEHAVIOR_DEFINITION} /*: BehaviorDefinition */ = {
 }
 ${code}
 return ${CONSTANT_BEHAVIOR_DEFINITION};`;
-    // console.log("compiling", behaviorDefinitionCode);
+    if (import.meta.env.DEV) {
+        console.log(
+            `[${import.meta.env.MODE}] compiling`,
+            behaviorDefinitionCode,
+        );
+    }
 
     return compileObrFunction(behaviorDefinitionCode, [
         PARAMETER_SELF_ID,

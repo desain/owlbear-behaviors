@@ -3,6 +3,7 @@ import type { Block } from "blockly";
 import { assumeHexColor, getName, type GridParsed } from "owlbear-utils";
 import type { BehaviorItem } from "../BehaviorItem";
 import {
+    CUSTOM_DYNAMIC_CATEGORY_MY_BLOCKS,
     CUSTOM_DYNAMIC_CATEGORY_VARIABLES,
     INPUT_BROADCAST,
     INPUT_TAG,
@@ -40,14 +41,14 @@ import {
     BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
-    BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
+    BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
     BLOCK_EXTENSION_WEATHER_ADD,
-    BLOCK_EXTENSION_WEATHER_REMOVE,
     BLOCK_EXTENSION_WEATHER_HAS,
+    BLOCK_EXTENSION_WEATHER_REMOVE,
     BLOCK_FACE,
     BLOCK_FOREVER,
     BLOCK_GET_FILL_COLOR,
@@ -77,7 +78,7 @@ import {
     BLOCK_MOVE_DIRECTION,
     BLOCK_MY_PARENT,
     BLOCK_OPACITY_SLIDER,
-    BLOCK_OTHER_SRC,
+    BLOCK_OTHER,
     BLOCK_POINT_IN_DIRECTION,
     BLOCK_RECEIVE_BROADCAST,
     BLOCK_REMOVE_AURAS,
@@ -531,8 +532,8 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         type: BLOCK_TOUCH.type,
                         inputs: {
                             [BLOCK_TOUCH.args0[1].name]: {
-                                block: {
-                                    type: BLOCK_OTHER_SRC.type,
+                                shadow: {
+                                    type: BLOCK_OTHER.type,
                                 },
                             },
                         },
@@ -767,6 +768,15 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                 name: "Variables",
                 categorystyle: "style_category_variables",
             },
+            ...(import.meta.env.DEV
+                ? [
+                      /* my blocks */ {
+                          kind: CUSTOM_DYNAMIC_CATEGORY_MY_BLOCKS,
+                          name: "My Blocks",
+                          categorystyle: "style_category_my_blocks",
+                      },
+                  ]
+                : []),
             /* extensions */ {
                 kind: "category",
                 name: "Extensions",

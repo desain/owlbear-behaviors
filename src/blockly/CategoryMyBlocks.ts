@@ -1,0 +1,37 @@
+import { ContinuousCategory } from "@blockly/continuous-toolbox";
+import * as Blockly from "blockly";
+import { EventShowEditProcedure } from "./EventShowEditProcedure";
+import type { CallBlockExtraState } from "./procedures/blockCall";
+
+const CREATE_BLOCK = "CREATE_BLOCK";
+
+export class CategoryMyBlocks extends ContinuousCategory {
+    override getContents(): Blockly.utils.toolbox.FlyoutItemInfoArray {
+        this.workspace_.registerButtonCallback(CREATE_BLOCK, () => {
+            const event = new EventShowEditProcedure(this.workspace_);
+            Blockly.Events.fire(event);
+        });
+
+        const items: Blockly.utils.toolbox.FlyoutItemInfoArray = [
+            {
+                kind: "button",
+                text: "Make a Block",
+                callbackkey: CREATE_BLOCK,
+            },
+        ];
+
+        for (const procedure of this.workspace_
+            .getProcedureMap()
+            .getProcedures()) {
+            items.push({
+                kind: "block",
+                type: "call",
+                extraState: {
+                    procedure: { id_: procedure.getId() },
+                } satisfies CallBlockExtraState,
+            });
+        }
+
+        return items;
+    }
+}

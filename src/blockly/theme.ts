@@ -4,7 +4,10 @@ import * as Blockly from "blockly";
 /**
  * Scratch colors: https://github.com/scratchfoundation/scratch-blocks/blob/e96b5d43c16e9afe939d22454dbf7e73f8e811ed/core/colours.js#L135
  */
-export function createBlocklyTheme(obrTheme: Theme): Blockly.Theme {
+export function createBlocklyTheme(
+    obrTheme: Theme,
+    catBlocks: boolean,
+): Blockly.Theme {
     const operatorsBlocks = {
         colourPrimary: "#59C059",
         colourSecondary: "#46B946",
@@ -23,9 +26,10 @@ export function createBlocklyTheme(obrTheme: Theme): Blockly.Theme {
         colourTertiary: "#DB6E00",
     };
 
-    return Blockly.Theme.defineTheme("owlbear-rodeo", {
-        name: "owlbear-rodeo",
-        base: Blockly.Themes.Classic,
+    const name = "owlbear-rodeo" + (catBlocks ? "-cat" : "");
+    return Blockly.Theme.defineTheme(name, {
+        name,
+        base: Blockly.Themes.Zelos,
         blockStyles: {
             motion_blocks: {
                 colourPrimary: "#4C97FF",
@@ -46,7 +50,6 @@ export function createBlocklyTheme(obrTheme: Theme): Blockly.Theme {
                 colourPrimary: "#FFBF00",
                 colourSecondary: "#E6AC00",
                 colourTertiary: "#CC9900",
-                // hat: "cap",
             },
             control_blocks: controlBlocks,
             loop_blocks: controlBlocks,
@@ -66,6 +69,11 @@ export function createBlocklyTheme(obrTheme: Theme): Blockly.Theme {
                 colourSecondary: "#FF5500",
                 colourTertiary: "#E64D00",
             },
+            my_blocks: {
+                colourPrimary: "#FF6680",
+                colourSecondary: "#FF4D6A",
+                colourTertiary: "#FF3355",
+            },
             extension_blocks: {
                 colourPrimary: "#0fBD8C",
                 colourSecondary: "#0DA57A",
@@ -81,6 +89,7 @@ export function createBlocklyTheme(obrTheme: Theme): Blockly.Theme {
             style_category_sensing: { colour: "#5CB1D6" },
             style_category_operators: { colour: "#59C059" },
             style_category_variables: { colour: "#FF8C1A" },
+            style_category_my_blocks: { colour: "#FF6680" },
             style_category_extensions: { colour: "#0fBD8C" },
         },
         componentStyles: {

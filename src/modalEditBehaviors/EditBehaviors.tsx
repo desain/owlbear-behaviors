@@ -16,7 +16,11 @@ import { useCallback, useEffect, useState } from "react";
 import type { BehaviorItem } from "../BehaviorItem";
 import { getTags, isBehaviorItem } from "../BehaviorItem";
 import { BehaviorConnectionChecker } from "../blockly/BehaviorConnectionChecker";
+import { Renderer } from "../blockly/blockRendering/Renderer";
 import { BLOCK_IMMEDIATELY } from "../blockly/blocks";
+import { Dragger } from "../blockly/Dragger";
+import { isShowCreateVariable } from "../blockly/EventShowCreateVariable";
+import { isShowEditProcedure } from "../blockly/EventShowEditProcedure";
 import { installGetExtensionCallback } from "../blockly/getExtensionButton";
 import { handleNewSceneMetadata } from "../blockly/handleNewSceneMetadata";
 import { setupBlocklyGlobals } from "../blockly/setupBlocklyGlobals";
@@ -26,11 +30,12 @@ import {
     METADATA_KEY_BEHAVIORS,
     METADATA_KEY_TAGS,
     MODAL_EDIT_BEHAVIOR_ID,
-    RENDERER_CAT,
 } from "../constants";
 import { addTags } from "../state/SceneMetadata";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import { ItemTagsEditor } from "./ItemTagsEditor";
+import { NewBlockModal } from "./NewBlockModal";
+import { VariableModal } from "./VariableModal";
 
 export interface EditBehaviorsProps {
     readonly itemId: string;
@@ -59,6 +64,20 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
     const [blocklyArea, setBlocklyArea] = useState<HTMLDivElement | null>(null);
     const [blocklyDiv, setBlocklyDiv] = useState<HTMLDivElement | null>(null);
     const [pendingTags, setPendingTags] = useState<string[]>([]);
+
+    /**
+     * null = new block, undefined = closed
+     */
+    const [editBlockProcedureId, setEditBlockProcedureId] = useState<
+        string | null | undefined
+    >();
+
+    /**
+     * undefined = closed, string = variable type to create
+     */
+    const [createVariableType, setCreateVariableType] = useState<
+        string | undefined
+    >();
 
     // Callback refs so that the values can trigger re-renders
     const blocklyAreaRef = useCallback(
@@ -122,9 +141,9 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
             setupBlocklyGlobals();
             const workspace = Blockly.inject(blocklyDiv, {
                 // https://developers.google.com/blockly/guides/configure/web/configuration_struct
-                renderer: catBlocks ? RENDERER_CAT : "zelos", // Scratch styling
+                renderer: Renderer.NAME, // catBlocks ? RENDERER_CAT : "zelos", // Scratch styling
                 toolbox: createToolbox(item, grid),
-                theme: createBlocklyTheme(theme),
+                theme: createBlocklyTheme(theme, catBlocks),
                 trashcan: false,
                 move: {
                     scrollbars: true,
@@ -149,9 +168,20 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
                     // variableMap: BehaviorVariableMap,
                     [Blockly.registry.Type.CONNECTION_CHECKER.toString()]:
                         BehaviorConnectionChecker,
+                    [Blockly.registry.Type.BLOCK_DRAGGER.toString()]: Dragger,
                 },
             });
             installGetExtensionCallback(workspace);
+
+            // Add event listeners for modals
+            workspace.addChangeListener((event) => {
+                if (isShowEditProcedure(event)) {
+                    setEditBlockProcedureId(event.getProcedureId());
+                } else if (isShowCreateVariable(event)) {
+                    setCreateVariableType(event.getVariableType());
+                }
+            });
+
             setWorkspace(workspace);
 
             // Load workspace content
@@ -314,6 +344,26 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
                     </Button>
                 </DialogActions>
             </Stack>
+            {workspace && (
+                <>
+                    <NewBlockModal
+                        open={editBlockProcedureId !== undefined}
+                        onClose={() => {
+                            setEditBlockProcedureId(undefined);
+                        }}
+                        workspace={workspace}
+                        procedureId={editBlockProcedureId ?? null}
+                    />
+                    <VariableModal
+                        open={createVariableType !== undefined}
+                        onClose={() => {
+                            setCreateVariableType(undefined);
+                        }}
+                        workspace={workspace}
+                        variableType={createVariableType ?? ""}
+                    />
+                </>
+            )}
         </>
     );
 };

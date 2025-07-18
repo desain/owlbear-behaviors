@@ -154,7 +154,6 @@ To make a production build run:
 
 ## To do
 
--   Fix new instance received?
 -   Request autoplay permission for sfx?
 -   Make new tags in tags field show up in possible tags list in block immediately
 -   Dragging C blocks around statements like scratch does [here?](https://github.com/scratchfoundation/scratch-blocks/blob/develop/core/insertion_marker_manager.js#L43)
@@ -176,22 +175,24 @@ To make a production build run:
         -   Kenku FM?
     -   Control
         -   switch? https://groups.google.com/g/blockly/c/djhO2jUb0Xs
-        -   tell other to?
+            -   Snail Mod has it with switch and case blocks, case can only live in switch
+        -   tell other to? Snail Mod has it as `as (other) {...}`
     -   Events
         -   When I'm updated in any way?
         -   When I am tagged (tag1 v)?
-        -   When I am attached / detached
+        -   When I attach/detach
         -   Broadcast to myself / my children / other token?
     -   Operators
         -   Min, max
     -   Stop all / other scripts in token?
+-   Fix Blockly bug? [hideIfOwnerIsInWorkspace](https://github.com/google/blockly/blob/develop/core/widgetdiv.ts#L201) should initialize `currentWorkspace` to `ownerWorkspace`, and should reference itself in the loop.
 
 ## Known Bugs
 
--   Dragging directly from the 'other' block in the touch hat block to the flyout deletes the hat block
 -   Animations can be choppy when the action window is not open
 -   Stacking in backpack - happens when lots of (tall?) items, only on second time opening backpack
 -   Sounds aren't restored when loading an item with behaviors from a prefab
+-   If you put a procedure definition that references itself (by using its parameters or making it recursive) in the backpack, then drag a copy of the procedure into a workspace that already has the procedure, the self-referential elements of the new copy will attach to the original definition, rather than the newly copied in one.
 
 ## License
 

@@ -111,6 +111,9 @@ import {
     BLOCK_WHEN_I,
     type CustomBlockType,
 } from "./blocks";
+import type { ArgumentReporterBlock } from "./procedures/blockArgumentReporter";
+import type { CallBlock } from "./procedures/blockCall";
+import { isDefineBlock, type DefineBlock } from "./procedures/blockDefine";
 
 const THROW_ON_ABORT = `${PARAMETER_SIGNAL}.throwIfAborted();\n`;
 
@@ -1584,6 +1587,71 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         ];
     },
 
+    // My blocks
+    define: (block, generator) => {
+        const model = (block as DefineBlock).getProcedureModel();
+        const name = generator.getProcedureName(model.getName());
+
+        const nextBlock = block.getNextBlock();
+        const statementsResult = nextBlock
+            ? generator.blockToCode(nextBlock)
+            : "";
+        const statementsCode =
+            typeof statementsResult === "string"
+                ? statementsResult
+                : statementsResult[0];
+
+        return generateBlock(
+            generator,
+            `async function ${name}(${PARAMETER_SIGNAL}, ${PARAMETER_OTHER_ID}, ${VAR_LOOP_CHECK}, ${model
+                .getParameters()
+                .filter((p) => p.getTypes().length)
+                .map((p) => p.getId())
+                .join(", ")})`,
+            [statementsCode, `return ${VAR_LOOP_CHECK};`].join("\n"),
+        );
+    },
+
+    call: (block, generator) => {
+        const args = block.inputList
+            .filter((input) => input.connection?.getCheck()?.length)
+            .map(
+                (input) =>
+                    generator.valueToCode(
+                        block,
+                        input.name,
+                        javascript.Order.NONE,
+                    ) || "undefined",
+            );
+        const model = (block as CallBlock).getProcedureModel();
+        const name = generator.getProcedureName(model.getName());
+        return `${VAR_LOOP_CHECK} = await ${name}(${PARAMETER_SIGNAL}, ${PARAMETER_OTHER_ID}, ${VAR_LOOP_CHECK}, ${args.join(
+            ", ",
+        )});\n`;
+    },
+
+    argument_reporter: (block) => {
+        const argumentReporter = block as ArgumentReporterBlock;
+        const model = argumentReporter.getProcedureModel();
+        const param = model
+            .getParameters()
+            .find((p) => p.getId() === argumentReporter.parameterId);
+        if (!param) {
+            throw Error("missing parameter");
+        }
+
+        // Argument reporters only have values inside the definition of their
+        // procedures - if used outside this context, they'll be undefined
+        const rootBlock = block.getRootBlock();
+        const insideProcedureDefinition =
+            isDefineBlock(rootBlock) && rootBlock.getProcedureModel() === model;
+
+        return [
+            insideProcedureDefinition ? param.getId() : "undefined",
+            javascript.Order.ATOMIC,
+        ];
+    },
+
     // Extension blocks
     extension_announcement: (block, generator) => {
         const content = generator.valueToCode(
@@ -1996,6 +2064,17 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             case "MYSELF":
                 return [PARAMETER_SELF_ID, javascript.Order.ATOMIC];
         }
+    },
+
+    // Non-codegen blocks
+    procedures_declaration: (block) => {
+        throw Error(`${block.type} should not be used for codegen`);
+    },
+    argument_editor_string_number: (block) => {
+        throw Error(`${block.type} should not be used for codegen`);
+    },
+    argument_editor_boolean: (block) => {
+        throw Error(`${block.type} should not be used for codegen`);
     },
 };
 

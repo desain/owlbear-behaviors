@@ -1,9 +1,12 @@
 import * as Blockly from "blockly";
+import { INPUT_CUSTOM_BLOCK } from "../constants";
 import { BLOCK_TOUCH } from "./blocks";
+import { BLOCK_TYPE_DEFINE } from "./procedures/blockDefine";
 
 // Prevent touch blocks from overwriting their inputs
 const DENY_CONNECTIONS = [
     [BLOCK_TOUCH.type, BLOCK_TOUCH.args0[1].name],
+    [BLOCK_TYPE_DEFINE, INPUT_CUSTOM_BLOCK],
 ] as const;
 
 export class BehaviorConnectionChecker extends Blockly.ConnectionChecker {

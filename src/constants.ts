@@ -43,6 +43,7 @@ export const VAR_LOOP_CHECK = "loopCheck";
 
 // Blockly variable category
 export const CUSTOM_DYNAMIC_CATEGORY_VARIABLES = "BEHAVIOR_VARIABLES_DYNAMIC";
+export const CUSTOM_DYNAMIC_CATEGORY_MY_BLOCKS = "BEHAVIOR_MY_BLOCKS_DYNAMIC";
 export const VARIABLE_TYPE_LIST = "List";
 
 // Blockly extensions
@@ -61,10 +62,13 @@ export const INPUT_SOUND = "INPUT_SOUND";
 export const FIELD_SOUND = "FIELD_SOUND";
 export const DROPDOWN_SOUND_MEOW = "meow";
 
-export const EXTENSION_DRAG_TO_DUPE = "extension_drag_to_dupe";
+export const MIXIN_DRAG_TO_DUPE = "extension_drag_to_dupe";
 export const EXTENSION_URL = "extension_url";
 
 export const CREATE_NEW_RESOURCE = "__create_new__";
+
+export const FIELD_ARGUMENT_EDITOR_TEXT = "TEXT";
+export const INPUT_CUSTOM_BLOCK = "custom_block";
 
 // Blockly renderer
 export const RENDERER_CAT = "cat_zelos";
