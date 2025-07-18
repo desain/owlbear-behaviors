@@ -1083,9 +1083,10 @@ export const BLOCK_IF_ELSE = {
     style: "control_blocks",
     type: "control_behavior_if_else",
     tooltip: "%{BKY_CONTROLS_IF_TOOLTIP_2}",
-    message0: "if %1 then",
+    helpUrl: "%{BKY_CONTROLS_IF_HELPURL}",
+    message0: "%{BKY_CONTROLS_IF_MSG_IF} %1 then",
     message1: "%1",
-    message2: "else",
+    message2: "%{BKY_CONTROLS_IF_MSG_ELSE}",
     message3: "%1",
     args0: [
         {
@@ -1142,8 +1143,9 @@ export const BLOCK_FOREVER = {
 export const BLOCK_REPEAT = {
     style: "control_blocks",
     type: "control_repeat",
-    tooltip: "Run the statements inside a certain number of times",
-    message0: "repeat %1 times",
+    tooltip: "%{BKY_CONTROLS_REPEAT_TOOLTIP}",
+    helpUrl: "%{BKY_CONTROLS_REPEAT_HELPURL}",
+    message0: "%{BKY_CONTROLS_REPEAT_TITLE}",
     message1: "%1", // Statement
     message2: "%1", // Icon
     lastDummyAlign2: "RIGHT",
@@ -1196,8 +1198,9 @@ export const BLOCK_WAIT_UNTIL = {
 export const BLOCK_REPEAT_UNTIL = {
     style: "control_blocks",
     type: "control_repeat_until",
-    tooltip: "Repeat the statements inside until the condition is true",
-    message0: "repeat until %1",
+    tooltip: "%{BKY_CONTROLS_WHILEUNTIL_TOOLTIP_UNTIL}",
+    helpUrl: "%{BKY_CONTROLS_WHILEUNTIL_HELPURL}",
+    message0: "%{BKY_CONTROLS_WHILEUNTIL_OPERATOR_UNTIL} %1",
     message1: "%1", // Statement
     message2: "%1", // Icon
     lastDummyAlign2: "RIGHT",
@@ -1268,7 +1271,8 @@ export const BLOCK_JOIN = {
     style: "operators_blocks",
     type: "operator_join",
     tooltip: "Join two values into a text string",
-    message0: "join %1 %2",
+    helpUrl: "%{BKY_TEXT_JOIN_HELPURL}",
+    message0: "%{BKY_TEXT_CREATE_JOIN_TITLE_JOIN} %1 %2",
     args0: [
         {
             type: "input_value",
@@ -1321,7 +1325,8 @@ export const BLOCK_URL = {
 export const BLOCK_COLOR_PICKER = {
     style: "looks_blocks",
     type: "color_hsv_sliders",
-    tooltip: "Pick a color using HSV sliders",
+    tooltip: "%{BKY_COLOUR_PICKER_TOOLTIP}",
+    helpUrl: "%{BKY_COLOUR_PICKER_HELPURL}",
     message0: "%1",
     args0: [
         {
@@ -1352,7 +1357,8 @@ export const BLOCK_OPACITY_SLIDER = {
 export const BLOCK_EQUALS = {
     style: "operators_blocks",
     type: "operator_equals",
-    tooltip: "True if both sides are equal",
+    tooltip: "%{BKY_LOGIC_COMPARE_TOOLTIP_EQ}",
+    helpUrl: "%{BKY_LOGIC_COMPARE_HELPURL}",
     message0: "%1 = %2",
     args0: [
         {
@@ -1373,7 +1379,8 @@ export const BLOCK_EQUALS = {
 export const BLOCK_LESS_THAN = {
     style: "operators_blocks",
     type: "operator_lt",
-    tooltip: "True if left side is less than right side",
+    tooltip: "%{BKY_LOGIC_COMPARE_TOOLTIP_LT}",
+    helpUrl: "%{BKY_LOGIC_COMPARE_HELPURL}",
     message0: "%1 < %2",
     args0: [
         {
@@ -1394,8 +1401,9 @@ export const BLOCK_LESS_THAN = {
 export const BLOCK_GREATER_THAN = {
     style: "operators_blocks",
     type: "operator_gt",
-    tooltip: "True if left side is greater than right side",
+    tooltip: "%{BKY_LOGIC_COMPARE_TOOLTIP_GT}",
     message0: "%1 > %2",
+    helpUrl: "%{BKY_LOGIC_COMPARE_HELPURL}",
     args0: [
         {
             type: "input_value",
@@ -1512,7 +1520,9 @@ export const BLOCK_VARIABLE_REPORTER = {
 export const BLOCK_VARIABLE_SETTER = {
     style: "variable_blocks",
     type: "data_setvariableto",
-    message0: "set %1 to %2",
+    tooltip: "%{BKY_VARIABLES_SET_TOOLTIP}",
+    helpUrl: "%{BKY_VARIABLES_SET_HELPURL}",
+    message0: "%{BKY_VARIABLES_SET}",
     args0: [
         {
             type: "field_variable",
@@ -1535,7 +1545,9 @@ export const BLOCK_VARIABLE_SETTER = {
 export const BLOCK_VARIABLE_CHANGE = {
     style: "variable_blocks",
     type: "data_changevariableby",
-    message0: "change %1 by %2",
+    tooltip: "Change a variable by a set amount",
+    helpUrl: "%{BKY_MATH_CHANGE_HELPURL}",
+    message0: "%{BKY_MATH_CHANGE_TITLE}",
     args0: [
         {
             type: "field_variable",
@@ -1576,7 +1588,7 @@ export const BLOCK_LIST_REPORTER = {
 export const BLOCK_LIST_ADD = {
     style: "list_blocks",
     type: "data_addtolist",
-    tooltip: "Add item to the end of list",
+    tooltip: "%{BKY_LISTS_SET_INDEX_TOOLTIP_INSERT_LAST}",
     message0: "add %1 to %2",
     args0: [
         {
@@ -1600,7 +1612,7 @@ export const BLOCK_LIST_ADD = {
 export const BLOCK_LIST_DELETE = {
     type: "data_deleteoflist",
     style: "list_blocks",
-    tooltip: "Delete item at index from list",
+    tooltip: "%{BKY_LISTS_GET_INDEX_TOOLTIP_REMOVE_FROM}",
     message0: "delete %1 of %2",
     args0: [
         {
@@ -1624,7 +1636,7 @@ export const BLOCK_LIST_DELETE = {
 export const BLOCK_LIST_CLEAR = {
     style: "list_blocks",
     type: "data_deletealloflist",
-    tooltip: "Delete all items from list",
+    tooltip: "Delete all items from a list",
     message0: "delete all of %1",
     args0: [
         {
@@ -1643,7 +1655,7 @@ export const BLOCK_LIST_CLEAR = {
 export const BLOCK_LIST_INSERT = {
     style: "list_blocks",
     type: "data_insertatlist",
-    tooltip: "Insert item at index in list",
+    tooltip: "%{BKY_LISTS_SET_INDEX_TOOLTIP_INSERT_FROM}",
     message0: "insert %1 at %2 of %3",
     args0: [
         {
@@ -1672,7 +1684,8 @@ export const BLOCK_LIST_INSERT = {
 export const BLOCK_LIST_REPLACE = {
     style: "list_blocks",
     type: "data_replaceitemoflist",
-    tooltip: "Replace item at index in list",
+    tooltip: "%{BKY_LISTS_SET_INDEX_TOOLTIP_SET_FROM}",
+    helpUrl: "%{BKY_LISTS_SET_INDEX_HELPURL}",
     message0: "replace item %1 of %2 with %3",
     args0: [
         {
@@ -1701,7 +1714,7 @@ export const BLOCK_LIST_REPLACE = {
 export const BLOCK_LIST_INDEX = {
     style: "list_blocks",
     type: "data_itemoflist",
-    tooltip: "Get item at index from list",
+    tooltip: "Get item at index from list (one-based)",
     message0: "item %1 of %2",
     args0: [
         {
@@ -1723,7 +1736,8 @@ export const BLOCK_LIST_INDEX = {
 
 export const BLOCK_LIST_INDEX_OF = {
     type: "data_itemnumoflist",
-    tooltip: "Get index of item in list",
+    tooltip:
+        "Get index of item in list (one-based). Outputs 0 if item not found",
     message0: "item # of %1 in %2",
     args0: [
         {
@@ -1747,8 +1761,9 @@ export const BLOCK_LIST_INDEX_OF = {
 export const BLOCK_LIST_LENGTH = {
     style: "list_blocks",
     type: "data_lengthoflist",
-    tooltip: "Get number of items in list",
-    message0: "length of %1",
+    tooltip: "%{BKY_LISTS_LENGTH_TOOLTIP}",
+    helpUrl: "%{BKY_LISTS_LENGTH_HELPURL}",
+    message0: "%{BKY_LISTS_LENGTH_TITLE}",
     args0: [
         {
             type: "field_variable",
@@ -1764,7 +1779,7 @@ export const BLOCK_LIST_LENGTH = {
 
 export const BLOCK_LIST_CONTAINS = {
     type: "data_listcontainsitem",
-    tooltip: "Check if list contains item",
+    tooltip: "Whether list contains item",
     message0: "%1 contains %2 ?",
     args0: [
         {

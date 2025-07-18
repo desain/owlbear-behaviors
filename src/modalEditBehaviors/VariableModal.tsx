@@ -150,14 +150,14 @@ export const VariableModal: React.FC<VariableModalProps> = ({
             </DialogContent>
             <DialogActions>
                 <Button onClick={resetFormAndClose} variant="outlined">
-                    Cancel
+                    {Blockly.Msg.DIALOG_CANCEL}
                 </Button>
                 <Button
                     onClick={handleSave}
                     variant="contained"
                     disabled={!name.trim() || !!nameError}
                 >
-                    OK
+                    {Blockly.Msg.DIALOG_OK}
                 </Button>
             </DialogActions>
         </Dialog>

@@ -306,10 +306,10 @@ export const NewBlockModal: React.FC<NewBlockModalProps> = ({
             </DialogContent>
             <DialogActions>
                 <Button onClick={onClose} variant="outlined">
-                    Cancel
+                    {Blockly.Msg.DIALOG_CANCEL}
                 </Button>
                 <Button onClick={handleSave} variant="contained">
-                    OK
+                    {Blockly.Msg.DIALOG_OK}
                 </Button>
             </DialogActions>
         </Dialog>

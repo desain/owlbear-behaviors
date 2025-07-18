@@ -1574,7 +1574,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         );
         const listRef = generator.getVariableReference(varId);
         return [
-            `(${listRef}?.map(String)?.indexOf(String(${item})) ?? -1) + 1`,
+            `(${listRef} ?? []).map(String).indexOf(String(${item})) + 1`,
             javascript.Order.ADDITION,
         ];
     },

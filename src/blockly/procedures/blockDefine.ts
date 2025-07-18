@@ -48,6 +48,7 @@ const DEFINITION = {
         this.jsonInit({
             style: "my_blocks",
             tooltip: "%{BKY_PROCEDURES_DEFNORETURN_TOOLTIP}",
+            helpUrl: "%{BKY_PROCEDURES_DEFNORETURN_HELPURL}",
             message0: "define %1",
             args0: [
                 {
