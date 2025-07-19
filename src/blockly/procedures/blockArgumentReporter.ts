@@ -185,11 +185,12 @@ const DEFINITION = {
         }
     },
 
-    // Handle pasting after the procedure definition has been deleted.
     onchange: function (
         this: ArgumentReporterBlock,
         event: Blockly.Events.BlockCreate,
     ) {
+        // Handle pasting after the procedure definition has been deleted.
+        // TODO: some kind of handling here for parameter missing?
         if (
             event.type === Blockly.Events.BLOCK_CREATE &&
             event.blockId === this.id
@@ -199,6 +200,31 @@ const DEFINITION = {
                 console.warn("onchange without model");
                 this.dispose();
             }
+        }
+
+        // Disable if we're not in the right procedure definition
+        if (
+            !(
+                this.workspace instanceof Blockly.WorkspaceSvg &&
+                this.workspace.isDragging()
+            ) &&
+            event.type === Blockly.Events.BLOCK_MOVE &&
+            !this.isInsertionMarker() &&
+            !this.isDeadOrDying()
+        ) {
+            const rootBlock = this.getRootBlock();
+            const enabled =
+                rootBlock !== this &&
+                Blockly.procedures.isProcedureBlock(rootBlock) &&
+                rootBlock.isProcedureDef() &&
+                rootBlock.getProcedureModel() === this.model;
+            this.setDisabledReason(!enabled, "DISABLE_MISPLACED_ARG");
+            this.setWarningText(
+                enabled
+                    ? null
+                    : "This block can only be used in the definition of the custom block it came from",
+                "WARN_MISPLACED_ARG",
+            );
         }
     },
 };
