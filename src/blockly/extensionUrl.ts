@@ -1,6 +1,7 @@
 import * as Blockly from "blockly";
 import { EXTENSION_URL } from "../constants";
-export function installExtensionLimitIdLength() {
+
+export function registerExtensionLimitIdLength() {
     Blockly.Extensions.register(EXTENSION_URL, function (this: Blockly.Block) {
         for (const field of this.getFields()) {
             field.maxDisplayLength = 10;

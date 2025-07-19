@@ -1,9 +1,7 @@
 import * as Blockly from "blockly";
 import { BLOCK_DYNAMIC_VAL } from "../blocks";
-import { EventShowEditProcedure } from "../EventShowEditProcedure";
 import type { BehaviorProcedureModelState } from "./BehaviorProcedureModel";
 import { BehaviorProcedureModel } from "./BehaviorProcedureModel";
-import { getRootWorkspace } from "./getRootWorkspace";
 import {
     addDefineBlock,
     findLegalName,
@@ -257,34 +255,9 @@ const DEFINITION = {
             }
         }
     },
-
-    customContextMenu: function (
-        this: CallBlock,
-        items: (
-            | Blockly.ContextMenuRegistry.ContextMenuOption
-            | Blockly.ContextMenuRegistry.LegacyContextMenuOption
-        )[],
-    ) {
-        // Don't show 'edit' menu for flyout item
-        if (this.isInFlyout) {
-            return;
-        }
-
-        items.push({
-            text: "Edit",
-            enabled: true,
-            callback: () =>
-                Blockly.Events.fire(
-                    new EventShowEditProcedure(
-                        getRootWorkspace(this.workspace),
-                        this.model?.getId(),
-                    ),
-                ),
-        });
-    } satisfies Blockly.BlockSvg["customContextMenu"],
 };
 
-export function installBlockCall() {
+export function registerBlockCall() {
     Blockly.Blocks[BLOCK_TYPE_CALL] =
         DEFINITION satisfies Blockly.Procedures.IProcedureBlock;
 }

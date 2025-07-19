@@ -2,7 +2,7 @@ import * as Blockly from "blockly";
 import { EXTENSION_SOUND, FIELD_SOUND, INPUT_SOUND } from "../constants";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
-export function installSoundExtension() {
+export function registerSoundExtension() {
     Blockly.Extensions.register(
         EXTENSION_SOUND,
         function (this: Blockly.Block) {

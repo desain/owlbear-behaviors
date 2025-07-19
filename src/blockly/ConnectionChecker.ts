@@ -9,7 +9,7 @@ const DENY_CONNECTIONS = [
     [BLOCK_TYPE_DEFINE, INPUT_CUSTOM_BLOCK],
 ] as const;
 
-export class BehaviorConnectionChecker extends Blockly.ConnectionChecker {
+export class ConnectionChecker extends Blockly.ConnectionChecker {
     override doDragChecks(
         a: Blockly.RenderedConnection,
         b: Blockly.RenderedConnection,

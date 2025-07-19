@@ -11,7 +11,7 @@ const CREATE_OTHER_BLOCK: Partial<Record<string, CustomBlockType>> = {
     [BLOCK_OTHER_SRC.type]: BLOCK_OTHER.type,
 };
 
-export function installMixinDragToDupe() {
+export function registerMixinDragToDupe() {
     Blockly.Extensions.registerMixin(MIXIN_DRAG_TO_DUPE, {
         getDragDuplicate: function (this: Blockly.BlockSvg) {
             const mappedBlock = CREATE_OTHER_BLOCK[this.type];

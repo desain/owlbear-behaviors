@@ -1,6 +1,5 @@
 import * as Blockly from "blockly";
 import { INPUT_CUSTOM_BLOCK } from "../../constants";
-import { EventShowEditProcedure } from "../EventShowEditProcedure";
 import {
     BehaviorProcedureModel,
     type BehaviorProcedureModelState,
@@ -10,7 +9,6 @@ import {
     type ArgumentReporterExtraState,
 } from "./blockArgumentReporter";
 import { BLOCK_TYPE_CALL, type CallBlockExtraState } from "./blockCall";
-import { getRootWorkspace } from "./getRootWorkspace";
 import { findLegalName } from "./procedureUtils";
 
 export const BLOCK_TYPE_DEFINE = "define";
@@ -201,35 +199,9 @@ const DEFINITION = {
         }
         this.doProcedureUpdate();
     },
-
-    customContextMenu: function (
-        this: DefineBlock,
-        items: (
-            | Blockly.ContextMenuRegistry.ContextMenuOption
-            | Blockly.ContextMenuRegistry.LegacyContextMenuOption
-        )[],
-    ) {
-        // Don't show 'edit' menu for flyout item
-        if (this.isInFlyout) {
-            return;
-        }
-
-        items.splice(0, items.length); // remove other items
-        items.push({
-            text: "Edit",
-            enabled: true,
-            callback: () =>
-                Blockly.Events.fire(
-                    new EventShowEditProcedure(
-                        getRootWorkspace(this.workspace),
-                        this.model?.getId(),
-                    ),
-                ),
-        });
-    } satisfies Blockly.BlockSvg["customContextMenu"],
 };
 
-export function installBlockDefine() {
+export function registerBlockDefine() {
     Blockly.Blocks[BLOCK_TYPE_DEFINE] =
         DEFINITION satisfies Blockly.Procedures.IProcedureBlock;
 }

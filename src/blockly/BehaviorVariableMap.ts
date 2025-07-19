@@ -25,6 +25,15 @@ interface IBehaviorVariableModel extends IVariableModel<IVariableState> {
  */
 export class BehaviorVariableSerializer extends Blockly.serialization.variables
     .VariableSerializer {
+    static readonly register = () => {
+        Blockly.registry.register(
+            Blockly.registry.Type.SERIALIZER,
+            "variables",
+            new BehaviorVariableSerializer(),
+            true,
+        );
+    };
+
     // eslint-disable-next-line class-methods-use-this
     override save = (workspace: Workspace): IVariableState[] | null => {
         const localVariableStates = workspace
@@ -40,6 +49,15 @@ export class BehaviorVariableModel
     extends VariableModel
     implements IBehaviorVariableModel
 {
+    static readonly register = () => {
+        Blockly.registry.register(
+            Blockly.registry.Type.VARIABLE_MODEL,
+            Blockly.registry.DEFAULT,
+            BehaviorVariableModel,
+            true,
+        );
+    };
+
     readonly sceneGlobal: boolean;
 
     constructor(
@@ -59,6 +77,15 @@ export class BehaviorVariableModel
 export class BehaviorVariableMap
     implements IVariableMap<IBehaviorVariableModel>
 {
+    static readonly register = () => {
+        Blockly.registry.register(
+            Blockly.registry.Type.VARIABLE_MAP,
+            Blockly.registry.DEFAULT,
+            BehaviorVariableMap,
+            true,
+        );
+    };
+
     readonly locals: VariableMap;
     readonly globals = new Map<IVariableState["id"], IBehaviorVariableModel>();
 

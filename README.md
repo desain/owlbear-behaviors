@@ -159,6 +159,7 @@ To make a production build run:
 
 ## To do
 
+-   mute option in settings
 -   make speech bubbles use local items and broadcasts
 -   Request autoplay permission for sfx?
 -   Make new tags in tags field show up in possible tags list in block immediately
@@ -173,9 +174,7 @@ To make a production build run:
     -   Sound
         -   Stop all sounds
     -   Extensions
-        -   Smoke and spectre
-            -   Has Light
-            -   add () ft light
+        -   Smoke and spectre: blind, convert to obstruction
         -   On field change for Daggerheart, Owl Trackers
         -   Kenku FM?
     -   Control
@@ -188,7 +187,7 @@ To make a production build run:
         -   Broadcast to myself / my children / other token?
     -   Operators
         -   Min, max
-    -   Stop all / other scripts in token?
+    -   Stop other scripts in token?
 -   Fix Blockly bug? [hideIfOwnerIsInWorkspace](https://github.com/google/blockly/blob/develop/core/widgetdiv.ts#L201) should initialize `currentWorkspace` to `ownerWorkspace`, and should reference itself in the loop.
 -   Figure out multiline text - https://www.npmjs.com/package/@blockly/field-multilineinput doesn't display correctly.
 
@@ -198,6 +197,7 @@ To make a production build run:
 -   Stacking in backpack - happens when lots of (tall?) items, only on second time opening backpack
 -   Sounds aren't restored when loading an item with behaviors from a prefab
 -   If you put a procedure definition that references itself (by using its parameters or making it recursive) in the backpack, then drag a copy of the procedure into a workspace that already has the procedure, the self-referential elements of the new copy will attach to the original definition, rather than the newly copied in one.
+    -   solution - onchange, try to reattach to new parent?
 
 ## License
 

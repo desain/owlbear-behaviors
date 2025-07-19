@@ -229,7 +229,7 @@ const DEFINITION = {
     },
 };
 
-export function installBlockArgumentReporter() {
+export function registerBlockArgumentReporter() {
     Blockly.Blocks[BLOCK_TYPE_ARGUMENT_REPORTER] =
         DEFINITION satisfies Blockly.procedures.IProcedureBlock;
 }

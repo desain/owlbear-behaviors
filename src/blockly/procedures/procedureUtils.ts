@@ -1,7 +1,6 @@
 import * as Blockly from "blockly";
 import { BehaviorProcedureModel } from "./BehaviorProcedureModel";
 import { BLOCK_TYPE_DEFINE, type DefineBlockExtraState } from "./blockDefine";
-import { getRootWorkspace } from "./getRootWorkspace";
 
 /**
  * Grab a reference to the new model.
@@ -65,4 +64,18 @@ export function findLegalName(
         }
     }
     return name;
+}
+
+/**
+ * Base Blockly makes some assumptions about how many levels to go up. That has the wrong
+ * result for the continuous toolbox flyout, so here's a better implementation.
+ */
+export function getRootWorkspace(workspace: Blockly.Workspace) {
+    let result: Blockly.Workspace = workspace;
+    while (result.options.parentWorkspace) {
+        // Typescript isn't smart enough to figure out that the above
+        // check guarantees result.options.parentWorkspace is non-null
+        result = workspace.options.parentWorkspace as Blockly.Workspace;
+    }
+    return result;
 }

@@ -2,24 +2,24 @@ import * as Blockly from "blockly";
 import { withTimeout } from "owlbear-utils";
 import {
     CREATE_NEW_RESOURCE,
-    EXTENSION_TAG,
-    FIELD_TAG,
-    INPUT_TAG,
+    EXTENSION_BROADCAST,
+    FIELD_BROADCAST,
+    INPUT_BROADCAST,
 } from "../constants";
-import { addTags, promptTag } from "../state/SceneMetadata";
+import { addBroadcasts, promptBroadcast } from "../state/SceneMetadata";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
-function waitForTagInSceneMetadata(name: string): Promise<void> {
+function waitForBroadcastInSceneMetadata(name: string): Promise<void> {
     return withTimeout(
         new Promise<void>((resolve, reject) => {
             const unsubscribe = usePlayerStorage.subscribe(
-                (state) => state.sceneMetadata.tags,
-                (tags) => {
+                (state) => state.sceneMetadata.broadcasts,
+                (broadcasts) => {
                     unsubscribe();
-                    if (tags.includes(name)) {
+                    if (broadcasts.includes(name)) {
                         resolve();
                     } else {
-                        reject(Error(`Tag "${name}" not found`));
+                        reject(Error(`Broadcast with ID ${name} not found`));
                     }
                 },
             );
@@ -27,29 +27,35 @@ function waitForTagInSceneMetadata(name: string): Promise<void> {
     );
 }
 
-export function installTagExtension() {
-    Blockly.Extensions.register(EXTENSION_TAG, function (this: Blockly.Block) {
-        this.getInput(INPUT_TAG)?.appendField(new TagDropdown(), FIELD_TAG);
-    });
+export function registerBroadcastExtension() {
+    Blockly.Extensions.register(
+        EXTENSION_BROADCAST,
+        function (this: Blockly.Block) {
+            this.getInput(INPUT_BROADCAST)?.appendField(
+                new BroadcastDropdown(),
+                FIELD_BROADCAST,
+            );
+        },
+    );
 }
 
-class TagDropdown extends Blockly.FieldDropdown {
+class BroadcastDropdown extends Blockly.FieldDropdown {
     constructor() {
         const menuGenerator = () => {
             const options: [display: string, id: string][] = [];
             options.push(
                 ...usePlayerStorage
                     .getState()
-                    .sceneMetadata.tags.map(
+                    .sceneMetadata.broadcasts.map(
                         (t): [display: string, id: string] => [t, t],
                     ),
             );
-            options.push(["New tag", CREATE_NEW_RESOURCE]);
+            options.push(["New broadcast", CREATE_NEW_RESOURCE]);
             return options;
         };
         const menuValidator = (value: string | null | undefined) => {
             if (value === CREATE_NEW_RESOURCE) {
-                this.#createNewTag();
+                this.#createNewBroadcast();
                 return null; // disallow selection
             }
             return undefined; // allow selection
@@ -57,16 +63,19 @@ class TagDropdown extends Blockly.FieldDropdown {
         super(menuGenerator, menuValidator);
     }
 
-    readonly #createNewTag = () => {
-        const name = promptTag();
+    readonly #createNewBroadcast = () => {
+        const name = promptBroadcast();
         if (name === CREATE_NEW_RESOURCE) {
-            alert("Invalid tag name");
+            alert("Invalid broadcast name");
         } else if (name) {
-            void waitForTagInSceneMetadata(name).then(() => {
+            void waitForBroadcastInSceneMetadata(name).then(() => {
                 this.getOptions(false); // refresh dynamic options
                 this.setValue(name);
             });
-            void addTags(name);
+            // Add to player storage
+            // This will trigger the scene metadata subscription and resolve the promise
+            // in waitForBroadcastInSceneMetadata
+            void addBroadcasts(name);
         }
     };
 

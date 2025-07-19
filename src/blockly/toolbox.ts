@@ -288,8 +288,8 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         kind: "block",
                         type: BLOCK_SAY.type,
                         inputs: {
-                            MESSAGE: shadowDynamic("Hello!"),
-                            SECS: shadowNumber(2),
+                            [BLOCK_SAY.args0[0].name]: shadowDynamic("Hello!"),
+                            [BLOCK_SAY.args0[1].name]: shadowNumber(2),
                         },
                     },
                     ...(isImage(target)
@@ -353,7 +353,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         kind: "block",
                         type: BLOCK_SET_LAYER.type,
                         inputs: {
-                            LAYER: {
+                            [BLOCK_SET_LAYER.args0[0].name]: {
                                 shadow: {
                                     type: BLOCK_LAYER_MENU.type,
                                     fields: {

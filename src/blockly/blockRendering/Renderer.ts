@@ -9,6 +9,10 @@ import { RenderInfo } from "./RenderInfo";
  * Scratch impl: https://github.com/scratchfoundation/scratch-blocks/blob/e96b5d43c16e9afe939d22454dbf7e73f8e811ed/core/block_render_svg_vertical.js#L1231
  */
 export class Renderer extends Blockly.zelos.Renderer {
+    static readonly register = () => {
+        Blockly.blockRendering.register(Renderer.NAME, Renderer);
+    };
+
     static readonly NAME = "behaviors";
 
     /**
@@ -41,11 +45,4 @@ export class Renderer extends Blockly.zelos.Renderer {
     ): Blockly.zelos.PathObject {
         return new PathObject(root, style, this.constants_);
     }
-}
-
-/**
- * Register the custom renderer with Blockly
- */
-export function registerBehaviorsRenderer() {
-    Blockly.blockRendering.register(Renderer.NAME, Renderer);
 }

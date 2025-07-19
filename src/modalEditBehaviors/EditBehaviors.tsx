@@ -15,9 +15,9 @@ import "blockly/msg/en";
 import { useCallback, useEffect, useState } from "react";
 import type { BehaviorItem } from "../BehaviorItem";
 import { getTags, isBehaviorItem } from "../BehaviorItem";
-import { BehaviorConnectionChecker } from "../blockly/BehaviorConnectionChecker";
 import { Renderer } from "../blockly/blockRendering/Renderer";
 import { BLOCK_IMMEDIATELY } from "../blockly/blocks";
+import { ConnectionChecker } from "../blockly/ConnectionChecker";
 import { Dragger } from "../blockly/Dragger";
 import { isShowCreateVariable } from "../blockly/EventShowCreateVariable";
 import { isShowEditProcedure } from "../blockly/EventShowEditProcedure";
@@ -167,7 +167,7 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
                     toolbox: "ContinuousToolbox",
                     // variableMap: BehaviorVariableMap,
                     [Blockly.registry.Type.CONNECTION_CHECKER.toString()]:
-                        BehaviorConnectionChecker,
+                        ConnectionChecker,
                     [Blockly.registry.Type.BLOCK_DRAGGER.toString()]: Dragger,
                 },
             });
@@ -195,7 +195,10 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
                 const block = workspace.newBlock(BLOCK_IMMEDIATELY.type); // Replace with your block type
                 block.initSvg();
                 block.render();
-                // block.moveBy(120, 40); // Position the block (x, y)
+                workspace.centerOnBlock(block.id);
+
+                // Add a starting variable
+                workspace.getVariableMap().createVariable("my variable");
             }
 
             // Initialize backpack after loading workspace so we can override its contents

@@ -4,33 +4,29 @@ import "@blockly/field-colour-hsv-sliders";
 // import "@blockly/field-grid-dropdown"; // where else is this imported?
 import "@blockly/field-slider";
 import * as Blockly from "blockly";
-import {
-    CUSTOM_DYNAMIC_CATEGORY_MY_BLOCKS,
-    CUSTOM_DYNAMIC_CATEGORY_VARIABLES,
-} from "../constants";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import {
     BehaviorVariableMap,
     BehaviorVariableModel,
-    BehaviorVariableSerializer,
 } from "./BehaviorVariableMap";
-import { registerBehaviorsRenderer } from "./blockRendering/Renderer";
+import { Renderer } from "./blockRendering/Renderer";
 import { CUSTOM_JSON_BLOCKS } from "./blocks";
 import { BehaviorBlockSerializer } from "./BlockSerializer";
-import { installBroadcastExtension } from "./broadcastExtension";
 import { CategoryMyBlocks } from "./CategoryMyBlocks";
 import { CategoryVariables } from "./CategoryVariables";
-import { installMixinDragToDupe } from "./extensionDragToDupe";
-import { installExtensionLimitIdLength } from "./extensionUrl";
+import { registerContextMenuEdit } from "./contextMenuEdit";
+import { registerBroadcastExtension } from "./extensionBroadcast";
+import { registerMixinDragToDupe } from "./extensionDragToDupe";
+import { registerSoundExtension } from "./extensionSound";
+import { registerTagExtension } from "./extensionTags";
+import { registerExtensionLimitIdLength } from "./extensionUrl";
 import { registerFieldTextInputRemovable } from "./FieldTextInputRemovable";
 import { registerFieldTokenImage } from "./FieldTokenImage";
 import { BehaviorParameterModel } from "./procedures/BehaviorParameterModel";
 import { BehaviorProcedureModel } from "./procedures/BehaviorProcedureModel";
-import { installBlockArgumentReporter } from "./procedures/blockArgumentReporter";
-import { installBlockCall } from "./procedures/blockCall";
-import { installBlockDefine } from "./procedures/blockDefine";
-import { installSoundExtension } from "./soundExtension";
-import { installTagExtension } from "./tagExtension";
+import { registerBlockArgumentReporter } from "./procedures/blockArgumentReporter";
+import { registerBlockCall } from "./procedures/blockCall";
+import { registerBlockDefine } from "./procedures/blockDefine";
 
 let blocklySetup = false;
 
@@ -42,40 +38,25 @@ export function setupBlocklyGlobals() {
 
     // Blocks
     Blockly.common.defineBlocksWithJsonArray(CUSTOM_JSON_BLOCKS);
+    registerBlockCall();
+    registerBlockDefine();
+    registerBlockArgumentReporter();
 
-    // Add workspace comment options to the context menu.
+    // Context menu.
+    registerContextMenuEdit();
     Blockly.ContextMenuItems.registerCommentOptions();
+    Blockly.ContextMenuRegistry.registry.unregister("blockInline");
+    // Blockly.ContextMenuRegistry.registry.unregister("blockDisable");
+    Blockly.ContextMenuRegistry.registry.unregister("collapseWorkspace");
+    Blockly.ContextMenuRegistry.registry.unregister("blockCollapseExpand");
 
     // Custom classes
-    registerBehaviorsRenderer();
-    Blockly.registry.register(
-        Blockly.registry.Type.TOOLBOX_ITEM,
-        CUSTOM_DYNAMIC_CATEGORY_VARIABLES,
-        CategoryVariables,
-    );
-    Blockly.registry.register(
-        Blockly.registry.Type.TOOLBOX_ITEM,
-        CUSTOM_DYNAMIC_CATEGORY_MY_BLOCKS,
-        CategoryMyBlocks,
-    );
-    Blockly.registry.register(
-        Blockly.registry.Type.VARIABLE_MODEL,
-        Blockly.registry.DEFAULT,
-        BehaviorVariableModel,
-        true,
-    );
-    Blockly.registry.register(
-        Blockly.registry.Type.VARIABLE_MAP,
-        Blockly.registry.DEFAULT,
-        BehaviorVariableMap,
-        true,
-    );
-    Blockly.registry.register(
-        Blockly.registry.Type.SERIALIZER,
-        "variables",
-        new BehaviorVariableSerializer(),
-        true,
-    );
+    Renderer.register();
+    CategoryVariables.register();
+    CategoryMyBlocks.register();
+    BehaviorVariableMap.register();
+    BehaviorVariableModel.register();
+    BehaviorBlockSerializer.register();
     Blockly.serialization.registry.register(
         "procedures",
         new Blockly.serialization.procedures.ProcedureSerializer(
@@ -83,7 +64,6 @@ export function setupBlocklyGlobals() {
             BehaviorParameterModel,
         ),
     );
-    BehaviorBlockSerializer.register();
 
     // Display
     Blockly.Msg.OBR_GRID_UNIT =
@@ -105,14 +85,11 @@ export function setupBlocklyGlobals() {
     // Extensions and mixins
     registerContinuousToolbox();
 
-    installBroadcastExtension();
-    installSoundExtension();
-    installTagExtension();
-    installMixinDragToDupe();
-    installExtensionLimitIdLength();
-    installBlockDefine();
-    installBlockCall();
-    installBlockArgumentReporter();
+    registerTagExtension();
+    registerSoundExtension();
+    registerBroadcastExtension();
+    registerExtensionLimitIdLength();
+    registerMixinDragToDupe();
 
     blocklySetup = true;
 }

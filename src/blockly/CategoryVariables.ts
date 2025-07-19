@@ -1,6 +1,9 @@
 import { ContinuousCategory } from "@blockly/continuous-toolbox";
 import * as Blockly from "blockly";
-import { VARIABLE_TYPE_LIST } from "../constants";
+import {
+    CUSTOM_DYNAMIC_CATEGORY_VARIABLES,
+    VARIABLE_TYPE_LIST,
+} from "../constants";
 import {
     BLOCK_LIST_ADD,
     BLOCK_LIST_CLEAR,
@@ -43,6 +46,14 @@ const CREATE_VARIABLE = "CREATE_VARIABLE";
 const CREATE_LIST = "CREATE_LIST";
 
 export class CategoryVariables extends ContinuousCategory {
+    static readonly register = () => {
+        Blockly.registry.register(
+            Blockly.registry.Type.TOOLBOX_ITEM,
+            CUSTOM_DYNAMIC_CATEGORY_VARIABLES,
+            CategoryVariables,
+        );
+    };
+
     override getContents(): Blockly.utils.toolbox.FlyoutItemInfoArray {
         this.workspace_.registerButtonCallback(CREATE_VARIABLE, () =>
             Blockly.Events.fire(

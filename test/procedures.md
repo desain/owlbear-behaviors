@@ -33,6 +33,7 @@ Make define block with inputs, then:
     -   Should bring the define back
 -   Copy reporter, remove its input from the define, paste
     -   it doesn't appear, which is fine, but there's an error in the console since it tries to dispose itself before its setup is done
+        -   let it have a null model and onchange delete?
 -   Backpack reporter, restore it
 -   Backpack reporter, delete its define, restore
 
