@@ -426,12 +426,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     motion_attach: (block, generator) => {
-        const item =
-            generator.valueToCode(
-                block,
-                BLOCK_ATTACH.args0[0].name,
-                javascript.Order.MEMBER,
-            ) || "undefined";
+        const item = generator.valueToCode(
+            block,
+            BLOCK_ATTACH.args0[0].name,
+            javascript.Order.MEMBER,
+        );
         const [newParent, initNewParent] = generateVariable(
             generator,
             "newParent",
@@ -494,12 +493,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     motion_pointtowards: (block, generator) => {
-        const target =
-            generator.valueToCode(
-                block,
-                BLOCK_FACE.args0[0].name,
-                javascript.Order.NONE,
-            ) || "undefined";
+        const target = generator.valueToCode(
+            block,
+            BLOCK_FACE.args0[0].name,
+            javascript.Order.NONE,
+        );
         return `await ${behave(
             "face",
             PARAMETER_SIGNAL,
@@ -1001,12 +999,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     control_behavior_if: (block, generator) => {
-        const condition =
-            generator.valueToCode(
-                block,
-                BLOCK_IF.args0[0].name,
-                javascript.Order.NONE,
-            ) || "false";
+        const condition = generator.valueToCode(
+            block,
+            BLOCK_IF.args0[0].name,
+            javascript.Order.NONE,
+        );
         const statements = generator.statementToCode(
             block,
             BLOCK_IF.args0[2].name,
@@ -1015,12 +1012,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     control_behavior_if_else: (block, generator) => {
-        const condition =
-            generator.valueToCode(
-                block,
-                BLOCK_IF_ELSE.args0[0].name,
-                javascript.Order.NONE,
-            ) || "false";
+        const condition = generator.valueToCode(
+            block,
+            BLOCK_IF_ELSE.args0[0].name,
+            javascript.Order.NONE,
+        );
         const thenStatements = generator.statementToCode(
             block,
             BLOCK_IF_ELSE.args1[0].name,
@@ -1083,31 +1079,35 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     control_repeat_until: (block, generator) => {
-        const condition =
-            generator.valueToCode(
-                block,
-                BLOCK_REPEAT_UNTIL.args0[0].name,
-                javascript.Order.UNARY_NEGATION,
-            ) || "true"; // TODO should this be false? false leads to infinite loop
+        const condition = generator.valueToCode(
+            block,
+            BLOCK_REPEAT_UNTIL.args0[0].name,
+            javascript.Order.EQUALITY,
+        );
         const statements = generator.statementToCode(
             block,
             BLOCK_REPEAT_UNTIL.args1[0].name,
         );
-        return `while (!${condition}) {\n${generator.addLoopTrap(
+
+        // "condition === false" rather than "!condition" because undefined
+        // conditions should exit the loop
+        return `while (${condition} === false) {\n${generator.addLoopTrap(
             statements,
             block,
         )}\n}\n`;
     },
 
     control_wait_until: (block, generator) => {
-        const condition =
-            generator.valueToCode(
-                block,
-                BLOCK_WAIT_UNTIL.args0[0].name,
-                javascript.Order.UNARY_NEGATION,
-            ) || "true"; // TODO should this be false? leads to infinite loop
+        const condition = generator.valueToCode(
+            block,
+            BLOCK_WAIT_UNTIL.args0[0].name,
+            javascript.Order.EQUALITY,
+        );
         const TIME_BETWEEN_CHECKS = 1000;
-        return `while (!${condition}) {\n${generator.addLoopTrap(
+
+        // "condition === false" rather than "!condition" because undefined
+        // conditions should exit the loop
+        return `while (${condition} === false) {\n${generator.addLoopTrap(
             [
                 `await new Promise(resolve => setTimeout(resolve, ${TIME_BETWEEN_CHECKS}));`,
                 `${PARAMETER_ITEM_PROXY}.invalidate();`,
@@ -1231,12 +1231,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         const property = block.getFieldValue(
             BLOCK_SENSING_OF.args0[0].name,
         ) as (typeof BLOCK_SENSING_OF)["args0"][0]["options"][number][1];
-        const item =
-            generator.valueToCode(
-                block,
-                BLOCK_SENSING_OF.args0[1].name,
-                javascript.Order.NONE,
-            ) || "undefined";
+        const item = generator.valueToCode(
+            block,
+            BLOCK_SENSING_OF.args0[1].name,
+            javascript.Order.NONE,
+        );
 
         switch (property) {
             case "X_POSITION":
@@ -1281,12 +1280,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     sensing_distanceto: (block, generator) => {
-        const item =
-            generator.valueToCode(
-                block,
-                BLOCK_DISTANCE_TO.args0[0].name,
-                javascript.Order.NONE,
-            ) || "undefined";
+        const item = generator.valueToCode(
+            block,
+            BLOCK_DISTANCE_TO.args0[0].name,
+            javascript.Order.NONE,
+        );
         return [
             `await ${behave(
                 "distanceTo",
@@ -1299,12 +1297,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     sensing_touchingobject: (block, generator) => {
-        const item =
-            generator.valueToCode(
-                block,
-                BLOCK_TOUCHING.args0[0].name,
-                javascript.Order.NONE,
-            ) || "undefined";
+        const item = generator.valueToCode(
+            block,
+            BLOCK_TOUCHING.args0[0].name,
+            javascript.Order.NONE,
+        );
         return [
             `await ${behave(
                 "touching",
@@ -1633,13 +1630,8 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     call: (block, generator) => {
         const args = block.inputList
             .filter((input) => input.connection?.getCheck()?.length)
-            .map(
-                (input) =>
-                    generator.valueToCode(
-                        block,
-                        input.name,
-                        javascript.Order.NONE,
-                    ) || "undefined",
+            .map((input) =>
+                generator.valueToCode(block, input.name, javascript.Order.NONE),
             );
         const model = (block as CallBlock).getProcedureModel();
         const name = generator.getProcedureName(model.getName());
@@ -1972,12 +1964,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.args0[1].name,
             javascript.Order.NONE,
         );
-        const checked =
-            generator.valueToCode(
-                block,
-                BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.args0[2].name,
-                javascript.Order.NONE,
-            ) || "false";
+        const checked = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.args0[2].name,
+            javascript.Order.NONE,
+        );
         return `await ${behave(
             "setOwlTrackersCheckbox",
             PARAMETER_SIGNAL,
@@ -2283,4 +2274,20 @@ export class BehaviorJavascriptGenerator extends javascript.JavascriptGenerator 
         codeString = codeString.replace(/[ \t]+\n/g, "\n");
         return codeString;
     };
+
+    /**
+     * @returns "undefined" if the inner evaluation was empty, otherwise the inner evaluation.
+     */
+    override valueToCode(
+        block: Block,
+        name: string,
+        outerOrder: number,
+    ): string {
+        const result = super.valueToCode(block, name, outerOrder);
+        if (result === "") {
+            return "undefined";
+        } else {
+            return result;
+        }
+    }
 }
