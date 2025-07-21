@@ -161,7 +161,6 @@ To make a production build run:
 ## To do
 
 -   mute option in settings
--   make speech bubbles use local items and broadcasts
 -   Request autoplay permission for sfx?
 -   Make new tags in tags field show up in possible tags list in block immediately
 -   Dragging C blocks around statements like scratch does [here?](https://github.com/scratchfoundation/scratch-blocks/blob/develop/core/insertion_marker_manager.js#L43)
@@ -199,6 +198,7 @@ To make a production build run:
 -   Sounds aren't restored when loading an item with behaviors from a prefab
 -   If you put a procedure definition that references itself (by using its parameters or making it recursive) in the backpack, then drag a copy of the procedure into a workspace that already has the procedure, the self-referential elements of the new copy will attach to the original definition, rather than the newly copied in one.
     -   solution - onchange, try to reattach to new parent?
+-   Prefabbing multiple items that use a global variable, then adding them to a scene that doesn't have that global variable, breaks - they'll each end up with a different copy of it
 
 ## License
 

@@ -4,8 +4,19 @@ import OBR, {
     isText,
     type Descendant,
     type Item,
+    type Vector2,
 } from "@owlbear-rodeo/sdk";
-import { assertItem, isLayer, type ImageBuildParams } from "owlbear-utils";
+import {
+    assertItem,
+    isLayer,
+    isObject,
+    isVector2,
+    type ImageBuildParams,
+} from "owlbear-utils";
+import {
+    broadcastSetViewport,
+    broadcastShowSpeechBubble,
+} from "../../broadcast/broadcast";
 import { getBounds, isBoundableItem } from "../../collision/getBounds";
 import { METADATA_KEY_EFFECT } from "../../constants";
 import { usePlayerStorage } from "../../state/usePlayerStorage";
@@ -71,6 +82,54 @@ export function getText(item: Item): string {
     }
 }
 
+export interface SpeechBubbleParams {
+    readonly message: string;
+    readonly position: Vector2;
+    readonly attachedTo: Item["id"];
+    readonly millis: number;
+}
+
+export function isSpeechBubbleParams(
+    params: unknown,
+): params is SpeechBubbleParams {
+    return (
+        isObject(params) &&
+        "message" in params &&
+        typeof params.message === "string" &&
+        "position" in params &&
+        isVector2(params.position) &&
+        "attachedTo" in params &&
+        typeof params.attachedTo === "string" &&
+        "millis" in params &&
+        typeof params.millis === "number"
+    );
+}
+
+export async function showSpeechBubble({
+    message,
+    attachedTo,
+    position,
+    millis,
+}: SpeechBubbleParams) {
+    const label = buildLabel()
+        .plainText(message)
+        .attachedTo(attachedTo)
+        .position(position)
+        .backgroundColor("#FFFFFF")
+        .backgroundOpacity(1)
+        .locked(true)
+        .disableHit(true)
+        .layer("TEXT")
+        .fillColor("#000000")
+        .textAlign("CENTER")
+        .pointerHeight(50)
+        .pointerWidth(20)
+        .build();
+    await OBR.scene.local.addItems([label]);
+    await new Promise((resolve) => setTimeout(resolve, millis));
+    await OBR.scene.local.deleteItems([label.id]);
+}
+
 export const LOOKS_BEHAVIORS = {
     say: async (
         signal: AbortSignal,
@@ -91,28 +150,24 @@ export const LOOKS_BEHAVIORS = {
         const { center, min } = isBoundableItem(self)
             ? getBounds(self, usePlayerStorage.getState().grid)
             : { center: self.position, min: self.position };
+        const position = {
+            x: center.x,
+            y: min.y + SPEECH_VERTICAL_OFFSET,
+        };
 
-        const label = buildLabel()
-            .plainText(String(message))
-            .attachedTo(self.id)
-            .position({
-                x: center.x,
-                y: min.y + SPEECH_VERTICAL_OFFSET,
-            })
-            .backgroundColor("#FFFFFF")
-            .backgroundOpacity(1)
-            .locked(true)
-            .disableHit(true)
-            .layer("TEXT")
-            .fillColor("#000000")
-            .textAlign("CENTER")
-            .pointerHeight(50)
-            .pointerWidth(20)
-            .build();
-        await OBR.scene.items.addItems([label]);
-        await new Promise((resolve) => setTimeout(resolve, secs * 1000));
+        const params = {
+            message: String(message),
+            position,
+            attachedTo: self.id,
+            millis: secs * 1000,
+        };
+
+        if (usePlayerStorage.getState().role === "GM") {
+            void broadcastShowSpeechBubble(params);
+        }
+        await showSpeechBubble(params);
+
         ItemProxy.getInstance().invalidate();
-        await OBR.scene.items.deleteItems([label.id]);
         signal.throwIfAborted();
     },
 
@@ -307,6 +362,34 @@ export const LOOKS_BEHAVIORS = {
                 draft.metadata[METADATA_KEY_EFFECT] = effectConfig;
             }
         });
+        signal.throwIfAborted();
+    },
+
+    setViewport: async (
+        signal: AbortSignal,
+        targetUnknown: unknown,
+        xUnknown: unknown,
+        yUnknown: unknown,
+    ) => {
+        const target = String(targetUnknown);
+        if (target !== "MY" && target !== "EVERYONE") {
+            console.warn(`[setViewport] target invalid: ${target}`);
+            return;
+        }
+
+        const x = Number(xUnknown);
+        if (!isFinite(x) || isNaN(x)) {
+            console.warn(`[setViewport] x invalid: ${x}`);
+            return;
+        }
+        const y = Number(yUnknown);
+        if (!isFinite(y) || isNaN(y)) {
+            console.warn(`[setViewport] y invalid: ${y}`);
+            return;
+        }
+
+        const destination = target === "MY" ? "LOCAL" : "ALL";
+        await broadcastSetViewport(x, y, destination);
         signal.throwIfAborted();
     },
 };

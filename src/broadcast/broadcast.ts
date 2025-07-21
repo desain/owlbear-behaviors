@@ -2,6 +2,11 @@ import OBR, { Math2, type Vector2 } from "@owlbear-rodeo/sdk";
 import { isObject } from "owlbear-utils";
 import { BEHAVIORS_IMPL } from "../behaviors/BehaviorImpl";
 import { type BehaviorRegistry } from "../behaviors/BehaviorRegistry";
+import {
+    isSpeechBubbleParams,
+    showSpeechBubble,
+    type SpeechBubbleParams,
+} from "../behaviors/impl/looks";
 import { CHANNEL_MESSAGE } from "../constants";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
@@ -179,6 +184,37 @@ export function broadcastSetViewport(
     );
 }
 
+const SHOW_SPEECH_BUBBLE = "SHOW_SPEECH_BUBBLE";
+
+/**
+ * Message to show a (local item) speech bubble on other instances.
+ */
+interface ShowSpeechBubbleMessage extends SpeechBubbleParams {
+    readonly type: typeof SHOW_SPEECH_BUBBLE;
+}
+
+function isShowSpeechBubbleMessage(
+    message: unknown,
+): message is ShowSpeechBubbleMessage {
+    return (
+        isObject(message) &&
+        "type" in message &&
+        message.type === SHOW_SPEECH_BUBBLE &&
+        isSpeechBubbleParams(message)
+    );
+}
+
+export function broadcastShowSpeechBubble(params: SpeechBubbleParams) {
+    return OBR.broadcast.sendMessage(
+        CHANNEL_MESSAGE,
+        {
+            type: SHOW_SPEECH_BUBBLE,
+            ...params,
+        } satisfies ShowSpeechBubbleMessage,
+        { destination: "REMOTE" },
+    );
+}
+
 export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
     return OBR.broadcast.onMessage(CHANNEL_MESSAGE, ({ data }) => {
         const state = usePlayerStorage.getState();
@@ -200,6 +236,8 @@ export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
             );
         } else if (isSetViewportMessage(data)) {
             void animateViewportTo(data.x, data.y);
+        } else if (isShowSpeechBubbleMessage(data)) {
+            void showSpeechBubble(data);
         } else {
             console.warn(
                 "Received unknown broadcast message",
