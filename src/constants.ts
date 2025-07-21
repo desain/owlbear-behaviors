@@ -68,6 +68,7 @@ export const DROPDOWN_SOUND_MEOW = "meow";
 
 export const MIXIN_DRAG_TO_DUPE = "mixin_drag_to_dupe";
 export const EXTENSION_URL = "extension_url";
+export const MUTATOR_MATCH = "mutator_match";
 
 export const CREATE_NEW_RESOURCE = "__create_new__";
 

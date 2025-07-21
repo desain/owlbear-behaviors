@@ -86,6 +86,7 @@ import {
     BLOCK_LETTER_OF,
     BLOCK_LOCK,
     BLOCK_LOCKED,
+    BLOCK_MATCH,
     BLOCK_MOVE_DIRECTION,
     BLOCK_MY_PARENT,
     BLOCK_OPACITY_SLIDER,
@@ -573,6 +574,18 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     GAP50,
                     blockToDefinition(BLOCK_IF),
                     blockToDefinition(BLOCK_IF_ELSE),
+                    ...(import.meta.env.DEV
+                        ? [
+                              {
+                                  kind: "block",
+                                  type: BLOCK_MATCH.type,
+                                  inputs: {
+                                      [BLOCK_MATCH.args0[0].name]:
+                                          shadowDynamic("apple"),
+                                  },
+                              },
+                          ]
+                        : []),
                     blockToDefinition(BLOCK_WAIT_UNTIL),
                     blockToDefinition(BLOCK_REPEAT_UNTIL),
                     GAP50,

@@ -11,12 +11,13 @@ import { CategoryMyBlocks } from "./CategoryMyBlocks";
 import { CategoryVariables } from "./CategoryVariables";
 import { registerContextMenuEdit } from "./contextMenuEdit";
 import { registerBroadcastExtension } from "./extensionBroadcast";
-import { registerMixinDragToDupe } from "./mixinDragToDupe";
 import { registerSoundExtension } from "./extensionSound";
 import { registerTagExtension } from "./extensionTags";
 import { registerExtensionLimitIdLength } from "./extensionUrl";
 import { registerFieldTextInputRemovable } from "./FieldTextInputRemovable";
 import { registerFieldTokenImage } from "./FieldTokenImage";
+import { registerMixinDragToDupe } from "./mixinDragToDupe";
+import { registerMutatorMatch } from "./mutatorMatch";
 import { BehaviorParameterModel } from "./procedures/BehaviorParameterModel";
 import { BehaviorProcedureModel } from "./procedures/BehaviorProcedureModel";
 import { registerBlockArgumentReporter } from "./procedures/blockArgumentReporter";
@@ -101,6 +102,7 @@ export function setupBlocklyGlobals() {
     registerBroadcastExtension();
     registerExtensionLimitIdLength();
     registerMixinDragToDupe();
+    registerMutatorMatch();
 
     blocklySetup = true;
 }

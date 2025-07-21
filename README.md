@@ -163,7 +163,7 @@ To make a production build run:
 
 -   Request autoplay permission for sfx?
 -   Make new tags in tags field show up in possible tags list in block immediately
--   Dragging C blocks around statements like scratch does [here?](https://github.com/scratchfoundation/scratch-blocks/blob/develop/core/insertion_marker_manager.js#L43)
+-   Dragging C blocks around statements in stacks like scratch does [here?](https://github.com/scratchfoundation/scratch-blocks/blob/develop/core/insertion_marker_manager.js#L43)
 -   Auto features
     -   auto-tags
     -   auto-behaviors
@@ -175,8 +175,6 @@ To make a production build run:
         -   On field change for Daggerheart, Owl Trackers
         -   Kenku FM?
     -   Control
-        -   switch? https://groups.google.com/g/blockly/c/djhO2jUb0Xs
-            -   Snail Mod has it with switch and case blocks, case can only live in switch
         -   tell other to? Snail Mod has it as `as (other) {...}`
     -   Events
         -   When I'm updated in any way?

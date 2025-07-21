@@ -14,6 +14,7 @@ import {
     INPUT_SOUND,
     INPUT_TAG,
     MIXIN_DRAG_TO_DUPE,
+    MUTATOR_MATCH,
     VARIABLE_TYPE_LIST,
 } from "../constants";
 import type { BLOCK_TYPE_ARGUMENT_REPORTER } from "./procedures/blockArgumentReporter";
@@ -1263,6 +1264,58 @@ export const BLOCK_DELETE_THIS = {
     tooltip: "Delete this token",
     message0: "delete this token",
     previousStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_MATCH = {
+    style: "control_blocks",
+    type: "control_match",
+    mutator: MUTATOR_MATCH,
+    tooltip:
+        "Match a value with various options and execute the blocks under the matching one",
+    helpUrl: "https://en.wikipedia.org/wiki/Switch_statement",
+    message0: "match %1 with %2",
+    args0: [
+        {
+            type: "input_value",
+            name: "VAL",
+            check: ["String", "Number"],
+        },
+        {
+            type: "input_end_row",
+            name: "WITH",
+        },
+    ],
+    message1: "apple %1",
+    args1: [
+        {
+            type: "input_dummy",
+            name: "CASELABEL_0",
+        },
+    ],
+    message2: "%1",
+    args2: [
+        {
+            type: "input_statement",
+            name: "CASE_0",
+        },
+    ],
+    message3: "default %1",
+    args3: [
+        {
+            type: "input_dummy",
+            name: "DEFAULTNAME",
+        },
+    ],
+    message4: "%1",
+    args4: [
+        {
+            type: "input_statement",
+            name: "DEFAULT",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
     inputsInline: true,
 } as const;
 
@@ -2678,6 +2731,43 @@ export const BLOCK_CONTROL_ITEM_MENU = {
     output: "ItemId",
 } as const;
 
+// Mutator blocks
+export const BLOCK_MATCH_MATCH = {
+    style: "control_blocks",
+    type: "controls_match_match",
+    message0: "match",
+    message1: "%1",
+    args1: [
+        {
+            type: "input_statement",
+            name: "CASES",
+        },
+    ],
+    message2: "default? %1",
+    args2: [
+        {
+            type: "field_checkbox",
+            name: "DEFAULT",
+        },
+    ],
+} as const;
+
+export const BLOCK_MATCH_CASE = {
+    style: "control_blocks",
+    type: "controls_match_case",
+    message0: "case %1",
+    args0: [
+        {
+            type: "field_input",
+            name: "TEXT",
+            text: "value",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 /**
  * Custom blocks.
  * Make blocks with https://google.github.io/blockly-samples/examples/developer-tools/index.html
@@ -2758,6 +2848,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_WHEN_I_START_AS_CLONE,
     BLOCK_CREATE_CLONE_OF,
     BLOCK_DELETE_THIS,
+    BLOCK_MATCH,
 
     // Sensing blocks
     BLOCK_TAG,
@@ -2841,6 +2932,10 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_SOUND_MENU,
     BLOCK_SENSING_ITEM_MENU,
     BLOCK_CONTROL_ITEM_MENU,
+
+    // Mutator blocks
+    BLOCK_MATCH_MATCH,
+    BLOCK_MATCH_CASE,
 ];
 
 export type CustomBlockType =

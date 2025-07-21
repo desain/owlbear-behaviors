@@ -75,6 +75,7 @@ import {
     BLOCK_LIST_LENGTH,
     BLOCK_LIST_REPLACE,
     BLOCK_LIST_REPORTER,
+    BLOCK_MATCH,
     BLOCK_MOVE_DIRECTION,
     BLOCK_OPACITY_SLIDER,
     BLOCK_POINT_IN_DIRECTION,
@@ -111,6 +112,7 @@ import {
     BLOCK_WHEN_I,
     type CustomBlockType,
 } from "./blocks";
+import { getCaseInputs, getCaseName } from "./mutatorMatch";
 import type { ArgumentReporterBlock } from "./procedures/blockArgumentReporter";
 import type { CallBlock } from "./procedures/blockCall";
 import { isDefineBlock, type DefineBlock } from "./procedures/blockDefine";
@@ -181,6 +183,10 @@ function provideComparison(
         `  return a ${op} b`,
         "}",
     ]);
+}
+
+function noCodegen(block: Block): string {
+    throw Error(`${block.type} should not be used for codegen`);
 }
 
 /**
@@ -676,15 +682,15 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             BLOCK_SET_FILL_COLOR.args0[0].name,
             javascript.Order.ASSIGNMENT,
         );
-        const colorVar =
-            generator.nameDB_?.getDistinctName(
-                "fillColor",
-                Blockly.Names.NameType.VARIABLE,
-            ) ?? "fillColor";
+        const [colorVar, initColorVar] = generateVariable(
+            generator,
+            "fillColor",
+            `String(${color})`,
+        );
         return generateSelfUpdate(
             generator,
             [
-                `const ${colorVar} = String(${color});`,
+                initColorVar,
                 `if (${behave(
                     "isHexColor",
                     colorVar,
@@ -1132,6 +1138,31 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
         )};\nreturn;\n`,
+
+    control_match: (block, generator) => {
+        const value = generator.valueToCode(
+            block,
+            BLOCK_MATCH.args0[0].name,
+            javascript.Order.NONE,
+        );
+        const defaultCode = block.getInput(BLOCK_MATCH.args4[0].name)
+            ? generator.statementToCode(block, BLOCK_MATCH.args4[0].name)
+            : undefined;
+        return generateBlock(
+            generator,
+            `switch (String(${value}))`,
+            getCaseInputs(block)
+                .map(
+                    ({ caseInput, caseLabelInput }) =>
+                        `case ${generator.quote_(
+                            getCaseName(caseLabelInput),
+                        )}:\n` +
+                        generator.statementToCode(block, caseInput.name) +
+                        `\n${generator.INDENT}break;`,
+                )
+                .join("\n") + (defaultCode ? `\ndefault:\n${defaultCode}` : ""),
+        );
+    },
 
     // Sensing blocks
     sensing_tag: (block, generator) => {
@@ -2104,15 +2135,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     // Non-codegen blocks
-    procedures_declaration: (block) => {
-        throw Error(`${block.type} should not be used for codegen`);
-    },
-    argument_editor_string_number: (block) => {
-        throw Error(`${block.type} should not be used for codegen`);
-    },
-    argument_editor_boolean: (block) => {
-        throw Error(`${block.type} should not be used for codegen`);
-    },
+    procedures_declaration: noCodegen,
+    argument_editor_string_number: noCodegen,
+    argument_editor_boolean: noCodegen,
+    controls_match_match: noCodegen,
+    controls_match_case: noCodegen,
 };
 
 function isHatBlock(block: Blockly.Block): boolean {
