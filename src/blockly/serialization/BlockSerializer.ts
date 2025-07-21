@@ -1,13 +1,13 @@
 import * as Blockly from "blockly";
-import { isDefineBlock } from "./procedures/blockDefine";
+import { isDefineBlock } from "../procedures/blockDefine";
 
-export class BehaviorBlockSerializer extends Blockly.serialization.blocks
+export class BlockSerializer extends Blockly.serialization.blocks
     .BlockSerializer {
     static register = () => {
         Blockly.registry.register(
             Blockly.registry.Type.SERIALIZER,
             "blocks",
-            new BehaviorBlockSerializer(),
+            new BlockSerializer(),
             true,
         );
     };

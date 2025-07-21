@@ -5,13 +5,8 @@ import "@blockly/field-colour-hsv-sliders";
 import "@blockly/field-slider";
 import * as Blockly from "blockly";
 import { usePlayerStorage } from "../state/usePlayerStorage";
-import {
-    BehaviorVariableMap,
-    BehaviorVariableModel,
-} from "./BehaviorVariableMap";
 import { Renderer } from "./blockRendering/Renderer";
 import { CUSTOM_JSON_BLOCKS } from "./blocks";
-import { BehaviorBlockSerializer } from "./BlockSerializer";
 import { CategoryMyBlocks } from "./CategoryMyBlocks";
 import { CategoryVariables } from "./CategoryVariables";
 import { registerContextMenuEdit } from "./contextMenuEdit";
@@ -27,14 +22,26 @@ import { BehaviorProcedureModel } from "./procedures/BehaviorProcedureModel";
 import { registerBlockArgumentReporter } from "./procedures/blockArgumentReporter";
 import { registerBlockCall } from "./procedures/blockCall";
 import { registerBlockDefine } from "./procedures/blockDefine";
+import { BlockSerializer } from "./serialization/BlockSerializer";
+import { VariableSerializer } from "./serialization/VariableSerializer";
+import { VariableMap } from "./variables/VariableMap";
+import { VariableModel } from "./variables/VariableModel";
 
 let blocklySetup = false;
+
+class FieldBehaviorVariable extends Blockly.FieldVariable {}
 
 export function setupBlocklyGlobals() {
     // Idempotency
     if (blocklySetup) {
         return; // no need to re-init
     }
+
+    Blockly.registry.register(
+        Blockly.registry.Type.FIELD,
+        "field_behavior_variable",
+        FieldBehaviorVariable,
+    );
 
     // Blocks
     Blockly.common.defineBlocksWithJsonArray(CUSTOM_JSON_BLOCKS);
@@ -52,11 +59,15 @@ export function setupBlocklyGlobals() {
 
     // Custom classes
     Renderer.register();
+
     CategoryVariables.register();
     CategoryMyBlocks.register();
-    BehaviorVariableMap.register();
-    BehaviorVariableModel.register();
-    BehaviorBlockSerializer.register();
+
+    BlockSerializer.register();
+    VariableSerializer.register();
+
+    VariableMap.register();
+    VariableModel.register();
     Blockly.serialization.registry.register(
         "procedures",
         new Blockly.serialization.procedures.ProcedureSerializer(

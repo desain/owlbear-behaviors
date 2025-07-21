@@ -86,9 +86,10 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 
 ### Variables
 
--   Create variables to store and manipulate data
 -   Variables accept any type of value, and can be used in place of any type of data
--   Variables reset when the page is reloaded or when you save a behavior script
+-   Normal variables (variables created for a single token only) reset to an undefined value when the page is reloaded or when you save the token's behavior script
+-   Global variables (variables created for all tokens in a scene) reset to an undefined value when the page is reloaded
+-   When loading a prefab or a behavior script that references a global variable, the variable will be created if it doesn't already exist in the scene
 
 ### Motion
 

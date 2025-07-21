@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import * as Blockly from "blockly";
 import { useState } from "react";
-import type { BehaviorVariableMap } from "../blockly/BehaviorVariableMap";
+import type { VariableMap } from "../blockly/variables/VariableMap";
 
 interface VariableModalProps {
     readonly open: boolean;
@@ -86,7 +86,7 @@ export const VariableModal: React.FC<VariableModalProps> = ({
         }
 
         // Create the variable
-        const variableMap = workspace.getVariableMap() as BehaviorVariableMap;
+        const variableMap = workspace.getVariableMap() as VariableMap;
 
         variableMap.createVariable(
             trimmedName,
@@ -140,7 +140,7 @@ export const VariableModal: React.FC<VariableModalProps> = ({
                             <FormControlLabel
                                 value={SCOPE_GLOBAL}
                                 control={<Radio />}
-                                label="For all tokens"
+                                label="For all tokens in this scene"
                             />
                         </RadioGroup>
                     </FormControl>

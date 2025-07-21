@@ -21,7 +21,6 @@ import {
     PARAMETER_SIGNAL,
     VAR_LOOP_CHECK,
 } from "../constants";
-import { isGlobal } from "./BehaviorVariableMap";
 import {
     BLOCK_ADD_AURA,
     BLOCK_ANGLE,
@@ -115,6 +114,7 @@ import {
 import type { ArgumentReporterBlock } from "./procedures/blockArgumentReporter";
 import type { CallBlock } from "./procedures/blockCall";
 import { isDefineBlock, type DefineBlock } from "./procedures/blockDefine";
+import { isGlobal } from "./variables/VariableMap";
 
 const THROW_ON_ABORT = `${PARAMETER_SIGNAL}.throwIfAborted();\n`;
 
