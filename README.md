@@ -168,7 +168,6 @@ To make a production build run:
     -   auto-behaviors
 -   Context menus
     -   Copy and paste behaviors
-    -   Mass tag
 -   Blocks
     -   Sound
         -   Stop all sounds

@@ -10,6 +10,13 @@ export function Settings() {
         (store) => store.setContextMenuEnabled,
     );
 
+    const showAddTagsContextMenu = usePlayerStorage(
+        (store) => store.showAddTagsContextMenu,
+    ) ?? true;
+    const setShowAddTagsContextMenu = usePlayerStorage(
+        (store) => store.setShowAddTagsContextMenu,
+    );
+
     const muteBlockly = usePlayerStorage((store) => store.muteBlockly) ?? false;
     const setMuteBlockly = usePlayerStorage((store) => store.setMuteBlockly);
 
@@ -25,6 +32,19 @@ export function Settings() {
                     />
                 }
                 label="Enable Context Menu"
+                sx={{ mb: 2 }}
+            />
+
+            <FormControlLabel
+                control={
+                    <Switch
+                        checked={showAddTagsContextMenu}
+                        onChange={(e) =>
+                            setShowAddTagsContextMenu(e.target.checked)
+                        }
+                    />
+                }
+                label="Show Add Tags Context Menu"
                 sx={{ mb: 2 }}
             />
 

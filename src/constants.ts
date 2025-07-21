@@ -14,6 +14,7 @@ export const ID_TOOL_MODE_EDIT_BEHAVIORS = `${ID_TOOL}/modeEditBehaviors`;
 // Popover
 export const ID_POPOVER_SETTINGS = `${PLUGIN_ID}/popoverSettings`;
 export const ID_POPOVER_HELP = `${PLUGIN_ID}/popoverHelp`;
+export const ID_POPOVER_ADD_TAGS = `${PLUGIN_ID}/popoverAddTags`;
 
 // Modal
 export const MODAL_EDIT_BEHAVIOR_ID = `${PLUGIN_ID}/modalEditBehavior`;
@@ -22,6 +23,7 @@ export const URL_PARAM_CAT_BLOCKS = "catBlocks";
 
 // Context menu
 export const CONTEXT_MENU_ID = `${PLUGIN_ID}/contextMenu`;
+export const CONTEXT_MENU_ADD_TAGS_ID = `${PLUGIN_ID}/contextMenuAddTags`;
 
 // Metadata
 export const METADATA_KEY_TAGS = `${PLUGIN_ID}/tags`;

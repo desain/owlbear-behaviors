@@ -21,6 +21,10 @@ export default defineConfig({
                     __dirname,
                     "/src/popoverSettings/popoverSettings.html",
                 ),
+                popoverAddTags: resolve(
+                    __dirname,
+                    "/src/popoverAddTags/popoverAddTags.html",
+                ),
                 popoverHelp: resolve(
                     __dirname,
                     "/src/popoverHelp/popoverHelp.html",

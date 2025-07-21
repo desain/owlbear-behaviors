@@ -95,7 +95,14 @@ export function promptTag() {
     return prompt("New tag name:")?.trim();
 }
 
+/**
+ * Add new tags to the scene metadata. Any already-existing tags will be
+ * ignored.
+ */
 export async function addTags(...tags: string[]) {
+    if (tags.length === 0) {
+        return;
+    }
     const currentMetadata = await getSceneMetadata();
     const newMetadata = produce(currentMetadata, (draft) => {
         for (const tag of tags) {

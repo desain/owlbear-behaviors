@@ -21,11 +21,16 @@ enableMapSet();
 
 export interface LocalStorage {
     readonly contextMenuEnabled: boolean;
+    readonly showAddTagsContextMenu?: boolean;
     readonly backpackContents: string[];
     readonly muteBlockly?: boolean;
     readonly setContextMenuEnabled: (
         this: void,
         contextMenuEnabled: boolean,
+    ) => void;
+    readonly setShowAddTagsContextMenu: (
+        this: void,
+        showAddTagsContextMenu: boolean,
     ) => void;
     readonly setBackpackContents: (
         this: void,
@@ -35,10 +40,11 @@ export interface LocalStorage {
 }
 function partializeLocalStorage({
     contextMenuEnabled,
+    showAddTagsContextMenu,
     backpackContents,
     muteBlockly,
 }: LocalStorage): ExtractNonFunctions<LocalStorage> {
-    return { contextMenuEnabled, backpackContents, muteBlockly };
+    return { contextMenuEnabled, showAddTagsContextMenu, backpackContents, muteBlockly };
 }
 
 export type BehaviorItemMap = Map<BehaviorItem["id"], BehaviorItem>;
@@ -108,10 +114,13 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 // local storage
                 // toolEnabled: false,
                 contextMenuEnabled: true,
+                showAddTagsContextMenu: true,
                 // setToolEnabled: (toolEnabled) => set({ toolEnabled }),
                 backpackContents: [],
                 setContextMenuEnabled: (contextMenuEnabled) =>
                     set({ contextMenuEnabled }),
+                setShowAddTagsContextMenu: (showAddTagsContextMenu) =>
+                    set({ showAddTagsContextMenu }),
                 setBackpackContents: (backpackContents) =>
                     set({ backpackContents }),
                 setMuteBlockly: (muteBlockly) => set({ muteBlockly }),
