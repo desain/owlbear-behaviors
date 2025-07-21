@@ -4,6 +4,7 @@ import { getRootWorkspace } from "./procedures/procedureUtils";
 
 export function registerContextMenuEdit() {
     Blockly.ContextMenuRegistry.registry.register({
+        scopeType: Blockly.ContextMenuRegistry.ScopeType.BLOCK,
         id: "editBlock",
         displayText: "Edit",
         weight: 0,

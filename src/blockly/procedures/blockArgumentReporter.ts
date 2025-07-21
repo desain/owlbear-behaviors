@@ -218,6 +218,10 @@ const DEFINITION = {
                 Blockly.procedures.isProcedureBlock(rootBlock) &&
                 rootBlock.isProcedureDef() &&
                 rootBlock.getProcedureModel() === this.model;
+
+            const initialGroup = Blockly.Events.getGroup();
+            // Make it so the move and the disable event get undone together.
+            Blockly.Events.setGroup(event.group);
             this.setDisabledReason(!enabled, "DISABLE_MISPLACED_ARG");
             this.setWarningText(
                 enabled
@@ -225,6 +229,7 @@ const DEFINITION = {
                     : "This block can only be used in the definition of the custom block it came from",
                 "WARN_MISPLACED_ARG",
             );
+            Blockly.Events.setGroup(initialGroup);
         }
     },
 };

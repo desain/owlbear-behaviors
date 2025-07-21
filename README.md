@@ -160,7 +160,6 @@ To make a production build run:
 
 ## To do
 
--   mute option in settings
 -   Request autoplay permission for sfx?
 -   Make new tags in tags field show up in possible tags list in block immediately
 -   Dragging C blocks around statements like scratch does [here?](https://github.com/scratchfoundation/scratch-blocks/blob/develop/core/insertion_marker_manager.js#L43)

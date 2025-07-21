@@ -20,9 +20,7 @@ import {
 enableMapSet();
 
 export interface LocalStorage {
-    // readonly toolEnabled: boolean;
     readonly contextMenuEnabled: boolean;
-    // readonly setToolEnabled: (this: void, toolEnabled: boolean) => void;
     readonly backpackContents: string[];
     readonly muteBlockly?: boolean;
     readonly setContextMenuEnabled: (
@@ -36,12 +34,10 @@ export interface LocalStorage {
     readonly setMuteBlockly: (this: void, muteBlockly: boolean) => void;
 }
 function partializeLocalStorage({
-    // toolEnabled,
     contextMenuEnabled,
     backpackContents,
     muteBlockly,
 }: LocalStorage): ExtractNonFunctions<LocalStorage> {
-    // console.log("partialize", window.location, backpackContents);
     return { contextMenuEnabled, backpackContents, muteBlockly };
 }
 
@@ -160,9 +156,6 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                     },
                 },
                 selection: [],
-                // lastNonemptySelection: [],
-                // lastNonemptySelectionItems: [],
-                // roomMetadata: { _key: true },
                 sceneMetadataLoaded: false,
                 sceneMetadata: DEFAULT_SCENE_METADATA,
                 itemsOfInterest: new Map(),
@@ -194,7 +187,6 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 handleSelectionChange: (selection: string[] | undefined) =>
                     set({ selection: selection ?? [] }),
                 handleItemsChange: (items: Item[]) => {
-                    // console.log("new items", items);
                     const itemsOfInterest: OwlbearStore["itemsOfInterest"] =
                         new Map();
                     for (const item of items) {
