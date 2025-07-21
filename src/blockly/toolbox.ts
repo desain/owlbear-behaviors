@@ -779,15 +779,11 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                 name: "Variables",
                 categorystyle: "style_category_variables",
             },
-            ...(import.meta.env.DEV
-                ? [
-                      /* my blocks */ {
-                          kind: CUSTOM_DYNAMIC_CATEGORY_MY_BLOCKS,
-                          name: "My Blocks",
-                          categorystyle: "style_category_my_blocks",
-                      },
-                  ]
-                : []),
+            /* my blocks */ {
+                kind: CUSTOM_DYNAMIC_CATEGORY_MY_BLOCKS,
+                name: "My Blocks",
+                categorystyle: "style_category_my_blocks",
+            },
             /* extensions */ {
                 kind: "category",
                 name: "Extensions",
