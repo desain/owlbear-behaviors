@@ -565,7 +565,9 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     /* repeat */ {
                         kind: "block",
                         type: BLOCK_REPEAT.type,
-                        inputs: { TIMES: shadowNumber(5) },
+                        inputs: {
+                            [BLOCK_REPEAT.args0[0].name]: shadowNumber(5),
+                        },
                     },
                     blockToDefinition(BLOCK_FOREVER),
                     GAP50,

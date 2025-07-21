@@ -65,7 +65,7 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 
 -   **Add tags** to tokens to group them or create specialized behaviors
 -   Drag blocks onto the tag field in tag blocks to dynamically choose or construct tags at runtime
--   Edit tags from the right-click behaviors menu for an item
+-   Edit tags from the right-click behaviors menu for an item, or enable the 'add tags' context menu button in settings to tag items in bulk.
 -   All tags in the scene are visible in the main Behaviors panel for easy management
 
 ### Messages
@@ -131,8 +131,9 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 To share behavior scripts between tokens, you have a few options:
 
 -   **Duplicate a token**. The easy option. When you duplicate a token, its behaviors are copied.
--   **Prefabs**. To share tokens with behaviors between scenes, save the token as a prefab with the Prefabs extension. When you insert the prefab, the behaviors come with it.
+-   **Copy and Paste**. In the Setting menu, enable the Copy/Paste context menu buttons, then you can copy and paste behaviors between tokens.
 -   **Backpack**. You can drag scripts to the backpack icon in the top right of your block workspace to put them in your backpack, and click the backpack to open it while editing any token. Block stacks saved to your backpack are saved to your browser's local storage, so they'll persist across scenes and even rooms.
+-   **Prefabs**. To share tokens with behaviors between scenes, save the token as a prefab with the Prefabs extension. When you insert the prefab, the behaviors come with it.
 
 ![Using the Backpack](https://owlbear-behaviors.pages.dev/docs/assets/backpack.gif)
 

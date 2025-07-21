@@ -24,6 +24,8 @@ export const URL_PARAM_CAT_BLOCKS = "catBlocks";
 // Context menu
 export const CONTEXT_MENU_ID = `${PLUGIN_ID}/contextMenu`;
 export const CONTEXT_MENU_ADD_TAGS_ID = `${PLUGIN_ID}/contextMenuAddTags`;
+export const CONTEXT_MENU_COPY_BEHAVIOR_ID = `${PLUGIN_ID}/contextMenuCopyBehavior`;
+export const CONTEXT_MENU_PASTE_BEHAVIOR_ID = `${PLUGIN_ID}/contextMenuPasteBehavior`;
 
 // Metadata
 export const METADATA_KEY_TAGS = `${PLUGIN_ID}/tags`;
@@ -64,7 +66,7 @@ export const INPUT_SOUND = "INPUT_SOUND";
 export const FIELD_SOUND = "FIELD_SOUND";
 export const DROPDOWN_SOUND_MEOW = "meow";
 
-export const MIXIN_DRAG_TO_DUPE = "extension_drag_to_dupe";
+export const MIXIN_DRAG_TO_DUPE = "mixin_drag_to_dupe";
 export const EXTENSION_URL = "extension_url";
 
 export const CREATE_NEW_RESOURCE = "__create_new__";

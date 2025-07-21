@@ -10,15 +10,22 @@ export function Settings() {
         (store) => store.setContextMenuEnabled,
     );
 
-    const showAddTagsContextMenu = usePlayerStorage(
+    const showAddTagsContextMenu = !!usePlayerStorage(
         (store) => store.showAddTagsContextMenu,
-    ) ?? true;
+    );
     const setShowAddTagsContextMenu = usePlayerStorage(
         (store) => store.setShowAddTagsContextMenu,
     );
 
-    const muteBlockly = usePlayerStorage((store) => store.muteBlockly) ?? false;
+    const muteBlockly = !!usePlayerStorage((store) => store.muteBlockly);
     const setMuteBlockly = usePlayerStorage((store) => store.setMuteBlockly);
+
+    const showCopyPasteContextMenu = !!usePlayerStorage(
+        (store) => store.showCopyPasteContextMenu,
+    );
+    const setShowCopyPasteContextMenu = usePlayerStorage(
+        (store) => store.setShowCopyPasteContextMenu,
+    );
 
     return (
         <Box sx={{ p: 2, minWidth: 300 }}>
@@ -45,6 +52,19 @@ export function Settings() {
                     />
                 }
                 label="Show Add Tags Context Menu"
+                sx={{ mb: 2 }}
+            />
+
+            <FormControlLabel
+                control={
+                    <Switch
+                        checked={showCopyPasteContextMenu}
+                        onChange={(e) =>
+                            setShowCopyPasteContextMenu(e.target.checked)
+                        }
+                    />
+                }
+                label="Show Copy/Paste Context Menu"
                 sx={{ mb: 2 }}
             />
 

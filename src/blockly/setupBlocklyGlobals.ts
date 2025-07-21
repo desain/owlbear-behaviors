@@ -11,7 +11,7 @@ import { CategoryMyBlocks } from "./CategoryMyBlocks";
 import { CategoryVariables } from "./CategoryVariables";
 import { registerContextMenuEdit } from "./contextMenuEdit";
 import { registerBroadcastExtension } from "./extensionBroadcast";
-import { registerMixinDragToDupe } from "./extensionDragToDupe";
+import { registerMixinDragToDupe } from "./mixinDragToDupe";
 import { registerSoundExtension } from "./extensionSound";
 import { registerTagExtension } from "./extensionTags";
 import { registerExtensionLimitIdLength } from "./extensionUrl";

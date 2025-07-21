@@ -21,9 +21,11 @@ enableMapSet();
 
 export interface LocalStorage {
     readonly contextMenuEnabled: boolean;
-    readonly showAddTagsContextMenu?: boolean;
     readonly backpackContents: string[];
+    readonly showAddTagsContextMenu?: boolean;
     readonly muteBlockly?: boolean;
+    readonly showCopyPasteContextMenu?: boolean;
+
     readonly setContextMenuEnabled: (
         this: void,
         contextMenuEnabled: boolean,
@@ -37,14 +39,25 @@ export interface LocalStorage {
         backpackContents: string[],
     ) => void;
     readonly setMuteBlockly: (this: void, muteBlockly: boolean) => void;
+    readonly setShowCopyPasteContextMenu: (
+        this: void,
+        showCopyPasteContextMenu: boolean,
+    ) => void;
 }
 function partializeLocalStorage({
     contextMenuEnabled,
     showAddTagsContextMenu,
     backpackContents,
     muteBlockly,
+    showCopyPasteContextMenu,
 }: LocalStorage): ExtractNonFunctions<LocalStorage> {
-    return { contextMenuEnabled, showAddTagsContextMenu, backpackContents, muteBlockly };
+    return {
+        contextMenuEnabled,
+        showAddTagsContextMenu,
+        backpackContents,
+        muteBlockly,
+        showCopyPasteContextMenu,
+    };
 }
 
 export type BehaviorItemMap = Map<BehaviorItem["id"], BehaviorItem>;
@@ -64,6 +77,7 @@ export interface OwlbearStore {
     readonly sceneMetadataLoaded: boolean;
     readonly sceneMetadata: SceneMetadata;
     readonly itemsOfInterest: BehaviorItemMap;
+
     readonly setSceneReady: (this: void, sceneReady: boolean) => void;
     readonly handleThemeChange: (this: void, theme: Theme) => void;
     readonly handleRoleChange: (this: void, role: Role) => void;
@@ -105,6 +119,16 @@ export interface OwlbearStore {
     Tool metadata is stored in localStorage so all the limitations of that apply.
     This also means that there is no networking in tool metadata and it will be erased if the user clears their cache.
     */
+
+    readonly clipboard?: {
+        readonly workspace: object;
+    };
+    readonly setClipboard: (
+        this: void,
+        clipboard: {
+            readonly workspace: object;
+        },
+    ) => void;
 }
 
 export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
@@ -112,10 +136,9 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
         persist(
             immer((set) => ({
                 // local storage
-                // toolEnabled: false,
                 contextMenuEnabled: true,
-                showAddTagsContextMenu: true,
-                // setToolEnabled: (toolEnabled) => set({ toolEnabled }),
+                showAddTagsContextMenu: false,
+                showCopyPasteContextMenu: false,
                 backpackContents: [],
                 setContextMenuEnabled: (contextMenuEnabled) =>
                     set({ contextMenuEnabled }),
@@ -124,6 +147,8 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 setBackpackContents: (backpackContents) =>
                     set({ backpackContents }),
                 setMuteBlockly: (muteBlockly) => set({ muteBlockly }),
+                setShowCopyPasteContextMenu: (showCopyPasteContextMenu) =>
+                    set({ showCopyPasteContextMenu }),
 
                 // owlbear store
                 sceneReady: false,
@@ -218,6 +243,9 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                         set({ sceneMetadata, sceneMetadataLoaded: true });
                     }
                 },
+
+                clipboard: undefined,
+                setClipboard: (clipboard) => set({ clipboard }),
             })),
             {
                 name: LOCAL_STORAGE_STORE_NAME,

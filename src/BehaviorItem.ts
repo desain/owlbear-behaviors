@@ -20,7 +20,7 @@ import {
     METADATA_KEY_TAGS,
 } from "./constants";
 
-interface BehaviorData {
+export interface BehaviorData {
     lastModified: number;
     workspace: object;
 }
