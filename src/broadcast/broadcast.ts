@@ -1,12 +1,12 @@
 import OBR, { Math2, type Vector2 } from "@owlbear-rodeo/sdk";
 import { isObject } from "owlbear-utils";
-import { BEHAVIORS_IMPL } from "../behaviors/BehaviorImpl";
 import { type BehaviorRegistry } from "../behaviors/BehaviorRegistry";
 import {
     isSpeechBubbleParams,
     showSpeechBubble,
     type SpeechBubbleParams,
 } from "../behaviors/impl/looks";
+import { playSoundUntilDone } from "../behaviors/impl/sound";
 import { CHANNEL_MESSAGE } from "../constants";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
@@ -230,7 +230,7 @@ export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
                 data.deselected,
             );
         } else if (isPlaySoundMessage(data)) {
-            void BEHAVIORS_IMPL.playSoundUntilDone(
+            void playSoundUntilDone(
                 new AbortController().signal,
                 data.soundName,
             );

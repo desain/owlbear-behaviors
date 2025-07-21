@@ -47,6 +47,7 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
     catBlocks,
 }) => {
     const theme = usePlayerStorage((state) => state.theme);
+    const muteBlockly = usePlayerStorage((state) => state.muteBlockly) ?? false;
     const sceneMetadata = usePlayerStorage((state) => state.sceneMetadata);
     const backpackContents = usePlayerStorage(
         (state) => state.backpackContents,
@@ -145,6 +146,7 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
                 toolbox: createToolbox(item, grid),
                 theme: createBlocklyTheme(theme, catBlocks),
                 trashcan: false,
+                sounds: !muteBlockly,
                 move: {
                     scrollbars: true,
                     wheel: true,
@@ -230,6 +232,7 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
         backpackContents,
         catBlocks,
         grid,
+        muteBlockly,
     ]);
 
     // Update the workspace when scene metadata changes

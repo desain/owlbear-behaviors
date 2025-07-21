@@ -24,6 +24,7 @@ export interface LocalStorage {
     readonly contextMenuEnabled: boolean;
     // readonly setToolEnabled: (this: void, toolEnabled: boolean) => void;
     readonly backpackContents: string[];
+    readonly muteBlockly?: boolean;
     readonly setContextMenuEnabled: (
         this: void,
         contextMenuEnabled: boolean,
@@ -32,14 +33,16 @@ export interface LocalStorage {
         this: void,
         backpackContents: string[],
     ) => void;
+    readonly setMuteBlockly: (this: void, muteBlockly: boolean) => void;
 }
 function partializeLocalStorage({
     // toolEnabled,
     contextMenuEnabled,
     backpackContents,
+    muteBlockly,
 }: LocalStorage): ExtractNonFunctions<LocalStorage> {
     // console.log("partialize", window.location, backpackContents);
-    return { contextMenuEnabled, backpackContents };
+    return { contextMenuEnabled, backpackContents, muteBlockly };
 }
 
 export type BehaviorItemMap = Map<BehaviorItem["id"], BehaviorItem>;
@@ -115,6 +118,7 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                     set({ contextMenuEnabled }),
                 setBackpackContents: (backpackContents) =>
                     set({ backpackContents }),
+                setMuteBlockly: (muteBlockly) => set({ muteBlockly }),
 
                 // owlbear store
                 sceneReady: false,
