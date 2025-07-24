@@ -27,27 +27,32 @@ export function Action() {
     const role = usePlayerStorage((store) => store.role);
     const sceneReady = usePlayerStorage((store) => store.sceneReady);
     const box: React.RefObject<HTMLElement | null> = useRef(null);
+    const [stopper, setStopper] = useState<VoidFunction>();
     useActionResizer(BASE_HEIGHT, MAX_HEIGHT, box);
     useRehydrate(usePlayerStorage);
 
-    const [stopper, setStopper] = useState<VoidFunction | undefined>();
     useEffect(() => {
         let uninstallExtension: VoidFunction | undefined;
         let unmounted = false;
-        void installExtension(setStopper).then((uninstall) => {
-            if (unmounted) {
-                uninstall();
-            } else {
-                uninstallExtension = uninstall;
-            }
-        });
-
+        // Need to pass `() => stopper` to `setStopper` because if you pass a
+        // function to a useState setter, it will assume you want to call the
+        // function and set the state to the output, rather than using the
+        // passed function as the next state itself.
+        void installExtension((stopper) => setStopper(() => stopper)).then(
+            (uninstall) => {
+                if (unmounted) {
+                    uninstall();
+                } else {
+                    uninstallExtension = uninstall;
+                }
+            },
+        );
         return () => {
             unmounted = true;
             uninstallExtension?.();
             uninstallExtension = undefined;
         };
-    }, []);
+    }, [setStopper]);
 
     return (
         <Box ref={box}>
@@ -104,9 +109,7 @@ export function Action() {
                         <Button
                             variant="text"
                             startIcon={<Stop />}
-                            onClick={() => {
-                                stopper?.();
-                            }}
+                            onClick={() => stopper?.()}
                         >
                             Stop all behaviors
                         </Button>

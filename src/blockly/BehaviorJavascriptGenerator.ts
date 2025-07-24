@@ -838,6 +838,8 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             sound,
         )};\n${PARAMETER_ITEM_PROXY}.invalidate();\n`;
     },
+    sound_stopallsounds: () =>
+        `${behave("stopAllSounds", PARAMETER_SIGNAL)};\n`,
 
     // Event blocks
     event_broadcast_menu: (block, generator) => {

@@ -117,6 +117,7 @@ import {
     BLOCK_SOUND_MENU,
     BLOCK_SOUND_PLAY,
     BLOCK_SOUND_PLAY_UNTIL_DONE,
+    BLOCK_SOUND_STOP_ALL,
     BLOCK_STOP,
     BLOCK_TAG,
     BLOCK_TAG_MENU,
@@ -518,6 +519,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                             },
                         },
                     },
+                    blockToDefinition(BLOCK_SOUND_STOP_ALL),
                 ],
             },
             /* events */ {

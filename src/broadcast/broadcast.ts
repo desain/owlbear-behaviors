@@ -116,6 +116,32 @@ export function broadcastPlaySound(soundName: string) {
     );
 }
 
+const STOP_ALL_SOUNDS = "STOP_ALL_SOUNDS";
+interface StopAllSoundsMessage {
+    readonly type: typeof STOP_ALL_SOUNDS;
+}
+
+function isStopAllSoundsMessage(message: unknown): message is StopAllSoundsMessage {
+    return (
+        isObject(message) &&
+        "type" in message &&
+        message.type === STOP_ALL_SOUNDS
+    );
+}
+
+/**
+ * Stop all sounds on other instances.
+ */
+export function broadcastStopAllSounds() {
+    return OBR.broadcast.sendMessage(
+        CHANNEL_MESSAGE,
+        { type: STOP_ALL_SOUNDS } satisfies StopAllSoundsMessage,
+        {
+            destination: "REMOTE",
+        },
+    );
+}
+
 const SET_VIEWPORT = "SET_VIEWPORT";
 interface SetViewportMessage {
     readonly type: typeof SET_VIEWPORT;
@@ -234,6 +260,8 @@ export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
                 new AbortController().signal,
                 data.soundName,
             );
+        } else if (isStopAllSoundsMessage(data)) {
+            usePlayerStorage.getState().stopAllSounds();
         } else if (isSetViewportMessage(data)) {
             void animateViewportTo(data.x, data.y);
         } else if (isShowSpeechBubbleMessage(data)) {

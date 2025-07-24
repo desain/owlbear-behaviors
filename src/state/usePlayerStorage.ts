@@ -77,6 +77,7 @@ export interface OwlbearStore {
     readonly sceneMetadataLoaded: boolean;
     readonly sceneMetadata: SceneMetadata;
     readonly itemsOfInterest: BehaviorItemMap;
+    readonly activeSounds: Map<string, VoidFunction>;
 
     readonly setSceneReady: (this: void, sceneReady: boolean) => void;
     readonly handleThemeChange: (this: void, theme: Theme) => void;
@@ -93,6 +94,13 @@ export interface OwlbearStore {
         this: void,
         metadata: Metadata,
     ) => void;
+    readonly addActiveSound: (
+        this: void,
+        id: string,
+        pauser: VoidFunction,
+    ) => void;
+    readonly removeActiveSound: (this: void, id: string) => void;
+    readonly stopAllSounds: (this: void) => void;
 
     /*
     Notes on mirroring metadata:
@@ -193,6 +201,7 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 sceneMetadataLoaded: false,
                 sceneMetadata: DEFAULT_SCENE_METADATA,
                 itemsOfInterest: new Map(),
+                activeSounds: new Map(),
                 setSceneReady: (sceneReady: boolean) =>
                     set({
                         sceneReady,
@@ -201,6 +210,7 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                             : {
                                   itemsOfInterest: new Map(),
                                   sceneMetadataLoaded: false,
+                                  activeSounds: new Map(),
                               }),
                     }),
                 handleThemeChange: (theme: Theme) => set({ theme }),
@@ -246,6 +256,22 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
 
                 clipboard: undefined,
                 setClipboard: (clipboard) => set({ clipboard }),
+                addActiveSound: (id, pauser) =>
+                    set((state) => {
+                        state.activeSounds.set(id, pauser);
+                    }),
+                removeActiveSound: (id) =>
+                    set((state) => {
+                        state.activeSounds.get(id)?.();
+                        state.activeSounds.delete(id);
+                    }),
+                stopAllSounds: () =>
+                    set((state) => {
+                        for (const [, pauser] of state.activeSounds) {
+                            pauser();
+                        }
+                        state.activeSounds.clear();
+                    }),
             })),
             {
                 name: LOCAL_STORAGE_STORE_NAME,

@@ -1,13 +1,13 @@
-import { Add, PlayArrow } from "@mui/icons-material";
+import { Add, PlayArrow, Stop } from "@mui/icons-material";
 import { Box, IconButton, List, Tooltip, Typography } from "@mui/material";
-import { BEHAVIORS_IMPL } from "../behaviors/BehaviorImpl";
+import { playSoundUntilDone } from "../behaviors/impl/sound";
 import { addSound, removeSound, renameSound } from "../state/SceneMetadata";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import { EditableListItem } from "./EditableListItem";
 
 async function playSound(name: string) {
     const controller = new AbortController();
-    await BEHAVIORS_IMPL.playSoundUntilDone(controller.signal, name);
+    await playSoundUntilDone(controller.signal, name);
 }
 
 async function handleAddSound() {
@@ -21,6 +21,8 @@ async function handleAddSound() {
 
 export function SoundList() {
     const sounds = usePlayerStorage((s) => s.sceneMetadata.sounds);
+    const activeSounds = usePlayerStorage((s) => s.activeSounds);
+    const stopAllSounds = usePlayerStorage((s) => s.stopAllSounds);
 
     return (
         <>
@@ -31,13 +33,23 @@ export function SoundList() {
                 mb={0.5}
             >
                 <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-                    🔊 Sounds
+                    🔊 Sounds{" "}
+                    {activeSounds.size > 0 && `(${activeSounds.size} playing)`}
                 </Typography>
-                <Tooltip title="Add sound">
-                    <IconButton onClick={handleAddSound}>
-                        <Add />
-                    </IconButton>
-                </Tooltip>
+                <Box display="flex" gap={0.5}>
+                    {activeSounds.size > 0 && (
+                        <Tooltip title="Stop all sounds">
+                            <IconButton onClick={stopAllSounds} size="small">
+                                <Stop />
+                            </IconButton>
+                        </Tooltip>
+                    )}
+                    <Tooltip title="Add sound">
+                        <IconButton onClick={handleAddSound}>
+                            <Add />
+                        </IconButton>
+                    </Tooltip>
+                </Box>
             </Box>
             <List dense>
                 {Object.keys(sounds)

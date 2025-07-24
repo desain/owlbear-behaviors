@@ -2701,6 +2701,15 @@ export const BLOCK_SOUND_MENU = {
     output: "String",
 } as const;
 
+export const BLOCK_SOUND_STOP_ALL = {
+    style: "sound_blocks",
+    type: "sound_stopallsounds",
+    tooltip: "Stop all currently playing sounds",
+    message0: "stop all sounds",
+    previousStatement: null,
+    nextStatement: null,
+} as const;
+
 export const BLOCK_SENSING_ITEM_MENU = {
     style: "sensing_blocks",
     type: "menu_item",
@@ -2827,6 +2836,7 @@ export const CUSTOM_JSON_BLOCKS = [
     // Sound blocks
     BLOCK_SOUND_PLAY,
     BLOCK_SOUND_PLAY_UNTIL_DONE,
+    BLOCK_SOUND_STOP_ALL,
 
     // Event blocks
     BLOCK_IMMEDIATELY,

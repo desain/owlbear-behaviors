@@ -1,5 +1,8 @@
 import { withTimeout } from "owlbear-utils";
-import { broadcastPlaySound } from "../../broadcast/broadcast";
+import {
+    broadcastPlaySound,
+    broadcastStopAllSounds,
+} from "../../broadcast/broadcast";
 import { usePlayerStorage } from "../../state/usePlayerStorage";
 
 export async function playSoundUntilDone(
@@ -15,8 +18,13 @@ export async function playSoundUntilDone(
 
     await withTimeout(
         new Promise<void>((resolve, reject) => {
+            const soundId = `${soundName}_${Date.now()}`;
+            let audio: HTMLAudioElement | undefined;
+
             const handleAbort = () => {
                 signal.removeEventListener("abort", handleAbort);
+                usePlayerStorage.getState().removeActiveSound(soundId);
+                audio?.pause();
                 reject(Error(String(signal.reason)));
             };
 
@@ -24,28 +32,41 @@ export async function playSoundUntilDone(
             if (signal.aborted) {
                 handleAbort();
                 return;
+            } else {
+                signal.addEventListener("abort", handleAbort);
             }
 
-            signal.addEventListener("abort", handleAbort);
+            const cleanup = () => {
+                signal.removeEventListener("abort", handleAbort);
+                usePlayerStorage.getState().removeActiveSound(soundId);
+            };
 
             try {
-                const audio = new Audio(sound.url);
+                audio = new Audio(sound.url);
+
                 audio.addEventListener("ended", () => {
-                    signal.removeEventListener("abort", handleAbort);
+                    cleanup();
                     resolve();
                 });
                 audio.addEventListener("error", (e) => {
-                    signal.removeEventListener("abort", handleAbort);
+                    cleanup();
                     reject(Error(e.message));
                 });
                 audio.addEventListener("canplaythrough", () => {
                     if (signal.aborted) {
                         handleAbort();
-                        return;
+                    } else if (audio) {
+                        usePlayerStorage
+                            .getState()
+                            .addActiveSound(soundId, () => {
+                                audio?.pause();
+                                resolve();
+                            });
+                        void audio.play();
                     }
-                    void audio.play();
                 });
             } catch (e) {
+                cleanup();
                 reject(
                     Error(
                         `[playSoundUntilDone] Could not play sound: ${
@@ -55,7 +76,7 @@ export async function playSoundUntilDone(
                 );
             }
         }),
-        20_000,
+        600_000,
     );
 }
 
@@ -72,6 +93,18 @@ export const SOUND_BEHAVIORS = {
         }
 
         await playSoundUntilDone(signal, soundName);
+
+        signal.throwIfAborted();
+    },
+
+    stopAllSounds: (signal: AbortSignal): void => {
+        const state = usePlayerStorage.getState();
+
+        if (state.role === "GM") {
+            void broadcastStopAllSounds();
+        }
+
+        state.stopAllSounds();
 
         signal.throwIfAborted();
     },
