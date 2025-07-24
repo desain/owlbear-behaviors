@@ -1,7 +1,7 @@
 import { compileObrFunction, type ObrFunction } from "owlbear-utils";
 import type { BehaviorItem } from "../BehaviorItem";
 import {
-    CONSTANT_BEHAVIOR_DEFINITION,
+    CONSTANT_TRIGGER_HANDLERS,
     PARAMETER_BEHAVIOR_IMPL,
     PARAMETER_BEHAVIOR_REGISTRY,
     PARAMETER_GLOBALS,
@@ -14,15 +14,6 @@ import type { ItemProxy } from "./ItemProxy";
 import type { TriggerHandler } from "./TriggerHandler";
 
 /**
- * Result of executing the compiled code from a Blockly workspace.
- */
-export interface BehaviorDefinition {
-    immediately: BehaviorFunction[];
-    startAsClone: BehaviorFunction[];
-    triggerHandlers: TriggerHandler[];
-}
-
-/**
  * Type of the compiled code from a Blockly workspace.
  */
 export type BehaviorDefinitionFunction = ObrFunction<
@@ -33,7 +24,7 @@ export type BehaviorDefinitionFunction = ObrFunction<
         globals: BehaviorGlobals,
         behaviorRegistry: BehaviorRegistry,
     ],
-    BehaviorDefinition
+    TriggerHandler[]
 >;
 
 /**
@@ -49,13 +40,9 @@ export type BehaviorFunction = (
 
 export function compileBehavior(code: string): BehaviorDefinitionFunction {
     const behaviorDefinitionCode = `
-const ${CONSTANT_BEHAVIOR_DEFINITION} /*: BehaviorDefinition */ = {
-    immediately: [],
-    startAsClone: [],
-    triggerHandlers: [],
-}
+const ${CONSTANT_TRIGGER_HANDLERS} = [];
 ${code}
-return ${CONSTANT_BEHAVIOR_DEFINITION};`;
+return ${CONSTANT_TRIGGER_HANDLERS};`;
     if (import.meta.env.DEV) {
         console.log(
             `[${import.meta.env.MODE}] compiling`,

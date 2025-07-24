@@ -1,4 +1,5 @@
 import type { Item } from "@owlbear-rodeo/sdk";
+import type { Block } from "blockly";
 import * as Blockly from "blockly";
 import { executeObrFunction } from "owlbear-utils";
 import { type BehaviorItem } from "../BehaviorItem";
@@ -69,23 +70,12 @@ async function addMissingResources(workspace: Blockly.Workspace) {
 
 export class BehaviorRegistry {
     readonly #globals: BehaviorGlobals = {};
-    readonly #immediateExecutions = new Map<Item["id"], AbortController[]>();
     readonly #triggerHandlers = new Map<Item["id"], TriggerHandler[]>();
 
-    readonly getBehaviorItemIds = () =>
-        new Set([
-            ...this.#immediateExecutions.keys(),
-            ...this.#triggerHandlers.keys(),
-        ]);
+    readonly getBehaviorItemIds = (): Set<Item["id"]> =>
+        new Set(this.#triggerHandlers.keys());
 
     readonly stopAll = () => {
-        [...this.#immediateExecutions.values()]
-            .flat()
-            .forEach((abortController) =>
-                abortController.abort("Behavior registry: stop all"),
-            );
-        this.#immediateExecutions.clear();
-
         this.#triggerHandlers.forEach((handlers) => {
             handlers.forEach(({ abortController }) => {
                 abortController?.abort("Behavior registry: stop all");
@@ -94,20 +84,28 @@ export class BehaviorRegistry {
         this.#triggerHandlers.clear();
     };
 
-    readonly stopBehaviorsForItem = (itemId: Item["id"]) => {
-        // Stop immediate behaviors
-        this.#immediateExecutions
+    readonly stopBehaviorsForItem = (
+        itemId: Item["id"],
+        exceptionHatBlockId?: Block["id"],
+    ) => {
+        const handlerToSave = this.#triggerHandlers
             .get(itemId)
-            ?.forEach((abortController) =>
-                abortController.abort("Item deleted or behavior changed"),
-            );
-        this.#immediateExecutions.delete(itemId);
+            ?.find(({ hatBlockId }) => hatBlockId === exceptionHatBlockId);
 
         // Stop trigger handlers
-        this.#triggerHandlers.get(itemId)?.forEach(({ abortController }) => {
-            abortController?.abort("Item deleted or behavior changed");
-        });
-        this.#triggerHandlers.delete(itemId);
+        this.#triggerHandlers
+            .get(itemId)
+            ?.forEach(({ hatBlockId, abortController }) => {
+                if (hatBlockId !== exceptionHatBlockId) {
+                    abortController?.abort("Item deleted or behavior changed");
+                }
+            });
+
+        if (handlerToSave) {
+            this.#triggerHandlers.set(itemId, [handlerToSave]);
+        } else {
+            this.#triggerHandlers.delete(itemId);
+        }
     };
 
     readonly startBehavior = ({
@@ -128,7 +126,7 @@ export class BehaviorRegistry {
         const defineBehaviors = compileBehavior(code);
 
         // Install behaviors
-        const behaviorDefinition = executeObrFunction(
+        const triggerHandlers = executeObrFunction(
             defineBehaviors,
             item.id,
             BEHAVIORS_IMPL,
@@ -136,30 +134,19 @@ export class BehaviorRegistry {
             this.#globals,
             this,
         );
-        this.#triggerHandlers.set(item.id, behaviorDefinition.triggerHandlers);
+        this.#triggerHandlers.set(item.id, triggerHandlers);
 
         // Start immediate behaviors
-        const immediateExecutions = behaviorDefinition.immediately.map(
-            (behaviorFunction) => {
-                const abortController = new AbortController();
-                void behaviorFunction(abortController.signal);
-                return abortController;
-            },
-        );
+        triggerHandlers
+            .filter((handler) => handler.type === "immediately")
+            .forEach((handler) => executeTriggerHandler(handler));
 
         // Start clone behaviors if this item is a clone
         if (item.metadata[METADATA_KEY_CLONE]) {
-            const cloneExecutions = behaviorDefinition.startAsClone.map(
-                (behaviorFunction) => {
-                    const abortController = new AbortController();
-                    void behaviorFunction(abortController.signal);
-                    return abortController;
-                },
-            );
-            immediateExecutions.push(...cloneExecutions);
+            triggerHandlers
+                .filter((handler) => handler.type === "startAsClone")
+                .forEach((handler) => executeTriggerHandler(handler));
         }
-
-        this.#immediateExecutions.set(item.id, immediateExecutions);
     };
 
     readonly handleBroadcast = (broadcast: string) => {

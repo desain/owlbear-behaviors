@@ -168,8 +168,6 @@ To make a production build run:
     -   auto-tags
     -   auto-behaviors
 -   Blocks
-    -   Sound
-        -   Stop all sounds
     -   Extensions
         -   Smoke and spectre: blind, convert to obstruction
         -   On field change for Daggerheart, Owl Trackers
@@ -182,7 +180,6 @@ To make a production build run:
         -   Broadcast to myself / my children / other token?
     -   Operators
         -   Min, max
-    -   Stop other scripts in token?
 -   Fix Blockly bug? [hideIfOwnerIsInWorkspace](https://github.com/google/blockly/blob/develop/core/widgetdiv.ts#L201) should initialize `currentWorkspace` to `ownerWorkspace`, and should reference itself in the loop.
 -   Figure out multiline text - https://www.npmjs.com/package/@blockly/field-multilineinput doesn't display correctly.
 

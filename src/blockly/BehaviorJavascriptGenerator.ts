@@ -6,7 +6,7 @@ import type { BEHAVIORS_IMPL } from "../behaviors/BehaviorImpl";
 import type { BehaviorRegistry } from "../behaviors/BehaviorRegistry";
 import type { TriggerHandler } from "../behaviors/TriggerHandler";
 import {
-    CONSTANT_BEHAVIOR_DEFINITION,
+    CONSTANT_TRIGGER_HANDLERS,
     FIELD_BROADCAST,
     FIELD_SOUND,
     FIELD_TAG,
@@ -15,6 +15,7 @@ import {
     PARAMETER_BEHAVIOR_IMPL,
     PARAMETER_BEHAVIOR_REGISTRY,
     PARAMETER_GLOBALS,
+    PARAMETER_HAT_ID,
     PARAMETER_ITEM_PROXY,
     PARAMETER_OTHER_ID,
     PARAMETER_SELF_ID,
@@ -218,7 +219,11 @@ function getHatBlockBehaviorFunction(
         generateBlock(
             generator,
             "try",
-            [`let ${VAR_LOOP_CHECK} = 10_000;`, statementsCode].join("\n"),
+            [
+                `const ${PARAMETER_HAT_ID} = ${generator.quote_(block.id)};`,
+                `let ${VAR_LOOP_CHECK} = 10_000;`,
+                statementsCode,
+            ].join("\n"),
             "catch(e)",
             `console.warn('error in block ${block.id}', e)\n` +
                 generateBlock(
@@ -242,7 +247,7 @@ function generateAddTriggerHandler(handler: TriggerHandlerJson) {
         `{"behaviorFunction": ${handler.behaviorFunction},`,
     );
 
-    return `${CONSTANT_BEHAVIOR_DEFINITION}.triggerHandlers.push(${handlerJson});`;
+    return `${CONSTANT_TRIGGER_HANDLERS}.push(${handlerJson});`;
 }
 
 function generateSelfUpdate(
@@ -856,21 +861,24 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         return `void ${behave("sendMessage", broadcast)};\n`;
     },
     event_immediately: (block, generator) =>
-        `${CONSTANT_BEHAVIOR_DEFINITION}.immediately.push(${getHatBlockBehaviorFunction(
-            block,
-            generator,
-        )});\n`,
+        generateAddTriggerHandler({
+            type: "immediately",
+            hatBlockId: block.id,
+            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
+        }),
 
     control_start_as_clone: (block, generator) =>
-        `${CONSTANT_BEHAVIOR_DEFINITION}.startAsClone.push(${getHatBlockBehaviorFunction(
-            block,
-            generator,
-        )});\n`,
+        generateAddTriggerHandler({
+            type: "startAsClone",
+            hatBlockId: block.id,
+            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
+        }),
 
     event_whenbroadcastreceived: (block, generator) => {
         const broadcastId = getStringFieldValue(block, FIELD_BROADCAST);
         return generateAddTriggerHandler({
             type: "broadcast",
+            hatBlockId: block.id,
             broadcast: broadcastId,
             behaviorFunction: getHatBlockBehaviorFunction(block, generator),
         });
@@ -885,36 +893,42 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             case "position":
                 return generateAddTriggerHandler({
                     type: "position",
+                    hatBlockId: block.id,
                     newValue: "ANY",
                     behaviorFunction,
                 });
             case "rotation":
                 return generateAddTriggerHandler({
                     type: "rotation",
+                    hatBlockId: block.id,
                     newValue: "ANY",
                     behaviorFunction,
                 });
             case "layer":
                 return generateAddTriggerHandler({
                     type: "layer",
+                    hatBlockId: block.id,
                     newValue: "ANY",
                     behaviorFunction,
                 });
             case "locked:true":
                 return generateAddTriggerHandler({
                     type: "locked",
+                    hatBlockId: block.id,
                     newValue: { exactly: true },
                     behaviorFunction,
                 });
             case "locked:false":
                 return generateAddTriggerHandler({
                     type: "locked",
+                    hatBlockId: block.id,
                     newValue: { exactly: false },
                     behaviorFunction,
                 });
             case "visible:true": {
                 return generateAddTriggerHandler({
                     type: "visible",
+                    hatBlockId: block.id,
                     newValue: { exactly: true },
                     behaviorFunction,
                 });
@@ -922,6 +936,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             case "visible:false": {
                 return generateAddTriggerHandler({
                     type: "visible",
+                    hatBlockId: block.id,
                     newValue: { exactly: false },
                     behaviorFunction,
                 });
@@ -929,6 +944,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             case "attachedTo:defined": {
                 return generateAddTriggerHandler({
                     type: "attachedTo",
+                    hatBlockId: block.id,
                     newValue: "DEFINED",
                     behaviorFunction,
                 });
@@ -936,6 +952,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             case "attachedTo:undefined": {
                 return generateAddTriggerHandler({
                     type: "attachedTo",
+                    hatBlockId: block.id,
                     newValue: { exactly: undefined },
                     behaviorFunction,
                 });
@@ -943,12 +960,14 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             case "SELECTED:true":
                 return generateAddTriggerHandler({
                     type: "selected",
+                    hatBlockId: block.id,
                     selectedState: true,
                     behaviorFunction,
                 });
             case "SELECTED:false":
                 return generateAddTriggerHandler({
                     type: "selected",
+                    hatBlockId: block.id,
                     selectedState: false,
                     behaviorFunction,
                 });
@@ -964,6 +983,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
         return generateAddTriggerHandler({
             type: "collision",
+            hatBlockId: block.id,
             start: touchState === "true",
             behaviorFunction,
         });
@@ -1000,9 +1020,10 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
                     }();`,
                     "return;\n",
                 ].join("\n");
-            // case "OTHER_SCRIPTS": {
-            //     return `${PARAMETER_BEHAVIOR_REGISTRY}.stopBehaviorsForItem(${PARAMETER_SELF_ID}, ${PARAMETER_HAT_ID});\n`;
-            // }
+            case "OTHER_SCRIPTS":
+                return `${PARAMETER_BEHAVIOR_REGISTRY}.${
+                    "stopBehaviorsForItem" satisfies keyof BehaviorRegistry
+                }(${PARAMETER_SELF_ID}, ${PARAMETER_HAT_ID});\n`;
         }
     },
 
@@ -1651,7 +1672,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
 
         return generateBlock(
             generator,
-            `async function ${name}(${PARAMETER_SIGNAL}, ${PARAMETER_OTHER_ID}, ${VAR_LOOP_CHECK}, ${model
+            `async function ${name}(${PARAMETER_SIGNAL}, ${PARAMETER_OTHER_ID}, ${VAR_LOOP_CHECK}, ${PARAMETER_HAT_ID}, ${model
                 .getParameters()
                 .filter((p) => p.getTypes().length)
                 .map((p) => p.getId())
@@ -1668,7 +1689,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             );
         const model = (block as CallBlock).getProcedureModel();
         const name = generator.getProcedureName(model.getName());
-        return `${VAR_LOOP_CHECK} = await ${name}(${PARAMETER_SIGNAL}, ${PARAMETER_OTHER_ID}, ${VAR_LOOP_CHECK}, ${args.join(
+        return `${VAR_LOOP_CHECK} = await ${name}(${PARAMETER_SIGNAL}, ${PARAMETER_OTHER_ID}, ${VAR_LOOP_CHECK}, ${PARAMETER_HAT_ID}, ${args.join(
             ", ",
         )});\n`;
     },
@@ -1886,6 +1907,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
         return generateAddTriggerHandler({
             type: "grimoire_hp_change",
+            hatBlockId: block.id,
             behaviorFunction,
         });
     },
@@ -2165,7 +2187,8 @@ export class BehaviorJavascriptGenerator extends javascript.JavascriptGenerator 
                 PARAMETER_BEHAVIOR_IMPL,
                 PARAMETER_ITEM_PROXY,
                 PARAMETER_BEHAVIOR_REGISTRY,
-                CONSTANT_BEHAVIOR_DEFINITION,
+                PARAMETER_HAT_ID,
+                CONSTANT_TRIGGER_HANDLERS,
                 VAR_LOOP_CHECK,
             ].join(","),
         );

@@ -1,12 +1,22 @@
+import type { Block } from "blockly";
 import type { BehaviorItem } from "../BehaviorItem";
 import type { BehaviorFunction } from "./compileBehavior";
 
 interface BaseTriggerHandler {
     behaviorFunction: BehaviorFunction;
+    hatBlockId: Block["id"];
     /**
      * Controller if the behavior is running.
      */
     abortController?: AbortController;
+}
+
+interface ImmediateTriggerHandler extends BaseTriggerHandler {
+    readonly type: "immediately";
+}
+
+interface StartAsCloneTriggerHandler extends BaseTriggerHandler {
+    readonly type: "startAsClone";
 }
 
 interface BroadcastTriggerHandler extends BaseTriggerHandler {
@@ -44,6 +54,8 @@ interface GrimoireHpChangeTriggerHandler extends BaseTriggerHandler {
 }
 
 export type TriggerHandler =
+    | ImmediateTriggerHandler
+    | StartAsCloneTriggerHandler
     | BroadcastTriggerHandler
     | SelectedTriggerHandler
     | PropertyChanged<"position">

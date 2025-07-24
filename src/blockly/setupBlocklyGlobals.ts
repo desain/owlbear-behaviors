@@ -12,6 +12,7 @@ import { CategoryVariables } from "./CategoryVariables";
 import { registerContextMenuEdit } from "./contextMenuEdit";
 import { registerBroadcastExtension } from "./extensionBroadcast";
 import { registerSoundExtension } from "./extensionSound";
+import { registerStopExtension } from "./extensionStop";
 import { registerTagExtension } from "./extensionTags";
 import { registerExtensionLimitIdLength } from "./extensionUrl";
 import { registerFieldTextInputRemovable } from "./FieldTextInputRemovable";
@@ -98,6 +99,7 @@ export function setupBlocklyGlobals() {
     registerContinuousToolbox();
 
     registerTagExtension();
+    registerStopExtension();
     registerSoundExtension();
     registerBroadcastExtension();
     registerExtensionLimitIdLength();

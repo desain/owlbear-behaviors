@@ -7,6 +7,7 @@ import rotateRight from "../../assets/rotate-right.svg";
 import {
     EXTENSION_BROADCAST,
     EXTENSION_SOUND,
+    EXTENSION_STOP,
     EXTENSION_TAG,
     EXTENSION_URL,
     FIELD_ARGUMENT_EDITOR_TEXT,
@@ -1040,6 +1041,7 @@ export const BLOCK_WAIT = {
 export const BLOCK_STOP = {
     style: "control_blocks",
     type: "control_behavior_stop",
+    extensions: [EXTENSION_STOP],
     tooltip: "Stop execution of scripts",
     message0: "stop %1",
     args0: [
@@ -1049,7 +1051,7 @@ export const BLOCK_STOP = {
             options: [
                 ["all", "ALL"],
                 ["this script", "THIS_SCRIPT"],
-                // ["other scripts in token", "OTHER_SCRIPTS"],
+                ["other scripts in token", "OTHER_SCRIPTS"],
             ],
         },
     ],
