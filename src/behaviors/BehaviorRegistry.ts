@@ -6,6 +6,7 @@ import { type BehaviorItem } from "../BehaviorItem";
 import { BehaviorJavascriptGenerator } from "../blockly/BehaviorJavascriptGenerator";
 import type { Collision } from "../collision/CollisionEngine";
 import { FIELD_BROADCAST, FIELD_TAG, METADATA_KEY_CLONE } from "../constants";
+import type { BonesRoll } from "../extensions/Bones";
 import { addBroadcasts, addTags } from "../state/SceneMetadata";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import { BEHAVIORS_IMPL } from "./BehaviorImpl";
@@ -204,6 +205,20 @@ export class BehaviorRegistry {
             .get(itemId)
             ?.filter((handler) => handler.type === "grimoire_hp_change")
             ?.forEach((handler) => executeTriggerHandler(handler));
+
+    readonly handleBonesRoll = (roll: BonesRoll) => {
+        this.#triggerHandlers.forEach((handlers) => {
+            handlers
+                .filter((handler) => handler.type === "bones_roll")
+                .filter(
+                    (handler) =>
+                        (handler.dieType === "ANY" ||
+                            handler.dieType === roll.type) &&
+                        handler.value === roll.value,
+                )
+                .forEach((handler) => executeTriggerHandler(handler));
+        });
+    };
 
     /**
      * @param started Ture if new collision, false if finished collision.

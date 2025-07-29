@@ -39,6 +39,7 @@ import {
     BLOCK_DISTANCE_TO,
     BLOCK_DYNAMIC_VAL,
     BLOCK_EQUALS,
+    BLOCK_EXTENSION_BONES_ROLL,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_FOG_ADD,
@@ -1909,6 +1910,28 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             type: "grimoire_hp_change",
             hatBlockId: block.id,
             behaviorFunction,
+        });
+    },
+
+    extension_bones_roll: (block, generator) => {
+        const value: unknown = block.getFieldValue(
+            BLOCK_EXTENSION_BONES_ROLL.args0[1].name,
+        );
+        if (typeof value !== "number") {
+            throw Error("value should be number");
+        }
+        const dieTypeString = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_BONES_ROLL.args0[2].name,
+        );
+        const dieType = dieTypeString === "ANY" ? "ANY" : Number(dieTypeString);
+
+        return generateAddTriggerHandler({
+            type: "bones_roll",
+            hatBlockId: block.id,
+            dieType,
+            value,
+            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
         });
     },
 

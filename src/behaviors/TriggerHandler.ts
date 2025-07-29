@@ -53,6 +53,12 @@ interface GrimoireHpChangeTriggerHandler extends BaseTriggerHandler {
     readonly type: "grimoire_hp_change";
 }
 
+interface BonesRollTriggerHandler extends BaseTriggerHandler {
+    readonly type: "bones_roll";
+    readonly dieType: number | "ANY";
+    readonly value: number;
+}
+
 export type TriggerHandler =
     | ImmediateTriggerHandler
     | StartAsCloneTriggerHandler
@@ -65,7 +71,8 @@ export type TriggerHandler =
     | PropertyChanged<"layer">
     | PropertyChanged<"attachedTo">
     | CollisionTriggerHandler
-    | GrimoireHpChangeTriggerHandler;
+    | GrimoireHpChangeTriggerHandler
+    | BonesRollTriggerHandler;
 
 export function propertyChangeTriggers<K extends keyof BehaviorItem>(
     handler: PropertyChanged<K>,

@@ -10,6 +10,7 @@ const LINKS = {
     "Auras and Emanations": rogue(
         "https://owlbear-emanation.pages.dev/manifest.json",
     ),
+    Bones: "https://extensions.owlbear.rodeo/bones",
     Hoot: rogue("https://hoot.armindo.eu/manifest.json"),
     Announcement: rogue("https://announcement.sharkbrain.dev/manifest.json"),
     "Dynamic Fog": "https://extensions.owlbear.rodeo/dynamic-fog", // https://dynamic-fog.owlbear.rodeo/manifest.json

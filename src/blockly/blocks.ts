@@ -2621,6 +2621,44 @@ export const BLOCK_EXTENSION_WEATHER_HAS = {
     output: "Boolean",
 } as const;
 
+export const BLOCK_EXTENSION_BONES_ROLL = {
+    style: "extension_blocks",
+    type: "extension_bones_roll",
+    tooltip:
+        "Runs the blocks below when I roll a specific value on a die using the Bones extension",
+    message0: "%1 when I roll %2 on %3",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://bones.battle-system.com/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Bones extension icon",
+        },
+        {
+            type: "field_number",
+            name: "VALUE",
+            value: "20",
+        },
+        {
+            type: "field_dropdown",
+            name: "DIE",
+            options: [
+                ["a d20", "20"],
+                ["a d4", "4"],
+                ["a d6", "6"],
+                ["a d8", "8"],
+                ["a d10", "10"],
+                ["a d12", "12"],
+                ["a d100", "100"],
+                ["any die", "ANY"],
+            ],
+        },
+    ],
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 // Menus
 export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
@@ -2933,6 +2971,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_EXTENSION_WEATHER_REMOVE,
     BLOCK_EXTENSION_WEATHER_HAS,
+    BLOCK_EXTENSION_BONES_ROLL,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,

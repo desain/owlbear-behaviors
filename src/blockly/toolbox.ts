@@ -36,6 +36,7 @@ import {
     BLOCK_DETACH,
     BLOCK_DISTANCE_TO,
     BLOCK_EQUALS,
+    BLOCK_EXTENSION_BONES_ROLL,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
@@ -832,15 +833,8 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     },
                     blockToDefinition(BLOCK_REMOVE_AURAS),
 
-                    ...extensionHeader("Owlbear Codeo"),
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_CODEO_RUN_SCRIPT.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_CODEO_RUN_SCRIPT.args0[1].name]:
-                                shadowDynamic("My New Script"),
-                        },
-                    },
+                    ...extensionHeader("Bones"),
+                    blockToDefinition(BLOCK_EXTENSION_BONES_ROLL),
 
                     ...extensionHeader("Dynamic Fog"),
                     {
@@ -896,6 +890,16 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         inputs: {
                             [BLOCK_HOOT.args0[1].name]: shadowDynamic(),
                             [BLOCK_HOOT.args0[2].name]: shadowDynamic(),
+                        },
+                    },
+
+                    ...extensionHeader("Owlbear Codeo"),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_CODEO_RUN_SCRIPT.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_CODEO_RUN_SCRIPT.args0[1].name]:
+                                shadowDynamic("My New Script"),
                         },
                     },
 

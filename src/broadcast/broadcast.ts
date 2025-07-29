@@ -1,5 +1,5 @@
 import OBR, { Math2, type Vector2 } from "@owlbear-rodeo/sdk";
-import { isObject } from "owlbear-utils";
+import { deferCallAll, isObject } from "owlbear-utils";
 import { type BehaviorRegistry } from "../behaviors/BehaviorRegistry";
 import {
     isSpeechBubbleParams,
@@ -8,6 +8,7 @@ import {
 } from "../behaviors/impl/looks";
 import { playSoundUntilDone } from "../behaviors/impl/sound";
 import { CHANNEL_MESSAGE } from "../constants";
+import { Bones } from "../extensions/Bones";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
 export function sendMessage(name: unknown) {
@@ -121,7 +122,9 @@ interface StopAllSoundsMessage {
     readonly type: typeof STOP_ALL_SOUNDS;
 }
 
-function isStopAllSoundsMessage(message: unknown): message is StopAllSoundsMessage {
+function isStopAllSoundsMessage(
+    message: unknown,
+): message is StopAllSoundsMessage {
     return (
         isObject(message) &&
         "type" in message &&
@@ -241,38 +244,57 @@ export function broadcastShowSpeechBubble(params: SpeechBubbleParams) {
     );
 }
 
-export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
-    return OBR.broadcast.onMessage(CHANNEL_MESSAGE, ({ data }) => {
+function installBonesListener(behaviorRegistry: BehaviorRegistry) {
+    return OBR.broadcast.onMessage(Bones.CHANNEL, ({ data }) => {
         const state = usePlayerStorage.getState();
         const isGm = state.role === "GM";
-        if (!isGm && isDeselectMessage(data)) {
-            void OBR.player.deselect(data.ids);
-        } else if (isGm && typeof data === "string") {
-            // console.log("got behavior broadcast", data);
-            behaviorRegistry.handleBroadcast(data);
-        } else if (isGm && isNewSelectionMessage(data)) {
-            void behaviorRegistry.handleNewSelection(
-                data.newlySelected,
-                data.deselected,
-            );
-        } else if (isPlaySoundMessage(data)) {
-            void playSoundUntilDone(
-                new AbortController().signal,
-                data.soundName,
-            );
-        } else if (isStopAllSoundsMessage(data)) {
-            usePlayerStorage.getState().stopAllSounds();
-        } else if (isSetViewportMessage(data)) {
-            void animateViewportTo(data.x, data.y);
-        } else if (isShowSpeechBubbleMessage(data)) {
-            void showSpeechBubble(data);
-        } else {
-            console.warn(
-                "Received unknown broadcast message",
-                data,
-                "on channel",
-                CHANNEL_MESSAGE,
-            );
+
+        if (isGm && Bones.isBonesRollEvent(data)) {
+            for (const roll of data) {
+                behaviorRegistry.handleBonesRoll(roll);
+            }
         }
     });
+}
+
+export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
+    const unsubscribeBones = installBonesListener(behaviorRegistry);
+    const unsubscribeMain = OBR.broadcast.onMessage(
+        CHANNEL_MESSAGE,
+        ({ data }) => {
+            const state = usePlayerStorage.getState();
+            const isGm = state.role === "GM";
+            if (!isGm && isDeselectMessage(data)) {
+                void OBR.player.deselect(data.ids);
+            } else if (isGm && typeof data === "string") {
+                // console.log("got behavior broadcast", data);
+                behaviorRegistry.handleBroadcast(data);
+            } else if (isGm && isNewSelectionMessage(data)) {
+                void behaviorRegistry.handleNewSelection(
+                    data.newlySelected,
+                    data.deselected,
+                );
+            } else if (isPlaySoundMessage(data)) {
+                void playSoundUntilDone(
+                    new AbortController().signal,
+                    data.soundName,
+                );
+            } else if (isStopAllSoundsMessage(data)) {
+                usePlayerStorage.getState().stopAllSounds();
+            } else if (isSetViewportMessage(data)) {
+                void animateViewportTo(data.x, data.y);
+            } else if (isShowSpeechBubbleMessage(data)) {
+                void showSpeechBubble(data);
+            } else {
+                console.warn(
+                    "Received unknown broadcast message",
+                    data,
+                    "on channel",
+                    CHANNEL_MESSAGE,
+                );
+            }
+        },
+    );
+
+    return deferCallAll(unsubscribeBones, unsubscribeMain);
 }
