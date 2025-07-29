@@ -52,6 +52,7 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
+    BLOCK_EXTENSION_PHASE_CHANGE,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
@@ -833,7 +834,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     },
                     blockToDefinition(BLOCK_REMOVE_AURAS),
 
-                    ...extensionHeader("Bones"),
+                    ...extensionHeader("Bones!"),
                     blockToDefinition(BLOCK_EXTENSION_BONES_ROLL),
 
                     ...extensionHeader("Dynamic Fog"),
@@ -938,6 +939,9 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                                 .name]: shadowDynamic("checkbox"),
                         },
                     },
+
+                    ...extensionHeader("Phases Automated"),
+                    blockToDefinition(BLOCK_EXTENSION_PHASE_CHANGE),
 
                     ...extensionHeader("Smoke & Spectre!"),
                     {

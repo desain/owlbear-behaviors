@@ -59,6 +59,12 @@ interface BonesRollTriggerHandler extends BaseTriggerHandler {
     readonly value: number;
 }
 
+interface PhaseTriggerHandler extends BaseTriggerHandler {
+    readonly type: "phase_change";
+    readonly name: string;
+    readonly phase: number;
+}
+
 export type TriggerHandler =
     | ImmediateTriggerHandler
     | StartAsCloneTriggerHandler
@@ -72,7 +78,8 @@ export type TriggerHandler =
     | PropertyChanged<"attachedTo">
     | CollisionTriggerHandler
     | GrimoireHpChangeTriggerHandler
-    | BonesRollTriggerHandler;
+    | BonesRollTriggerHandler
+    | PhaseTriggerHandler;
 
 export function propertyChangeTriggers<K extends keyof BehaviorItem>(
     handler: PropertyChanged<K>,

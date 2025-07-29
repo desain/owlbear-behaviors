@@ -179,7 +179,7 @@ To make a production build run:
         -   When I am tagged (tag1 v)?
         -   Broadcast to myself / my children / other token?
     -   Operators
-        -   Min, max
+        -   Min, max?
 -   Fix Blockly bug? [hideIfOwnerIsInWorkspace](https://github.com/google/blockly/blob/develop/core/widgetdiv.ts#L201) should initialize `currentWorkspace` to `ownerWorkspace`, and should reference itself in the loop.
 -   Figure out multiline text - https://www.npmjs.com/package/@blockly/field-multilineinput doesn't display correctly.
 

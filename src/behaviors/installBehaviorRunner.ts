@@ -1,8 +1,11 @@
+import OBR from "@owlbear-rodeo/sdk";
+import { deferCallAll } from "owlbear-utils";
 import type { BehaviorItem } from "../BehaviorItem";
 import "../blockly/blocks";
 import { CollisionEngine } from "../collision/CollisionEngine";
 import { METADATA_KEY_BEHAVIORS } from "../constants";
 import { Grimoire } from "../extensions/Grimoire";
+import { Phases } from "../extensions/Phases";
 import {
     usePlayerStorage,
     type BehaviorItemMap,
@@ -138,7 +141,7 @@ function startRunning(behaviorRegistry: BehaviorRegistry): VoidFunction {
         new Map(),
         usePlayerStorage.getState().itemsOfInterest,
     );
-    return usePlayerStorage.subscribe(
+    const unsubscribeItems = usePlayerStorage.subscribe(
         (store) => store.itemsOfInterest,
         (newItems, oldItems) =>
             handleItemsChange(
@@ -149,6 +152,20 @@ function startRunning(behaviorRegistry: BehaviorRegistry): VoidFunction {
                 newItems,
             ),
     );
+
+    // Phases
+    let oldPhases: Record<string, number> = {};
+    const unsubscribeSceneMetadata = OBR.scene.onMetadataChange((metadata) => {
+        const phases = Phases.getPhases(metadata);
+        for (const [phaseName, phaseValue] of Object.entries(phases)) {
+            if (phaseValue !== oldPhases[phaseName]) {
+                behaviorRegistry.handlePhaseChange(phaseName, phaseValue);
+            }
+        }
+        oldPhases = phases;
+    });
+
+    return deferCallAll(unsubscribeItems, unsubscribeSceneMetadata);
 }
 
 function shouldEnable(state: OwlbearStore) {

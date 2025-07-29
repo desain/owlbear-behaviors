@@ -47,6 +47,7 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
+    BLOCK_EXTENSION_PHASE_CHANGE,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
@@ -281,6 +282,14 @@ function generateVariable(
 function getStringFieldValue(block: Blockly.Block, name: string): string {
     const value: unknown = block.getFieldValue(name);
     if (typeof value !== "string") {
+        throw Error(`${name} should be string`);
+    }
+    return value;
+}
+
+function getNumberFieldValue(block: Blockly.Block, name: string): number {
+    const value: unknown = block.getFieldValue(name);
+    if (typeof value !== "number") {
         throw Error(`${name} should be string`);
     }
     return value;
@@ -1904,22 +1913,18 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         javascript.Order.AWAIT,
     ],
 
-    extension_grimoire_hp_change: (block, generator) => {
-        const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
-        return generateAddTriggerHandler({
+    extension_grimoire_hp_change: (block, generator) =>
+        generateAddTriggerHandler({
             type: "grimoire_hp_change",
             hatBlockId: block.id,
-            behaviorFunction,
-        });
-    },
+            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
+        }),
 
     extension_bones_roll: (block, generator) => {
-        const value: unknown = block.getFieldValue(
+        const value = getNumberFieldValue(
+            block,
             BLOCK_EXTENSION_BONES_ROLL.args0[1].name,
         );
-        if (typeof value !== "number") {
-            throw Error("value should be number");
-        }
         const dieTypeString = getStringFieldValue(
             block,
             BLOCK_EXTENSION_BONES_ROLL.args0[2].name,
@@ -1931,6 +1936,24 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             hatBlockId: block.id,
             dieType,
             value,
+            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
+        });
+    },
+
+    extension_phases_change: (block, generator) => {
+        const name = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_PHASE_CHANGE.args0[1].name,
+        );
+        const phase = getNumberFieldValue(
+            block,
+            BLOCK_EXTENSION_PHASE_CHANGE.args0[2].name,
+        );
+        return generateAddTriggerHandler({
+            type: "phase_change",
+            hatBlockId: block.id,
+            name,
+            phase,
             behaviorFunction: getHatBlockBehaviorFunction(block, generator),
         });
     },

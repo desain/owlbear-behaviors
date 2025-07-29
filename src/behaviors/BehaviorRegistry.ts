@@ -232,4 +232,17 @@ export class BehaviorRegistry {
                 ?.filter((handler) => handler.start === started)
                 ?.forEach((handler) => executeTriggerHandler(handler, b)),
         );
+
+    readonly handlePhaseChange = (phaseName: string, phaseValue: number) => {
+        this.#triggerHandlers.forEach((handlers) =>
+            handlers
+                .filter((handler) => handler.type === "phase_change")
+                .filter(
+                    (handler) =>
+                        handler.name === phaseName &&
+                        handler.phase === phaseValue,
+                )
+                .forEach((handler) => executeTriggerHandler(handler)),
+        );
+    };
 }

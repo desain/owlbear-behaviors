@@ -2625,15 +2625,15 @@ export const BLOCK_EXTENSION_BONES_ROLL = {
     style: "extension_blocks",
     type: "extension_bones_roll",
     tooltip:
-        "Runs the blocks below when I roll a specific value on a die using the Bones extension",
-    message0: "%1 when I roll %2 on %3",
+        "Runs the blocks below when you roll a specific value on a die using the Bones extension",
+    message0: "%1 when %3 rolls %2",
     args0: [
         {
             type: "field_image",
             src: "https://bones.battle-system.com/logo.png",
             width: 24,
             height: 24,
-            alt: "Bones extension icon",
+            alt: "Bones! extension icon",
         },
         {
             type: "field_number",
@@ -2653,6 +2653,34 @@ export const BLOCK_EXTENSION_BONES_ROLL = {
                 ["a d100", "100"],
                 ["any die", "ANY"],
             ],
+        },
+    ],
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_PHASE_CHANGE = {
+    style: "extension_blocks",
+    type: "extension_phases_change",
+    tooltip: "Runs the blocks below when a phase in Phases Automated changes",
+    message0: "%1 when %2 enters phase %3",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://phases-automated.onrender.com/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Phases extension icon",
+        },
+        {
+            type: "field_input",
+            name: "NAME",
+            text: "Automation 1",
+        },
+        {
+            type: "field_number",
+            name: "PHASE",
+            value: "1",
         },
     ],
     nextStatement: null,
@@ -2972,6 +3000,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_WEATHER_REMOVE,
     BLOCK_EXTENSION_WEATHER_HAS,
     BLOCK_EXTENSION_BONES_ROLL,
+    BLOCK_EXTENSION_PHASE_CHANGE,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,

@@ -10,7 +10,7 @@ const LINKS = {
     "Auras and Emanations": rogue(
         "https://owlbear-emanation.pages.dev/manifest.json",
     ),
-    Bones: "https://extensions.owlbear.rodeo/bones",
+    "Bones!": "https://extensions.owlbear.rodeo/bones",
     Hoot: rogue("https://hoot.armindo.eu/manifest.json"),
     Announcement: rogue("https://announcement.sharkbrain.dev/manifest.json"),
     "Dynamic Fog": "https://extensions.owlbear.rodeo/dynamic-fog", // https://dynamic-fog.owlbear.rodeo/manifest.json
@@ -20,6 +20,7 @@ const LINKS = {
     ),
     "Owlbear Codeo": rogue("https://owlbear-codeo.pages.dev/manifest.json"),
     "Owl Trackers": "https://extensions.owlbear.rodeo/owl-trackers",
+    "Phases Automated": "https://extensions.owlbear.rodeo/phases-automated",
     "Rumble!": "https://extensions.owlbear.rodeo/rumble",
     "Smoke & Spectre!": "https://extensions.owlbear.rodeo/smoke",
     Weather: "https://extensions.owlbear.rodeo/weather",
