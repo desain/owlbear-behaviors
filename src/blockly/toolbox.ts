@@ -841,7 +841,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         kind: "block",
                         type: BLOCK_EXTENSION_BONES_ROLL_DICE.type,
                         inputs: {
-                            [BLOCK_EXTENSION_BONES_ROLL_DICE.args0[0].name]:
+                            [BLOCK_EXTENSION_BONES_ROLL_DICE.args0[1].name]:
                                 shadowDynamic("1d20"),
                         },
                     },

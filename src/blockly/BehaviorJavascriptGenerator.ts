@@ -1944,12 +1944,12 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     extension_bones_dice: (block, generator) => {
         const notation = generator.valueToCode(
             block,
-            BLOCK_EXTENSION_BONES_ROLL_DICE.args0[0].name,
+            BLOCK_EXTENSION_BONES_ROLL_DICE.args0[1].name,
             javascript.Order.NONE,
         );
         const viewers = getStringFieldValue(
             block,
-            BLOCK_EXTENSION_BONES_ROLL_DICE.args0[1].name,
+            BLOCK_EXTENSION_BONES_ROLL_DICE.args0[2].name,
         );
 
         return [

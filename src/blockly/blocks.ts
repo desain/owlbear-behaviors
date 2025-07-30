@@ -2273,6 +2273,7 @@ export const BLOCK_EXTENSION_RUMBLE_ROLL = {
     style: "extension_blocks",
     type: "extension_rumble_roll",
     tooltip: "Roll dice using the Rumble! extension",
+    helpUrl: "https://wiki.roll20.net/Dice_Reference",
     message0: "%1 roll %2",
     args0: [
         {
@@ -2626,6 +2627,7 @@ export const BLOCK_EXTENSION_BONES_ON_ROLL = {
     type: "extension_bones_roll",
     tooltip:
         "Runs the blocks below when you roll a specific value on a die using the Bones extension",
+    helpUrl: "https://wiki.roll20.net/Dice_Reference",
     message0: "%1 when %3 rolls %2",
     args0: [
         {
@@ -2663,8 +2665,15 @@ export const BLOCK_EXTENSION_BONES_ROLL_DICE = {
     style: "extension_blocks",
     type: "extension_bones_dice",
     tooltip: "Roll dice using the Bones extension and get the result",
-    message0: "roll %1 to %2",
+    message0: "%1 roll %2 to %3",
     args0: [
+        {
+            type: "field_image",
+            src: "https://bones.battle-system.com/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Bones! extension icon",
+        },
         {
             type: "input_value",
             name: "DICE",
