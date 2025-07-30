@@ -1,4 +1,6 @@
+import OBR from "@owlbear-rodeo/sdk";
 import { isObject } from "owlbear-utils";
+import { usePlayerStorage } from "../state/usePlayerStorage";
 
 export interface BonesRoll {
     readonly type: number;
@@ -6,6 +8,23 @@ export interface BonesRoll {
 }
 
 export type BonesRollEvent = readonly BonesRoll[];
+
+interface BonesLogRoll {
+    readonly created: string;
+    readonly rollHtml: string;
+}
+
+function isBonesLogRoll(data: unknown): data is BonesLogRoll {
+    return (
+        isObject(data) &&
+        "created" in data &&
+        typeof data.created === "string" &&
+        "rollHtml" in data &&
+        typeof data.rollHtml === "string"
+    );
+}
+
+const ROLL_HTML_REGEX = /\s*=\s*<strong>\s*(\d+)\s*<\/strong>\s*$/;
 
 export const Bones = {
     CHANNEL: "bones.dicetoken.broadcast",
@@ -19,4 +38,39 @@ export const Bones = {
                 typeof roll.type === "number" &&
                 typeof roll.value === "number",
         ),
+    roll: (notation: string, viewers: "GM" | "SELF" | "ALL") => {
+        const created = new Date().toISOString();
+        return new Promise<number | undefined>((resolve) => {
+            const unsubscribePlayerMetadata = OBR.player.onChange((player) => {
+                const resultMetadata =
+                    player.metadata["com.battle-system.bones/metadata_logroll"];
+                if (
+                    !isBonesLogRoll(resultMetadata) ||
+                    resultMetadata.created <= created
+                ) {
+                    return;
+                }
+                const match = ROLL_HTML_REGEX.exec(
+                    resultMetadata.rollHtml,
+                )?.[1];
+                if (match) {
+                    unsubscribePlayerMetadata();
+                    resolve(Number(match));
+                }
+            });
+            void OBR.player.setMetadata({
+                "com.battle-system.bones/metadata_bonesroll": {
+                    notation,
+                    created,
+                    senderName: "Behaviors",
+                    senderId: usePlayerStorage.getState().playerId,
+                    viewers,
+                },
+            });
+            setTimeout(() => {
+                unsubscribePlayerMetadata();
+                resolve(undefined);
+            }, 30_000);
+        });
+    },
 };

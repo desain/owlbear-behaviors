@@ -39,7 +39,8 @@ import {
     BLOCK_DISTANCE_TO,
     BLOCK_DYNAMIC_VAL,
     BLOCK_EQUALS,
-    BLOCK_EXTENSION_BONES_ROLL,
+    BLOCK_EXTENSION_BONES_ON_ROLL,
+    BLOCK_EXTENSION_BONES_ROLL_DICE,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_FOG_ADD,
@@ -1923,11 +1924,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     extension_bones_roll: (block, generator) => {
         const value = getNumberFieldValue(
             block,
-            BLOCK_EXTENSION_BONES_ROLL.args0[1].name,
+            BLOCK_EXTENSION_BONES_ON_ROLL.args0[1].name,
         );
         const dieTypeString = getStringFieldValue(
             block,
-            BLOCK_EXTENSION_BONES_ROLL.args0[2].name,
+            BLOCK_EXTENSION_BONES_ON_ROLL.args0[2].name,
         );
         const dieType = dieTypeString === "ANY" ? "ANY" : Number(dieTypeString);
 
@@ -1938,6 +1939,28 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             value,
             behaviorFunction: getHatBlockBehaviorFunction(block, generator),
         });
+    },
+
+    extension_bones_dice: (block, generator) => {
+        const notation = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_BONES_ROLL_DICE.args0[0].name,
+            javascript.Order.NONE,
+        );
+        const viewers = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_BONES_ROLL_DICE.args0[1].name,
+        );
+
+        return [
+            `await ${behave(
+                "bonesRoll",
+                PARAMETER_SIGNAL,
+                notation,
+                generator.quote_(viewers),
+            )}`,
+            javascript.Order.AWAIT,
+        ];
     },
 
     extension_phases_change: (block, generator) => {

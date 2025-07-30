@@ -2,6 +2,7 @@ import { isHexColor, units, unitsToPixels } from "owlbear-utils";
 import type { BLOCK_EXTENSION_WEATHER_ADD } from "../../blockly/blocks";
 import { Announcement } from "../../extensions/Announcement";
 import { Auras } from "../../extensions/Auras";
+import { Bones } from "../../extensions/Bones";
 import { Codeo } from "../../extensions/Codeo";
 import { Daggerheart } from "../../extensions/Daggerheart";
 import { Fog } from "../../extensions/Fog";
@@ -225,6 +226,21 @@ export const EXTENSIONS_BEHAVIORS = {
     ): Promise<void> => {
         await Rumble.rollDice(String(notationUnknown));
         signal.throwIfAborted();
+    },
+
+    // Bones
+    bonesRoll: async (
+        signal: AbortSignal,
+        notationUnknown: unknown,
+        viewersUnknown: unknown,
+    ): Promise<number> => {
+        const notation = String(notationUnknown);
+        const viewers = String(viewersUnknown) as "GM" | "ALL";
+        
+        const result = await Bones.roll(notation, viewers);
+        signal.throwIfAborted();
+        
+        return result ?? 0;
     },
 
     // GM's Daggerheart

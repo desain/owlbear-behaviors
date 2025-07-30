@@ -36,7 +36,8 @@ import {
     BLOCK_DETACH,
     BLOCK_DISTANCE_TO,
     BLOCK_EQUALS,
-    BLOCK_EXTENSION_BONES_ROLL,
+    BLOCK_EXTENSION_BONES_ON_ROLL,
+    BLOCK_EXTENSION_BONES_ROLL_DICE,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
@@ -835,7 +836,15 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     blockToDefinition(BLOCK_REMOVE_AURAS),
 
                     ...extensionHeader("Bones!"),
-                    blockToDefinition(BLOCK_EXTENSION_BONES_ROLL),
+                    blockToDefinition(BLOCK_EXTENSION_BONES_ON_ROLL),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_BONES_ROLL_DICE.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_BONES_ROLL_DICE.args0[0].name]:
+                                shadowDynamic("1d20"),
+                        },
+                    },
 
                     ...extensionHeader("Dynamic Fog"),
                     {

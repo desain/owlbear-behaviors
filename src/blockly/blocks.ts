@@ -2621,7 +2621,7 @@ export const BLOCK_EXTENSION_WEATHER_HAS = {
     output: "Boolean",
 } as const;
 
-export const BLOCK_EXTENSION_BONES_ROLL = {
+export const BLOCK_EXTENSION_BONES_ON_ROLL = {
     style: "extension_blocks",
     type: "extension_bones_roll",
     tooltip:
@@ -2656,6 +2656,30 @@ export const BLOCK_EXTENSION_BONES_ROLL = {
         },
     ],
     nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_BONES_ROLL_DICE = {
+    style: "extension_blocks",
+    type: "extension_bones_dice",
+    tooltip: "Roll dice using the Bones extension and get the result",
+    message0: "roll %1 to %2",
+    args0: [
+        {
+            type: "input_value",
+            name: "DICE",
+            check: "String",
+        },
+        {
+            type: "field_dropdown",
+            name: "WHO",
+            options: [
+                ["all", "ALL"],
+                ["GM", "GM"],
+            ],
+        },
+    ],
+    output: "Number",
     inputsInline: true,
 } as const;
 
@@ -2999,7 +3023,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_EXTENSION_WEATHER_REMOVE,
     BLOCK_EXTENSION_WEATHER_HAS,
-    BLOCK_EXTENSION_BONES_ROLL,
+    BLOCK_EXTENSION_BONES_ON_ROLL,
+    BLOCK_EXTENSION_BONES_ROLL_DICE,
     BLOCK_EXTENSION_PHASE_CHANGE,
 
     // Value utility blocks

@@ -172,6 +172,7 @@ To make a production build run:
         -   Smoke and spectre: blind, convert to obstruction
         -   On field change for Daggerheart, Owl Trackers
         -   Kenku FM?
+        -   dddice? get room id from metadata, call API?
     -   Control
         -   tell other to? Snail Mod has it as `as (other) {...}`
     -   Events
