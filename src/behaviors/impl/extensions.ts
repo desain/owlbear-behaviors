@@ -153,6 +153,90 @@ export const EXTENSIONS_BEHAVIORS = {
         signal.throwIfAborted();
     },
 
+    setVisionLine: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        enabledUnknown: unknown,
+    ) => {
+        const enabled = Boolean(enabledUnknown);
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            SmokeAndSpectre.setVisionLine(self, enabled);
+        });
+        signal.throwIfAborted();
+    },
+
+    setPassable: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        passableUnknown: unknown,
+    ) => {
+        const passable = Boolean(passableUnknown);
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            SmokeAndSpectre.setPassable(self, passable);
+        });
+        signal.throwIfAborted();
+    },
+
+    setDoubleSided: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        doubleSidedUnknown: unknown,
+    ) => {
+        const doubleSided = Boolean(doubleSidedUnknown);
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            SmokeAndSpectre.setSided(self, doubleSided);
+        });
+        signal.throwIfAborted();
+    },
+
+    setDoorLocked: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        lockedUnknown: unknown,
+    ) => {
+        const locked = Boolean(lockedUnknown);
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            SmokeAndSpectre.setDoorLocked(self, locked);
+        });
+        signal.throwIfAborted();
+    },
+
+    setDoorOpen: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        openUnknown: unknown,
+    ) => {
+        const open = Boolean(openUnknown);
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            SmokeAndSpectre.setDoorOpen(self, open);
+        });
+        signal.throwIfAborted();
+    },
+
+    setDoorEnabled: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        enabledUnknown: unknown,
+    ) => {
+        const enabled = Boolean(enabledUnknown);
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            SmokeAndSpectre.setDoorEnabled(self, enabled);
+        });
+        signal.throwIfAborted();
+    },
+
+    setWindowEnabled: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        enabledUnknown: unknown,
+    ) => {
+        const enabled = Boolean(enabledUnknown);
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            SmokeAndSpectre.setWindowEnabled(self, enabled);
+        });
+        signal.throwIfAborted();
+    },
+
     // GM's Grimoire
     getHp: async (
         signal: AbortSignal,
@@ -236,10 +320,10 @@ export const EXTENSIONS_BEHAVIORS = {
     ): Promise<number> => {
         const notation = String(notationUnknown);
         const viewers = String(viewersUnknown) as "GM" | "ALL";
-        
+
         const result = await Bones.roll(notation, viewers);
         signal.throwIfAborted();
-        
+
         return result ?? 0;
     },
 

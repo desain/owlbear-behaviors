@@ -2150,6 +2150,116 @@ export const BLOCK_EXTENSION_SMOKE_REMOVE = {
     nextStatement: null,
 } as const;
 
+export const BLOCK_EXTENSION_SMOKE_VISION_LINE = {
+    style: "extension_blocks",
+    type: "extension_smoke_vision_line",
+    tooltip: "Enable or disable vision line for Smoke and Spectre",
+    message0: "%1 %2 vision line",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://smoke.battle-system.com/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Smoke and Spectre extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "ENABLED",
+            options: [
+                ["enable", "true"],
+                ["disable", "false"],
+            ],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+} as const;
+
+export const BLOCK_EXTENSION_SMOKE_SWAP = {
+    style: "extension_blocks",
+    type: "extension_smoke_wall",
+    tooltip: "Set Smoke and Spectre wall properties",
+    message0: "%1 swap to %2",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://smoke.battle-system.com/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Smoke and Spectre extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "PROP",
+            options: [
+                ["passable", "passable:true"],
+                ["unpassable", "passable:false"],
+                ["one-sided", "doublesided:false"],
+                ["double-sided", "doublesided:true"],
+            ],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+} as const;
+
+export const BLOCK_EXTENSION_SMOKE_DOOR = {
+    style: "extension_blocks",
+    type: "extension_smoke_door",
+    tooltip: "Set Smoke and Spectre door properties",
+    message0: "%1 %2 door",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://smoke.battle-system.com/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Smoke and Spectre extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "PROP",
+            options: [
+                ["open", "open:true"],
+                ["close", "open:false"],
+                ["lock", "locked:true"],
+                ["unlock", "locked:false"],
+                ["enable", "enabled:true"],
+                ["disable", "enabled:false"],
+            ],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+} as const;
+
+export const BLOCK_EXTENSION_SMOKE_WINDOW = {
+    style: "extension_blocks",
+    type: "extension_smoke_window",
+    tooltip: "Set Smoke and Spectre window properties",
+    message0: "%1 %2 window",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://smoke.battle-system.com/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Smoke and Spectre extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "PROP",
+            options: [
+                ["enable", "enabled:true"],
+                ["disable", "enabled:false"],
+            ],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+} as const;
+
 export const BLOCK_EXTENSION_GRIMOIRE_HP = {
     style: "extension_blocks",
     type: "extension_grimoire_hp",
@@ -3014,6 +3124,10 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_SMOKE_VISION,
     BLOCK_EXTENSION_SMOKE_ADD,
     BLOCK_EXTENSION_SMOKE_REMOVE,
+    BLOCK_EXTENSION_SMOKE_VISION_LINE,
+    BLOCK_EXTENSION_SMOKE_SWAP,
+    BLOCK_EXTENSION_SMOKE_DOOR,
+    BLOCK_EXTENSION_SMOKE_WINDOW,
     BLOCK_EXTENSION_GRIMOIRE_HP,
     BLOCK_EXTENSION_GRIMOIRE_MAX_HP,
     BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,

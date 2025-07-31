@@ -58,8 +58,12 @@ import {
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
     BLOCK_EXTENSION_SMOKE_ADD,
+    BLOCK_EXTENSION_SMOKE_DOOR,
     BLOCK_EXTENSION_SMOKE_REMOVE,
+    BLOCK_EXTENSION_SMOKE_SWAP,
     BLOCK_EXTENSION_SMOKE_VISION,
+    BLOCK_EXTENSION_SMOKE_VISION_LINE,
+    BLOCK_EXTENSION_SMOKE_WINDOW,
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_EXTENSION_WEATHER_HAS,
     BLOCK_EXTENSION_WEATHER_REMOVE,
@@ -953,16 +957,33 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     blockToDefinition(BLOCK_EXTENSION_PHASE_CHANGE),
 
                     ...extensionHeader("Smoke & Spectre!"),
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_SMOKE_ADD.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_SMOKE_ADD.args0[1].name]:
-                                shadowNumber(grid.parsedScale.multiplier),
-                        },
-                    },
-                    blockToDefinition(BLOCK_EXTENSION_SMOKE_REMOVE),
-                    blockToDefinition(BLOCK_EXTENSION_SMOKE_VISION),
+                    ...(isImage(target)
+                        ? [
+                              {
+                                  kind: "block",
+                                  type: BLOCK_EXTENSION_SMOKE_ADD.type,
+                                  inputs: {
+                                      [BLOCK_EXTENSION_SMOKE_ADD.args0[1].name]:
+                                          shadowNumber(
+                                              grid.parsedScale.multiplier,
+                                          ),
+                                  },
+                              },
+                              blockToDefinition(BLOCK_EXTENSION_SMOKE_REMOVE),
+                              blockToDefinition(BLOCK_EXTENSION_SMOKE_VISION),
+                          ]
+                        : []),
+
+                    ...(isCurve(target)
+                        ? [
+                              blockToDefinition(
+                                  BLOCK_EXTENSION_SMOKE_VISION_LINE,
+                              ),
+                              blockToDefinition(BLOCK_EXTENSION_SMOKE_SWAP),
+                              blockToDefinition(BLOCK_EXTENSION_SMOKE_DOOR),
+                              blockToDefinition(BLOCK_EXTENSION_SMOKE_WINDOW),
+                          ]
+                        : []),
 
                     ...extensionHeader("Rumble!"),
                     {

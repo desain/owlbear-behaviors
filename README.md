@@ -169,7 +169,7 @@ To make a production build run:
     -   auto-behaviors
 -   Blocks
     -   Extensions
-        -   Smoke and spectre: blind, convert to obstruction
+        -   Smoke and spectre: blind
         -   On field change for Daggerheart, Owl Trackers
         -   Kenku FM?
         -   dddice? get room id from metadata, call API?

@@ -53,6 +53,10 @@ import {
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
     BLOCK_EXTENSION_SMOKE_ADD,
+    BLOCK_EXTENSION_SMOKE_DOOR,
+    BLOCK_EXTENSION_SMOKE_SWAP,
+    BLOCK_EXTENSION_SMOKE_VISION_LINE,
+    BLOCK_EXTENSION_SMOKE_WINDOW,
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_FACE,
     BLOCK_FOREVER,
@@ -1852,6 +1856,117 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
         )};`,
+    extension_smoke_vision_line: (block) => {
+        const enabled = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_SMOKE_VISION_LINE.args0[1].name,
+        );
+        return `await ${behave(
+            "setVisionLine",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            enabled,
+        )};\n`;
+    },
+
+    extension_smoke_wall: (block) => {
+        const prop = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_SMOKE_SWAP.args0[1].name,
+        ) as (typeof BLOCK_EXTENSION_SMOKE_SWAP)["args0"]["1"]["options"][number][1];
+        let func: keyof typeof BEHAVIORS_IMPL;
+        let arg: boolean;
+        switch (prop) {
+            case "passable:true":
+                func = "setPassable";
+                arg = true;
+                break;
+            case "passable:false":
+                func = "setPassable";
+                arg = false;
+                break;
+            case "doublesided:true":
+                func = "setDoubleSided";
+                arg = true;
+                break;
+            case "doublesided:false":
+                func = "setDoubleSided";
+                arg = false;
+                break;
+        }
+        return `await ${behave(
+            func,
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            String(arg),
+        )};\n`;
+    },
+
+    extension_smoke_door: (block) => {
+        const prop = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_SMOKE_DOOR.args0[1].name,
+        ) as (typeof BLOCK_EXTENSION_SMOKE_DOOR)["args0"]["1"]["options"][number][1];
+        let func: keyof typeof BEHAVIORS_IMPL;
+        let arg: boolean;
+        switch (prop) {
+            case "enabled:true":
+                func = "setDoorEnabled";
+                arg = true;
+                break;
+            case "enabled:false":
+                func = "setDoorEnabled";
+                arg = false;
+                break;
+            case "open:true":
+                func = "setDoorOpen";
+                arg = true;
+                break;
+            case "open:false":
+                func = "setDoorOpen";
+                arg = false;
+                break;
+            case "locked:true":
+                func = "setDoorLocked";
+                arg = true;
+                break;
+            case "locked:false":
+                func = "setDoorLocked";
+                arg = false;
+                break;
+        }
+        return `await ${behave(
+            func,
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            String(arg),
+        )};\n`;
+    },
+
+    extension_smoke_window: (block) => {
+        const prop = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_SMOKE_WINDOW.args0[1].name,
+        ) as (typeof BLOCK_EXTENSION_SMOKE_WINDOW)["args0"]["1"]["options"][number][1];
+        let func: keyof typeof BEHAVIORS_IMPL;
+        let arg: boolean;
+        switch (prop) {
+            case "enabled:true":
+                func = "setWindowEnabled";
+                arg = true;
+                break;
+            case "enabled:false":
+                func = "setWindowEnabled";
+                arg = false;
+                break;
+        }
+        return `await ${behave(
+            func,
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            String(arg),
+        )};\n`;
+    },
 
     extension_weather_add: (block, generator) => {
         const direction = getStringFieldValue(
@@ -1987,14 +2102,15 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             BLOCK_EXTENSION_RUMBLE_SAY.args0[1].name,
             javascript.Order.NONE,
         );
-        const toSelf: unknown = block.getFieldValue(
+        const toSelf = getStringFieldValue(
+            block,
             BLOCK_EXTENSION_RUMBLE_SAY.args0[2].name,
         );
         return `await ${behave(
             "rumbleSay",
             PARAMETER_SIGNAL,
             message,
-            String(toSelf === "true"),
+            toSelf,
         )};\n`;
     },
 
