@@ -6,6 +6,7 @@ import { CollisionEngine } from "../collision/CollisionEngine";
 import { METADATA_KEY_BEHAVIORS } from "../constants";
 import { Grimoire } from "../extensions/Grimoire";
 import { Phases } from "../extensions/Phases";
+import { PrettySordid } from "../extensions/PrettySordid";
 import { SmokeAndSpectre } from "../extensions/SmokeAndSpectre";
 import {
     usePlayerStorage,
@@ -102,11 +103,32 @@ function handleItemsChange(
             }
 
             // Check for Smoke and Spectre door state changes
-            if (SmokeAndSpectre.isDoor(oldItem) && SmokeAndSpectre.isDoor(item)) {
+            if (
+                SmokeAndSpectre.isDoor(oldItem) &&
+                SmokeAndSpectre.isDoor(item)
+            ) {
                 const oldDoorOpen = SmokeAndSpectre.getDoorOpenState(oldItem);
                 const newDoorOpen = SmokeAndSpectre.getDoorOpenState(item);
                 if (oldDoorOpen !== newDoorOpen) {
-                    behaviorRegistry.handleSmokeSpectreDoorChange(item.id, newDoorOpen);
+                    behaviorRegistry.handleSmokeSpectreDoorChange(
+                        item.id,
+                        newDoorOpen,
+                    );
+                }
+            }
+
+            // Check for Pretty Sordid Initiative turn changes
+            if (
+                PrettySordid.hasInitiative(oldItem) &&
+                PrettySordid.hasInitiative(item)
+            ) {
+                const oldActiveTurn = PrettySordid.isActiveTurn(oldItem);
+                const newActiveTurn = PrettySordid.isActiveTurn(item);
+                if (oldActiveTurn !== newActiveTurn) {
+                    behaviorRegistry.handlePrettySordidTurnChange(
+                        item.id,
+                        newActiveTurn,
+                    );
                 }
             }
         }

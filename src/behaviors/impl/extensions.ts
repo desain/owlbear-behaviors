@@ -10,6 +10,7 @@ import { Gapi } from "../../extensions/Gapi";
 import { Grimoire } from "../../extensions/Grimoire";
 import { Hoot } from "../../extensions/Hoot";
 import { OwlTrackers } from "../../extensions/OwlTrackers";
+import { PrettySordid } from "../../extensions/PrettySordid";
 import { Rumble } from "../../extensions/Rumble";
 import { SmokeAndSpectre } from "../../extensions/SmokeAndSpectre";
 import { Weather, type WeatherType } from "../../extensions/Weather";
@@ -518,5 +519,50 @@ export const EXTENSIONS_BEHAVIORS = {
             return false;
         }
         return Weather.hasWeather(selfItem);
+    },
+
+    // Pretty Sordid Initiative
+    getMyInitiative: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return PrettySordid.getInitiativeCount(selfItem);
+    },
+
+    isMyTurn: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<boolean> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return false;
+        }
+        return PrettySordid.isActiveTurn(selfItem);
+    },
+
+    setMyInitiative: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        countUnknown: unknown,
+    ): Promise<void> => {
+        const count = Number(countUnknown);
+        if (!isFinite(count) || isNaN(count)) {
+            console.warn(`[setMyInitiative] count invalid: ${count}`);
+            return;
+        }
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (draft) => {
+            PrettySordid.setInitiativeCount(draft, count);
+        });
+        signal.throwIfAborted();
     },
 };

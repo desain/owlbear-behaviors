@@ -246,10 +246,23 @@ export class BehaviorRegistry {
         );
     };
 
-    readonly handleSmokeSpectreDoorChange = (itemId: string, doorOpen: boolean) =>
+    readonly handleSmokeSpectreDoorChange = (
+        itemId: string,
+        doorOpen: boolean,
+    ) =>
         this.#triggerHandlers
             .get(itemId)
             ?.filter((handler) => handler.type === "smoke_spectre_door")
             ?.filter((handler) => handler.doorState === doorOpen)
+            ?.forEach((handler) => executeTriggerHandler(handler));
+
+    readonly handlePrettySordidTurnChange = (
+        itemId: string,
+        turnState: boolean,
+    ) =>
+        this.#triggerHandlers
+            .get(itemId)
+            ?.filter((handler) => handler.type === "pretty_turn_change")
+            ?.filter((handler) => handler.turnState === turnState)
             ?.forEach((handler) => executeTriggerHandler(handler));
 }

@@ -49,6 +49,7 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
     BLOCK_EXTENSION_PHASE_CHANGE,
+    BLOCK_EXTENSION_PRETTY_SET_INITIATIVE,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
@@ -57,6 +58,7 @@ import {
     BLOCK_EXTENSION_SMOKE_DOOR,
     BLOCK_EXTENSION_SMOKE_SWAP,
     BLOCK_EXTENSION_SMOKE_VISION_LINE,
+    BLOCK_EXTENSION_SMOKE_WHEN_DOOR,
     BLOCK_EXTENSION_SMOKE_WINDOW,
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_FACE,
@@ -118,8 +120,8 @@ import {
     BLOCK_VARIABLE_SETTER,
     BLOCK_WAIT,
     BLOCK_WAIT_UNTIL,
-    BLOCK_WHEN_DOOR,
     BLOCK_WHEN_I,
+    BLOCK_WHEN_PRETTY_TURN_CHANGE,
     type CustomBlockType,
 } from "./blocks";
 import { getCaseInputs, getCaseName } from "./mutatorMatch";
@@ -1009,7 +1011,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     extension_smoke_when_door: (block, generator) => {
         const doorState = getStringFieldValue(
             block,
-            BLOCK_WHEN_DOOR.args0[1].name,
+            BLOCK_EXTENSION_SMOKE_WHEN_DOOR.args0[1].name,
         );
 
         const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
@@ -2122,6 +2124,48 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             hatBlockId: block.id,
             name,
             phase,
+            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
+        });
+    },
+
+    // Pretty Sordid Initiative
+    extension_pretty_initiative: () => [
+        `await ${behave(
+            "getMyInitiative",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+        )}`,
+        javascript.Order.AWAIT,
+    ],
+
+    extension_pretty_my_turn: () => [
+        `await ${behave("isMyTurn", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
+        javascript.Order.AWAIT,
+    ],
+
+    extension_pretty_set_initiative: (block, generator) => {
+        const count = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_PRETTY_SET_INITIATIVE.args0[1].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave(
+            "setMyInitiative",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            count,
+        )};\n`;
+    },
+
+    extension_pretty_turn_change: (block, generator) => {
+        const turnState = getStringFieldValue(
+            block,
+            BLOCK_WHEN_PRETTY_TURN_CHANGE.args0[1].name,
+        );
+        return generateAddTriggerHandler({
+            type: "pretty_turn_change",
+            hatBlockId: block.id,
+            turnState: turnState === "true",
             behaviorFunction: getHatBlockBehaviorFunction(block, generator),
         });
     },

@@ -2286,7 +2286,7 @@ export const BLOCK_EXTENSION_SMOKE_BLIND = {
     nextStatement: null,
 } as const;
 
-export const BLOCK_WHEN_DOOR = {
+export const BLOCK_EXTENSION_SMOKE_WHEN_DOOR = {
     style: "extension_blocks",
     type: "extension_smoke_when_door",
     tooltip:
@@ -2882,6 +2882,92 @@ export const BLOCK_EXTENSION_PHASE_CHANGE = {
     inputsInline: true,
 } as const;
 
+// Pretty Sordid
+export const BLOCK_EXTENSION_PRETTY_MY_INITIATIVE = {
+    style: "extension_blocks",
+    type: "extension_pretty_initiative",
+    tooltip: "Get my initiative count from the Pretty Sordid extension",
+    message0: "%1 my initiative",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://pretty-initiative.onrender.com/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Pretty Sordid Initiative extension icon",
+        },
+    ],
+    output: "Number",
+} as const;
+
+export const BLOCK_EXTENSION_PRETTY_MY_TURN = {
+    style: "extension_blocks",
+    type: "extension_pretty_my_turn",
+    tooltip: "Check if it's my turn in the Pretty Sordid extension",
+    message0: "%1 my turn?",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://pretty-initiative.onrender.com/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Pretty Sordid Initiative extension icon",
+        },
+    ],
+    output: "Boolean",
+} as const;
+
+export const BLOCK_EXTENSION_PRETTY_SET_INITIATIVE = {
+    style: "extension_blocks",
+    type: "extension_pretty_set_initiative",
+    tooltip: "Set initiative in the Pretty Sordid extension",
+    message0: "%1 set my initiative to %2",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://pretty-initiative.onrender.com/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Pretty Sordid Initiative extension icon",
+        },
+        {
+            type: "input_value",
+            name: "COUNT",
+            check: ["Number", "String"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_WHEN_PRETTY_TURN_CHANGE = {
+    style: "extension_blocks",
+    type: "extension_pretty_turn_change",
+    tooltip:
+        "Runs the blocks below when my turn starts or ends in Pretty Sordid",
+    message0: "%1 when my turn %2",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://pretty-initiative.onrender.com/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Pretty Sordid Initiative extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "TURN",
+            options: [
+                ["starts", "true"],
+                ["ends", "false"],
+            ],
+        },
+    ],
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 // Menus
 export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
@@ -3181,7 +3267,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_SMOKE_DOOR,
     BLOCK_EXTENSION_SMOKE_WINDOW,
     BLOCK_EXTENSION_SMOKE_BLIND,
-    BLOCK_WHEN_DOOR,
+    BLOCK_EXTENSION_SMOKE_WHEN_DOOR,
     BLOCK_EXTENSION_GRIMOIRE_HP,
     BLOCK_EXTENSION_GRIMOIRE_MAX_HP,
     BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,
@@ -3203,6 +3289,10 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_BONES_ON_ROLL,
     BLOCK_EXTENSION_BONES_ROLL_DICE,
     BLOCK_EXTENSION_PHASE_CHANGE,
+    BLOCK_EXTENSION_PRETTY_MY_INITIATIVE,
+    BLOCK_EXTENSION_PRETTY_MY_TURN,
+    BLOCK_EXTENSION_PRETTY_SET_INITIATIVE,
+    BLOCK_WHEN_PRETTY_TURN_CHANGE,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,

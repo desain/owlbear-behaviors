@@ -54,17 +54,21 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
     BLOCK_EXTENSION_PHASE_CHANGE,
+    BLOCK_EXTENSION_PRETTY_MY_INITIATIVE,
+    BLOCK_EXTENSION_PRETTY_MY_TURN,
+    BLOCK_EXTENSION_PRETTY_SET_INITIATIVE,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
     BLOCK_EXTENSION_SMOKE_ADD,
+    BLOCK_EXTENSION_SMOKE_BLIND,
     BLOCK_EXTENSION_SMOKE_DOOR,
     BLOCK_EXTENSION_SMOKE_REMOVE,
     BLOCK_EXTENSION_SMOKE_SWAP,
     BLOCK_EXTENSION_SMOKE_VISION,
     BLOCK_EXTENSION_SMOKE_VISION_LINE,
+    BLOCK_EXTENSION_SMOKE_WHEN_DOOR,
     BLOCK_EXTENSION_SMOKE_WINDOW,
-    BLOCK_EXTENSION_SMOKE_BLIND,
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_EXTENSION_WEATHER_HAS,
     BLOCK_EXTENSION_WEATHER_REMOVE,
@@ -136,9 +140,9 @@ import {
     BLOCK_VISIBLE,
     BLOCK_WAIT,
     BLOCK_WAIT_UNTIL,
-    BLOCK_WHEN_DOOR,
     BLOCK_WHEN_I,
     BLOCK_WHEN_I_START_AS_CLONE,
+    BLOCK_WHEN_PRETTY_TURN_CHANGE,
     BLOCK_X_POSITION,
     BLOCK_Y_POSITION,
 } from "./blocks";
@@ -958,6 +962,19 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     ...extensionHeader("Phases Automated"),
                     blockToDefinition(BLOCK_EXTENSION_PHASE_CHANGE),
 
+                    ...extensionHeader("Pretty Sordid"),
+                    blockToDefinition(BLOCK_WHEN_PRETTY_TURN_CHANGE),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_PRETTY_SET_INITIATIVE.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_PRETTY_SET_INITIATIVE.args0[1]
+                                .name]: shadowNumber(10),
+                        },
+                    },
+                    blockToDefinition(BLOCK_EXTENSION_PRETTY_MY_INITIATIVE),
+                    blockToDefinition(BLOCK_EXTENSION_PRETTY_MY_TURN),
+
                     ...extensionHeader("Smoke & Spectre!"),
                     ...(isImage(target)
                         ? [
@@ -980,11 +997,13 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     ...(isCurve(target)
                         ? [
                               blockToDefinition(
+                                  BLOCK_EXTENSION_SMOKE_WHEN_DOOR,
+                              ),
+                              blockToDefinition(
                                   BLOCK_EXTENSION_SMOKE_VISION_LINE,
                               ),
                               blockToDefinition(BLOCK_EXTENSION_SMOKE_SWAP),
                               blockToDefinition(BLOCK_EXTENSION_SMOKE_WINDOW),
-                              blockToDefinition(BLOCK_WHEN_DOOR),
                               blockToDefinition(BLOCK_EXTENSION_SMOKE_DOOR),
                           ]
                         : []),

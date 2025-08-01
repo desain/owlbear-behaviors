@@ -70,6 +70,11 @@ interface SmokeSpectreDoorTriggerHandler extends BaseTriggerHandler {
     readonly doorState: boolean; // true for open, false for close
 }
 
+interface PrettySordidTurnTriggerHandler extends BaseTriggerHandler {
+    readonly type: "pretty_turn_change";
+    readonly turnState: boolean; // true for starts, false for ends
+}
+
 export type TriggerHandler =
     | ImmediateTriggerHandler
     | StartAsCloneTriggerHandler
@@ -85,7 +90,8 @@ export type TriggerHandler =
     | GrimoireHpChangeTriggerHandler
     | BonesRollTriggerHandler
     | PhaseTriggerHandler
-    | SmokeSpectreDoorTriggerHandler;
+    | SmokeSpectreDoorTriggerHandler
+    | PrettySordidTurnTriggerHandler;
 
 export function propertyChangeTriggers<K extends keyof BehaviorItem>(
     handler: PropertyChanged<K>,
