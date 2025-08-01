@@ -64,6 +64,7 @@ import {
     BLOCK_EXTENSION_SMOKE_VISION,
     BLOCK_EXTENSION_SMOKE_VISION_LINE,
     BLOCK_EXTENSION_SMOKE_WINDOW,
+    BLOCK_EXTENSION_SMOKE_BLIND,
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_EXTENSION_WEATHER_HAS,
     BLOCK_EXTENSION_WEATHER_REMOVE,
@@ -135,6 +136,7 @@ import {
     BLOCK_VISIBLE,
     BLOCK_WAIT,
     BLOCK_WAIT_UNTIL,
+    BLOCK_WHEN_DOOR,
     BLOCK_WHEN_I,
     BLOCK_WHEN_I_START_AS_CLONE,
     BLOCK_X_POSITION,
@@ -971,6 +973,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                               },
                               blockToDefinition(BLOCK_EXTENSION_SMOKE_REMOVE),
                               blockToDefinition(BLOCK_EXTENSION_SMOKE_VISION),
+                              blockToDefinition(BLOCK_EXTENSION_SMOKE_BLIND),
                           ]
                         : []),
 
@@ -980,8 +983,9 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                                   BLOCK_EXTENSION_SMOKE_VISION_LINE,
                               ),
                               blockToDefinition(BLOCK_EXTENSION_SMOKE_SWAP),
-                              blockToDefinition(BLOCK_EXTENSION_SMOKE_DOOR),
                               blockToDefinition(BLOCK_EXTENSION_SMOKE_WINDOW),
+                              blockToDefinition(BLOCK_WHEN_DOOR),
+                              blockToDefinition(BLOCK_EXTENSION_SMOKE_DOOR),
                           ]
                         : []),
 

@@ -237,6 +237,18 @@ export const EXTENSIONS_BEHAVIORS = {
         signal.throwIfAborted();
     },
 
+    setVisionBlind: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        blindUnknown: unknown,
+    ) => {
+        const blind = Boolean(blindUnknown);
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            SmokeAndSpectre.setVisionBlind(self, blind);
+        });
+        signal.throwIfAborted();
+    },
+
     // GM's Grimoire
     getHp: async (
         signal: AbortSignal,

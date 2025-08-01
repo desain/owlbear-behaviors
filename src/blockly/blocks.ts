@@ -2260,6 +2260,58 @@ export const BLOCK_EXTENSION_SMOKE_WINDOW = {
     nextStatement: null,
 } as const;
 
+export const BLOCK_EXTENSION_SMOKE_BLIND = {
+    style: "extension_blocks",
+    type: "extension_smoke_blind",
+    tooltip: "Blind or unblind myself using Smoke and Spectre",
+    message0: "%1 %2 myself",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://smoke.battle-system.com/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Smoke and Spectre extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "ACTION",
+            options: [
+                ["blind", "true"],
+                ["unblind", "false"],
+            ],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+} as const;
+
+export const BLOCK_WHEN_DOOR = {
+    style: "extension_blocks",
+    type: "extension_smoke_when_door",
+    tooltip:
+        "Define what to do when this door opens or closes (Smoke and Spectre extension)",
+    message0: "%1 when I %2",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://smoke.battle-system.com/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Smoke and Spectre extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "OPEN",
+            options: [
+                ["open", "true"],
+                ["close", "false"],
+            ],
+        },
+    ],
+    nextStatement: null,
+} as const;
+
 export const BLOCK_EXTENSION_GRIMOIRE_HP = {
     style: "extension_blocks",
     type: "extension_grimoire_hp",
@@ -3128,6 +3180,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_SMOKE_SWAP,
     BLOCK_EXTENSION_SMOKE_DOOR,
     BLOCK_EXTENSION_SMOKE_WINDOW,
+    BLOCK_EXTENSION_SMOKE_BLIND,
+    BLOCK_WHEN_DOOR,
     BLOCK_EXTENSION_GRIMOIRE_HP,
     BLOCK_EXTENSION_GRIMOIRE_MAX_HP,
     BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,

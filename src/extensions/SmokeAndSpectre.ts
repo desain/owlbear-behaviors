@@ -11,9 +11,14 @@ const KEY_IS_DOOR_LOCKED = "com.battle-system.smoke/isDoorLocked";
 const KEY_DOOR_OPEN = "com.battle-system.smoke/doorOpen";
 const KEY_IS_DOOR = "com.battle-system.smoke/isDoor";
 const KEY_IS_WINDOW = "com.battle-system.smoke/isWindow";
+const KEY_VISION_BLIND = "com.battle-system.smoke/visionBlind";
 
 export const SmokeAndSpectre = {
     hasVision: (item: Item): boolean => !!item.metadata[KEY_HAS_VISION],
+
+    isDoor: (item: Item): boolean => !!item.metadata[KEY_IS_DOOR],
+
+    getDoorOpenState: (item: Item): boolean => !!item.metadata[KEY_DOOR_OPEN],
 
     /**
      * Add vision to an item draft.
@@ -97,6 +102,14 @@ export const SmokeAndSpectre = {
             item.metadata[KEY_IS_WINDOW] = true;
         } else {
             delete item.metadata[KEY_IS_WINDOW];
+        }
+    },
+
+    setVisionBlind: (item: Draft<Item>, blind: boolean): void => {
+        if (blind) {
+            item.metadata[KEY_VISION_BLIND] = true;
+        } else {
+            delete item.metadata[KEY_VISION_BLIND];
         }
     },
 };

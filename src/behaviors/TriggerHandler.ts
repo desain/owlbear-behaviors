@@ -65,6 +65,11 @@ interface PhaseTriggerHandler extends BaseTriggerHandler {
     readonly phase: number;
 }
 
+interface SmokeSpectreDoorTriggerHandler extends BaseTriggerHandler {
+    readonly type: "smoke_spectre_door";
+    readonly doorState: boolean; // true for open, false for close
+}
+
 export type TriggerHandler =
     | ImmediateTriggerHandler
     | StartAsCloneTriggerHandler
@@ -79,7 +84,8 @@ export type TriggerHandler =
     | CollisionTriggerHandler
     | GrimoireHpChangeTriggerHandler
     | BonesRollTriggerHandler
-    | PhaseTriggerHandler;
+    | PhaseTriggerHandler
+    | SmokeSpectreDoorTriggerHandler;
 
 export function propertyChangeTriggers<K extends keyof BehaviorItem>(
     handler: PropertyChanged<K>,

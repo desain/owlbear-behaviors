@@ -53,6 +53,7 @@ import {
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
     BLOCK_EXTENSION_SMOKE_ADD,
+    BLOCK_EXTENSION_SMOKE_BLIND,
     BLOCK_EXTENSION_SMOKE_DOOR,
     BLOCK_EXTENSION_SMOKE_SWAP,
     BLOCK_EXTENSION_SMOKE_VISION_LINE,
@@ -117,6 +118,7 @@ import {
     BLOCK_VARIABLE_SETTER,
     BLOCK_WAIT,
     BLOCK_WAIT_UNTIL,
+    BLOCK_WHEN_DOOR,
     BLOCK_WHEN_I,
     type CustomBlockType,
 } from "./blocks";
@@ -1000,6 +1002,21 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             type: "collision",
             hatBlockId: block.id,
             start: touchState === "true",
+            behaviorFunction,
+        });
+    },
+
+    extension_smoke_when_door: (block, generator) => {
+        const doorState = getStringFieldValue(
+            block,
+            BLOCK_WHEN_DOOR.args0[1].name,
+        );
+
+        const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
+        return generateAddTriggerHandler({
+            type: "smoke_spectre_door",
+            hatBlockId: block.id,
+            doorState: doorState === "true",
             behaviorFunction,
         });
     },
@@ -1965,6 +1982,19 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             String(arg),
+        )};\n`;
+    },
+
+    extension_smoke_blind: (block) => {
+        const blind = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_SMOKE_BLIND.args0[1].name,
+        );
+        return `await ${behave(
+            "setVisionBlind",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            blind,
         )};\n`;
     },
 

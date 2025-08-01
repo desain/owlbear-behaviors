@@ -257,3 +257,191 @@ item.metadata[METADATA_KEY]?.someProperty;
 -   Handle missing metadata gracefully (return false/default values)
 
 This pattern allows for clean separation of concerns, easy testing, and consistent integration with external extensions while maintaining type safety and following the established architectural patterns.
+
+### Adding Trigger Handlers and Hat Blocks
+
+Trigger handlers and hat blocks allow behaviors to respond to events (like property changes, collisions, or extension-specific events). Follow this pattern to add new trigger types:
+
+#### 1. **Define Trigger Handler Interface** (`src/behaviors/TriggerHandler.ts`)
+
+Add a new interface extending `BaseTriggerHandler`:
+
+```typescript
+interface MyCustomTriggerHandler extends BaseTriggerHandler {
+    readonly type: "my_custom_event";
+    readonly eventData: string; // Any event-specific data
+}
+```
+
+Then add it to the `TriggerHandler` union type:
+
+```typescript
+export type TriggerHandler =
+    | ImmediateTriggerHandler
+    | StartAsCloneTriggerHandler
+    // ... other handlers
+    | MyCustomTriggerHandler;
+```
+
+#### 2. **Create Hat Block Definition** (`src/blockly/blocks.ts`)
+
+Define the hat block with `event_blocks` style:
+
+```typescript
+export const BLOCK_WHEN_MY_EVENT = {
+    style: "event_blocks",
+    type: "event_when_my_event",
+    tooltip: "Define what to do when my custom event occurs",
+    message0: "when %1 happens",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "EVENT_TYPE",
+            options: [
+                ["something", "option1"],
+                ["something else", "option2"],
+            ],
+        },
+    ],
+    nextStatement: null, // Hat blocks have nextStatement, not previousStatement
+} as const;
+```
+
+**Key patterns:**
+
+-   Use `"event_blocks"` style for hat blocks if they're in the events category, or `"extension_blocks"` style if they're triggered by an extension.
+-   Hat blocks have `nextStatement: null` (no `previousStatement`)
+-   Include dropdown options or inputs for event configuration
+-   Add to `CUSTOM_JSON_BLOCKS` array for registration
+
+#### 3. **Create JavaScript Generator** (`src/blockly/BehaviorJavascriptGenerator.ts`)
+
+Add generator that creates trigger handler registration:
+
+```typescript
+event_when_my_event: (block, generator) => {
+    const eventType = getStringFieldValue(
+        block,
+        BLOCK_WHEN_MY_EVENT.args0[0].name,
+    );
+
+    const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
+    return generateAddTriggerHandler({
+        type: "my_custom_event",
+        hatBlockId: block.id,
+        eventData: eventType,
+        behaviorFunction,
+    });
+},
+```
+
+**Key patterns:**
+
+-   Use `getHatBlockBehaviorFunction()` to generate the behavior function
+-   Use `generateAddTriggerHandler()` to create registration code
+-   Extract field values using block definition's `args0` field names
+-   Return the registration code directly (no operator precedence needed)
+
+#### 4. **Add Trigger Handler Method** (`src/behaviors/BehaviorRegistry.ts`)
+
+Add a method to handle the trigger event:
+
+```typescript
+readonly handleMyCustomEvent = (eventData: string) =>
+    this.#triggerHandlers.forEach((handlers) =>
+        handlers
+            .filter((handler) => handler.type === "my_custom_event")
+            .filter((handler) => handler.eventData === eventData)
+            .forEach((handler) => executeTriggerHandler(handler))
+    );
+```
+
+**Key patterns:**
+
+-   Use `readonly` arrow function properties
+-   Filter handlers by trigger type
+-   Apply additional filtering based on event data
+-   Call `executeTriggerHandler()` for matching handlers
+-   For item-specific events, iterate `this.#triggerHandlers.get(itemId)`
+
+#### 5. **Add Event Detection** (`src/behaviors/installBehaviorRunner.ts`)
+
+Add detection logic in the appropriate location:
+
+**For item metadata changes** (like extension data):
+
+```typescript
+// Check for my custom event changes
+if (MyExtension.hasFeature(oldItem) && MyExtension.hasFeature(item)) {
+    const oldState = MyExtension.getState(oldItem);
+    const newState = MyExtension.getState(item);
+    if (oldState !== newState) {
+        behaviorRegistry.handleMyCustomEvent(newState);
+    }
+}
+```
+
+**For global events** (like scene metadata):
+
+```typescript
+// In the OBR.scene.onMetadataChange callback or similar
+const unsubscribeMyEvent = OBR.scene.onMetadataChange((metadata) => {
+    const myData = MyExtension.getGlobalData(metadata);
+    if (myData !== oldMyData) {
+        behaviorRegistry.handleMyCustomEvent(myData);
+    }
+    oldMyData = myData;
+});
+```
+
+#### 6. **Add to Toolbox** (`src/blockly/toolbox.ts`)
+
+Add the hat block to appropriate toolbox category:
+
+```typescript
+// Import the block constant
+import { BLOCK_WHEN_MY_EVENT } from "./blocks";
+
+// Add to toolbox contents
+blockToDefinition(BLOCK_WHEN_MY_EVENT),
+```
+
+#### 7. **Extension-Specific Helper Methods**
+
+If the trigger is for an external extension, add helper methods to the extension utility:
+
+```typescript
+// src/extensions/MyExtension.ts
+export const MyExtension = {
+    hasFeature: (item: Item): boolean => !!item.metadata[METADATA_KEY],
+    getState: (item: Item): string =>
+        item.metadata[METADATA_KEY]?.state || "default",
+};
+```
+
+#### Common Trigger Handler Patterns
+
+**Item-specific triggers** (like door open/close):
+
+-   Check conditions in `installBehaviorRunner.ts` item comparison loop
+-   Use `behaviorRegistry.handleEvent(item.id, eventData)`
+-   Filter by `this.#triggerHandlers.get(itemId)`
+
+**Global triggers** (like scene events):
+
+-   Use OBR event listeners or scene metadata changes
+-   Use `behaviorRegistry.handleEvent(eventData)`
+-   Iterate `this.#triggerHandlers.forEach()`
+
+**Property change triggers** (already exist):
+
+-   Use existing `PropertyChanged<K>` interface pattern
+-   Add new property keys to the union type
+-   Handle in existing property change detection
+
+**Collision triggers** (already exist):
+
+-   Use existing `CollisionTriggerHandler` pattern
+-   Integrate with `CollisionEngine` system
+
+This system provides a flexible way to add new event-driven behaviors while maintaining consistency with the existing trigger handler architecture.

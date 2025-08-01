@@ -169,7 +169,10 @@ To make a production build run:
     -   auto-behaviors
 -   Blocks
     -   Extensions
-        -   Smoke and spectre: blind
+        -   pretty sordid
+            -   my initiative
+            -   set my initiative to
+            -   when my turn starts/ends
         -   On field change for Daggerheart, Owl Trackers
         -   Kenku FM?
         -   dddice? get room id from metadata, call API?

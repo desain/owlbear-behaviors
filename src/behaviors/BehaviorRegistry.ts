@@ -245,4 +245,11 @@ export class BehaviorRegistry {
                 .forEach((handler) => executeTriggerHandler(handler)),
         );
     };
+
+    readonly handleSmokeSpectreDoorChange = (itemId: string, doorOpen: boolean) =>
+        this.#triggerHandlers
+            .get(itemId)
+            ?.filter((handler) => handler.type === "smoke_spectre_door")
+            ?.filter((handler) => handler.doorState === doorOpen)
+            ?.forEach((handler) => executeTriggerHandler(handler));
 }

@@ -6,6 +6,7 @@ import { CollisionEngine } from "../collision/CollisionEngine";
 import { METADATA_KEY_BEHAVIORS } from "../constants";
 import { Grimoire } from "../extensions/Grimoire";
 import { Phases } from "../extensions/Phases";
+import { SmokeAndSpectre } from "../extensions/SmokeAndSpectre";
 import {
     usePlayerStorage,
     type BehaviorItemMap,
@@ -97,6 +98,15 @@ function handleItemsChange(
                 const newHp = Grimoire.getHp(item);
                 if (oldHp !== newHp) {
                     behaviorRegistry.handleGrimoireHpChange(item.id);
+                }
+            }
+
+            // Check for Smoke and Spectre door state changes
+            if (SmokeAndSpectre.isDoor(oldItem) && SmokeAndSpectre.isDoor(item)) {
+                const oldDoorOpen = SmokeAndSpectre.getDoorOpenState(oldItem);
+                const newDoorOpen = SmokeAndSpectre.getDoorOpenState(item);
+                if (oldDoorOpen !== newDoorOpen) {
+                    behaviorRegistry.handleSmokeSpectreDoorChange(item.id, newDoorOpen);
                 }
             }
         }
