@@ -2195,6 +2195,7 @@ export const BLOCK_EXTENSION_SMOKE_SWAP = {
             options: [
                 ["passable", "passable:true"],
                 ["unpassable", "passable:false"],
+                "separator",
                 ["one-sided", "doublesided:false"],
                 ["double-sided", "doublesided:true"],
             ],
@@ -2223,8 +2224,10 @@ export const BLOCK_EXTENSION_SMOKE_DOOR = {
             options: [
                 ["open", "open:true"],
                 ["close", "open:false"],
+                "separator",
                 ["lock", "locked:true"],
                 ["unlock", "locked:false"],
+                "separator",
                 ["enable", "enabled:true"],
                 ["disable", "enabled:false"],
             ],
@@ -2994,6 +2997,7 @@ export const BLOCK_LAYER_MENU = {
                 // ["Post Process", "POST_PROCESS"],
                 // ["Control", "CONTROL"],
                 // ["Popover", "POPOVER"],
+                "separator",
                 ["front of current", "FRONT OF CURRENT"],
                 ["back of current", "BACK OF CURRENT"],
             ],

@@ -989,8 +989,8 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                                   },
                               },
                               blockToDefinition(BLOCK_EXTENSION_SMOKE_REMOVE),
-                              blockToDefinition(BLOCK_EXTENSION_SMOKE_VISION),
                               blockToDefinition(BLOCK_EXTENSION_SMOKE_BLIND),
+                              blockToDefinition(BLOCK_EXTENSION_SMOKE_VISION),
                           ]
                         : []),
 

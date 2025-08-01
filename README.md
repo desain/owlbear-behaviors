@@ -169,10 +169,7 @@ To make a production build run:
     -   auto-behaviors
 -   Blocks
     -   Extensions
-        -   pretty sordid
-            -   my initiative
-            -   set my initiative to
-            -   when my turn starts/ends
+        -   Initiative Tracker same as Pretty Sordid?
         -   On field change for Daggerheart, Owl Trackers
         -   Kenku FM?
         -   dddice? get room id from metadata, call API?
