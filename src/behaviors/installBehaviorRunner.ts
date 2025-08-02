@@ -4,6 +4,7 @@ import type { BehaviorItem } from "../BehaviorItem";
 import "../blockly/blocks";
 import { CollisionEngine } from "../collision/CollisionEngine";
 import { METADATA_KEY_BEHAVIORS } from "../constants";
+import { Clash } from "../extensions/Clash";
 import { Grimoire } from "../extensions/Grimoire";
 import { Phases } from "../extensions/Phases";
 import { PrettySordid } from "../extensions/PrettySordid";
@@ -99,6 +100,15 @@ function handleItemsChange(
                 const newHp = Grimoire.getHp(item);
                 if (oldHp !== newHp) {
                     behaviorRegistry.handleGrimoireHpChange(item.id);
+                }
+            }
+
+            // Check for Clash HP changes
+            if (Clash.hasHP(oldItem) && Clash.hasHP(item)) {
+                const oldHp = Clash.getHP(oldItem);
+                const newHp = Clash.getHP(item);
+                if (oldHp !== newHp) {
+                    behaviorRegistry.handleClashHpChange(item.id);
                 }
             }
 

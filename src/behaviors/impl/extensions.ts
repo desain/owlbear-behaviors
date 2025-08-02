@@ -3,6 +3,7 @@ import type { BLOCK_EXTENSION_WEATHER_ADD } from "../../blockly/blocks";
 import { Announcement } from "../../extensions/Announcement";
 import { Auras } from "../../extensions/Auras";
 import { Bones } from "../../extensions/Bones";
+import { Clash } from "../../extensions/Clash";
 import { Codeo } from "../../extensions/Codeo";
 import { Daggerheart } from "../../extensions/Daggerheart";
 import { Fog } from "../../extensions/Fog";
@@ -564,5 +565,48 @@ export const EXTENSIONS_BEHAVIORS = {
             PrettySordid.setInitiativeCount(draft, count);
         });
         signal.throwIfAborted();
+    },
+
+    // Clash!
+    getClashHP: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return Clash.getHP(selfItem);
+    },
+
+    getClashMaxHP: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return Clash.getMaxHP(selfItem);
+    },
+
+    getClashInitiative: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return Clash.getInitiative(selfItem);
     },
 };

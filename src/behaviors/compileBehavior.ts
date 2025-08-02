@@ -32,6 +32,7 @@ export type BehaviorDefinitionFunction = ObrFunction<
  */
 export type BehaviorFunction = (
     signal: AbortSignal,
+    hatId: string,
     /**
      * Other item for collisions.
      */

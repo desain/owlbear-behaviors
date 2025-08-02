@@ -161,6 +161,9 @@ To make a production build run:
 
 ## To do
 
+-   Collision system improvements
+    -   base it on polygon overlap instead of bounding boxes? turf js?
+    -   inset bounding boxes so barely touching corners don't trigger collisions?
 -   Request autoplay permission for sfx?
 -   Make new tags in tags field show up in possible tags list in block immediately
 -   Dragging C blocks around statements in stacks like scratch does [here?](https://github.com/scratchfoundation/scratch-blocks/blob/develop/core/insertion_marker_manager.js#L43)
@@ -168,6 +171,10 @@ To make a production build run:
     -   auto-tags
     -   auto-behaviors
 -   Blocks
+    -   Movement
+        -   Pathfinding
+            -   On a grid: easy, A\*
+            -   On continuous Euclidean space... need to research more
     -   Extensions
         -   Initiative Tracker same as Pretty Sordid?
         -   On field change for Daggerheart, Owl Trackers

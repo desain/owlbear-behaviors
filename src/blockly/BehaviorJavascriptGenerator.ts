@@ -41,6 +41,7 @@ import {
     BLOCK_EQUALS,
     BLOCK_EXTENSION_BONES_ON_ROLL,
     BLOCK_EXTENSION_BONES_ROLL_DICE,
+    BLOCK_EXTENSION_CLASH_PROPERTY,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_FOG_ADD,
@@ -206,13 +207,6 @@ function noCodegen(block: Block): string {
  */
 const SELF = `(await ${PARAMETER_ITEM_PROXY}.get(${PARAMETER_SELF_ID}))`;
 
-type TriggerHandlerJson = DistributiveOmit<
-    TriggerHandler,
-    "behaviorFunction"
-> & {
-    behaviorFunction: string;
-};
-
 function getHatBlockBehaviorFunction(
     block: Blockly.Block,
     generator: BehaviorJavascriptGenerator,
@@ -226,17 +220,13 @@ function getHatBlockBehaviorFunction(
 
     return generateBlock(
         generator,
-        `async (${PARAMETER_SIGNAL}, ${PARAMETER_OTHER_ID}) =>`,
+        `async (${PARAMETER_SIGNAL}, ${PARAMETER_HAT_ID}, ${PARAMETER_OTHER_ID}) =>`,
         generateBlock(
             generator,
             "try",
-            [
-                `const ${PARAMETER_HAT_ID} = ${generator.quote_(block.id)};`,
-                `let ${VAR_LOOP_CHECK} = 10_000;`,
-                statementsCode,
-            ].join("\n"),
+            [`let ${VAR_LOOP_CHECK} = 10_000;`, statementsCode].join("\n"),
             "catch(e)",
-            `console.warn('error in block ${block.id}', e)\n` +
+            `console.warn('error in block ' + ${PARAMETER_HAT_ID}, e)\n` +
                 generateBlock(
                     generator,
                     "if (e instanceof Error)",
@@ -248,16 +238,16 @@ function getHatBlockBehaviorFunction(
     );
 }
 
-function generateAddTriggerHandler(handler: TriggerHandlerJson) {
-    const handlerWithoutBehaviorFunction: Partial<typeof handler> = {
-        ...handler,
-    };
-    delete handlerWithoutBehaviorFunction.behaviorFunction;
-    const handlerJson = JSON.stringify(handlerWithoutBehaviorFunction).replace(
-        "{",
-        `{"behaviorFunction": ${handler.behaviorFunction},`,
+function generateAddTriggerHandler(
+    block: Blockly.Block,
+    generator: BehaviorJavascriptGenerator,
+    handler: DistributiveOmit<TriggerHandler, "behaviorFunction">,
+) {
+    const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
+    const handlerJson = JSON.stringify(handler).replace(
+        "}",
+        ',"behaviorFunction": ' + behaviorFunction + "}",
     );
-
     return `${CONSTANT_TRIGGER_HANDLERS}.push(${handlerJson});`;
 }
 
@@ -294,6 +284,28 @@ function getStringFieldValue(block: Blockly.Block, name: string): string {
         throw Error(`${name} should be string`);
     }
     return value;
+}
+
+interface BlockTypeWithDropdownAt<Args0Index extends number> {
+    args0: Record<Args0Index, { name: string; options: readonly unknown[] }>;
+}
+type SecondOfTuple<T> = T extends readonly [a: unknown, b: infer S] ? S : never;
+type DropdownValue<
+    Args0Index extends number,
+    BlockType extends BlockTypeWithDropdownAt<Args0Index>,
+> = SecondOfTuple<BlockType["args0"][Args0Index]["options"][number]>;
+function getDropdownFieldValue<
+    Args0Index extends number,
+    BlockType extends BlockTypeWithDropdownAt<Args0Index>,
+>(
+    block: Blockly.Block,
+    blockDefinition: BlockType,
+    index: Args0Index,
+): DropdownValue<Args0Index, BlockType> {
+    return getStringFieldValue(
+        block,
+        blockDefinition.args0[index].name,
+    ) as DropdownValue<Args0Index, BlockType>;
 }
 
 function getNumberFieldValue(block: Blockly.Block, name: string): number {
@@ -880,115 +892,98 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         return `void ${behave("sendMessage", broadcast)};\n`;
     },
     event_immediately: (block, generator) =>
-        generateAddTriggerHandler({
+        generateAddTriggerHandler(block, generator, {
             type: "immediately",
             hatBlockId: block.id,
-            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
         }),
 
     control_start_as_clone: (block, generator) =>
-        generateAddTriggerHandler({
+        generateAddTriggerHandler(block, generator, {
             type: "startAsClone",
             hatBlockId: block.id,
-            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
         }),
 
     event_whenbroadcastreceived: (block, generator) => {
         const broadcastId = getStringFieldValue(block, FIELD_BROADCAST);
-        return generateAddTriggerHandler({
+        return generateAddTriggerHandler(block, generator, {
             type: "broadcast",
             hatBlockId: block.id,
             broadcast: broadcastId,
-            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
         });
     },
 
     event_on_property_change: (block, generator) => {
-        const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
-        const spec = block.getFieldValue(
-            BLOCK_WHEN_I.args0[0].name,
-        ) as (typeof BLOCK_WHEN_I)["args0"][0]["options"][number][1];
+        const spec = getDropdownFieldValue(block, BLOCK_WHEN_I, 0);
         switch (spec) {
             case "position":
-                return generateAddTriggerHandler({
+                return generateAddTriggerHandler(block, generator, {
                     type: "position",
                     hatBlockId: block.id,
                     newValue: "ANY",
-                    behaviorFunction,
                 });
             case "rotation":
-                return generateAddTriggerHandler({
+                return generateAddTriggerHandler(block, generator, {
                     type: "rotation",
                     hatBlockId: block.id,
                     newValue: "ANY",
-                    behaviorFunction,
                 });
             case "layer":
-                return generateAddTriggerHandler({
+                return generateAddTriggerHandler(block, generator, {
                     type: "layer",
                     hatBlockId: block.id,
                     newValue: "ANY",
-                    behaviorFunction,
                 });
             case "locked:true":
-                return generateAddTriggerHandler({
+                return generateAddTriggerHandler(block, generator, {
                     type: "locked",
                     hatBlockId: block.id,
                     newValue: { exactly: true },
-                    behaviorFunction,
                 });
             case "locked:false":
-                return generateAddTriggerHandler({
+                return generateAddTriggerHandler(block, generator, {
                     type: "locked",
                     hatBlockId: block.id,
                     newValue: { exactly: false },
-                    behaviorFunction,
                 });
             case "visible:true": {
-                return generateAddTriggerHandler({
+                return generateAddTriggerHandler(block, generator, {
                     type: "visible",
                     hatBlockId: block.id,
                     newValue: { exactly: true },
-                    behaviorFunction,
                 });
             }
             case "visible:false": {
-                return generateAddTriggerHandler({
+                return generateAddTriggerHandler(block, generator, {
                     type: "visible",
                     hatBlockId: block.id,
                     newValue: { exactly: false },
-                    behaviorFunction,
                 });
             }
             case "attachedTo:defined": {
-                return generateAddTriggerHandler({
+                return generateAddTriggerHandler(block, generator, {
                     type: "attachedTo",
                     hatBlockId: block.id,
                     newValue: "DEFINED",
-                    behaviorFunction,
                 });
             }
             case "attachedTo:undefined": {
-                return generateAddTriggerHandler({
+                return generateAddTriggerHandler(block, generator, {
                     type: "attachedTo",
                     hatBlockId: block.id,
                     newValue: { exactly: undefined },
-                    behaviorFunction,
                 });
             }
             case "SELECTED:true":
-                return generateAddTriggerHandler({
+                return generateAddTriggerHandler(block, generator, {
                     type: "selected",
                     hatBlockId: block.id,
                     selectedState: true,
-                    behaviorFunction,
                 });
             case "SELECTED:false":
-                return generateAddTriggerHandler({
+                return generateAddTriggerHandler(block, generator, {
                     type: "selected",
                     hatBlockId: block.id,
                     selectedState: false,
-                    behaviorFunction,
                 });
         }
     },
@@ -999,12 +994,10 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             BLOCK_TOUCH.args0[0].name,
         );
 
-        const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
-        return generateAddTriggerHandler({
+        return generateAddTriggerHandler(block, generator, {
             type: "collision",
             hatBlockId: block.id,
             start: touchState === "true",
-            behaviorFunction,
         });
     },
 
@@ -1014,12 +1007,10 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             BLOCK_EXTENSION_SMOKE_WHEN_DOOR.args0[1].name,
         );
 
-        const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
-        return generateAddTriggerHandler({
+        return generateAddTriggerHandler(block, generator, {
             type: "smoke_spectre_door",
             hatBlockId: block.id,
             doorState: doorState === "true",
-            behaviorFunction,
         });
     },
 
@@ -1040,10 +1031,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     control_behavior_stop: (block) => {
-        const target = getStringFieldValue(
-            block,
-            BLOCK_STOP.args0[0].name,
-        ) as (typeof BLOCK_STOP)["args0"][0]["options"][number][1];
+        const target = getDropdownFieldValue(block, BLOCK_STOP, 0);
         switch (target) {
             case "THIS_SCRIPT":
                 return "return;\n";
@@ -1302,9 +1290,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     sensing_deselect: (block) => {
-        const target = block.getFieldValue(
-            BLOCK_DESELECT.args0[0].name,
-        ) as (typeof BLOCK_DESELECT)["args0"][0]["options"][number][1];
+        const target = getDropdownFieldValue(block, BLOCK_DESELECT, 0);
         const deselectArg = target === "THIS" ? `[${PARAMETER_SELF_ID}]` : "";
         return [
             `await ${behave("deselect", deselectArg)};`,
@@ -1316,9 +1302,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     sensing_other_val: () => [PARAMETER_OTHER_ID, javascript.Order.ATOMIC],
 
     sensing_of: (block, generator) => {
-        const property = block.getFieldValue(
-            BLOCK_SENSING_OF.args0[0].name,
-        ) as (typeof BLOCK_SENSING_OF)["args0"][0]["options"][number][1];
+        const property = getDropdownFieldValue(block, BLOCK_SENSING_OF, 0);
         const item = generator.valueToCode(
             block,
             BLOCK_SENSING_OF.args0[1].name,
@@ -1345,10 +1329,7 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     sensing_current_time: (block) => {
-        const unit = block.getFieldValue(
-            BLOCK_CURRENT_TIME.args0[0].name,
-        ) as (typeof BLOCK_CURRENT_TIME)["args0"][0]["options"][number][1];
-
+        const unit = getDropdownFieldValue(block, BLOCK_CURRENT_TIME, 0);
         switch (unit) {
             case "YEAR":
                 return ["new Date().getFullYear()", javascript.Order.MEMBER];
@@ -1889,10 +1870,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     extension_smoke_wall: (block) => {
-        const prop = getStringFieldValue(
+        const prop = getDropdownFieldValue(
             block,
-            BLOCK_EXTENSION_SMOKE_SWAP.args0[1].name,
-        ) as (typeof BLOCK_EXTENSION_SMOKE_SWAP)["args0"]["1"]["options"][number][1];
+            BLOCK_EXTENSION_SMOKE_SWAP,
+            1,
+        );
         let func: keyof typeof BEHAVIORS_IMPL;
         let arg: boolean;
         switch (prop) {
@@ -1922,10 +1904,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     extension_smoke_door: (block) => {
-        const prop = getStringFieldValue(
+        const prop = getDropdownFieldValue(
             block,
-            BLOCK_EXTENSION_SMOKE_DOOR.args0[1].name,
-        ) as (typeof BLOCK_EXTENSION_SMOKE_DOOR)["args0"]["1"]["options"][number][1];
+            BLOCK_EXTENSION_SMOKE_DOOR,
+            1,
+        );
         let func: keyof typeof BEHAVIORS_IMPL;
         let arg: boolean;
         switch (prop) {
@@ -1963,10 +1946,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     extension_smoke_window: (block) => {
-        const prop = getStringFieldValue(
+        const prop = getDropdownFieldValue(
             block,
-            BLOCK_EXTENSION_SMOKE_WINDOW.args0[1].name,
-        ) as (typeof BLOCK_EXTENSION_SMOKE_WINDOW)["args0"]["1"]["options"][number][1];
+            BLOCK_EXTENSION_SMOKE_WINDOW,
+            1,
+        );
         let func: keyof typeof BEHAVIORS_IMPL;
         let arg: boolean;
         switch (prop) {
@@ -2062,10 +2046,9 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     ],
 
     extension_grimoire_hp_change: (block, generator) =>
-        generateAddTriggerHandler({
+        generateAddTriggerHandler(block, generator, {
             type: "grimoire_hp_change",
             hatBlockId: block.id,
-            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
         }),
 
     extension_bones_roll: (block, generator) => {
@@ -2079,12 +2062,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         );
         const dieType = dieTypeString === "ANY" ? "ANY" : Number(dieTypeString);
 
-        return generateAddTriggerHandler({
+        return generateAddTriggerHandler(block, generator, {
             type: "bones_roll",
             hatBlockId: block.id,
             dieType,
             value,
-            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
         });
     },
 
@@ -2119,12 +2101,11 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_EXTENSION_PHASE_CHANGE.args0[2].name,
         );
-        return generateAddTriggerHandler({
+        return generateAddTriggerHandler(block, generator, {
             type: "phase_change",
             hatBlockId: block.id,
             name,
             phase,
-            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
         });
     },
 
@@ -2162,13 +2143,56 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             block,
             BLOCK_WHEN_PRETTY_TURN_CHANGE.args0[1].name,
         );
-        return generateAddTriggerHandler({
+        return generateAddTriggerHandler(block, generator, {
             type: "pretty_turn_change",
             hatBlockId: block.id,
             turnState: turnState === "true",
-            behaviorFunction: getHatBlockBehaviorFunction(block, generator),
         });
     },
+
+    extension_clash_property: (block) => {
+        const property = getDropdownFieldValue(
+            block,
+            BLOCK_EXTENSION_CLASH_PROPERTY,
+            1,
+        );
+
+        switch (property) {
+            case "HP":
+                return [
+                    `await ${behave(
+                        "getClashHP",
+                        PARAMETER_SIGNAL,
+                        PARAMETER_SELF_ID,
+                    )}`,
+                    javascript.Order.AWAIT,
+                ];
+            case "MAX_HP":
+                return [
+                    `await ${behave(
+                        "getClashMaxHP",
+                        PARAMETER_SIGNAL,
+                        PARAMETER_SELF_ID,
+                    )}`,
+                    javascript.Order.AWAIT,
+                ];
+            case "INITIATIVE":
+                return [
+                    `await ${behave(
+                        "getClashInitiative",
+                        PARAMETER_SIGNAL,
+                        PARAMETER_SELF_ID,
+                    )}`,
+                    javascript.Order.AWAIT,
+                ];
+        }
+    },
+
+    extension_clash_hp_change: (block, generator) =>
+        generateAddTriggerHandler(block, generator, {
+            type: "clash_hp_change",
+            hatBlockId: block.id,
+        }),
 
     extension_rumble_say: (block, generator) => {
         const message = generator.valueToCode(
@@ -2399,18 +2423,14 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
     },
 
     menu_item: (block) => {
-        const ref = block.getFieldValue(
-            BLOCK_SENSING_ITEM_MENU.args0[0].name,
-        ) as (typeof BLOCK_SENSING_ITEM_MENU)["args0"][0]["options"][number][1];
+        const ref = getDropdownFieldValue(block, BLOCK_SENSING_ITEM_MENU, 0);
         switch (ref) {
             case "MYSELF":
                 return [PARAMETER_SELF_ID, javascript.Order.ATOMIC];
         }
     },
     control_menu_item: (block) => {
-        const ref = block.getFieldValue(
-            BLOCK_CONTROL_ITEM_MENU.args0[0].name,
-        ) as (typeof BLOCK_CONTROL_ITEM_MENU)["args0"][0]["options"][number][1];
+        const ref = getDropdownFieldValue(block, BLOCK_CONTROL_ITEM_MENU, 0);
         switch (ref) {
             case "MYSELF":
                 return [PARAMETER_SELF_ID, javascript.Order.ATOMIC];

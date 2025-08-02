@@ -37,7 +37,11 @@ function executeTriggerHandler(
     // Create a new abort controller for the new execution
     handler.abortController = new AbortController();
 
-    void handler.behaviorFunction(handler.abortController.signal, other);
+    void handler.behaviorFunction(
+        handler.abortController.signal,
+        handler.hatBlockId,
+        other,
+    );
 }
 
 /**
@@ -204,6 +208,12 @@ export class BehaviorRegistry {
         this.#triggerHandlers
             .get(itemId)
             ?.filter((handler) => handler.type === "grimoire_hp_change")
+            ?.forEach((handler) => executeTriggerHandler(handler));
+
+    readonly handleClashHpChange = (itemId: string) =>
+        this.#triggerHandlers
+            .get(itemId)
+            ?.filter((handler) => handler.type === "clash_hp_change")
             ?.forEach((handler) => executeTriggerHandler(handler));
 
     readonly handleBonesRoll = (roll: BonesRoll) => {

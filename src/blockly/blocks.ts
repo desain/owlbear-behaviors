@@ -2971,6 +2971,52 @@ export const BLOCK_WHEN_PRETTY_TURN_CHANGE = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_EXTENSION_CLASH_PROPERTY = {
+    style: "extension_blocks",
+    type: "extension_clash_property",
+    tooltip: "Get a property from the Clash! extension",
+    message0: "%1 my %2",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://clash.battle-system.com/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Clash! extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "PROP",
+            options: [
+                ["HP", "HP"],
+                ["max HP", "MAX_HP"],
+                ["initiative", "INITIATIVE"],
+            ],
+        },
+    ],
+    inputsInline: true,
+    output: "Number",
+} as const;
+
+export const BLOCK_EXTENSION_CLASH_HP_CHANGE = {
+    style: "extension_blocks",
+    type: "extension_clash_hp_change",
+    tooltip:
+        "Runs the blocks below when this token's HP changes in the Clash! extension",
+    message0: "%1 when my HP changes",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://clash.battle-system.com/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Clash! extension icon",
+        },
+    ],
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 // Menus
 export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
@@ -3297,6 +3343,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_PRETTY_MY_TURN,
     BLOCK_EXTENSION_PRETTY_SET_INITIATIVE,
     BLOCK_WHEN_PRETTY_TURN_CHANGE,
+    BLOCK_EXTENSION_CLASH_PROPERTY,
+    BLOCK_EXTENSION_CLASH_HP_CHANGE,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,

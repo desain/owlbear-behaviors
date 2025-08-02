@@ -75,6 +75,10 @@ interface PrettySordidTurnTriggerHandler extends BaseTriggerHandler {
     readonly turnState: boolean; // true for starts, false for ends
 }
 
+interface ClashHpChangeTriggerHandler extends BaseTriggerHandler {
+    readonly type: "clash_hp_change";
+}
+
 export type TriggerHandler =
     | ImmediateTriggerHandler
     | StartAsCloneTriggerHandler
@@ -91,7 +95,8 @@ export type TriggerHandler =
     | BonesRollTriggerHandler
     | PhaseTriggerHandler
     | SmokeSpectreDoorTriggerHandler
-    | PrettySordidTurnTriggerHandler;
+    | PrettySordidTurnTriggerHandler
+    | ClashHpChangeTriggerHandler;
 
 export function propertyChangeTriggers<K extends keyof BehaviorItem>(
     handler: PropertyChanged<K>,

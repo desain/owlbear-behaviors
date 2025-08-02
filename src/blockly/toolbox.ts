@@ -38,6 +38,8 @@ import {
     BLOCK_EQUALS,
     BLOCK_EXTENSION_BONES_ON_ROLL,
     BLOCK_EXTENSION_BONES_ROLL_DICE,
+    BLOCK_EXTENSION_CLASH_PROPERTY,
+    BLOCK_EXTENSION_CLASH_HP_CHANGE,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
@@ -855,6 +857,10 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                                 shadowDynamic("1d20"),
                         },
                     },
+
+                    ...extensionHeader("Clash!"),
+                    blockToDefinition(BLOCK_EXTENSION_CLASH_HP_CHANGE),
+                    blockToDefinition(BLOCK_EXTENSION_CLASH_PROPERTY),
 
                     ...extensionHeader("Dynamic Fog"),
                     {
