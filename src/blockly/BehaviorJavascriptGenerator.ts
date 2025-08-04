@@ -245,8 +245,8 @@ function generateAddTriggerHandler(
 ) {
     const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
     const handlerJson = JSON.stringify(handler).replace(
-        "}",
-        ',"behaviorFunction": ' + behaviorFunction + "}",
+        /}$/,
+        ', "behaviorFunction": ' + behaviorFunction + "}",
     );
     return `${CONSTANT_TRIGGER_HANDLERS}.push(${handlerJson});`;
 }
