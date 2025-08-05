@@ -2476,6 +2476,14 @@ export class BehaviorJavascriptGenerator extends javascript.JavascriptGenerator 
             ([blockType, generator]) =>
                 (this.forBlock[blockType] = generator as unknown as Generator),
         );
+
+        // Old variable blocks may still be out there from before they were replaced with
+        // custom variable blocks, so change the logic for them to work with the new
+        // variable access logic
+        this.forBlock.variables_get_dynamic = GENERATORS.data_variable;
+        this.forBlock.variables_set_dynamic = GENERATORS.data_setvariableto;
+        this.forBlock.math_change = GENERATORS.data_changevariableby;
+
         Object.entries(GENERATORS).forEach(
             ([blockType, generator]) => (this.forBlock[blockType] = generator),
         );
