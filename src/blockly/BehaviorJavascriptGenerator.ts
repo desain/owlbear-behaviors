@@ -100,6 +100,8 @@ import {
     BLOCK_SAY,
     BLOCK_SENSING_ITEM_MENU,
     BLOCK_SENSING_OF,
+    BLOCK_SET_ACCESSIBILITY_DESCRIPTION,
+    BLOCK_SET_ACCESSIBILITY_NAME,
     BLOCK_SET_EFFECT_TO,
     BLOCK_SET_FILL_COLOR,
     BLOCK_SET_FILL_OPACITY,
@@ -648,6 +650,52 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             text,
+        )};\n`;
+    },
+
+    looks_get_name: () => [
+        `await ${behave(
+            "getAccessibilityName",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+        )}`,
+        javascript.Order.AWAIT,
+    ],
+
+    looks_set_name: (block, generator) => {
+        const name = generator.valueToCode(
+            block,
+            BLOCK_SET_ACCESSIBILITY_NAME.args0[0].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave(
+            "setAccessibilityName",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            name,
+        )};\n`;
+    },
+
+    looks_get_description: () => [
+        `await ${behave(
+            "getAccessibilityDescription",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+        )}`,
+        javascript.Order.AWAIT,
+    ],
+
+    looks_set_description: (block, generator) => {
+        const description = generator.valueToCode(
+            block,
+            BLOCK_SET_ACCESSIBILITY_DESCRIPTION.args0[0].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave(
+            "setAccessibilityDescription",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            description,
         )};\n`;
     },
 

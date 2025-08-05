@@ -498,6 +498,58 @@ export const BLOCK_SET_TEXT = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_GET_ACCESSIBILITY_NAME = {
+    style: "looks_blocks",
+    type: "looks_get_name",
+    tooltip: "Get the GM-only accessibility name of this token",
+    message0: "accessibility name",
+    output: "String",
+} as const;
+
+export const BLOCK_SET_ACCESSIBILITY_NAME = {
+    style: "looks_blocks",
+    type: "looks_set_name",
+    tooltip: "Set the GM-only accessibility name of this token",
+    message0: "set accessibility name to %1",
+    args0: [
+        {
+            type: "input_value",
+            name: "NAME",
+            check: ["String", "Number"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_GET_ACCESSIBILITY_DESCRIPTION = {
+    style: "looks_blocks",
+    type: "looks_get_description",
+    tooltip:
+        "Get the accessibility description of this token (used by assistive technology)",
+    message0: "description",
+    output: "String",
+} as const;
+
+export const BLOCK_SET_ACCESSIBILITY_DESCRIPTION = {
+    style: "looks_blocks",
+    type: "looks_set_description",
+    tooltip:
+        "Set the accessibility description of this token (used by assistive technology)",
+    message0: "set description to %1",
+    args0: [
+        {
+            type: "input_value",
+            name: "DESCRIPTION",
+            check: ["String", "Number"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 export const BLOCK_GET_LAYER = {
     style: "looks_blocks",
     type: "looks_get_layer",
@@ -3216,6 +3268,10 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_REPLACE_IMAGE,
     BLOCK_GET_TEXT,
     BLOCK_SET_TEXT,
+    BLOCK_GET_ACCESSIBILITY_NAME,
+    BLOCK_SET_ACCESSIBILITY_NAME,
+    BLOCK_GET_ACCESSIBILITY_DESCRIPTION,
+    BLOCK_SET_ACCESSIBILITY_DESCRIPTION,
     BLOCK_GET_LAYER,
     BLOCK_SET_LAYER,
     BLOCK_SET_STROKE_COLOR,

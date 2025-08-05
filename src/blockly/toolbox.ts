@@ -38,8 +38,8 @@ import {
     BLOCK_EQUALS,
     BLOCK_EXTENSION_BONES_ON_ROLL,
     BLOCK_EXTENSION_BONES_ROLL_DICE,
-    BLOCK_EXTENSION_CLASH_PROPERTY,
     BLOCK_EXTENSION_CLASH_HP_CHANGE,
+    BLOCK_EXTENSION_CLASH_PROPERTY,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
@@ -76,6 +76,8 @@ import {
     BLOCK_EXTENSION_WEATHER_REMOVE,
     BLOCK_FACE,
     BLOCK_FOREVER,
+    BLOCK_GET_ACCESSIBILITY_DESCRIPTION,
+    BLOCK_GET_ACCESSIBILITY_NAME,
     BLOCK_GET_FILL_COLOR,
     BLOCK_GET_FILL_OPACITY,
     BLOCK_GET_LAYER,
@@ -117,6 +119,8 @@ import {
     BLOCK_ROTATION,
     BLOCK_SAY,
     BLOCK_SENSING_OF,
+    BLOCK_SET_ACCESSIBILITY_DESCRIPTION,
+    BLOCK_SET_ACCESSIBILITY_NAME,
     BLOCK_SET_EFFECT_TO,
     BLOCK_SET_FILL_COLOR,
     BLOCK_SET_FILL_OPACITY,
@@ -392,9 +396,25 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                                           shadowDynamic(getText(target)),
                                   },
                               },
-                              GAP50,
                           ]
                         : []),
+                    {
+                        kind: "block",
+                        type: BLOCK_SET_ACCESSIBILITY_NAME.type,
+                        inputs: {
+                            [BLOCK_SET_ACCESSIBILITY_NAME.args0[0].name]:
+                                shadowDynamic(target.name),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_SET_ACCESSIBILITY_DESCRIPTION.type,
+                        inputs: {
+                            [BLOCK_SET_ACCESSIBILITY_DESCRIPTION.args0[0].name]:
+                                shadowDynamic(target.description),
+                        },
+                    },
+                    GAP50,
                     // Only show set fill color and fill opacity for shapes, curves, and paths (not lines)
                     ...(isShape(target) || isCurve(target) || isPath(target)
                         ? [
@@ -504,6 +524,8 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     ...(isImage(target) || isText(target)
                         ? [blockToDefinition(BLOCK_GET_TEXT)]
                         : []),
+                    blockToDefinition(BLOCK_GET_ACCESSIBILITY_NAME),
+                    blockToDefinition(BLOCK_GET_ACCESSIBILITY_DESCRIPTION),
                     blockToDefinition(BLOCK_VISIBLE),
                 ],
             },

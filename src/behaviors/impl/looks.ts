@@ -282,6 +282,48 @@ export const LOOKS_BEHAVIORS = {
         signal.throwIfAborted();
     },
 
+    getAccessibilityName: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<string> => {
+        const selfId = String(selfIdUnknown);
+        const self = await ItemProxy.getInstance().get(selfId);
+        signal.throwIfAborted();
+        return self?.name ?? "";
+    },
+
+    setAccessibilityName: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        nameUnknown: unknown,
+    ) => {
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            self.name = String(nameUnknown);
+        });
+        signal.throwIfAborted();
+    },
+
+    getAccessibilityDescription: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<string> => {
+        const selfId = String(selfIdUnknown);
+        const self = await ItemProxy.getInstance().get(selfId);
+        signal.throwIfAborted();
+        return self?.description ?? "";
+    },
+
+    setAccessibilityDescription: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        descriptionUnknown: unknown,
+    ) => {
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            self.description = String(descriptionUnknown);
+        });
+        signal.throwIfAborted();
+    },
+
     setLayer: async (
         signal: AbortSignal,
         selfIdUnknown: unknown,
