@@ -24,6 +24,16 @@ function isBonesLogRoll(data: unknown): data is BonesLogRoll {
     );
 }
 
+function makeIdempotent(f: VoidFunction): VoidFunction {
+    let called = false;
+    return () => {
+        if (!called) {
+            f();
+            called = true;
+        }
+    }
+}
+
 const ROLL_HTML_REGEX = /\s*=\s*<strong>\s*(\d+)\s*<\/strong>\s*$/;
 
 export const Bones = {
@@ -41,7 +51,7 @@ export const Bones = {
     roll: (notation: string, viewers: "GM" | "SELF" | "ALL") => {
         const created = new Date().toISOString();
         return new Promise<number | undefined>((resolve) => {
-            const unsubscribePlayerMetadata = OBR.player.onChange((player) => {
+            const unsubscribePlayerMetadata = makeIdempotent(OBR.player.onChange((player) => {
                 const resultMetadata =
                     player.metadata["com.battle-system.bones/metadata_logroll"];
                 if (
@@ -57,7 +67,7 @@ export const Bones = {
                     unsubscribePlayerMetadata();
                     resolve(Number(match));
                 }
-            });
+            }));
             void OBR.player.setMetadata({
                 "com.battle-system.bones/metadata_bonesroll": {
                     notation,
