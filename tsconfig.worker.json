@@ -1,0 +1,7 @@
+{
+    "extends": "./tsconfig.node.json",
+    "compilerOptions": {
+        "types": ["./worker-configuration.d.ts", "vite/client"]
+    },
+    "include": ["./worker-configuration.d.ts", "./worker"]
+}

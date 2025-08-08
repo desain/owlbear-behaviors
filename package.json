@@ -1,13 +1,17 @@
 {
     "name": "owlbear-behaviors",
     "type": "module",
-    "version": "0.14.2",
+    "version": "1.0.0",
     "description": "Bring tokens to life with block-based automated behavior inspired by Scratch.",
     "scripts": {
         "dev": "vite",
-        "build": "{ test \"$CF_PAGES\" '!=' 1 || test \"$SKIP_DEPENDENCY_INSTALL\" = 1; } || { echo 'SKIP_DEPENDENCY_INSTALL=1 must be set on Cloudflare Pages'; exit 1; } && node scripts/build-docs.js && tsc --build && vite build",
+        "build": "pnpm docs && tsc --build && vite build",
         "docs": "node scripts/build-docs.js",
         "preview": "vite preview",
+        "workers:types": "wrangler types",
+        "workers:deploy": "pnpm build && wrangler deploy",
+        "workers:dry-run": "pnpm build && wrangler deploy --dry-run",
+        "workers:dev": "wrangler dev",
         "lint": "eslint .",
         "test": "vitest",
         "coverage": "vitest run --coverage"
@@ -16,6 +20,7 @@
     "author": "desain",
     "license": "GPL-3.0",
     "devDependencies": {
+        "@cloudflare/vite-plugin": "^1.11.2",
         "@eslint/js": "^9.32.0",
         "@types/gapi": "^0.0.47",
         "@types/gapi.auth2": "^0.0.61",
@@ -31,7 +36,8 @@
         "typescript-eslint": "^8.38.0",
         "vite": "^6.3.5",
         "vite-plugin-mkcert": "^1.17.8",
-        "vitest": "^3.2.4"
+        "vitest": "^3.2.4",
+        "wrangler": "^4.28.1"
     },
     "dependencies": {
         "@blockly/block-shareable-procedures": "^6.0.3",
@@ -57,11 +63,12 @@
     "pnpm": {
         "onlyBuiltDependencies": [
             "esbuild",
-            "true"
+            "sharp",
+            "workerd"
         ],
         "patchedDependencies": {
             "@blockly/continuous-toolbox@7.0.1": "patches/@blockly__continuous-toolbox@7.0.1.patch"
         }
     },
-    "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad"
+    "packageManager": "pnpm@10.14.0+sha512.ad27a79641b49c3e481a16a805baa71817a04bbe06a38d17e60e2eaee83f6a146c6a688125f5792e48dd5ba30e7da52a5cda4c3992b9ccf333f9ce223af84748"
 }

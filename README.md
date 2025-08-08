@@ -161,6 +161,9 @@ To make a production build run:
 
 ## To do
 
+-   Cloudflare Workers migration
+    -   redirect: https://developers.cloudflare.com/pages/how-to/redirect-to-custom-domain/
+        -   https://dash.cloudflare.com/0b98a46bfada12ea18c74abcbfa2da5e/bulk-redirects
 -   Collision system improvements
     -   base it on polygon overlap instead of bounding boxes? turf js?
     -   inset bounding boxes so barely touching corners don't trigger collisions?
