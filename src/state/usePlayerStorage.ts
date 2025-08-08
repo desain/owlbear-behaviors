@@ -249,9 +249,12 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 handleSceneMetadataChange: (metadata) => {
                     // console.log("new metadata", metadata);
                     const sceneMetadata = metadata[METADATA_KEY_SCENE];
-                    if (isSceneMetadata(sceneMetadata)) {
-                        set({ sceneMetadata, sceneMetadataLoaded: true });
-                    }
+                    set({
+                        sceneMetadataLoaded: true,
+                        ...(isSceneMetadata(sceneMetadata)
+                            ? { sceneMetadata }
+                            : {}),
+                    });
                 },
 
                 clipboard: undefined,
