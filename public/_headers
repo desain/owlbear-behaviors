@@ -1,0 +1,3 @@
+# https://developers.cloudflare.com/workers/static-assets/headers/#cross-origin-resource-sharing-cors
+/*
+  Access-Control-Allow-Origin: *

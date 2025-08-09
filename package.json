@@ -5,9 +5,10 @@
     "description": "Bring tokens to life with block-based automated behavior inspired by Scratch.",
     "scripts": {
         "dev": "vite",
-        "build": "node scripts/build-docs.js && tsc --build && vite build",
+        "build": "pnpm docs && tsc --build && vite build",
         "docs": "node scripts/build-docs.js",
         "preview": "vite preview",
+        "workers:types": "wrangler types",
         "workers:deploy": "pnpm build && wrangler deploy",
         "workers:dry-run": "pnpm build && wrangler deploy --dry-run",
         "workers:dev": "wrangler dev",
@@ -19,6 +20,7 @@
     "author": "desain",
     "license": "GPL-3.0",
     "devDependencies": {
+        "@cloudflare/vite-plugin": "^1.11.2",
         "@eslint/js": "^9.32.0",
         "@types/gapi": "^0.0.47",
         "@types/gapi.auth2": "^0.0.61",
