@@ -1,17 +1,17 @@
 {
-    "name": "Behaviors",
-    "description": "Bring tokens to life with block-based automated behavior inspired by Scratch.",
-    "version": "1.0.0",
-    "manifest_version": 1,
-    "author": "desain",
-    "icon": "/logo-bg.svg",
-    "homepage_url": "https://github.com/desain/owlbear-behaviors",
-    "action": {
-        "title": "Behaviors",
-        "icon": "/logo.svg",
-        "popover": "/src/action/action.html",
-        "height": 300,
-        "width": 300
-    },
-    "permissions": []
+  "name": "Behaviors",
+  "description": "Bring tokens to life with block-based automated behavior inspired by Scratch.",
+  "version": "1.0.1",
+  "manifest_version": 1,
+  "author": "desain",
+  "icon": "/logo-bg.svg",
+  "homepage_url": "https://github.com/desain/owlbear-behaviors",
+  "action": {
+    "title": "Behaviors",
+    "icon": "/logo.svg",
+    "popover": "/src/action/action.html",
+    "height": 300,
+    "width": 300
+  },
+  "permissions": []
 }
