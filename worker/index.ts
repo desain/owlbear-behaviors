@@ -1,28 +1,3 @@
-// function loadGapi(apiKey: string) {
-//     return new Promise((resolve, reject) => {
-//         try {
-//             if (typeof apiKey !== "string") {
-//                 throw Error("Invalid GAPI key");
-//             }
-
-//             gapi.load(
-//                 "client",
-//                 () =>
-//                     void gapi.client
-//                         .init({
-//                             apiKey,
-//                             discoveryDocs: [
-//                                 "https://sheets.googleapis.com/$discovery/rest?version=v4",
-//                             ],
-//                         })
-//                         .then(resolve),
-//             );
-//         } catch (e) {
-//             reject(e instanceof Error ? e : Error(String(e)));
-//         }
-//     });
-// }
-
 interface SheetsResponse {
     values: string[][];
 }
@@ -73,21 +48,12 @@ export default {
 
                 if (isSheetsResponse(data)) {
                     return Response.json({ contents: data.values[0]?.[0] });
+                } else {
+                    return Response.error();
                 }
             } catch {
                 return Response.error();
             }
-
-            //     const response =
-            //         await gapi.client.sheets.spreadsheets.values.get({
-            //             spreadsheetId,
-            //             range,
-            //         });
-            //     const result: unknown = response.result.values?.[0]?.[0];
-            //     if (typeof result !== "string") {
-            //         throw Error("sheets result is not string");
-            //     }
-            //     return Response.json({ contents: result });
         }
         return new Response(null, { status: 404 });
     },

@@ -18,14 +18,15 @@ export const Gapi = {
         )}&sheet=${encodeURIComponent(sheet)}&cell=${encodeURIComponent(cell)}`;
 
         try {
-            const resp = await fetch(url);
+            const resp = await fetch(url, {
+                signal: AbortSignal.timeout(5000),
+            });
             const data: unknown = await resp.json();
             if (
                 isObject(data) &&
                 "contents" in data &&
                 typeof data.contents === "string"
             ) {
-                console.log("got it the new way");
                 return data.contents;
             } else {
                 console.warn("Unexpected Google Sheets API response", data);
