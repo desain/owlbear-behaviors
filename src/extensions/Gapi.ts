@@ -1,29 +1,4 @@
-import { gapi } from "gapi-script";
-import { withTimeout } from "owlbear-utils";
-
-const GAPI_INITIALIZED = new Promise<void>((resolve, reject) => {
-    try {
-        const apiKey: unknown = import.meta.env.VITE_GAPI_KEY;
-        if (typeof apiKey !== "string") {
-            throw Error("Invalid GAPI key");
-        }
-
-        gapi.load(
-            "client",
-            () =>
-                void gapi.client
-                    .init({
-                        apiKey,
-                        discoveryDocs: [
-                            "https://sheets.googleapis.com/$discovery/rest?version=v4",
-                        ],
-                    })
-                    .then(resolve),
-        );
-    } catch (e) {
-        reject(e instanceof Error ? e : Error(String(e)));
-    }
-});
+import { isObject } from "owlbear-utils";
 
 const SPREADSHEET_REGEX =
     /^https?:\/\/docs\.google\.com\/spreadsheets\/d\/([\w-]+)/;
@@ -37,18 +12,29 @@ export const Gapi = {
         sheet: string,
         cell: string,
     ): Promise<string> => {
-        const range = `'${sheet.replace("'", "''")}'!${cell}`;
-        try {
-            await withTimeout(GAPI_INITIALIZED);
-            const response = await gapi.client.sheets.spreadsheets.values.get({
+        // create Cloudflare Worker API request URL
+        const url = new URL(
+            `/api/sheets?spreadsheetId=${encodeURIComponent(
                 spreadsheetId,
-                range,
-            });
-            const result: unknown = response.result.values?.[0]?.[0];
-            if (typeof result !== "string") {
-                throw Error("sheets result is not string");
+            )}&sheet=${encodeURIComponent(sheet)}&cell=${encodeURIComponent(
+                cell,
+            )}`,
+        );
+
+        try {
+            const resp = await fetch(url);
+            const data: unknown = await resp.json();
+            if (
+                isObject(data) &&
+                "contents" in data &&
+                typeof data.contents === "string"
+            ) {
+                console.log("got it the new way");
+                return data.contents;
+            } else {
+                console.warn("Unexpected Google Sheets API response", data);
+                return "";
             }
-            return result;
         } catch (e) {
             console.warn("Error getting Google Sheets value", e);
             return "";
