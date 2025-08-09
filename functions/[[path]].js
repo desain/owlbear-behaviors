@@ -1,7 +1,12 @@
 export async function onRequest({ request, params, env, waitUntil }) {
-    const targetUrl = `https://owlbear-behaviors.nicholassdesai.workers.dev/${
-        params.path || ""
-    }`;
+    const path = Array.isArray(params.path)
+        ? params.path.join("/")
+        : params.path || "";
+
+    const url = new URL(request.url);
+
+    const targetUrl = `https://owlbear-behaviors.nicholassdesai.workers.dev/${path}${url.search}`;
+
     try {
         const response = await fetch(targetUrl, {
             method: request.method,
