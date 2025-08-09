@@ -13,13 +13,9 @@ export const Gapi = {
         cell: string,
     ): Promise<string> => {
         // create Cloudflare Worker API request URL
-        const url = new URL(
-            `/api/sheets?spreadsheetId=${encodeURIComponent(
-                spreadsheetId,
-            )}&sheet=${encodeURIComponent(sheet)}&cell=${encodeURIComponent(
-                cell,
-            )}`,
-        );
+        const url = `/api/sheets?spreadsheetId=${encodeURIComponent(
+            spreadsheetId,
+        )}&sheet=${encodeURIComponent(sheet)}&cell=${encodeURIComponent(cell)}`;
 
         try {
             const resp = await fetch(url);
