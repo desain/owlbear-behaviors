@@ -330,7 +330,56 @@ function behave(
     return `${PARAMETER_BEHAVIOR_IMPL}.${behaviorName}(${params.join(", ")})`;
 }
 
-const GENERATORS: Record<CustomBlockType, Generator> = {
+const variableBlock: Generator = (
+    block: Block,
+    generator: BehaviorJavascriptGenerator,
+) => {
+    const varId = getStringFieldValue(
+        block,
+        BLOCK_VARIABLE_REPORTER.args0[0].name,
+    );
+    // MEMBER since it could be a globals[id] access
+    return [generator.getVariableReference(varId), javascript.Order.MEMBER];
+};
+
+const variableSetBlock: Generator = (
+    block: Block,
+    generator: BehaviorJavascriptGenerator,
+) => {
+    const varId = getStringFieldValue(
+        block,
+        BLOCK_VARIABLE_SETTER.args0[0].name,
+    );
+    const value = generator.valueToCode(
+        block,
+        BLOCK_VARIABLE_SETTER.args0[1].name,
+        javascript.Order.ASSIGNMENT,
+    );
+    return `${generator.getVariableReference(varId)} = ${value};\n`;
+};
+
+const variableChangeBlock: Generator = (
+    block: Block,
+    generator: BehaviorJavascriptGenerator,
+) => {
+    const varRef = generator.getVariableReference(
+        getStringFieldValue(block, BLOCK_VARIABLE_CHANGE.args0[0].name),
+    );
+    const delta = generator.valueToCode(
+        block,
+        BLOCK_VARIABLE_CHANGE.args0[1].name,
+        javascript.Order.NONE,
+    );
+    const num = provideNum(generator);
+    return `${varRef} = ${num}(${varRef}) + ${num}(${delta});\n`;
+};
+
+type OverriddenBlockType =
+    | "math_arithmetic"
+    | "variables_get_dynamic"
+    | "variables_set_dynamic"
+    | "math_change";
+const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
     // Motion blocks
     motion_xposition: () => [`${SELF}.position.x`, javascript.Order.MEMBER],
     motion_yposition: () => [`${SELF}.position.y`, javascript.Order.MEMBER],
@@ -1537,41 +1586,55 @@ const GENERATORS: Record<CustomBlockType, Generator> = {
         ];
     },
 
-    // Variable blocks
-    data_variable: (block, generator) => {
-        const varId = getStringFieldValue(
-            block,
-            BLOCK_VARIABLE_REPORTER.args0[0].name,
-        );
-        // MEMBER since it could be a globals[id] access
-        return [generator.getVariableReference(varId), javascript.Order.MEMBER];
-    },
+    /**
+     * Customization of Blockly version:
+     * https://github.com/google/blockly/blob/8580d763b34b10c961d43ae8a61ce76c8669548c/generators/javascript/math.ts#L27C17-L27C32
+     * Altered to convert parameters to numbers
+     */
+    math_arithmetic: (block, generator) => {
+        const num = provideNum(generator);
 
-    data_setvariableto: (block, generator) => {
-        const varId = getStringFieldValue(
+        // Basic arithmetic operators, and power.
+        const OPERATORS = {
+            ADD: [" + ", javascript.Order.ADDITION],
+            MINUS: [" - ", javascript.Order.SUBTRACTION],
+            MULTIPLY: [" * ", javascript.Order.MULTIPLICATION],
+            DIVIDE: [" / ", javascript.Order.DIVISION],
+            POWER: [null, javascript.Order.NONE], // Handle power separately.
+        } as const;
+        type OperatorOption = keyof typeof OPERATORS;
+        const tuple = OPERATORS[block.getFieldValue("OP") as OperatorOption];
+        const operator = tuple[0];
+        const order = tuple[1];
+        const argument0 = generator.valueToCode(
             block,
-            BLOCK_VARIABLE_SETTER.args0[0].name,
-        );
-        const value = generator.valueToCode(
-            block,
-            BLOCK_VARIABLE_SETTER.args0[1].name,
-            javascript.Order.ASSIGNMENT,
-        );
-        return `${generator.getVariableReference(varId)} = ${value};\n`;
-    },
-
-    data_changevariableby: (block, generator) => {
-        const varRef = generator.getVariableReference(
-            getStringFieldValue(block, BLOCK_VARIABLE_CHANGE.args0[0].name),
-        );
-        const delta = generator.valueToCode(
-            block,
-            BLOCK_VARIABLE_CHANGE.args0[1].name,
+            "A",
             javascript.Order.NONE,
         );
-        const num = provideNum(generator);
-        return `${varRef} = ${num}(${varRef}) + ${num}(${delta});\n`;
+        const argument1 = generator.valueToCode(
+            block,
+            "B",
+            javascript.Order.NONE,
+        );
+        let code;
+        // Power in JavaScript requires a special case since it has no operator.
+        if (!operator) {
+            code = `Math.pow(${num}(${argument0}), ${num}(${argument1}))`;
+            return [code, javascript.Order.FUNCTION_CALL];
+        }
+        code = `${num}(${argument0}) ${operator} ${num}(${argument1})`;
+        return [code, order];
     },
+
+    // Variable blocks
+    data_variable: variableBlock,
+    variables_get_dynamic: variableBlock,
+
+    data_setvariableto: variableSetBlock,
+    variables_set_dynamic: variableSetBlock,
+
+    data_changevariableby: variableChangeBlock,
+    math_change: variableChangeBlock,
 
     data_listcontents: (block, generator) => {
         const varId = getStringFieldValue(
@@ -2524,13 +2587,6 @@ export class BehaviorJavascriptGenerator extends javascript.JavascriptGenerator 
             ([blockType, generator]) =>
                 (this.forBlock[blockType] = generator as unknown as Generator),
         );
-
-        // Old variable blocks may still be out there from before they were replaced with
-        // custom variable blocks, so change the logic for them to work with the new
-        // variable access logic
-        this.forBlock.variables_get_dynamic = GENERATORS.data_variable;
-        this.forBlock.variables_set_dynamic = GENERATORS.data_setvariableto;
-        this.forBlock.math_change = GENERATORS.data_changevariableby;
 
         Object.entries(GENERATORS).forEach(
             ([blockType, generator]) => (this.forBlock[blockType] = generator),

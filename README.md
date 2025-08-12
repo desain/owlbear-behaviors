@@ -161,6 +161,9 @@ To make a production build run:
 
 ## To do
 
+-   Custom menus
+    -   refcount in state, updated by item change handler
+    -   on create, register, on destroy, deregister
 -   Collision system improvements
     -   base it on polygon overlap instead of bounding boxes? turf js?
     -   inset bounding boxes so barely touching corners don't trigger collisions?
@@ -175,11 +178,15 @@ To make a production build run:
         -   Pathfinding
             -   On a grid: easy, A\*
             -   On continuous Euclidean space... need to research more
+    -   Looks
+        -   Set width and height scale independently
     -   Extensions
         -   Initiative Tracker same as Pretty Sordid?
         -   On field change for Daggerheart, Owl Trackers
         -   Kenku FM?
         -   dddice? get room id from metadata, call API?
+        -   Google sheets write
+        -   partial cover control for peekaboo
     -   Control
         -   tell other to? Snail Mod has it as `as (other) {...}`
     -   Events
