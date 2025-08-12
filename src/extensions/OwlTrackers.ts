@@ -3,15 +3,19 @@ import type { Draft } from "immer";
 
 const METADATA_KEY = "com.owl-trackers/trackers";
 
-interface NumberTracker {
+interface BaseTracker {
+    readonly id: string;
+    readonly color: number;
+    readonly name?: string;
+}
+
+interface NumberTracker extends BaseTracker {
     readonly variant: "value" | "counter" | "value-max";
-    readonly name: string;
     readonly value: number;
 }
 
-interface CheckboxTracker {
+interface CheckboxTracker extends BaseTracker {
     readonly variant: "checkbox";
-    readonly name: string;
     readonly checked: boolean;
 }
 
@@ -51,11 +55,21 @@ export const OwlTrackers = {
 
         const tracker = trackers.find((t) => t.name === fieldName);
 
-        if (!tracker || tracker.variant === "checkbox") {
-            return;
+        if (!tracker) {
+            trackers.push({
+                variant: "value",
+                name: fieldName,
+                value,
+                id: String(Date.now()),
+                color: 0,
+            });
+        } else if (tracker.variant === "checkbox") {
+            tracker.checked = !!value;
+        } else {
+            tracker.value = value;
         }
 
-        tracker.value = value;
+        item.metadata[METADATA_KEY] = trackers;
     },
 
     setFieldChecked: (
@@ -69,10 +83,20 @@ export const OwlTrackers = {
 
         const tracker = trackers.find((t) => t.name === fieldName);
 
-        if (!tracker || tracker.variant !== "checkbox") {
-            return;
+        if (!tracker) {
+            trackers.push({
+                variant: "checkbox",
+                name: fieldName,
+                checked,
+                id: String(Date.now()),
+                color: 0,
+            });
+        } else if (tracker.variant !== "checkbox") {
+            tracker.value = Number(checked);
+        } else {
+            tracker.checked = checked;
         }
 
-        tracker.checked = checked;
+        item.metadata[METADATA_KEY] = trackers;
     },
 };
