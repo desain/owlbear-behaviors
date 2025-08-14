@@ -108,6 +108,7 @@ import {
     BLOCK_MY_PARENT,
     BLOCK_OPACITY_SLIDER,
     BLOCK_OTHER,
+    BLOCK_PATHFIND,
     BLOCK_POINT_IN_DIRECTION,
     BLOCK_RECEIVE_BROADCAST,
     BLOCK_REMOVE_AURAS,
@@ -270,6 +271,20 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                             ),
                         },
                     },
+                    ...(import.meta.env.DEV
+                        ? [
+                              {
+                                  kind: "block",
+                                  type: BLOCK_PATHFIND.type,
+                                  inputs: {
+                                      [BLOCK_PATHFIND.args0[0].name]:
+                                          shadowNumber(
+                                              grid.parsedScale.multiplier,
+                                          ),
+                                  },
+                              },
+                          ]
+                        : []),
                     blockToDefinition(BLOCK_SNAP_TO_GRID),
                     GAP50,
                     {

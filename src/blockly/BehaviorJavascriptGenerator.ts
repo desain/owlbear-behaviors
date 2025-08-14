@@ -92,6 +92,7 @@ import {
     BLOCK_MATCH,
     BLOCK_MOVE_DIRECTION,
     BLOCK_OPACITY_SLIDER,
+    BLOCK_PATHFIND,
     BLOCK_POINT_IN_DIRECTION,
     BLOCK_REMOVE_TAG,
     BLOCK_REPEAT,
@@ -409,8 +410,30 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
             y,
         )};\n`;
     },
+
     motion_snap: () =>
         `await ${behave("snapToGrid", PARAMETER_SIGNAL, PARAMETER_SELF_ID)};\n`,
+
+    motion_path: (block, generator) => {
+        const dist = generator.valueToCode(
+            block,
+            BLOCK_PATHFIND.args0[0].name,
+            javascript.Order.NONE,
+        );
+        const target = generator.valueToCode(
+            block,
+            BLOCK_PATHFIND.args0[1].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave(
+            "pathfind",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            dist,
+            target,
+        )};\n`;
+    },
+
     motion_glidesecstoxy: (block, generator) => {
         const duration = generator.valueToCode(
             block,

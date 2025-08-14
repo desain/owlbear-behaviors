@@ -43,6 +43,9 @@ importers:
       '@owlbear-rodeo/sdk':
         specifier: ^3.1.0
         version: 3.1.0
+      '@turf/line-intersect':
+        specifier: ^7.2.0
+        version: 7.2.0
       '@types/rbush':
         specifier: ^4.0.0
         version: 4.0.0
@@ -55,9 +58,21 @@ importers:
       immer:
         specifier: ^10.1.1
         version: 10.1.1
+      martinez-polygon-clipping:
+        specifier: ^0.7.4
+        version: 0.7.4
+      ngraph.graph:
+        specifier: ^20.0.1
+        version: 20.0.1
+      ngraph.path:
+        specifier: ^1.5.0
+        version: 1.5.0
       owlbear-utils:
         specifier: github:desain/owlbear-utils
-        version: https://codeload.github.com/desain/owlbear-utils/tar.gz/c435de902d361889136a64c23e9c718fa98e2de7(@types/react@19.1.9)(@typescript-eslint/parser@8.38.0(eslint@9.32.0)(typescript@5.8.3))(eslint@9.32.0)(react-dom@19.1.1(react@19.1.1))(typescript@5.8.3)
+        version: https://codeload.github.com/desain/owlbear-utils/tar.gz/e90ed0f09154b6754673619f80c12a41c3d3d2b9(@types/react@19.1.9)(@typescript-eslint/parser@8.38.0(eslint@9.32.0)(typescript@5.8.3))(eslint@9.32.0)(react-dom@19.1.1(react@19.1.1))(typescript@5.8.3)
+      polygon-offset:
+        specifier: ^0.3.2
+        version: 0.3.2
       rbush:
         specifier: ^4.0.1
         version: 4.0.1
@@ -73,6 +88,9 @@ importers:
       simplify-js:
         specifier: ^1.2.4
         version: 1.2.4
+      visibility-graph.js:
+        specifier: ^1.0.0
+        version: 1.0.0
       zustand:
         specifier: ^5.0.6
         version: 5.0.6(@types/react@19.1.9)(immer@10.1.1)(react@19.1.1)
@@ -92,6 +110,9 @@ importers:
       '@types/gapi.client.sheets-v4':
         specifier: ^0.0.4
         version: 0.0.4
+      '@types/geojson':
+        specifier: ^7946.0.16
+        version: 7946.0.16
       '@types/node':
         specifier: ^24.1.0
         version: 24.1.0
@@ -905,8 +926,8 @@ packages:
   '@maxim_mazurok/gapi.client.discovery-v1@0.1.20200806':
     resolution: {integrity: sha512-Wl6UfmZVDdWbY3PUu8E2ULk9RPLjnMqp/iOA4tcK8Ne+U/GmlnWP/e34IaZNGArfl7iXJNOG+/3Rj9L9jQyF9Q==}
 
-  '@maxim_mazurok/gapi.client.sheets-v4@0.0.20250804':
-    resolution: {integrity: sha512-I/DUTkZAje2n/sY5m9WT+Q4N45qPR7eQdCd53SXQrIUrHzV9aXwrhyV/Y4OJmFU9FZp/qED84bPeMYixNhvElA==}
+  '@maxim_mazurok/gapi.client.sheets-v4@0.0.20250813':
+    resolution: {integrity: sha512-FfzUdwJhXEtJWUv/kLY5qQpB+ZLCGnX6xUNh+is1fbmga2Z0lx0TDqPskvd8KriZU5C440jOmSpKJSbrcxz/Sw==}
 
   '@mjackson/node-fetch-server@0.6.1':
     resolution: {integrity: sha512-9ZJnk/DJjt805uv5PPv11haJIW+HHf3YEEyVXv+8iLQxLD/iXA68FH220XoiTPBC4gCg5q+IMadDw8qPqlA5wg==}
@@ -1160,6 +1181,12 @@ packages:
   '@speed-highlight/core@1.2.7':
     resolution: {integrity: sha512-0dxmVj4gxg3Jg879kvFS/msl4s9F3T9UXC1InxgOf7t5NvcPD97u/WTA5vL/IxWHMn7qSxBozqrnnE2wvl1m8g==}
 
+  '@turf/helpers@7.2.0':
+    resolution: {integrity: sha512-cXo7bKNZoa7aC7ydLmUR02oB3IgDe7MxiPuRz3cCtYQHn+BJ6h1tihmamYDWWUlPHgSNF0i3ATc4WmDECZafKw==}
+
+  '@turf/line-intersect@7.2.0':
+    resolution: {integrity: sha512-GhCJVEkc8EmggNi85EuVLoXF5T5jNVxmhIetwppiVyJzMrwkYAkZSYB3IBFYGUUB9qiNFnTwungVSsBV/S8ZiA==}
+
   '@types/babel__core@7.20.5':
     resolution: {integrity: sha512-qoQprZvz5wQFJwMDqeseRXWv3rqMvhgpbXFfVyWhbx9X47POIA6i/+dXefEmZKoAgOaTdaIgNSMqMIU61yRyzA==}
 
@@ -1201,6 +1228,9 @@ packages:
 
   '@types/gapi@0.0.47':
     resolution: {integrity: sha512-/ZsLuq6BffMgbKMtZyDZ8vwQvTyKhKQ1G2K6VyWCgtHHhfSSXbk4+4JwImZiTjWNXfI2q1ZStAwFFHSkNoTkHA==}
+
+  '@types/geojson@7946.0.16':
+    resolution: {integrity: sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==}
 
   '@types/hast@3.0.4':
     resolution: {integrity: sha512-WPs+bbQw5aCj+x6laNGWLH3wviHtoCv/P3+otBhbOhJgG8qtpdAMlTCxLtsTWA7LH1Oh/bFCHsBn0TPS5m30EQ==}
@@ -1442,6 +1472,9 @@ packages:
     resolution: {integrity: sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ==}
     engines: {node: '>= 0.4'}
 
+  avl@1.6.0:
+    resolution: {integrity: sha512-sXZcG/wbnIWbJJnH0wQrZl0iyzorHUQaL1BX9+8byrhIp2iPaXnloQ3bFkXTBEHKrshK6wcWe6iGblgMNXarUA==}
+
   axios@1.10.0:
     resolution: {integrity: sha512-/1xYAC4MP/HEG+3duIhFr4ZQXR4sQXOIe+o6sdqzeykGLx6Upp/1p8MHqhINOvGeP7xyNHe7tsiJByc4SSVUxw==}
 
@@ -1454,6 +1487,9 @@ packages:
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
+
+  bintrees@1.0.2:
+    resolution: {integrity: sha512-VOMgTMwjAaUG580SXn3LacVgjurrbMme7ZZNYGSSV7mmtY6QQRh0Eg3pwIcntQ77DErK1L0NxkbetjcoXzVwKw==}
 
   blake3-wasm@2.1.5:
     resolution: {integrity: sha512-F1+K8EbfOZE49dtoPtmxUQrpXaBIl3ICvasLh+nJta0xkz+9kF/7uet9fLnwKqhDrmj6g+6K3Tw9yQPUg2ka5g==}
@@ -2282,6 +2318,12 @@ packages:
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
 
+  martinez-polygon-clipping@0.1.5:
+    resolution: {integrity: sha512-sZ/tS4/DfyzZlTjrg8ZRt1YxNoI83HkRCKkAU9u41YTyUm/S87yVZZa+8fc29sz081Hn8VDysrZOyaU0Wna8mQ==}
+
+  martinez-polygon-clipping@0.7.4:
+    resolution: {integrity: sha512-jBEwrKtA0jTagUZj2bnmb4Yg2s4KnJGRePStgI7bAVjtcipKiF39R4LZ2V/UT61jMYWrTcBhPazexeqd6JAVtw==}
+
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
@@ -2420,6 +2462,21 @@ packages:
   natural-compare@1.4.0:
     resolution: {integrity: sha512-OWND8ei3VtNC9h7V60qff3SVobHr996CTwgxubgyQYEpg290h9J0buyECNNJexkFm5sOajh5G116RYA1c8ZMSw==}
 
+  ngraph.events@0.0.3:
+    resolution: {integrity: sha512-UrewofHOFk/05otBm9GD4DA3PTEY/yaElhCclmGC4IcmAYaSDRrC3lENQxJ00AzeBnz1GY2xH7Ct7AfIdhsdWA==}
+
+  ngraph.events@1.2.2:
+    resolution: {integrity: sha512-JsUbEOzANskax+WSYiAPETemLWYXmixuPAlmZmhIbIj6FH/WDgEGCGnRwUQBK0GjOnVm8Ui+e5IJ+5VZ4e32eQ==}
+
+  ngraph.graph@0.0.15:
+    resolution: {integrity: sha512-XOwLxddsB6a68WP2UKuLdyc3uceNGY3s3q93XJEuX2w87k0iLZDebq+jy35nmf9CnfDKB8J1E+rvLTfDNJ5MQQ==}
+
+  ngraph.graph@20.0.1:
+    resolution: {integrity: sha512-VFsQ+EMkT+7lcJO1QP8Ik3w64WbHJl27Q53EO9hiFU9CRyxJ8HfcXtfWz/U8okuoYKDctbciL6pX3vG5dt1rYA==}
+
+  ngraph.path@1.5.0:
+    resolution: {integrity: sha512-2IdmqfBYq2zbGHtpmskdWF6x/nIWZkhfs1taMgg2waBJRn4xNqe7gBiRtD1YS5ZcKhp0trK+Gw94Rli2emMs1Q==}
+
   node-releases@2.0.19:
     resolution: {integrity: sha512-xxOWJsBKtzAq7DY0J+DTzuz58K8e7sJbdgwkbMWQe8UYB6ekmsQ45q0M/tJDsGaZmbC+l7n57UV8Hl5tHxO9uw==}
 
@@ -2461,8 +2518,8 @@ packages:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
 
-  owlbear-utils@https://codeload.github.com/desain/owlbear-utils/tar.gz/c435de902d361889136a64c23e9c718fa98e2de7:
-    resolution: {tarball: https://codeload.github.com/desain/owlbear-utils/tar.gz/c435de902d361889136a64c23e9c718fa98e2de7}
+  owlbear-utils@https://codeload.github.com/desain/owlbear-utils/tar.gz/e90ed0f09154b6754673619f80c12a41c3d3d2b9:
+    resolution: {tarball: https://codeload.github.com/desain/owlbear-utils/tar.gz/e90ed0f09154b6754673619f80c12a41c3d3d2b9}
     version: 1.0.0
 
   own-keys@1.0.1:
@@ -2526,6 +2583,9 @@ packages:
   picomatch@4.0.2:
     resolution: {integrity: sha512-M7BAV6Rlcy5u+m6oPhAPFgJTzAioX/6B0DxyvDlo9l8+T3nLKbrczg2WLUyzd45L8RqfUMyGPzekbMvX2Ldkwg==}
     engines: {node: '>=12'}
+
+  polygon-offset@0.3.2:
+    resolution: {integrity: sha512-+EqcQ6aITqEzgTFiLTPdeYRJq/JiV2eJFxBPI6sKgULz4x7UPNPKcCQb8YvXp1lMPeeBK+qqLTI8AbYy9W2CUg==}
 
   possible-typed-array-names@1.1.0:
     resolution: {integrity: sha512-/+5VFTchJDoVj3bhoqi6UeymcD00DAwb1nJwamzPvHEszJ4FpF6SNNbUbOS8yI56qHzdV8eK0qEfOSiodkTdxg==}
@@ -2618,6 +2678,9 @@ packages:
   reusify@1.1.0:
     resolution: {integrity: sha512-g6QUff04oZpHs0eG5p83rFLhHeV00ug/Yf9nZM6fLeUrPguBTkTQOdpAWWspMh55TZfVQDPaN3NQJfbVRAxdIw==}
     engines: {iojs: '>=1.0.0', node: '>=0.10.0'}
+
+  robust-predicates@2.0.4:
+    resolution: {integrity: sha512-l4NwboJM74Ilm4VKfbAtFeGq7aEjWL+5kVFcmgFA2MrdnQWx9iE/tUGvxY5HyMI7o/WpSIUFLbC5fbeaHgSCYg==}
 
   rollup@4.45.0:
     resolution: {integrity: sha512-WLjEcJRIo7i3WDDgOIJqVI2d+lAC3EwvOGy+Xfq6hs+GQuAA4Di/H72xmXkOhrIWFg2PFYSKZYfH0f4vfKXN4A==}
@@ -2721,6 +2784,9 @@ packages:
   space-separated-tokens@2.0.2:
     resolution: {integrity: sha512-PEGlAwrG8yXGXRjW32fGbg66JAlOAwbObuqVoJpv/mRgoWDQfgH1wDPvtzWyUSNAXBGSk8h755YDbbcEy3SH2Q==}
 
+  splaytree@0.1.4:
+    resolution: {integrity: sha512-D50hKrjZgBzqD3FT2Ek53f2dcDLAQT8SSGrzj3vidNH5ISRgceeGVJ2dQIthKOuayqFXfFjXheHNo4bbt9LhRQ==}
+
   stackback@0.0.2:
     resolution: {integrity: sha512-1XMJE5fQo1jGH6Y/7ebnwPOBEkIEnT4QF32d5R1+VXdXveM0IBMJt8zfaxX1P3QhVwrYe+576+jkANtSS2mBbw==}
 
@@ -2782,6 +2848,9 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  sweepline-intersections@1.5.0:
+    resolution: {integrity: sha512-AoVmx72QHpKtItPu72TzFL+kcYjd67BPLDoR0LarIk+xyaRg+pDTMFXndIEvZf9xEKnJv6JdhgRMnocoG0D3AQ==}
+
   symbol-tree@3.2.4:
     resolution: {integrity: sha512-9QNk5KwDF+Bvz+PyObkmSYjI5ksVUYtjW7AU22r2NKcfLJcXp96hkDWU3+XndOsUb+AQ9QhfzfCT2O+CNWT5Tw==}
 
@@ -2798,6 +2867,12 @@ packages:
   tinypool@1.1.1:
     resolution: {integrity: sha512-Zba82s87IFq9A9XmjiX5uZA/ARWDrB03OHlq+Vw1fSdt0I+4/Kutwy8BP4Y/y/aORMo61FQ0vIb5j44vSo5Pkg==}
     engines: {node: ^18.0.0 || >=20.0.0}
+
+  tinyqueue@1.2.3:
+    resolution: {integrity: sha512-Qz9RgWuO9l8lT+Y9xvbzhPT2efIUIFd69N7eF7tJ9lnQl0iLj1M7peK7IoUGZL9DJHw9XftqLreccfxcQgYLxA==}
+
+  tinyqueue@2.0.3:
+    resolution: {integrity: sha512-ppJZNDuKGgxzkHihX8v9v9G5f+18gzaTfrukGrq6ueg0lmH4nqVnA2IPG0AEH3jKEk2GRJCUhDoqpoiw3PHLBA==}
 
   tinyrainbow@2.0.0:
     resolution: {integrity: sha512-op4nsTR47R6p0vMUUoYl/a+ljLFVtlfaXkLQmqfLR1qHma1h/ysYk4hEXZ880bf2CYgTskvTa/e196Vd5dDQXw==}
@@ -2929,6 +3004,9 @@ packages:
 
   vfile@6.0.3:
     resolution: {integrity: sha512-KzIbH/9tXat2u30jf+smMwFCsno4wHVdNmzFyL+T/L3UGqqk6JKfVqOFOZEpZSHADH1k40ab6NUIXZq422ov3Q==}
+
+  visibility-graph.js@1.0.0:
+    resolution: {integrity: sha512-OhQeCQuDSIANB8IUNNQPw/gzYFIZ5dSDIJyZVLvcLDRIMiWxWJBhBCVNBewdmi3w0XCHmIS+JGXH+gIL2oZGZQ==}
 
   vite-node@3.2.4:
     resolution: {integrity: sha512-EbKSKh+bh1E1IFxeO0pg1n4dvoOTt0UDiXMd/qn++r98+jPO1xtJilvXldeuQ8giIB5IkpjCgMleHMNEsGH6pg==}
@@ -3776,7 +3854,7 @@ snapshots:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
 
-  '@maxim_mazurok/gapi.client.sheets-v4@0.0.20250804':
+  '@maxim_mazurok/gapi.client.sheets-v4@0.0.20250813':
     dependencies:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
@@ -3986,6 +4064,18 @@ snapshots:
 
   '@speed-highlight/core@1.2.7': {}
 
+  '@turf/helpers@7.2.0':
+    dependencies:
+      '@types/geojson': 7946.0.16
+      tslib: 2.8.1
+
+  '@turf/line-intersect@7.2.0':
+    dependencies:
+      '@turf/helpers': 7.2.0
+      '@types/geojson': 7946.0.16
+      sweepline-intersections: 1.5.0
+      tslib: 2.8.1
+
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.28.0
@@ -4033,11 +4123,13 @@ snapshots:
 
   '@types/gapi.client.sheets-v4@0.0.4':
     dependencies:
-      '@maxim_mazurok/gapi.client.sheets-v4': 0.0.20250804
+      '@maxim_mazurok/gapi.client.sheets-v4': 0.0.20250813
 
   '@types/gapi.client@1.0.8': {}
 
   '@types/gapi@0.0.47': {}
+
+  '@types/geojson@7946.0.16': {}
 
   '@types/hast@3.0.4':
     dependencies:
@@ -4350,6 +4442,8 @@ snapshots:
     dependencies:
       possible-typed-array-names: 1.1.0
 
+  avl@1.6.0: {}
+
   axios@1.10.0(debug@4.4.1):
     dependencies:
       follow-redirects: 1.15.9(debug@4.4.1)
@@ -4367,6 +4461,8 @@ snapshots:
   bail@2.0.2: {}
 
   balanced-match@1.0.2: {}
+
+  bintrees@1.0.2: {}
 
   blake3-wasm@2.1.5: {}
 
@@ -5340,6 +5436,17 @@ snapshots:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.4
 
+  martinez-polygon-clipping@0.1.5:
+    dependencies:
+      bintrees: 1.0.2
+      tinyqueue: 1.2.3
+
+  martinez-polygon-clipping@0.7.4:
+    dependencies:
+      robust-predicates: 2.0.4
+      splaytree: 0.1.4
+      tinyqueue: 1.2.3
+
   math-intrinsics@1.1.0: {}
 
   mdast-util-from-markdown@2.0.2:
@@ -5613,6 +5720,20 @@ snapshots:
 
   natural-compare@1.4.0: {}
 
+  ngraph.events@0.0.3: {}
+
+  ngraph.events@1.2.2: {}
+
+  ngraph.graph@0.0.15:
+    dependencies:
+      ngraph.events: 0.0.3
+
+  ngraph.graph@20.0.1:
+    dependencies:
+      ngraph.events: 1.2.2
+
+  ngraph.path@1.5.0: {}
+
   node-releases@2.0.19: {}
 
   nwsapi@2.2.20: {}
@@ -5663,7 +5784,7 @@ snapshots:
       type-check: 0.4.0
       word-wrap: 1.2.5
 
-  owlbear-utils@https://codeload.github.com/desain/owlbear-utils/tar.gz/c435de902d361889136a64c23e9c718fa98e2de7(@types/react@19.1.9)(@typescript-eslint/parser@8.38.0(eslint@9.32.0)(typescript@5.8.3))(eslint@9.32.0)(react-dom@19.1.1(react@19.1.1))(typescript@5.8.3):
+  owlbear-utils@https://codeload.github.com/desain/owlbear-utils/tar.gz/e90ed0f09154b6754673619f80c12a41c3d3d2b9(@types/react@19.1.9)(@typescript-eslint/parser@8.38.0(eslint@9.32.0)(typescript@5.8.3))(eslint@9.32.0)(react-dom@19.1.1(react@19.1.1))(typescript@5.8.3):
     dependencies:
       '@emotion/react': 11.14.0(@types/react@19.1.9)(react@19.1.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.1.9)(react@19.1.1))(@types/react@19.1.9)(react@19.1.1)
@@ -5743,6 +5864,10 @@ snapshots:
   picomatch@2.3.1: {}
 
   picomatch@4.0.2: {}
+
+  polygon-offset@0.3.2:
+    dependencies:
+      martinez-polygon-clipping: 0.1.5
 
   possible-typed-array-names@1.1.0: {}
 
@@ -5860,6 +5985,8 @@ snapshots:
       supports-preserve-symlinks-flag: 1.0.0
 
   reusify@1.1.0: {}
+
+  robust-predicates@2.0.4: {}
 
   rollup@4.45.0:
     dependencies:
@@ -6020,6 +6147,8 @@ snapshots:
 
   space-separated-tokens@2.0.2: {}
 
+  splaytree@0.1.4: {}
+
   stackback@0.0.2: {}
 
   std-env@3.9.0: {}
@@ -6085,6 +6214,10 @@ snapshots:
 
   supports-preserve-symlinks-flag@1.0.0: {}
 
+  sweepline-intersections@1.5.0:
+    dependencies:
+      tinyqueue: 2.0.3
+
   symbol-tree@3.2.4: {}
 
   tinybench@2.9.0: {}
@@ -6097,6 +6230,10 @@ snapshots:
       picomatch: 4.0.2
 
   tinypool@1.1.1: {}
+
+  tinyqueue@1.2.3: {}
+
+  tinyqueue@2.0.3: {}
 
   tinyrainbow@2.0.0: {}
 
@@ -6135,8 +6272,7 @@ snapshots:
       minimist: 1.2.8
       strip-bom: 3.0.0
 
-  tslib@2.8.1:
-    optional: true
+  tslib@2.8.1: {}
 
   type-check@0.4.0:
     dependencies:
@@ -6263,6 +6399,12 @@ snapshots:
     dependencies:
       '@types/unist': 3.0.3
       vfile-message: 4.0.2
+
+  visibility-graph.js@1.0.0:
+    dependencies:
+      avl: 1.6.0
+      ngraph.graph: 0.0.15
+      robust-predicates: 2.0.4
 
   vite-node@3.2.4(@types/node@24.1.0):
     dependencies:

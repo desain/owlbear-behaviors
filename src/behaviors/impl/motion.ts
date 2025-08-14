@@ -1,6 +1,20 @@
-import OBR, { type GridType, type Vector2 } from "@owlbear-rodeo/sdk";
-import { ANGLE_DIMETRIC_RADIANS, ORIGIN, SQRT_3 } from "owlbear-utils";
+import OBR, {
+    isWall,
+    Math2,
+    type GridType,
+    type Vector2,
+} from "@owlbear-rodeo/sdk";
+import {
+    ANGLE_DIMETRIC_RADIANS,
+    ORIGIN,
+    SQRT_3,
+    units,
+    unitsToPixels,
+} from "owlbear-utils";
 import type { BLOCK_MOVE_DIRECTION } from "../../blockly/blocks";
+import { getBounds, isBoundableItem } from "../../collision/getBounds";
+import { getWorldPoints } from "../../collision/getWorldPoints";
+import { findPath } from "../../pathfinding/findPath";
 import { usePlayerStorage } from "../../state/usePlayerStorage";
 import { ItemProxy } from "../ItemProxy";
 
@@ -78,6 +92,45 @@ export const DIRECTIONS: Record<GridType, Record<Direction, Vector2>> = {
         NORTHEAST: { x: HEX_DIAG_OFFSET, y: -0.5 },
     },
 } as const;
+
+/**
+ * Returns the point reached by traveling a given distance along a path.
+ * @throws error on invalid (too short) path
+ * @returns point given by distance along path; last point if distance > path length
+ */
+export function getPointAlongPath(
+    path: readonly Vector2[],
+    distance: number,
+): Vector2 {
+    if (path.length < 2) {
+        throw Error("invalid path");
+    }
+    let remaining = distance;
+    for (let i = 0; i < path.length - 1; i++) {
+        const p0 = path[i];
+        const p1 = path[i + 1];
+        if (!p0 || !p1) {
+            continue;
+        }
+
+        const segmentLength = Math2.distance(p0, p1);
+        if (remaining <= segmentLength) {
+            const dx = p1.x - p0.x;
+            const dy = p1.y - p0.y;
+            const t = segmentLength === 0 ? 0 : remaining / segmentLength;
+            return {
+                x: p0.x + t * dx,
+                y: p0.y + t * dy,
+            };
+        } else {
+            remaining -= segmentLength;
+        }
+    }
+
+    // If distance exceeds path length, return last point
+    // ! safety: length of path was checked earlier
+    return path[path.length - 1]!;
+}
 
 export const MOTION_BEHAVIORS = {
     getDirectionOffset: (
@@ -383,6 +436,63 @@ export const MOTION_BEHAVIORS = {
         await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
             self.position = snappedPosition;
         });
+        signal.throwIfAborted();
+    },
+
+    pathfind: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        distUnknown: unknown,
+        targetId: unknown,
+    ) => {
+        const dist = Number(distUnknown);
+        if (!isFinite(dist) || isNaN(dist)) {
+            console.warn(`[pathfind] invalid distance: ${dist}`);
+            return;
+        }
+
+        const itemProxy = ItemProxy.getInstance();
+        const selfItem = await itemProxy.get(String(selfIdUnknown));
+        const targetItem = await itemProxy.get(String(targetId));
+        signal.throwIfAborted();
+        if (!selfItem || !targetItem || !isBoundableItem(selfItem)) {
+            return;
+        }
+
+        const grid = usePlayerStorage.getState().grid;
+
+        const bbox = getBounds(selfItem, grid);
+        const radius = Math.max(bbox.width, bbox.height) / 2;
+
+        const walls = await OBR.scene.local.getItems(isWall);
+
+        const path = findPath(
+            walls.map((wall) => getWorldPoints(wall, grid)),
+            selfItem.position,
+            targetItem.position,
+            radius,
+        );
+
+        if (path) {
+            // debugLineString(path, 1000);
+            // if the path doesn't start at the self item, then it was
+            // reversed due to the reverse A* algorithm, so reverse it back
+            if (
+                selfItem.position.x !== path[0]?.x ||
+                selfItem.position.y !== path[0]?.y
+            ) {
+                path.reverse();
+            }
+            const distPx = unitsToPixels(units(dist), grid);
+            const position = getPointAlongPath(path, distPx);
+
+            // TODO disable lights for self so it can go thru walls when turning around
+            // corners
+            await itemProxy.update(selfItem, (draft) => {
+                draft.position = position;
+            });
+        }
+
         signal.throwIfAborted();
     },
 };

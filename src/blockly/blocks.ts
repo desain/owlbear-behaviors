@@ -129,6 +129,27 @@ export const BLOCK_GOTO = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_PATHFIND = {
+    style: "motion_blocks",
+    type: "motion_path",
+    message0: "pathfind %1 %{BKY_OBR_GRID_UNIT} toward %2",
+    args0: [
+        {
+            type: "input_value",
+            name: "DIST",
+            check: ["Number", "String"],
+        },
+        {
+            type: "input_value",
+            name: "TARGET",
+            check: "ItemId",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 export const BLOCK_MOVE_DIRECTION = {
     style: "motion_blocks",
     type: "motion_move_direction",
@@ -3330,6 +3351,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_POINT_IN_DIRECTION,
     BLOCK_FACE,
     BLOCK_SNAP_TO_GRID,
+    BLOCK_PATHFIND,
 
     // Looks blocks
     BLOCK_SHOW,
