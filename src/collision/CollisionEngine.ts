@@ -4,7 +4,6 @@ import {
     isLine,
     isPath,
     isShape,
-    type BoundingBox,
     type Curve,
     type Image,
     type Item,
@@ -12,6 +11,7 @@ import {
     type Path,
     type Shape,
 } from "@owlbear-rodeo/sdk";
+import RBush, { type BBox } from "rbush";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import type { ItemDiff } from "../watcher/diffItemSets";
 import { getBounds } from "./getBounds";
@@ -29,30 +29,24 @@ function isCollisionItem(item: Item): item is CollisionItem {
 }
 
 export type Collision = readonly [a: Item["id"], b: Item["id"]];
-
-interface CollisionUpdate {
-    readonly newCollisions: readonly Collision[];
-    readonly finishedCollisions: readonly Collision[];
+interface RBushEntry extends BBox {
+    id: CollisionItem["id"];
 }
 
-export function checkBoundingBoxOverlap(
-    a: BoundingBox,
-    b: BoundingBox,
-): boolean {
-    // AABB collision: overlaps if NOT separated on any axis
-    return !(
-        (
-            a.max.x < b.min.x || // a is left of b
-            a.min.x > b.max.x || // a is right of b
-            a.max.y < b.min.y || // a is above b
-            a.min.y > b.max.y
-        )
-        // a is below b
-    );
+function rBushEntryFromItem(item: CollisionItem): RBushEntry {
+    const bounds = getBounds(item, usePlayerStorage.getState().grid);
+    return {
+        minX: bounds.min.x,
+        minY: bounds.min.y,
+        maxX: bounds.max.x,
+        maxY: bounds.max.y,
+        id: item.id,
+    };
 }
 
 export class CollisionEngine {
-    readonly #boundsCache = new Map<CollisionItem["id"], BoundingBox>();
+    readonly rbush = new RBush<RBushEntry>();
+    readonly #boundsCache = new Map<CollisionItem["id"], RBushEntry>();
     readonly #inProgress = new Map<
         CollisionItem["id"],
         Set<CollisionItem["id"]>
@@ -68,76 +62,86 @@ export class CollisionEngine {
         this.#inProgress.set(b, bSet);
     }
 
-    // TODO: Make this take a parameter 'id' to get collision candidates for,
-    // and add spatial hashing so we only look at candidates that occupy the
-    // same spatial hash cells as the target
-    #getCollisionCandidates(): CollisionItem["id"][] {
-        return [...this.#boundsCache.keys()];
-    }
-
     handleGlobalItemsUpdate({
         createdItems,
         updatedItems,
         deletedItems,
-    }: ItemDiff): CollisionUpdate {
-        const newCollisions: Collision[] = [];
+    }: ItemDiff): {
+        readonly newCollisions: readonly Collision[];
+        readonly finishedCollisions: readonly Collision[];
+    } {
         const finishedCollisions: Collision[] = [];
 
         // Remove collisions pertaining to deleted items
         for (const id of deletedItems) {
+            // Stop tracking any collisions it was part of
             const prevCollided = [...(this.#inProgress.get(id) ?? [])];
             for (const other of prevCollided) {
                 finishedCollisions.push([id, other]);
                 this.#inProgress.get(other)?.delete(id);
             }
             this.#inProgress.delete(id);
+
+            // Remove it from bounds tracking and spatial index
+            const entry = this.#boundsCache.get(id);
             this.#boundsCache.delete(id);
+            if (entry) {
+                this.rbush.remove(entry);
+            }
         }
 
         // Cache new bounding boxes
-        for (const createdItem of createdItems) {
-            if (isCollisionItem(createdItem)) {
-                this.#boundsCache.set(
-                    createdItem.id,
-                    getBounds(createdItem, usePlayerStorage.getState().grid),
-                );
-            }
-        }
+        const createdCollisionItems = [...createdItems].filter(isCollisionItem);
+        createdCollisionItems.forEach((item) => {
+            const entry = rBushEntryFromItem(item);
+            this.#boundsCache.set(item.id, entry);
+            this.rbush.insert(entry);
+        });
 
-        for (const updatedItem of updatedItems) {
-            if (isCollisionItem(updatedItem)) {
-                this.#boundsCache.set(
-                    updatedItem.id,
-                    getBounds(updatedItem, usePlayerStorage.getState().grid),
-                );
+        // Update existing bounding boxes
+        const updatedCollisionItems = [...updatedItems].filter(isCollisionItem);
+        updatedCollisionItems.forEach((item) => {
+            const entry = this.#boundsCache.get(item.id);
+            if (entry) {
+                this.rbush.remove(entry);
             }
-        }
+            const newEntry = rBushEntryFromItem(item);
+            this.#boundsCache.set(item.id, newEntry);
+            this.rbush.insert(newEntry);
+        });
 
         // Check for update collisions
-        // Simple O(n^2 solution for now)
-        const checkItems = [...createdItems, ...updatedItems];
+        const newCollisions: Collision[] = [];
+        const checkItems = [...createdCollisionItems, ...updatedCollisionItems];
         for (const a of checkItems) {
-            const boundsA = this.#boundsCache.get(a.id);
+            const entryA = this.#boundsCache.get(a.id);
+            if (!entryA) {
+                console.error("Missing bounds for created/updated item:", a.id);
+                continue;
+            }
 
-            for (const bId of this.#getCollisionCandidates()) {
-                if (a.id === bId) {
-                    continue;
-                }
+            const currentCollisions = new Set(
+                this.rbush
+                    .search(entryA)
+                    .map((entry) => entry.id)
+                    .filter((id) => id !== a.id),
+            );
+            const prevCollisions = this.#inProgress.get(a.id) ?? new Set();
 
-                const boundsB = this.#boundsCache.get(bId);
-                if (!boundsA || !boundsB) {
-                    // if we don't have bounds, one of them must not be a collision item
-                    continue;
+            // Add new collisions
+            for (const b of currentCollisions) {
+                if (!prevCollisions.has(b)) {
+                    newCollisions.push([a.id, b]);
+                    this.#saveCollided(a.id, b);
                 }
-                const wasCollided = !!this.#inProgress.get(a.id)?.has(bId);
-                const nowCollided = checkBoundingBoxOverlap(boundsA, boundsB);
-                if (!wasCollided && nowCollided) {
-                    newCollisions.push([a.id, bId]);
-                    this.#saveCollided(a.id, bId);
-                } else if (wasCollided && !nowCollided) {
-                    finishedCollisions.push([a.id, bId]);
-                    this.#inProgress.get(a.id)?.delete(bId);
-                    this.#inProgress.get(bId)?.delete(a.id);
+            }
+
+            // Finish collisions that are no longer valid
+            for (const b of prevCollisions) {
+                if (!currentCollisions.has(b)) {
+                    finishedCollisions.push([a.id, b]);
+                    this.#inProgress.get(a.id)?.delete(b);
+                    this.#inProgress.get(b)?.delete(a.id);
                 }
             }
         }

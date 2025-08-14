@@ -1,12 +1,27 @@
-import OBR from "@owlbear-rodeo/sdk";
+import OBR, { type BoundingBox } from "@owlbear-rodeo/sdk";
 import { assertItem, cells, cellsToUnits } from "owlbear-utils";
 import { isBehaviorItem, type BehaviorItem } from "../../BehaviorItem";
 import { notifyPlayersToDeselect } from "../../broadcast/broadcast";
-import { checkBoundingBoxOverlap } from "../../collision/CollisionEngine";
 import { getBounds, isBoundableItem } from "../../collision/getBounds";
 import { METADATA_KEY_TAGS } from "../../constants";
 import { usePlayerStorage } from "../../state/usePlayerStorage";
 import { ItemProxy } from "../ItemProxy";
+
+export function checkBoundingBoxOverlap(
+    a: BoundingBox,
+    b: BoundingBox,
+): boolean {
+    // AABB collision: overlaps if NOT separated on any axis
+    return !(
+        (
+            a.max.x < b.min.x || // a is left of b
+            a.min.x > b.max.x || // a is right of b
+            a.max.y < b.min.y || // a is above b
+            a.min.y > b.max.y
+        )
+        // a is below b
+    );
+}
 
 export const SENSING_BEHAVIORS = {
     addTag: async (
