@@ -1220,7 +1220,7 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
             block,
             BLOCK_REPEAT.args1[0].name,
         );
-        return `${prefix}for (${initCountVar}; ${countVar} < ${max}; ${countVar}++) {\n${generator.addLoopTrap(
+        return `${prefix}for (${initCountVar} ${countVar} < ${max}; ${countVar}++) {\n${generator.addLoopTrap(
             statements,
             block,
         )}\n}\n`;
