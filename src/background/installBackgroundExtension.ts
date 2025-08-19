@@ -1,22 +1,23 @@
 import { deferCallAll } from "owlbear-utils";
-import { version } from "../package.json";
-import { BehaviorRegistry } from "./behaviors/BehaviorRegistry";
-import { installBehaviorRunner } from "./behaviors/installBehaviorRunner";
-import { watchSelection } from "./behaviors/watchSelection";
-import { setupBlocklyGlobals } from "./blockly/setupBlocklyGlobals";
-import { installBroadcastListener } from "./broadcast/broadcast";
-import { startWatchingContextMenuEnabled } from "./contextmenu/contextmenu";
+import { version } from "../../package.json";
+import { BehaviorRegistry } from "../behaviors/BehaviorRegistry";
+import { installBehaviorRunner } from "../behaviors/installBehaviorRunner";
+import { watchSelection } from "../behaviors/watchSelection";
+import { setupBlocklyGlobals } from "../blockly/setupBlocklyGlobals";
+import { installBroadcastListener } from "../broadcast/broadcast";
+import { startWatchingContextMenuEnabled } from "../contextmenu/contextmenu";
+import { startSyncing } from "../state/startSyncing";
 
-export async function installExtension(
-    setStopper: (stopper: VoidFunction) => void,
-): Promise<VoidFunction> {
+export async function installBackgroundExtension(): Promise<VoidFunction> {
     console.log(`Behaviors version ${version}`);
+
+    const [initialized] = startSyncing();
+    await initialized;
 
     // Blockly setup
     setupBlocklyGlobals(); // idempotent
 
     const behaviorRegistry = new BehaviorRegistry();
-    setStopper(behaviorRegistry.stopAll);
 
     const stopWatchingContextMenu = await startWatchingContextMenuEnabled();
     const uninstallBroadcastListener =

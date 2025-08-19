@@ -9,9 +9,10 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
+import OBR from "@owlbear-rodeo/sdk";
 import { useActionResizer, useRehydrate } from "owlbear-utils";
-import { useEffect, useRef, useState } from "react";
-import { installExtension } from "../install";
+import { useEffect, useRef } from "react";
+import { broadcastStopAllBehaviors } from "../broadcast/broadcast";
 import { openHelp } from "../popoverHelp/openHelp";
 import { openSettings } from "../popoverSettings/openSettings";
 import { usePlayerStorage } from "../state/usePlayerStorage";
@@ -23,36 +24,37 @@ import { TagList } from "./TagList";
 const BASE_HEIGHT = 10;
 const MAX_HEIGHT = 700;
 
+const POPOVER_ID = "behaviorsFakeForegroundPopover";
+
 export function Action() {
     const role = usePlayerStorage((store) => store.role);
     const sceneReady = usePlayerStorage((store) => store.sceneReady);
     const box: React.RefObject<HTMLElement | null> = useRef(null);
-    const [stopper, setStopper] = useState<VoidFunction>();
-    useActionResizer(BASE_HEIGHT, MAX_HEIGHT, box);
-    useRehydrate(usePlayerStorage);
 
     useEffect(() => {
-        let uninstallExtension: VoidFunction | undefined;
-        let unmounted = false;
-        // Need to pass `() => stopper` to `setStopper` because if you pass a
-        // function to a useState setter, it will assume you want to call the
-        // function and set the state to the output, rather than using the
-        // passed function as the next state itself.
-        void installExtension((stopper) => setStopper(() => stopper)).then(
-            (uninstall) => {
-                if (unmounted) {
-                    uninstall();
-                } else {
-                    uninstallExtension = uninstall;
-                }
+        void OBR.popover.open({
+            width: 10,
+            height: 10,
+            url: "/src/background/background.html",
+            // anchorOrigin: {
+            //     horizontal: "LEFT",
+            //     vertical: "TOP",
+            // },
+            anchorReference: "POSITION",
+            anchorPosition: {
+                left: 0,
+                top: 0,
             },
-        );
-        return () => {
-            unmounted = true;
-            uninstallExtension?.();
-            uninstallExtension = undefined;
-        };
-    }, [setStopper]);
+            id: POPOVER_ID,
+            disableClickAway: true,
+            hidePaper: true,
+        });
+
+        return () => void OBR.popover.close(POPOVER_ID);
+    });
+
+    useActionResizer(BASE_HEIGHT, MAX_HEIGHT, box);
+    useRehydrate(usePlayerStorage);
 
     return (
         <Box ref={box}>
@@ -109,7 +111,7 @@ export function Action() {
                         <Button
                             variant="text"
                             startIcon={<Stop />}
-                            onClick={() => stopper?.()}
+                            onClick={() => void broadcastStopAllBehaviors()}
                         >
                             Stop all behaviors
                         </Button>

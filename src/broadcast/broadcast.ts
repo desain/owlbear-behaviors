@@ -244,6 +244,30 @@ export function broadcastShowSpeechBubble(params: SpeechBubbleParams) {
     );
 }
 
+const STOP_ALL_BEHAVIORS = "STOP_ALL_BEHAVIORS";
+
+interface StopAllBehaviorsMessage {
+    readonly type: typeof STOP_ALL_BEHAVIORS;
+}
+
+function isStopAllBehaviorsMessage(message: unknown) {
+    return (
+        isObject(message) &&
+        "type" in message &&
+        message.type === STOP_ALL_BEHAVIORS
+    );
+}
+
+export function broadcastStopAllBehaviors() {
+    return OBR.broadcast.sendMessage(
+        CHANNEL_MESSAGE,
+        { type: STOP_ALL_BEHAVIORS } satisfies StopAllBehaviorsMessage,
+        {
+            destination: "LOCAL",
+        },
+    );
+}
+
 function installBonesListener(behaviorRegistry: BehaviorRegistry) {
     return OBR.broadcast.onMessage(Bones.CHANNEL, ({ data }) => {
         const state = usePlayerStorage.getState();
@@ -285,6 +309,8 @@ export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
                 void animateViewportTo(data.x, data.y);
             } else if (isShowSpeechBubbleMessage(data)) {
                 void showSpeechBubble(data);
+            } else if (isStopAllBehaviorsMessage(data)) {
+                void behaviorRegistry.stopAll();
             } else {
                 console.warn(
                     "Received unknown broadcast message",
