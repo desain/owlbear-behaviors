@@ -200,7 +200,6 @@ To make a production build run:
 
 ## Known Bugs
 
--   Animations can be choppy when the action window is not open
 -   Stacking in backpack - happens when lots of (tall?) items, only on second time opening backpack
 -   Sounds aren't restored when loading an item with behaviors from a prefab
 -   If you put a procedure definition that references itself (by using its parameters or making it recursive) in the backpack, then drag a copy of the procedure into a workspace that already has the procedure, the self-referential elements of the new copy will attach to the original definition, rather than the newly copied in one.

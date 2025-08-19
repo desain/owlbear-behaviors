@@ -9,9 +9,11 @@ import {
     Tooltip,
     Typography,
 } from "@mui/material";
+import OBR from "@owlbear-rodeo/sdk";
 import { useActionResizer, useRehydrate } from "owlbear-utils";
-import { useEffect, useRef, useState } from "react";
-import { installExtension } from "../install";
+import { useEffect, useRef } from "react";
+import { broadcastStopAllBehaviors } from "../broadcast/broadcast";
+import { ID_POPOVER_EXECUTOR } from "../constants";
 import { openHelp } from "../popoverHelp/openHelp";
 import { openSettings } from "../popoverSettings/openSettings";
 import { usePlayerStorage } from "../state/usePlayerStorage";
@@ -27,32 +29,36 @@ export function Action() {
     const role = usePlayerStorage((store) => store.role);
     const sceneReady = usePlayerStorage((store) => store.sceneReady);
     const box: React.RefObject<HTMLElement | null> = useRef(null);
-    const [stopper, setStopper] = useState<VoidFunction>();
+
+    // Some browsers 'optimize' invisible iframes to not run timeouts or
+    // handle messages quickly when they are not visible; the OBR action
+    // window is counted as invisible when it's not open, which causes
+    // the extension to chug in some browsers.
+    // To get around this, defer behavior execution to a tiny popover in
+    // the corner of the screen, which is technically visible and so
+    // avoids the optimization.
+    useEffect(() => {
+        void OBR.popover.open({
+            // Width and height 10 seem to be the minimum for the popover
+            // to actually display
+            width: 10,
+            height: 10,
+            url: "/src/popoverExecutor/popoverExecutor.html",
+            anchorReference: "POSITION",
+            anchorPosition: {
+                left: 0,
+                top: 0,
+            },
+            id: ID_POPOVER_EXECUTOR,
+            disableClickAway: true,
+            hidePaper: true,
+        });
+
+        return () => void OBR.popover.close(ID_POPOVER_EXECUTOR);
+    });
+
     useActionResizer(BASE_HEIGHT, MAX_HEIGHT, box);
     useRehydrate(usePlayerStorage);
-
-    useEffect(() => {
-        let uninstallExtension: VoidFunction | undefined;
-        let unmounted = false;
-        // Need to pass `() => stopper` to `setStopper` because if you pass a
-        // function to a useState setter, it will assume you want to call the
-        // function and set the state to the output, rather than using the
-        // passed function as the next state itself.
-        void installExtension((stopper) => setStopper(() => stopper)).then(
-            (uninstall) => {
-                if (unmounted) {
-                    uninstall();
-                } else {
-                    uninstallExtension = uninstall;
-                }
-            },
-        );
-        return () => {
-            unmounted = true;
-            uninstallExtension?.();
-            uninstallExtension = undefined;
-        };
-    }, [setStopper]);
 
     return (
         <Box ref={box}>
@@ -109,7 +115,7 @@ export function Action() {
                         <Button
                             variant="text"
                             startIcon={<Stop />}
-                            onClick={() => stopper?.()}
+                            onClick={() => void broadcastStopAllBehaviors()}
                         >
                             Stop all behaviors
                         </Button>

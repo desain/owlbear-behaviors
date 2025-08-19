@@ -15,6 +15,7 @@ export const ID_TOOL_MODE_EDIT_BEHAVIORS = `${ID_TOOL}/modeEditBehaviors`;
 export const ID_POPOVER_SETTINGS = `${PLUGIN_ID}/popoverSettings`;
 export const ID_POPOVER_HELP = `${PLUGIN_ID}/popoverHelp`;
 export const ID_POPOVER_ADD_TAGS = `${PLUGIN_ID}/popoverAddTags`;
+export const ID_POPOVER_EXECUTOR = `${PLUGIN_ID}/popoverExecutor`;
 
 // Modal
 export const MODAL_EDIT_BEHAVIOR_ID = `${PLUGIN_ID}/modalEditBehavior`;

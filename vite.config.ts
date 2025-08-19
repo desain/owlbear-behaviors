@@ -1,10 +1,10 @@
 /// <reference types="vitest" />
 
+import { cloudflare } from "@cloudflare/vite-plugin";
 import react from "@vitejs/plugin-react";
 import { resolve } from "path";
 import { defineConfig } from "vite";
 import mkcert from "vite-plugin-mkcert";
-import { cloudflare } from "@cloudflare/vite-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -18,6 +18,10 @@ export default defineConfig({
             input: {
                 // must have a 'main' entry point
                 action: resolve(__dirname, "/src/action/action.html"),
+                background: resolve(
+                    __dirname,
+                    "/src/popoverExecutor/popoverExecutor.html",
+                ),
                 popoverSettings: resolve(
                     __dirname,
                     "/src/popoverSettings/popoverSettings.html",
