@@ -151,6 +151,29 @@ export const MOTION_BEHAVIORS = {
         };
     },
 
+    goto: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        xUnknown: unknown,
+        yUnknown: unknown,
+    ) => {
+        const x = Number(xUnknown);
+        if (!isFinite(x) || isNaN(x)) {
+            console.warn(`[goto] x invalid: ${x}`);
+            return;
+        }
+        const y = Number(yUnknown);
+        if (!isFinite(y) || isNaN(y)) {
+            console.warn(`[goto] y invalid: ${y}`);
+            return;
+        }
+
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (draft) => {
+            draft.position = { x, y };
+        });
+        signal.throwIfAborted();
+    },
+
     /**
      * @returns loop check
      */

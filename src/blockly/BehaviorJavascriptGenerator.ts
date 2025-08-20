@@ -318,14 +318,17 @@ function getNumberFieldValue(block: Blockly.Block, name: string): number {
     return value;
 }
 
+type BehaviorParams<T extends readonly unknown[]> = {
+    [K in keyof T]: T[K] extends AbortSignal ? typeof PARAMETER_SIGNAL : string;
+};
 /**
  * Generate a call to a behavior function by name.
  * @param behaviorName The name of the behavior function to call.
  * @returns A string representing the behavior function call.
  */
-function behave(
-    behaviorName: keyof typeof BEHAVIORS_IMPL,
-    ...params: string[]
+function behave<T extends keyof typeof BEHAVIORS_IMPL>(
+    behaviorName: T,
+    ...params: BehaviorParams<Parameters<(typeof BEHAVIORS_IMPL)[T]>>
 ) {
     return `${PARAMETER_BEHAVIOR_IMPL}.${behaviorName}(${params.join(", ")})`;
 }
@@ -394,14 +397,13 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
             BLOCK_GOTO.args0[1].name,
             javascript.Order.NONE,
         );
-        const num = provideNum(generator);
-        return generateSelfUpdate(
-            generator,
-            [
-                `self.position.x = ${num}(${x});`,
-                `self.position.y = ${num}(${y})`,
-            ].join("\n"),
-        );
+        return `await ${behave(
+            "goto",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            x,
+            y,
+        )};\n`;
     },
     motion_snap: () =>
         `await ${behave("snapToGrid", PARAMETER_SIGNAL, PARAMETER_SELF_ID)};\n`,
@@ -527,7 +529,7 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
         const [newParent, initNewParent] = generateVariable(
             generator,
             "newParent",
-            `${item}`,
+            item,
         );
         return [
             initNewParent,
@@ -549,12 +551,20 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
         const degrees = generator.valueToCode(
             block,
             BLOCK_ROTATE_LEFT.args0[1].name,
-            javascript.Order.NONE,
+            javascript.Order.ASSIGNMENT,
         );
-        return generateSelfUpdate(
+        const [degreesVar, initDegreesVar] = generateVariable(
             generator,
-            `self.rotation -= ${provideNum(generator)}(${degrees});`,
+            "degrees",
+            degrees,
         );
+        return [
+            initDegreesVar,
+            generateSelfUpdate(
+                generator,
+                `self.rotation -= ${provideNum(generator)}(${degreesVar});`,
+            ),
+        ].join("\n");
     },
     motion_turnright: (block, generator) => {
         const degrees = generator.valueToCode(
@@ -562,10 +572,18 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
             BLOCK_ROTATE_RIGHT.args0[1].name,
             javascript.Order.ASSIGNMENT,
         );
-        return generateSelfUpdate(
+        const [degreesVar, initDegreesVar] = generateVariable(
             generator,
-            `self.rotation += ${provideNum(generator)}(${degrees});`,
+            "degrees",
+            degrees,
         );
+        return [
+            initDegreesVar,
+            generateSelfUpdate(
+                generator,
+                `self.rotation += ${provideNum(generator)}(${degreesVar});`,
+            ),
+        ].join("\n");
     },
 
     motion_pointindirection: (block, generator) => {
@@ -774,39 +792,46 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
             "color",
             `String(${color})`,
         );
-        return generateSelfUpdate(
-            generator,
-            [
-                initColor,
-                `if (${behave(
-                    "isHexColor",
-                    colorVar,
-                )} && self?.style?.strokeColor) {`,
-                `${generator.INDENT}self.style.strokeColor = ${colorVar};`,
-                "}",
-            ].join("\n"),
-        );
+        return [
+            initColor,
+            generateSelfUpdate(
+                generator,
+                generateBlock(
+                    generator,
+                    `if (${behave(
+                        "isHexColor",
+                        colorVar,
+                    )} && self?.style?.strokeColor)`,
+                    `self.style.strokeColor = ${colorVar};`,
+                ),
+            ),
+        ].join("\n");
     },
 
     looks_set_stroke_opacity: (block, generator) => {
         const opacity = generator.valueToCode(
             block,
             BLOCK_SET_STROKE_OPACITY.args0[0].name,
-            javascript.Order.NONE,
+            javascript.Order.ASSIGNMENT,
         );
-
-        return generateSelfUpdate(
+        const [opacityVar, initOpacityVar] = generateVariable(
             generator,
-            [
-                "if (self?.style && 'strokeOpacity' in self.style) {",
-                `${
-                    generator.INDENT
-                }self.style.strokeOpacity = Math.max(0, Math.min(100, ${provideNum(
-                    generator,
-                )}(${opacity}))) / 100`,
-                "}",
-            ].join("\n"),
+            "opacity",
+            opacity,
         );
+        return [
+            initOpacityVar,
+            generateSelfUpdate(
+                generator,
+                generateBlock(
+                    generator,
+                    "if (self?.style && 'strokeOpacity' in self.style)",
+                    `self.style.strokeOpacity = Math.max(0, Math.min(100, ${provideNum(
+                        generator,
+                    )}(${opacityVar}))) / 100`,
+                ),
+            ),
+        ].join("\n");
     },
 
     looks_set_fill_color: (block, generator) => {
@@ -820,18 +845,20 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
             "fillColor",
             `String(${color})`,
         );
-        return generateSelfUpdate(
-            generator,
-            [
-                initColorVar,
-                `if (${behave(
-                    "isHexColor",
-                    colorVar,
-                )} && self?.style?.fillColor) {`,
-                `${generator.INDENT}self.style.fillColor = ${colorVar};`,
-                "}",
-            ].join("\n"),
-        );
+        return [
+            initColorVar,
+            generateSelfUpdate(
+                generator,
+                generateBlock(
+                    generator,
+                    `if (${behave(
+                        "isHexColor",
+                        colorVar,
+                    )} && self?.style?.fillColor)`,
+                    `self.style.fillColor = ${colorVar};`,
+                ),
+            ),
+        ].join("\n");
     },
 
     looks_set_fill_opacity: (block, generator) => {
@@ -840,18 +867,24 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
             BLOCK_SET_FILL_OPACITY.args0[0].name,
             javascript.Order.ATOMIC,
         );
-        return generateSelfUpdate(
+        const [opacityVar, initOpacityVar] = generateVariable(
             generator,
-            [
-                "if (self?.style && 'fillOpacity' in self.style) {",
-                `${
-                    generator.INDENT
-                }self.style.fillOpacity = Math.max(0, Math.min(100, ${provideNum(
-                    generator,
-                )}(${opacity}))) / 100`,
-                "}",
-            ].join("\n"),
+            "opacity",
+            opacity,
         );
+        return [
+            initOpacityVar,
+            generateSelfUpdate(
+                generator,
+                generateBlock(
+                    generator,
+                    "if (self?.style && 'fillOpacity' in self.style)",
+                    `self.style.fillOpacity = Math.max(0, Math.min(100, ${provideNum(
+                        generator,
+                    )}(${opacityVar}))) / 100`,
+                ),
+            ),
+        ].join("\n");
     },
 
     looks_get_stroke_color: () => [
@@ -1116,12 +1149,18 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
         const duration = generator.valueToCode(
             block,
             BLOCK_WAIT.args0[0].name,
-            javascript.Order.MULTIPLICATION,
+            javascript.Order.NONE,
+        );
+        const [durationVar, initDurationVar] = generateVariable(
+            generator,
+            "duration",
+            duration,
         );
         return [
+            initDurationVar,
             `await new Promise(resolve => setTimeout(resolve, 1000 * ${provideNum(
                 generator,
-            )}(${duration})));`,
+            )}(${durationVar})));`,
             `${PARAMETER_ITEM_PROXY}.invalidate();`, // items could have changed during wait
             THROW_ON_ABORT,
         ].join("\n");
@@ -1606,6 +1645,7 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
         const tuple = OPERATORS[block.getFieldValue("OP") as OperatorOption];
         const operator = tuple[0];
         const order = tuple[1];
+
         const argument0 = generator.valueToCode(
             block,
             "A",
