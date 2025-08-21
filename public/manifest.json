@@ -1,7 +1,7 @@
 {
   "name": "Behaviors",
   "description": "Bring tokens to life with block-based automated behavior inspired by Scratch.",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "manifest_version": 1,
   "author": "desain",
   "icon": "/logo-bg.svg",
