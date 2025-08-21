@@ -823,7 +823,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         inputs: { NUMBER_TO_CHECK: shadowNumber() },
                     },
                     GAP50,
-                    // { kind: "block", type: "logic_boolean" },
+                    { kind: "block", type: "logic_boolean" },
                     { kind: "block", type: "math_constant" },
                     // { kind: "block", type: "math_number" },
                 ],
