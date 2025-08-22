@@ -456,6 +456,144 @@ describe("Blockly JavaScript Generation", () => {
         });
     });
 
+    describe("sound blocks", () => {
+        it("should generate syntactially valid JavaScript for all blocks", () => {
+            const workspace = new Blockly.Workspace();
+            Blockly.serialization.workspaces.load(
+                {
+                    blocks: {
+                        languageVersion: 0,
+                        blocks: [
+                            {
+                                type: "event_immediately",
+                                id: "%eZ2EpjBglEfkEWnZ1J+",
+                                x: 490,
+                                y: 510,
+                                next: {
+                                    block: {
+                                        type: "sound_play",
+                                        id: "ygo#BZYJrw}{R-|QM2zi",
+                                        inputs: {
+                                            SOUND: {
+                                                shadow: {
+                                                    type: "menu_sound",
+                                                    id: "~y)dM=QN.e0O982Tl-bF",
+                                                    fields: {
+                                                        FIELD_SOUND: "meow",
+                                                    },
+                                                },
+                                            },
+                                        },
+                                        next: {
+                                            block: {
+                                                type: "sound_playuntildone",
+                                                id: "[3L{{OGaKXb?dojD%y~R",
+                                                inputs: {
+                                                    SOUND: {
+                                                        shadow: {
+                                                            type: "menu_sound",
+                                                            id: "tnF_%ru[/WR8otiu.]WM",
+                                                            fields: {
+                                                                FIELD_SOUND:
+                                                                    "meow",
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                                next: {
+                                                    block: {
+                                                        type: "sound_stopallsounds",
+                                                        id: "[6sVN+*Y{W?vR_9Nqy]6",
+                                                        next: {
+                                                            block: {
+                                                                type: "sound_changevolumeby",
+                                                                id: ",-.8hU=x?m6*|Ao%4Q.Y",
+                                                                inputs: {
+                                                                    VOLUME: {
+                                                                        shadow: {
+                                                                            type: "math_number",
+                                                                            id: "!pO-aUTBK[i{V6up},)b",
+                                                                            fields: {
+                                                                                NUM: -10,
+                                                                            },
+                                                                        },
+                                                                        block: {
+                                                                            type: "motion_xposition",
+                                                                            id: "fSs{_8N;)={F,z)3T30v",
+                                                                        },
+                                                                    },
+                                                                },
+                                                                next: {
+                                                                    block: {
+                                                                        type: "sound_setvolumeto",
+                                                                        id: "hu7Pu-c97W7j4Bw3LwB!",
+                                                                        inputs: {
+                                                                            VOLUME: {
+                                                                                shadow: {
+                                                                                    type: "math_number",
+                                                                                    id: "c5TdqY{}tDpeYD/:Ec*8",
+                                                                                    fields: {
+                                                                                        NUM: 100,
+                                                                                    },
+                                                                                },
+                                                                                block: {
+                                                                                    type: "motion_xposition",
+                                                                                    id: "x,$*Uib.T1M~gZGyNqb)",
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                        next: {
+                                                                            block: {
+                                                                                type: "looks_sayforsecs",
+                                                                                id: ")4+jBgjWM4r]q1bsoInq",
+                                                                                inputs: {
+                                                                                    MESSAGE:
+                                                                                        {
+                                                                                            shadow: {
+                                                                                                type: "behavior_dynamic_val",
+                                                                                                id: "JIG{@`qOp(U1?DtV[h-e",
+                                                                                                fields: {
+                                                                                                    TEXT: "Hello!",
+                                                                                                },
+                                                                                            },
+                                                                                            block: {
+                                                                                                type: "sound_volume",
+                                                                                                id: "Cu3T0cw:W|*a-%Z@_tL~",
+                                                                                            },
+                                                                                        },
+                                                                                    SECS: {
+                                                                                        shadow: {
+                                                                                            type: "math_number",
+                                                                                            id: "5Je;,eDgeC(iUCLp4!!b",
+                                                                                            fields: {
+                                                                                                NUM: 2,
+                                                                                            },
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                },
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+                workspace,
+            );
+
+            checkCompiles(workspace);
+        });
+    });
+
     describe("looks blocks", () => {
         it("should generate syntactially valid JavaScript for all blocks", () => {
             const workspace = new Blockly.Workspace();

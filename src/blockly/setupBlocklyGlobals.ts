@@ -18,6 +18,7 @@ import { registerExtensionLimitIdLength } from "./extensionUrl";
 import { registerFieldTextInputRemovable } from "./FieldTextInputRemovable";
 import { registerFieldTokenImage } from "./FieldTokenImage";
 import { registerMixinDragToDupe } from "./mixinDragToDupe";
+import { registerMixinUsesVolume } from "./mixinUsesVolume";
 import { registerMutatorMatch } from "./mutatorMatch";
 import { BehaviorParameterModel } from "./procedures/BehaviorParameterModel";
 import { BehaviorProcedureModel } from "./procedures/BehaviorProcedureModel";
@@ -104,6 +105,7 @@ export function setupBlocklyGlobals() {
     registerBroadcastExtension();
     registerExtensionLimitIdLength();
     registerMixinDragToDupe();
+    registerMixinUsesVolume();
     registerMutatorMatch();
 
     blocklySetup = true;

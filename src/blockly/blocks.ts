@@ -15,6 +15,7 @@ import {
     INPUT_SOUND,
     INPUT_TAG,
     MIXIN_DRAG_TO_DUPE,
+    MIXIN_USES_VOLUME,
     MUTATOR_MATCH,
     VARIABLE_TYPE_LIST,
 } from "../constants";
@@ -1586,6 +1587,7 @@ export const BLOCK_SOUND_PLAY = {
             check: ["String", "Number"],
         },
     ],
+    extensions: [MIXIN_USES_VOLUME],
     previousStatement: null,
     nextStatement: null,
     inputsInline: true,
@@ -1604,9 +1606,55 @@ export const BLOCK_SOUND_PLAY_UNTIL_DONE = {
             check: ["String", "Number"],
         },
     ],
+    extensions: [MIXIN_USES_VOLUME],
     previousStatement: null,
     nextStatement: null,
     inputsInline: true,
+} as const;
+
+export const BLOCK_SOUND_SET_VOLUME_TO = {
+    style: "sound_blocks",
+    type: "sound_setvolumeto",
+    tooltip: "Set the volume to a specific value (0-100%)",
+    message0: "set volume to %1 %",
+    args0: [
+        {
+            type: "input_value",
+            name: "VOLUME",
+            check: ["Number", "String"],
+        },
+    ],
+    extensions: [MIXIN_USES_VOLUME],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_SOUND_CHANGE_VOLUME_BY = {
+    style: "sound_blocks",
+    type: "sound_changevolumeby",
+    tooltip: "Change the volume by a value (positive or negative)",
+    message0: "change volume by %1",
+    args0: [
+        {
+            type: "input_value",
+            name: "VOLUME",
+            check: ["Number", "String"],
+        },
+    ],
+    extensions: [MIXIN_USES_VOLUME],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_SOUND_VOLUME = {
+    style: "sound_blocks",
+    type: "sound_volume",
+    tooltip: "The current volume value (0-100%)",
+    message0: "volume",
+    extensions: [MIXIN_USES_VOLUME],
+    output: "Number",
 } as const;
 
 // Data
@@ -3296,6 +3344,9 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_SOUND_PLAY,
     BLOCK_SOUND_PLAY_UNTIL_DONE,
     BLOCK_SOUND_STOP_ALL,
+    BLOCK_SOUND_SET_VOLUME_TO,
+    BLOCK_SOUND_CHANGE_VOLUME_BY,
+    BLOCK_SOUND_VOLUME,
 
     // Event blocks
     BLOCK_IMMEDIATELY,

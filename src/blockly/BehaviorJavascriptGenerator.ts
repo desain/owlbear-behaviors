@@ -21,6 +21,7 @@ import {
     PARAMETER_SELF_ID,
     PARAMETER_SIGNAL,
     VAR_LOOP_CHECK,
+    VAR_VOLUME,
 } from "../constants";
 import {
     BLOCK_ADD_AURA,
@@ -111,8 +112,10 @@ import {
     BLOCK_SET_STROKE_OPACITY,
     BLOCK_SET_TEXT,
     BLOCK_SET_VIEWPORT,
+    BLOCK_SOUND_CHANGE_VOLUME_BY,
     BLOCK_SOUND_PLAY,
     BLOCK_SOUND_PLAY_UNTIL_DONE,
+    BLOCK_SOUND_SET_VOLUME_TO,
     BLOCK_STOP,
     BLOCK_TAG,
     BLOCK_TOUCH,
@@ -989,6 +992,7 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
             "playSoundUntilDone",
             PARAMETER_SIGNAL,
             sound,
+            generator.getDeveloperVariableName(VAR_VOLUME),
         )};\n`;
     },
 
@@ -1002,10 +1006,39 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
             "playSoundUntilDone",
             PARAMETER_SIGNAL,
             sound,
+            generator.getDeveloperVariableName(VAR_VOLUME),
         )};\n${PARAMETER_ITEM_PROXY}.invalidate();\n`;
     },
+
     sound_stopallsounds: () =>
         `${behave("stopAllSounds", PARAMETER_SIGNAL)};\n`,
+
+    sound_setvolumeto: (block, generator) => {
+        const value = generator.valueToCode(
+            block,
+            BLOCK_SOUND_SET_VOLUME_TO.args0[0].name,
+            javascript.Order.ASSIGNMENT,
+        );
+        return `${generator.getDeveloperVariableName(
+            VAR_VOLUME,
+        )} = ${value};\n`;
+    },
+
+    sound_changevolumeby: (block, generator) => {
+        const value = generator.valueToCode(
+            block,
+            BLOCK_SOUND_CHANGE_VOLUME_BY.args0[0].name,
+            javascript.Order.NONE,
+        );
+        const num = provideNum(generator);
+        const volumeVar = generator.getDeveloperVariableName(VAR_VOLUME);
+        return `${volumeVar} = ${num}(${volumeVar}) + ${num}(${value});\n`;
+    },
+
+    sound_volume: (_block, generator) => [
+        `${generator.getDeveloperVariableName(VAR_VOLUME)} ?? 100`,
+        javascript.Order.LOGICAL_OR,
+    ],
 
     // Event blocks
     event_broadcast_menu: (block, generator) => {
@@ -2649,6 +2682,19 @@ export class BehaviorJavascriptGenerator extends javascript.JavascriptGenerator 
         } else {
             return this.getVariableName(id);
         }
+    };
+
+    readonly getDeveloperVariableName = (name: string): string => {
+        // see https://github.com/google/blockly/blob/8580d763b34b10c961d43ae8a61ce76c8669548c/core/generator.ts#L539
+        if (!this.nameDB_) {
+            throw new Error(
+                "Name database is not defined. You must initialize `nameDB_` in your generator class and call `init` first.",
+            );
+        }
+        return this.nameDB_.getName(
+            name,
+            Blockly.Names.NameType.DEVELOPER_VARIABLE,
+        );
     };
 
     /**

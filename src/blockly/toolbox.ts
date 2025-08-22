@@ -132,10 +132,13 @@ import {
     BLOCK_SET_VIEWPORT,
     BLOCK_SHOW,
     BLOCK_SNAP_TO_GRID,
+    BLOCK_SOUND_CHANGE_VOLUME_BY,
     BLOCK_SOUND_MENU,
     BLOCK_SOUND_PLAY,
     BLOCK_SOUND_PLAY_UNTIL_DONE,
+    BLOCK_SOUND_SET_VOLUME_TO,
     BLOCK_SOUND_STOP_ALL,
+    BLOCK_SOUND_VOLUME,
     BLOCK_STOP,
     BLOCK_TAG,
     BLOCK_TAG_MENU,
@@ -557,6 +560,24 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         },
                     },
                     blockToDefinition(BLOCK_SOUND_STOP_ALL),
+                    GAP50,
+                    {
+                        kind: "block",
+                        type: BLOCK_SOUND_CHANGE_VOLUME_BY.type,
+                        inputs: {
+                            [BLOCK_SOUND_CHANGE_VOLUME_BY.args0[0].name]:
+                                shadowNumber(-10),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_SOUND_SET_VOLUME_TO.type,
+                        inputs: {
+                            [BLOCK_SOUND_SET_VOLUME_TO.args0[0].name]:
+                                shadowNumber(100),
+                        },
+                    },
+                    blockToDefinition(BLOCK_SOUND_VOLUME),
                 ],
             },
             /* events */ {

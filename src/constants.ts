@@ -46,6 +46,7 @@ export const PARAMETER_BEHAVIOR_REGISTRY = "behaviorRegistry";
 export const PARAMETER_HAT_ID = "hatId";
 export const CONSTANT_TRIGGER_HANDLERS = "triggerHandlers";
 export const VAR_LOOP_CHECK = "loopCheck";
+export const VAR_VOLUME = "volume";
 
 // Blockly variable category
 export const CUSTOM_DYNAMIC_CATEGORY_VARIABLES = "BEHAVIOR_VARIABLES_DYNAMIC";
@@ -71,6 +72,7 @@ export const DROPDOWN_SOUND_MEOW = "meow";
 export const EXTENSION_URL = "extension_url";
 export const EXTENSION_STOP = "extension_stop";
 export const MIXIN_DRAG_TO_DUPE = "mixin_drag_to_dupe";
+export const MIXIN_USES_VOLUME = "mixin_uses_volume";
 export const MUTATOR_MATCH = "mutator_match";
 
 export const CREATE_NEW_RESOURCE = "__create_new__";

@@ -302,6 +302,7 @@ export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
                 void playSoundUntilDone(
                     new AbortController().signal,
                     data.soundName,
+                    1.0,
                 );
             } else if (isStopAllSoundsMessage(data)) {
                 usePlayerStorage.getState().stopAllSounds();

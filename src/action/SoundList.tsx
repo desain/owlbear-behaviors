@@ -7,7 +7,7 @@ import { EditableListItem } from "./EditableListItem";
 
 async function playSound(name: string) {
     const controller = new AbortController();
-    await playSoundUntilDone(controller.signal, name);
+    await playSoundUntilDone(controller.signal, name, 1.0);
 }
 
 async function handleAddSound() {

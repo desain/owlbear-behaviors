@@ -5,9 +5,14 @@ import {
 } from "../../broadcast/broadcast";
 import { usePlayerStorage } from "../../state/usePlayerStorage";
 
+/**
+ *
+ * @param volume number from 0 to 1
+ */
 export async function playSoundUntilDone(
     signal: AbortSignal,
     soundName: string,
+    volume: number,
 ) {
     const state = usePlayerStorage.getState();
     const sound = state.sceneMetadata.sounds[soundName];
@@ -43,6 +48,7 @@ export async function playSoundUntilDone(
 
             try {
                 audio = new Audio(sound.url);
+                audio.volume = Math.max(0, Math.min(1, volume));
 
                 audio.addEventListener("ended", () => {
                     cleanup();
@@ -81,10 +87,21 @@ export async function playSoundUntilDone(
 }
 
 export const SOUND_BEHAVIORS = {
+    /**
+     * Play sound behavior. If GM, broadcasts the sound to player instances.
+     * @param volumeUnknown number 0-100
+     */
     playSoundUntilDone: async (
         signal: AbortSignal,
         soundNameUnknown: unknown,
+        volumeUnknown: unknown,
     ): Promise<void> => {
+        const volume = Number(volumeUnknown ?? 100);
+        if (!isFinite(volume) || isNaN(volume)) {
+            console.warn("[playSoundUntilDone] invalid volume", volume);
+            return;
+        }
+
         const soundName = String(soundNameUnknown);
         const state = usePlayerStorage.getState();
 
@@ -92,7 +109,7 @@ export const SOUND_BEHAVIORS = {
             void broadcastPlaySound(soundName);
         }
 
-        await playSoundUntilDone(signal, soundName);
+        await playSoundUntilDone(signal, soundName, volume / 100);
 
         signal.throwIfAborted();
     },
