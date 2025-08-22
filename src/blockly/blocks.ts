@@ -706,6 +706,31 @@ export const BLOCK_SET_VIEWPORT = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_LOOKS_SET_ZOOM = {
+    style: "looks_blocks",
+    type: "looks_set_zoom",
+    tooltip: "Set the viewport zoom level",
+    message0: "zoom %1 view to %2 %",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "TARGET",
+            options: [
+                ["my", "MY"],
+                ["everyone's", "EVERYONE"],
+            ],
+        },
+        {
+            type: "input_value",
+            name: "ZOOM",
+            check: ["Number", "String"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 export const BLOCK_CLEAR_GRAPHIC_EFFECTS = {
     style: "looks_blocks",
     type: "looks_cleargraphiceffects",
@@ -3336,6 +3361,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_GET_FILL_COLOR,
     BLOCK_GET_FILL_OPACITY,
     BLOCK_SET_VIEWPORT,
+    BLOCK_LOOKS_SET_ZOOM,
     BLOCK_CLEAR_GRAPHIC_EFFECTS,
     BLOCK_SET_EFFECT_TO,
     BLOCK_CHANGE_EFFECT_BY,

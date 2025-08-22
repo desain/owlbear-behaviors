@@ -2,6 +2,7 @@ import OBR, {
     buildLabel,
     isImage,
     isText,
+    Math2,
     type Descendant,
     type Item,
     type Vector2,
@@ -11,10 +12,12 @@ import {
     isLayer,
     isObject,
     isVector2,
+    ORIGIN,
     type ImageBuildParams,
 } from "owlbear-utils";
 import {
     broadcastSetViewport,
+    broadcastSetZoom,
     broadcastShowSpeechBubble,
 } from "../../broadcast/broadcast";
 import { getBounds, isBoundableItem } from "../../collision/getBounds";
@@ -128,6 +131,90 @@ export async function showSpeechBubble({
     await OBR.scene.local.addItems([label]);
     await new Promise((resolve) => setTimeout(resolve, millis));
     await OBR.scene.local.deleteItems([label.id]);
+}
+
+/**
+ * Animate the viewport to center on specified coordinates.
+ */
+export async function animateViewportTo(x: number, y: number): Promise<void> {
+    const [viewportPosition, viewportWidth, viewportHeight, scale] =
+        await Promise.all([
+            OBR.viewport.transformPoint({ x, y }),
+            OBR.viewport.getWidth(),
+            OBR.viewport.getHeight(),
+            OBR.viewport.getScale(),
+        ]);
+
+    // console.log("viewportPosition", viewportPosition);
+    // console.log("scale", scale);
+
+    // Get the center of the viewport in screen-space
+    const viewportCenter: Vector2 = {
+        x: viewportWidth / 2,
+        y: viewportHeight / 2,
+    };
+
+    // console.log("viewportCenter", viewportCenter);
+
+    // Offset the item center by the viewport center
+    const viewportDelta = Math2.subtract(viewportPosition, viewportCenter);
+
+    // console.log("viewportDelta", viewportDelta);
+
+    // Convert the position to world-space
+    const worldTopLeft = await OBR.viewport.inverseTransformPoint(
+        viewportDelta,
+    );
+
+    // console.log("worldTopLeft", worldTopLeft);
+
+    // Invert and scale the world-space position to match a viewport position offset
+    const position = Math2.multiply(worldTopLeft, -scale);
+
+    // console.log("position", position);
+
+    await OBR.viewport.animateTo({ position, scale });
+}
+
+/**
+ * Animate the viewport to zoom to specified scale.
+ */
+export async function zoomTo(zoom: number): Promise<void> {
+    // OBR's max zoom is 1000% and min is 2%
+    const scale = Math.max(0.02, Math.min(10, zoom / 100));
+
+    const [viewportWidth, viewportHeight, currentScale, worldTopLeft] =
+        await Promise.all([
+            OBR.viewport.getWidth(),
+            OBR.viewport.getHeight(),
+            OBR.viewport.getScale(),
+            OBR.viewport.inverseTransformPoint(ORIGIN),
+        ]);
+
+    // Get the center of the viewport in screen-space
+    const viewportCenter: Vector2 = {
+        x: viewportWidth / 2,
+        y: viewportHeight / 2,
+    };
+
+    const worldCenter = await OBR.viewport.inverseTransformPoint(
+        viewportCenter,
+    );
+
+    const worldTopLeftDelta = Math2.subtract(worldTopLeft, worldCenter);
+
+    // multiplying by current scale gives us the top left world position if we
+    // were at 100% scale.
+    // dividing that by new scale gives us top left world position in new scale
+    const newWorldTopLeft = Math2.add(
+        worldCenter,
+        Math2.multiply(worldTopLeftDelta, currentScale / scale),
+    );
+
+    await OBR.viewport.animateTo({
+        position: Math2.multiply(newWorldTopLeft, -scale),
+        scale: scale,
+    });
 }
 
 export const LOOKS_BEHAVIORS = {
@@ -432,6 +519,28 @@ export const LOOKS_BEHAVIORS = {
 
         const destination = target === "MY" ? "LOCAL" : "ALL";
         await broadcastSetViewport(x, y, destination);
+        signal.throwIfAborted();
+    },
+
+    setZoom: async (
+        signal: AbortSignal,
+        targetUnknown: unknown,
+        zoomUnknown: unknown,
+    ) => {
+        const target = String(targetUnknown);
+        if (target !== "MY" && target !== "EVERYONE") {
+            console.warn(`[setZoom] target invalid: ${target}`);
+            return;
+        }
+
+        const zoom = Number(zoomUnknown);
+        if (!isFinite(zoom) || isNaN(zoom) || zoom <= 0) {
+            console.warn(`[setZoom] zoom invalid: ${zoom}`);
+            return;
+        }
+
+        const destination = target === "MY" ? "LOCAL" : "ALL";
+        await broadcastSetZoom(zoom, destination);
         signal.throwIfAborted();
     },
 };

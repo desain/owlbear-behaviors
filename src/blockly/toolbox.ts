@@ -102,6 +102,7 @@ import {
     BLOCK_LETTER_OF,
     BLOCK_LOCK,
     BLOCK_LOCKED,
+    BLOCK_LOOKS_SET_ZOOM,
     BLOCK_MATCH,
     BLOCK_MOVE_DIRECTION,
     BLOCK_MY_PARENT,
@@ -502,6 +503,14 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                             [BLOCK_SET_VIEWPORT.args0[2].name]: shadowNumber(
                                 Math.round(target.position.y),
                             ),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_LOOKS_SET_ZOOM.type,
+                        inputs: {
+                            [BLOCK_LOOKS_SET_ZOOM.args0[1].name]:
+                                shadowNumber(100),
                         },
                     },
                     GAP50,

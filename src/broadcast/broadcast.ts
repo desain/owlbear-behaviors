@@ -1,9 +1,11 @@
-import OBR, { Math2, type Vector2 } from "@owlbear-rodeo/sdk";
+import OBR from "@owlbear-rodeo/sdk";
 import { deferCallAll, isObject } from "owlbear-utils";
 import { type BehaviorRegistry } from "../behaviors/BehaviorRegistry";
 import {
+    animateViewportTo,
     isSpeechBubbleParams,
     showSpeechBubble,
+    zoomTo,
     type SpeechBubbleParams,
 } from "../behaviors/impl/looks";
 import { playSoundUntilDone } from "../behaviors/impl/sound";
@@ -92,6 +94,7 @@ const PLAY_SOUND = "PLAY_SOUND";
 interface PlaySoundMessage {
     readonly type: typeof PLAY_SOUND;
     readonly soundName: string;
+    readonly volume: number;
 }
 
 function isPlaySoundMessage(message: unknown): message is PlaySoundMessage {
@@ -100,17 +103,19 @@ function isPlaySoundMessage(message: unknown): message is PlaySoundMessage {
         "type" in message &&
         message.type === PLAY_SOUND &&
         "soundName" in message &&
-        typeof message.soundName === "string"
+        typeof message.soundName === "string" &&
+        "volume" in message &&
+        typeof message.volume === "number"
     );
 }
 
 /**
  * Play a sound on other instances.
  */
-export function broadcastPlaySound(soundName: string) {
+export function broadcastPlaySound(soundName: string, volume: number) {
     return OBR.broadcast.sendMessage(
         CHANNEL_MESSAGE,
-        { type: PLAY_SOUND, soundName } satisfies PlaySoundMessage,
+        { type: PLAY_SOUND, soundName, volume } satisfies PlaySoundMessage,
         {
             destination: "REMOTE",
         },
@@ -164,36 +169,20 @@ function isSetViewportMessage(message: unknown): message is SetViewportMessage {
     );
 }
 
-/**
- * Animate the viewport to center on specified coordinates.
- */
-async function animateViewportTo(x: number, y: number): Promise<void> {
-    const [absolutePosition, viewportWidth, viewportHeight, scale] =
-        await Promise.all([
-            OBR.viewport.transformPoint({ x, y }),
-            OBR.viewport.getWidth(),
-            OBR.viewport.getHeight(),
-            OBR.viewport.getScale(),
-        ]);
+const SET_ZOOM = "SET_ZOOM";
+interface SetZoomMessage {
+    readonly type: typeof SET_ZOOM;
+    readonly zoom: number;
+}
 
-    // Get the center of the viewport in screen-space
-    const viewportCenter: Vector2 = {
-        x: viewportWidth / 2,
-        y: viewportHeight / 2,
-    };
-
-    // Offset the item center by the viewport center
-    const absoluteCenter = Math2.subtract(absolutePosition, viewportCenter);
-
-    // Convert the position to world-space
-    const relativeCenter = await OBR.viewport.inverseTransformPoint(
-        absoluteCenter,
+function isSetZoomMessage(message: unknown): message is SetZoomMessage {
+    return (
+        isObject(message) &&
+        "type" in message &&
+        message.type === SET_ZOOM &&
+        "zoom" in message &&
+        typeof message.zoom === "number"
     );
-
-    // Invert and scale the world-space position to match a viewport position offset
-    const position = Math2.multiply(relativeCenter, -scale);
-
-    await OBR.viewport.animateTo({ position, scale });
 }
 
 /**
@@ -207,6 +196,19 @@ export function broadcastSetViewport(
     return OBR.broadcast.sendMessage(
         CHANNEL_MESSAGE,
         { type: SET_VIEWPORT, x, y } satisfies SetViewportMessage,
+        {
+            destination,
+        },
+    );
+}
+
+/**
+ * Set viewport zoom level.
+ */
+export function broadcastSetZoom(zoom: number, destination: "LOCAL" | "ALL") {
+    return OBR.broadcast.sendMessage(
+        CHANNEL_MESSAGE,
+        { type: SET_ZOOM, zoom } satisfies SetZoomMessage,
         {
             destination,
         },
@@ -302,12 +304,14 @@ export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
                 void playSoundUntilDone(
                     new AbortController().signal,
                     data.soundName,
-                    1.0,
+                    data.volume,
                 );
             } else if (isStopAllSoundsMessage(data)) {
                 usePlayerStorage.getState().stopAllSounds();
             } else if (isSetViewportMessage(data)) {
                 void animateViewportTo(data.x, data.y);
+            } else if (isSetZoomMessage(data)) {
+                void zoomTo(data.zoom);
             } else if (isShowSpeechBubbleMessage(data)) {
                 void showSpeechBubble(data);
             } else if (isStopAllBehaviorsMessage(data)) {

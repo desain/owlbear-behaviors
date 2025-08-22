@@ -96,7 +96,7 @@ export const SOUND_BEHAVIORS = {
         soundNameUnknown: unknown,
         volumeUnknown: unknown,
     ): Promise<void> => {
-        const volume = Number(volumeUnknown ?? 100);
+        const volume = Number(volumeUnknown ?? 100) / 100;
         if (!isFinite(volume) || isNaN(volume)) {
             console.warn("[playSoundUntilDone] invalid volume", volume);
             return;
@@ -106,10 +106,10 @@ export const SOUND_BEHAVIORS = {
         const state = usePlayerStorage.getState();
 
         if (state.role === "GM") {
-            void broadcastPlaySound(soundName);
+            void broadcastPlaySound(soundName, volume);
         }
 
-        await playSoundUntilDone(signal, soundName, volume / 100);
+        await playSoundUntilDone(signal, soundName, volume);
 
         signal.throwIfAborted();
     },

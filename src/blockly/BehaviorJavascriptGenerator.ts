@@ -88,6 +88,7 @@ import {
     BLOCK_LIST_LENGTH,
     BLOCK_LIST_REPLACE,
     BLOCK_LIST_REPORTER,
+    BLOCK_LOOKS_SET_ZOOM,
     BLOCK_MATCH,
     BLOCK_MOVE_DIRECTION,
     BLOCK_OPACITY_SLIDER,
@@ -958,10 +959,7 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
         ),
 
     looks_set_viewport: (block, generator) => {
-        const target = getStringFieldValue(
-            block,
-            BLOCK_SET_VIEWPORT.args0[0].name,
-        );
+        const target = getDropdownFieldValue(block, BLOCK_SET_VIEWPORT, 0);
         const x = generator.valueToCode(
             block,
             BLOCK_SET_VIEWPORT.args0[1].name,
@@ -978,6 +976,21 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
             generator.quote_(target),
             x,
             y,
+        )};\n`;
+    },
+
+    looks_set_zoom: (block, generator) => {
+        const target = getDropdownFieldValue(block, BLOCK_LOOKS_SET_ZOOM, 0);
+        const zoom = generator.valueToCode(
+            block,
+            BLOCK_LOOKS_SET_ZOOM.args0[1].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave(
+            "setZoom",
+            PARAMETER_SIGNAL,
+            generator.quote_(target),
+            zoom,
         )};\n`;
     },
 
