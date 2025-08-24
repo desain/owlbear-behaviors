@@ -68,7 +68,7 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 
 -   **Add sound effects** through the sound management panel in the action window
 -   See [FreeSound](https://freesound.org/) for a royalty-free sound effects library, or [Kevin MacLeod](https://incompetech.com/music/royalty-free/music.html) for royalty-free music.
--   Sounds are loaded from URLs. You can upload sounds to a hosting service like Dropbox to get a persistent URL for them.
+-   Sounds are loaded from URLs. You can upload sounds to a hosting service like [Jukehost](https://jukehost.co.uk/) to get a persistent URL for them.
 
 ## Notes on Features
 
@@ -161,14 +161,12 @@ To make a production build run:
 
 ## To do
 
--   Update sound docs to suggest jukehost
 -   Custom menus
     -   refcount in state, updated by item change handler
     -   on create, register, on destroy, deregister
 -   Collision system improvements
     -   base it on polygon overlap instead of bounding boxes? turf js?
     -   inset bounding boxes so barely touching corners don't trigger collisions?
--   Request autoplay permission for sfx?
 -   Make new tags in tags field show up in possible tags list in block immediately
 -   Dragging C blocks around statements in stacks like scratch does [here?](https://github.com/scratchfoundation/scratch-blocks/blob/develop/core/insertion_marker_manager.js#L43)
 -   Auto features

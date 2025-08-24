@@ -5,8 +5,8 @@
     "description": "Bring tokens to life with block-based automated behavior inspired by Scratch.",
     "scripts": {
         "dev": "vite",
-        "build": "pnpm docs && tsc --build && vite build",
-        "docs": "node scripts/build-docs.js",
+        "build": "pnpm docs:build && tsc --build && vite build",
+        "docs:build": "node scripts/build-docs.js",
         "preview": "vite preview",
         "workers:types": "wrangler types",
         "workers:deploy": "pnpm build && wrangler deploy",

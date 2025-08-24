@@ -80,7 +80,7 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 
 -   **Add sound effects** through the sound management panel in the action window
 -   See [FreeSound](https://freesound.org/) for a royalty-free sound effects library, or [Kevin MacLeod](https://incompetech.com/music/royalty-free/music.html) for royalty-free music.
--   Sounds are loaded from URLs. You can upload sounds to a hosting service like Dropbox to get a persistent URL for them.
+-   Sounds are loaded from URLs. You can upload sounds to a hosting service like [Jukehost](https://jukehost.co.uk/) to get a persistent URL for them.
 
 ## Notes on Features
 

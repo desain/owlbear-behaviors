@@ -31,7 +31,6 @@ function processImageUrls(content) {
 function updateReadme() {
     const featuresContent = readMarkdownFile("features.md");
     const howToUseContent = readMarkdownFile("how-to-use.md");
-
     const readmePath = resolve(rootDir, "README.md");
     let readme = readFileSync(readmePath, "utf-8");
 
