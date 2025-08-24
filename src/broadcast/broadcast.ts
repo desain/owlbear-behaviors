@@ -172,7 +172,7 @@ function isSetViewportMessage(message: unknown): message is SetViewportMessage {
 export function broadcastSetViewport(zoom?: number, center?: Vector2) {
     return OBR.broadcast.sendMessage(
         CHANNEL_MESSAGE,
-        { type: SET_VIEWPORT, center } satisfies SetViewportMessage,
+        { type: SET_VIEWPORT, zoom, center } satisfies SetViewportMessage,
         {
             destination: "REMOTE",
         },
