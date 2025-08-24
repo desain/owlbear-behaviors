@@ -1,7 +1,7 @@
 {
   "name": "Behaviors",
   "description": "Bring tokens to life with block-based automated behavior inspired by Scratch. Integrates with other extensions.",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "manifest_version": 1,
   "author": "desain",
   "icon": "/logo-bg.svg",
