@@ -29,6 +29,8 @@ import {
     BLOCK_ANNOUNCEMENT,
     BLOCK_ATTACH,
     BLOCK_BROADCAST,
+    BLOCK_CENTER_VIEW,
+    BLOCK_CENTER_ZOOM,
     BLOCK_CHANGE_EFFECT_BY,
     BLOCK_CHANGE_SIZE,
     BLOCK_COLOR_PICKER,
@@ -88,7 +90,6 @@ import {
     BLOCK_LIST_LENGTH,
     BLOCK_LIST_REPLACE,
     BLOCK_LIST_REPORTER,
-    BLOCK_LOOKS_SET_ZOOM,
     BLOCK_MATCH,
     BLOCK_MOVE_DIRECTION,
     BLOCK_OPACITY_SLIDER,
@@ -113,7 +114,6 @@ import {
     BLOCK_SET_STROKE_COLOR,
     BLOCK_SET_STROKE_OPACITY,
     BLOCK_SET_TEXT,
-    BLOCK_SET_VIEWPORT,
     BLOCK_SOUND_CHANGE_VOLUME_BY,
     BLOCK_SOUND_PLAY,
     BLOCK_SOUND_PLAY_UNTIL_DONE,
@@ -130,6 +130,7 @@ import {
     BLOCK_WAIT_UNTIL,
     BLOCK_WHEN_I,
     BLOCK_WHEN_PRETTY_TURN_CHANGE,
+    BLOCK_ZOOM,
     type CustomBlockType,
 } from "./blocks";
 import { getCaseInputs, getCaseName } from "./mutatorMatch";
@@ -982,38 +983,68 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
         ),
 
     looks_set_viewport: (block, generator) => {
-        const target = getDropdownFieldValue(block, BLOCK_SET_VIEWPORT, 0);
+        const target = getDropdownFieldValue(block, BLOCK_CENTER_VIEW, 0);
         const x = generator.valueToCode(
             block,
-            BLOCK_SET_VIEWPORT.args0[1].name,
+            BLOCK_CENTER_VIEW.args0[1].name,
             javascript.Order.NONE,
         );
         const y = generator.valueToCode(
             block,
-            BLOCK_SET_VIEWPORT.args0[2].name,
+            BLOCK_CENTER_VIEW.args0[2].name,
             javascript.Order.NONE,
         );
         return `await ${behave(
             "setViewport",
             PARAMETER_SIGNAL,
             generator.quote_(target),
+            "undefined",
             x,
             y,
         )};\n`;
     },
 
     looks_set_zoom: (block, generator) => {
-        const target = getDropdownFieldValue(block, BLOCK_LOOKS_SET_ZOOM, 0);
+        const target = getDropdownFieldValue(block, BLOCK_ZOOM, 0);
         const zoom = generator.valueToCode(
             block,
-            BLOCK_LOOKS_SET_ZOOM.args0[1].name,
+            BLOCK_ZOOM.args0[1].name,
             javascript.Order.NONE,
         );
         return `await ${behave(
-            "setZoom",
+            "setViewport",
             PARAMETER_SIGNAL,
             generator.quote_(target),
             zoom,
+            "undefined",
+            "undefined",
+        )};\n`;
+    },
+
+    looks_zoom_center: (block, generator) => {
+        const target = getDropdownFieldValue(block, BLOCK_CENTER_ZOOM, 0);
+        const zoom = generator.valueToCode(
+            block,
+            BLOCK_CENTER_ZOOM.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const x = generator.valueToCode(
+            block,
+            BLOCK_CENTER_ZOOM.args0[3].name,
+            javascript.Order.NONE,
+        );
+        const y = generator.valueToCode(
+            block,
+            BLOCK_CENTER_ZOOM.args0[4].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave(
+            "setViewport",
+            PARAMETER_SIGNAL,
+            generator.quote_(target),
+            zoom,
+            x,
+            y,
         )};\n`;
     },
 

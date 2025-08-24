@@ -697,7 +697,7 @@ export const BLOCK_GET_FILL_OPACITY = {
     output: "Number",
 } as const;
 
-export const BLOCK_SET_VIEWPORT = {
+export const BLOCK_CENTER_VIEW = {
     style: "looks_blocks",
     type: "looks_set_viewport",
     tooltip: "Center the viewport on specified coordinates",
@@ -727,7 +727,7 @@ export const BLOCK_SET_VIEWPORT = {
     inputsInline: true,
 } as const;
 
-export const BLOCK_LOOKS_SET_ZOOM = {
+export const BLOCK_ZOOM = {
     style: "looks_blocks",
     type: "looks_set_zoom",
     tooltip: "Set the viewport zoom level",
@@ -744,6 +744,44 @@ export const BLOCK_LOOKS_SET_ZOOM = {
         {
             type: "input_value",
             name: "ZOOM",
+            check: ["Number", "String"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_CENTER_ZOOM = {
+    style: "looks_blocks",
+    type: "looks_zoom_center",
+    tooltip: "Set the viewport zoom and position at once",
+    message0: "zoom %1 view to %2 % %3 and center on x: %4 y: %5",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "TARGET",
+            options: [
+                ["my", "MY"],
+                ["everyone's", "EVERYONE"],
+            ],
+        },
+        {
+            type: "input_value",
+            name: "ZOOM",
+            check: ["Number", "String"],
+        },
+        {
+            type: "input_end_row",
+        },
+        {
+            type: "input_value",
+            name: "X",
+            check: ["Number", "String"],
+        },
+        {
+            type: "input_value",
+            name: "Y",
             check: ["Number", "String"],
         },
     ],
@@ -3382,8 +3420,9 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_GET_STROKE_OPACITY,
     BLOCK_GET_FILL_COLOR,
     BLOCK_GET_FILL_OPACITY,
-    BLOCK_SET_VIEWPORT,
-    BLOCK_LOOKS_SET_ZOOM,
+    BLOCK_CENTER_VIEW,
+    BLOCK_ZOOM,
+    BLOCK_CENTER_ZOOM,
     BLOCK_CLEAR_GRAPHIC_EFFECTS,
     BLOCK_SET_EFFECT_TO,
     BLOCK_CHANGE_EFFECT_BY,

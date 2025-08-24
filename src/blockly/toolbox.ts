@@ -24,6 +24,8 @@ import {
     BLOCK_ATTACHED,
     BLOCK_BROADCAST,
     BLOCK_BROADCAST_MENU,
+    BLOCK_CENTER_VIEW,
+    BLOCK_CENTER_ZOOM,
     BLOCK_CHANGE_EFFECT_BY,
     BLOCK_CHANGE_SIZE,
     BLOCK_CLEAR_GRAPHIC_EFFECTS,
@@ -102,7 +104,6 @@ import {
     BLOCK_LETTER_OF,
     BLOCK_LOCK,
     BLOCK_LOCKED,
-    BLOCK_LOOKS_SET_ZOOM,
     BLOCK_MATCH,
     BLOCK_MOVE_DIRECTION,
     BLOCK_MY_PARENT,
@@ -131,7 +132,6 @@ import {
     BLOCK_SET_STROKE_COLOR,
     BLOCK_SET_STROKE_OPACITY,
     BLOCK_SET_TEXT,
-    BLOCK_SET_VIEWPORT,
     BLOCK_SHOW,
     BLOCK_SNAP_TO_GRID,
     BLOCK_SOUND_CHANGE_VOLUME_BY,
@@ -156,6 +156,7 @@ import {
     BLOCK_WHEN_PRETTY_TURN_CHANGE,
     BLOCK_X_POSITION,
     BLOCK_Y_POSITION,
+    BLOCK_ZOOM,
 } from "./blocks";
 import { FieldTokenImage } from "./FieldTokenImage";
 import { extensionHeader } from "./getExtensionButton";
@@ -510,22 +511,35 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         : []),
                     {
                         kind: "block",
-                        type: BLOCK_SET_VIEWPORT.type,
+                        type: BLOCK_CENTER_VIEW.type,
                         inputs: {
-                            [BLOCK_SET_VIEWPORT.args0[1].name]: shadowNumber(
+                            [BLOCK_CENTER_VIEW.args0[1].name]: shadowNumber(
                                 Math.round(target.position.x),
                             ),
-                            [BLOCK_SET_VIEWPORT.args0[2].name]: shadowNumber(
+                            [BLOCK_CENTER_VIEW.args0[2].name]: shadowNumber(
                                 Math.round(target.position.y),
                             ),
                         },
                     },
                     {
                         kind: "block",
-                        type: BLOCK_LOOKS_SET_ZOOM.type,
+                        type: BLOCK_ZOOM.type,
                         inputs: {
-                            [BLOCK_LOOKS_SET_ZOOM.args0[1].name]:
+                            [BLOCK_ZOOM.args0[1].name]: shadowNumber(100),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_CENTER_ZOOM.type,
+                        inputs: {
+                            [BLOCK_CENTER_ZOOM.args0[1].name]:
                                 shadowNumber(100),
+                            [BLOCK_CENTER_ZOOM.args0[3].name]: shadowNumber(
+                                Math.round(target.position.x),
+                            ),
+                            [BLOCK_CENTER_ZOOM.args0[4].name]: shadowNumber(
+                                Math.round(target.position.y),
+                            ),
                         },
                     },
                     GAP50,

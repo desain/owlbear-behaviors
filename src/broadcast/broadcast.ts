@@ -1,11 +1,10 @@
-import OBR from "@owlbear-rodeo/sdk";
-import { deferCallAll, isObject } from "owlbear-utils";
+import OBR, { type Vector2 } from "@owlbear-rodeo/sdk";
+import { deferCallAll, isObject, isVector2 } from "owlbear-utils";
 import { type BehaviorRegistry } from "../behaviors/BehaviorRegistry";
 import {
-    animateViewportTo,
     isSpeechBubbleParams,
+    setViewport,
     showSpeechBubble,
-    zoomTo,
     type SpeechBubbleParams,
 } from "../behaviors/impl/looks";
 import { playSoundUntilDone } from "../behaviors/impl/sound";
@@ -153,8 +152,8 @@ export function broadcastStopAllSounds() {
 const SET_VIEWPORT = "SET_VIEWPORT";
 interface SetViewportMessage {
     readonly type: typeof SET_VIEWPORT;
-    readonly x: number;
-    readonly y: number;
+    readonly zoom?: number;
+    readonly center?: Vector2;
 }
 
 function isSetViewportMessage(message: unknown): message is SetViewportMessage {
@@ -162,55 +161,20 @@ function isSetViewportMessage(message: unknown): message is SetViewportMessage {
         isObject(message) &&
         "type" in message &&
         message.type === SET_VIEWPORT &&
-        "x" in message &&
-        typeof message.x === "number" &&
-        "y" in message &&
-        typeof message.y === "number"
-    );
-}
-
-const SET_ZOOM = "SET_ZOOM";
-interface SetZoomMessage {
-    readonly type: typeof SET_ZOOM;
-    readonly zoom: number;
-}
-
-function isSetZoomMessage(message: unknown): message is SetZoomMessage {
-    return (
-        isObject(message) &&
-        "type" in message &&
-        message.type === SET_ZOOM &&
-        "zoom" in message &&
-        typeof message.zoom === "number"
+        (!("zoom" in message) || typeof message.zoom === "number") &&
+        (!("center" in message) || isVector2(message.center))
     );
 }
 
 /**
  * Center viewport on coordinates.
  */
-export function broadcastSetViewport(
-    x: number,
-    y: number,
-    destination: "LOCAL" | "ALL",
-) {
+export function broadcastSetViewport(zoom?: number, center?: Vector2) {
     return OBR.broadcast.sendMessage(
         CHANNEL_MESSAGE,
-        { type: SET_VIEWPORT, x, y } satisfies SetViewportMessage,
+        { type: SET_VIEWPORT, center } satisfies SetViewportMessage,
         {
-            destination,
-        },
-    );
-}
-
-/**
- * Set viewport zoom level.
- */
-export function broadcastSetZoom(zoom: number, destination: "LOCAL" | "ALL") {
-    return OBR.broadcast.sendMessage(
-        CHANNEL_MESSAGE,
-        { type: SET_ZOOM, zoom } satisfies SetZoomMessage,
-        {
-            destination,
+            destination: "REMOTE",
         },
     );
 }
@@ -309,9 +273,7 @@ export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
             } else if (isStopAllSoundsMessage(data)) {
                 usePlayerStorage.getState().stopAllSounds();
             } else if (isSetViewportMessage(data)) {
-                void animateViewportTo(data.x, data.y);
-            } else if (isSetZoomMessage(data)) {
-                void zoomTo(data.zoom);
+                void setViewport(data.zoom, data.center);
             } else if (isShowSpeechBubbleMessage(data)) {
                 void showSpeechBubble(data);
             } else if (isStopAllBehaviorsMessage(data)) {

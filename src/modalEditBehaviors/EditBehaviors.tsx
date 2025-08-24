@@ -21,6 +21,7 @@ import { ConnectionChecker } from "../blockly/ConnectionChecker";
 import { Dragger } from "../blockly/Dragger";
 import { isShowCreateVariable } from "../blockly/EventShowCreateVariable";
 import { isShowEditProcedure } from "../blockly/EventShowEditProcedure";
+import { FixedWidthContinuousFlyout } from "../blockly/FixedWidthContinuousFlyout";
 import { installGetExtensionCallback } from "../blockly/getExtensionButton";
 import { handleNewSceneMetadata } from "../blockly/handleNewSceneMetadata";
 import { setupBlocklyGlobals } from "../blockly/setupBlocklyGlobals";
@@ -164,7 +165,8 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
                     snap: true,
                 },
                 plugins: {
-                    flyoutsVerticalToolbox: "ContinuousFlyout",
+                    [Blockly.registry.Type.FLYOUTS_VERTICAL_TOOLBOX.toString()]:
+                        FixedWidthContinuousFlyout,
                     metricsManager: "ContinuousMetrics",
                     toolbox: "ContinuousToolbox",
                     // variableMap: BehaviorVariableMap,

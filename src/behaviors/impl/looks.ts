@@ -17,7 +17,6 @@ import {
 } from "owlbear-utils";
 import {
     broadcastSetViewport,
-    broadcastSetZoom,
     broadcastShowSpeechBubble,
 } from "../../broadcast/broadcast";
 import { getBounds, isBoundableItem } from "../../collision/getBounds";
@@ -136,53 +135,42 @@ export async function showSpeechBubble({
 /**
  * Animate the viewport to center on specified coordinates.
  */
-export async function animateViewportTo(x: number, y: number): Promise<void> {
-    const [viewportPosition, viewportWidth, viewportHeight, scale] =
-        await Promise.all([
-            OBR.viewport.transformPoint({ x, y }),
-            OBR.viewport.getWidth(),
-            OBR.viewport.getHeight(),
-            OBR.viewport.getScale(),
-        ]);
+// export async function animateViewportTo(x: number, y: number): Promise<void> {
+//     const [viewportPosition, viewportWidth, viewportHeight, scale] =
+//         await Promise.all([
+//             OBR.viewport.transformPoint({ x, y }),
+//             OBR.viewport.getWidth(),
+//             OBR.viewport.getHeight(),
+//             OBR.viewport.getScale(),
+//         ]);
 
-    // console.log("viewportPosition", viewportPosition);
-    // console.log("scale", scale);
+//     // Get the center of the viewport in screen-space
+//     const viewportCenter: Vector2 = {
+//         x: viewportWidth / 2,
+//         y: viewportHeight / 2,
+//     };
 
-    // Get the center of the viewport in screen-space
-    const viewportCenter: Vector2 = {
-        x: viewportWidth / 2,
-        y: viewportHeight / 2,
-    };
+//     // Offset the item center by the viewport center
+//     const viewportDelta = Math2.subtract(viewportPosition, viewportCenter);
 
-    // console.log("viewportCenter", viewportCenter);
+//     // Convert the position to world-space
+//     const worldTopLeft = await OBR.viewport.inverseTransformPoint(
+//         viewportDelta,
+//     );
 
-    // Offset the item center by the viewport center
-    const viewportDelta = Math2.subtract(viewportPosition, viewportCenter);
+//     // Invert and scale the world-space position to match a viewport position offset
+//     const position = Math2.multiply(worldTopLeft, -scale);
 
-    // console.log("viewportDelta", viewportDelta);
-
-    // Convert the position to world-space
-    const worldTopLeft = await OBR.viewport.inverseTransformPoint(
-        viewportDelta,
-    );
-
-    // console.log("worldTopLeft", worldTopLeft);
-
-    // Invert and scale the world-space position to match a viewport position offset
-    const position = Math2.multiply(worldTopLeft, -scale);
-
-    // console.log("position", position);
-
-    await OBR.viewport.animateTo({ position, scale });
-}
+//     await OBR.viewport.animateTo({ position, scale });
+// }
 
 /**
- * Animate the viewport to zoom to specified scale.
+ * Animate the viewport to zoom to specified scale and move to the specified center.
  */
-export async function zoomTo(zoom: number): Promise<void> {
-    // OBR's max zoom is 1000% and min is 2%
-    const scale = Math.max(0.02, Math.min(10, zoom / 100));
-
+export async function setViewport(
+    zoom?: number,
+    newWorldCenter?: Vector2,
+): Promise<void> {
     const [viewportWidth, viewportHeight, currentScale, worldTopLeft] =
         await Promise.all([
             OBR.viewport.getWidth(),
@@ -190,6 +178,12 @@ export async function zoomTo(zoom: number): Promise<void> {
             OBR.viewport.getScale(),
             OBR.viewport.inverseTransformPoint(ORIGIN),
         ]);
+
+    // OBR's max zoom is 1000% and min is 2%
+    const scale =
+        zoom !== undefined
+            ? Math.max(0.02, Math.min(10, zoom / 100))
+            : currentScale;
 
     // Get the center of the viewport in screen-space
     const viewportCenter: Vector2 = {
@@ -201,15 +195,23 @@ export async function zoomTo(zoom: number): Promise<void> {
         viewportCenter,
     );
 
+    // Vector from center to top left
     const worldTopLeftDelta = Math2.subtract(worldTopLeft, worldCenter);
 
     // multiplying by current scale gives us the top left world position if we
     // were at 100% scale.
     // dividing that by new scale gives us top left world position in new scale
-    const newWorldTopLeft = Math2.add(
+    const zoomedWorldTopLeft = Math2.add(
         worldCenter,
         Math2.multiply(worldTopLeftDelta, currentScale / scale),
     );
+
+    const worldDelta =
+        newWorldCenter !== undefined
+            ? Math2.subtract(newWorldCenter, worldCenter)
+            : ORIGIN;
+
+    const newWorldTopLeft = Math2.add(zoomedWorldTopLeft, worldDelta);
 
     await OBR.viewport.animateTo({
         position: Math2.multiply(newWorldTopLeft, -scale),
@@ -494,9 +496,17 @@ export const LOOKS_BEHAVIORS = {
         signal.throwIfAborted();
     },
 
+    /**
+     * @param targetUnknown "MY" or "EVERYONE"
+     * @param zoomUnknown 2-100 or undefined
+     * @param xUnknown x position or undefined
+     * @param yUnknown y position or undefined
+     * @returns
+     */
     setViewport: async (
         signal: AbortSignal,
         targetUnknown: unknown,
+        zoomUnknown: unknown,
         xUnknown: unknown,
         yUnknown: unknown,
     ) => {
@@ -506,41 +516,27 @@ export const LOOKS_BEHAVIORS = {
             return;
         }
 
-        const x = Number(xUnknown);
-        if (!isFinite(x) || isNaN(x)) {
+        const zoom =
+            zoomUnknown === undefined ? undefined : Number(zoomUnknown);
+        if (typeof zoom === "number" && (!isFinite(zoom) || isNaN(zoom))) {
+            console.warn(`[setViewport] zoom invalid: ${zoom}`);
+        }
+        const x = xUnknown === undefined ? undefined : Number(xUnknown);
+        if (typeof x === "number" && (!isFinite(x) || isNaN(x))) {
             console.warn(`[setViewport] x invalid: ${x}`);
-            return;
         }
-        const y = Number(yUnknown);
-        if (!isFinite(y) || isNaN(y)) {
+        const y = yUnknown === undefined ? undefined : Number(yUnknown);
+        if (typeof y === "number" && (!isFinite(y) || isNaN(y))) {
             console.warn(`[setViewport] y invalid: ${y}`);
-            return;
         }
 
-        const destination = target === "MY" ? "LOCAL" : "ALL";
-        await broadcastSetViewport(x, y, destination);
-        signal.throwIfAborted();
-    },
+        const center =
+            x !== undefined && y !== undefined ? { x, y } : undefined;
 
-    setZoom: async (
-        signal: AbortSignal,
-        targetUnknown: unknown,
-        zoomUnknown: unknown,
-    ) => {
-        const target = String(targetUnknown);
-        if (target !== "MY" && target !== "EVERYONE") {
-            console.warn(`[setZoom] target invalid: ${target}`);
-            return;
+        await setViewport(zoom, center);
+        if (targetUnknown === "EVERYONE") {
+            await broadcastSetViewport(zoom, center);
         }
-
-        const zoom = Number(zoomUnknown);
-        if (!isFinite(zoom) || isNaN(zoom) || zoom <= 0) {
-            console.warn(`[setZoom] zoom invalid: ${zoom}`);
-            return;
-        }
-
-        const destination = target === "MY" ? "LOCAL" : "ALL";
-        await broadcastSetZoom(zoom, destination);
         signal.throwIfAborted();
     },
 };
