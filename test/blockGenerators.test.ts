@@ -1,12 +1,12 @@
 import * as Blockly from "blockly";
 import { beforeAll, describe, expect, it } from "vitest";
 import { compileBehavior } from "../src/behaviors/compileBehavior";
-import { BehaviorJavascriptGenerator } from "../src/blockly/BehaviorJavascriptGenerator";
 import {
     BLOCK_GOTO,
     BLOCK_REPEAT,
     BLOCK_REPEAT_UNTIL,
 } from "../src/blockly/blocks";
+import { BehaviorJavascriptGenerator } from "../src/blockly/generator/BehaviorJavascriptGenerator";
 import { setupBlocklyGlobals } from "../src/blockly/setupBlocklyGlobals";
 
 function checkCompiles(workspace: Blockly.Workspace) {

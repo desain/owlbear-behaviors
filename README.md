@@ -173,6 +173,8 @@ To make a production build run:
     -   auto-tags
     -   auto-behaviors
 -   Blocks
+    -   Motion
+        -   Pathfinding: grid based A\* when not in euclidean mode
     -   Looks
         -   Set width and height scale independently
     -   Extensions

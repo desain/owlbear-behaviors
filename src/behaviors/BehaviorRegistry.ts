@@ -3,7 +3,7 @@ import type { Block } from "blockly";
 import * as Blockly from "blockly";
 import { executeObrFunction } from "owlbear-utils";
 import { type BehaviorItem } from "../BehaviorItem";
-import { BehaviorJavascriptGenerator } from "../blockly/BehaviorJavascriptGenerator";
+import { BehaviorJavascriptGenerator } from "../blockly/generator/BehaviorJavascriptGenerator";
 import type { Collision } from "../collision/CollisionEngine";
 import { FIELD_BROADCAST, FIELD_TAG, METADATA_KEY_CLONE } from "../constants";
 import type { BonesRoll } from "../extensions/Bones";

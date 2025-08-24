@@ -42,8 +42,9 @@ The build system creates three separate HTML/JS bundles:
 
 -   `blocks.ts` - Block definitions (readonly const objects)
 -   `toolbox.ts` - Toolbox categories and block organization
--   `BehaviorJavascriptGenerator.ts` - Converts blocks to JavaScript
--   Custom renderer (`CatZelosRenderer.ts`) and extensions for drag-to-duplicate, broadcasts, tags
+-   `generator/BehaviorJavascriptGenerator.ts` - Converts blocks to JavaScript
+-   `generator/blockGenerators.ts` - Contains code generation logic for each block.
+-   Custom renderer (`blockRendering/Renderer.ts`) and extensions for drag-to-duplicate, broadcasts, tags
 
 **State Management** (`src/state/`):
 
@@ -52,12 +53,14 @@ The build system creates three separate HTML/JS bundles:
 
 ### Adding New Blockly Blocks
 
-Follow this strict process from `.github/copilot-instructions.md`:
+Follow this process:
 
 1. **blocks.ts**: Define block as readonly const object
 2. **toolbox.ts**: Add to appropriate category using block definition's `args0` array
-3. **BehaviorJavascriptGenerator.ts**: Add generator entry matching block's field/input names
-4. **README.md**: Document user-facing features
+3. **blockGenerators.ts**: Add generator entry matching block's field/input names
+4. **blockGenerators.test.ts**: Add the new block to the serialization tests
+5. **README.md**: Document user-facing features
+6. **Verify build**: run `pnpm build`, `pnpm lint`, and `pnpm test`
 
 ### Adding New Parameters to Behavior Functions
 
