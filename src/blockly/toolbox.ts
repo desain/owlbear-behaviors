@@ -1014,14 +1014,6 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     ...extensionHeader("Owl Trackers"),
                     {
                         kind: "block",
-                        type: BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP
-                                .args0[2].name]: shadowDynamic("HP"),
-                        },
-                    },
-                    {
-                        kind: "block",
                         type: BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.type,
                         inputs: {
                             [BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.args0[1]
@@ -1036,6 +1028,14 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         inputs: {
                             [BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.args0[1]
                                 .name]: shadowDynamic("checkbox"),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP
+                                .args0[2].name]: shadowDynamic("HP"),
                         },
                     },
                     {

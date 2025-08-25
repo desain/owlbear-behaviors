@@ -2392,7 +2392,7 @@ export const GENERATORS: Record<
         )};\n`;
     },
 
-    extension_owl_trackers_set_show_on_map: (block, generator) => {
+    extension_owl_trackers_showmap: (block, generator) => {
         const fieldName = generator.valueToCode(
             block,
             BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP.args0[2].name,
