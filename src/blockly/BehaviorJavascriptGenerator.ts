@@ -52,6 +52,7 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
+    BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP,
     BLOCK_EXTENSION_PHASE_CHANGE,
     BLOCK_EXTENSION_PRETTY_SET_INITIATIVE,
     BLOCK_EXTENSION_RUMBLE_ROLL,
@@ -2564,6 +2565,25 @@ const GENERATORS: Record<CustomBlockType | OverriddenBlockType, Generator> = {
             PARAMETER_SELF_ID,
             fieldName,
             checked,
+        )};\n`;
+    },
+
+    extension_owl_trackers_set_show_on_map: (block, generator) => {
+        const fieldName = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP.args0[2].name,
+            javascript.Order.NONE,
+        );
+        const show = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP.args0[1].name,
+        );
+        return `await ${behave(
+            "setOwlTrackerShowOnMap",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            fieldName,
+            show,
         )};\n`;
     },
 

@@ -7,6 +7,7 @@ interface BaseTracker {
     readonly id: string;
     readonly color: number;
     readonly name?: string;
+    readonly showOnMap?: boolean;
 }
 
 interface NumberTracker extends BaseTracker {
@@ -98,5 +99,22 @@ export const OwlTrackers = {
         }
 
         item.metadata[METADATA_KEY] = trackers;
+    },
+
+    setFieldShowOnMap: (
+        item: Draft<Item>,
+        fieldName: string,
+        show: boolean,
+    ): void => {
+        const trackers =
+            (item.metadata[METADATA_KEY] as Draft<OwlTracker[] | undefined>) ??
+            [];
+
+        const tracker = trackers.find((t) => t.name === fieldName);
+
+        if (tracker) {
+            tracker.showOnMap = show;
+            item.metadata[METADATA_KEY] = trackers;
+        }
     },
 };
