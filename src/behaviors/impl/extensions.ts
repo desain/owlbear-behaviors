@@ -428,6 +428,23 @@ export const EXTENSIONS_BEHAVIORS = {
         signal.throwIfAborted();
     },
 
+    setOwlTrackerShowOnMap: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        fieldNameUnknown: unknown,
+        showUnknown: unknown,
+    ): Promise<void> => {
+        const show = Boolean(showUnknown);
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (draft) => {
+            OwlTrackers.setFieldShowOnMap(
+                draft,
+                String(fieldNameUnknown),
+                show,
+            );
+        });
+        signal.throwIfAborted();
+    },
+
     // Google Sheets
     getSheetsValue: async (
         signal: AbortSignal,

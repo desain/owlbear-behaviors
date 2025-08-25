@@ -51,6 +51,39 @@ export const BLOCK_GLIDE = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP = {
+    style: "extension_blocks",
+    type: "extension_owl_trackers_set_show_on_map",
+    tooltip:
+        "Set whether a field is shown on the map in the Owl Trackers extension",
+    message0: "%1 %2 field %3 on map",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://owl-trackers.onrender.com/owl-trackers-logo.svg",
+            width: 24,
+            height: 24,
+            alt: "Owl Trackers extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "ACTION",
+            options: [
+                ["show", "true"],
+                ["hide", "false"],
+            ],
+        },
+        {
+            type: "input_value",
+            name: "FIELD",
+            check: ["String", "Number"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 export const BLOCK_GLIDE_ROTATE_LEFT = {
     style: "motion_blocks",
     type: "motion_glide_turnleft",
@@ -3529,6 +3562,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
+    BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_SHEETS_GET,
     BLOCK_EXTENSION_WEATHER_ADD,

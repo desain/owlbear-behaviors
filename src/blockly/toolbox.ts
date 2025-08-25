@@ -57,6 +57,7 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
+    BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP,
     BLOCK_EXTENSION_PHASE_CHANGE,
     BLOCK_EXTENSION_PRETTY_MY_INITIATIVE,
     BLOCK_EXTENSION_PRETTY_MY_TURN,
@@ -1011,6 +1012,14 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     },
 
                     ...extensionHeader("Owl Trackers"),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP
+                                .args0[2].name]: shadowDynamic("HP"),
+                        },
+                    },
                     {
                         kind: "block",
                         type: BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.type,
