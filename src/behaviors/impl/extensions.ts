@@ -71,6 +71,15 @@ export const EXTENSIONS_BEHAVIORS = {
         signal.throwIfAborted();
     },
 
+    addAuraPreset: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        presetUnknown: unknown,
+    ) => {
+        await Auras.addPreset(String(selfIdUnknown), String(presetUnknown));
+        signal.throwIfAborted();
+    },
+
     // Dynamic Fog
     hasLight: async (
         signal: AbortSignal,

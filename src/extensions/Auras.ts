@@ -26,4 +26,15 @@ export const Auras = {
             },
             { destination: "LOCAL" },
         ),
+
+    addPreset: (id: Item["id"], preset: string) =>
+        OBR.broadcast.sendMessage(
+            CHANNEL,
+            {
+                type: "CREATE_AURAS_PRESETS",
+                sources: [id],
+                presets: [preset],
+            },
+            { destination: "LOCAL" },
+        ),
 };

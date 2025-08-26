@@ -20,6 +20,7 @@ import {
 } from "../../constants";
 import {
     BLOCK_ADD_AURA,
+    BLOCK_ADD_AURA_PRESET,
     BLOCK_ANGLE,
     BLOCK_ANNOUNCEMENT,
     BLOCK_ATTACH,
@@ -1825,7 +1826,7 @@ export const GENERATORS: Record<
             PARAMETER_SIGNAL,
             content,
             duration,
-        )}; ${PARAMETER_ITEM_PROXY}.invalidate();`;
+        )};${PARAMETER_ITEM_PROXY}.invalidate();`;
     },
 
     extension_hoot_play: (block, generator) => {
@@ -1846,7 +1847,7 @@ export const GENERATORS: Record<
             PARAMETER_SIGNAL,
             track,
             playlist,
-        )}; ${PARAMETER_ITEM_PROXY}.invalidate();`;
+        )};\n${PARAMETER_ITEM_PROXY}.invalidate();`;
     },
 
     extension_auras_remove: () =>
@@ -1854,7 +1855,7 @@ export const GENERATORS: Record<
             "removeAuras",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
-        )}; ${PARAMETER_ITEM_PROXY}.invalidate();`,
+        )};\n${PARAMETER_ITEM_PROXY}.invalidate();`,
 
     extension_auras_add: (block, generator) => {
         const size = generator.valueToCode(
@@ -1875,7 +1876,21 @@ export const GENERATORS: Record<
             generator.quote_(style),
             color,
             size,
-        )}; ${PARAMETER_ITEM_PROXY}.invalidate();`;
+        )};\n${PARAMETER_ITEM_PROXY}.invalidate();`;
+    },
+
+    extension_auras_add_preset: (block, generator) => {
+        const preset = generator.valueToCode(
+            block,
+            BLOCK_ADD_AURA_PRESET.args0[1].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave(
+            "addAuraPreset",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            preset,
+        )};\n${PARAMETER_ITEM_PROXY}.invalidate();`;
     },
 
     extension_fog_lit: () => [

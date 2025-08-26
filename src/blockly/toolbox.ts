@@ -18,6 +18,7 @@ import {
 } from "../constants";
 import {
     BLOCK_ADD_AURA,
+    BLOCK_ADD_AURA_PRESET,
     BLOCK_ANGLE,
     BLOCK_ANNOUNCEMENT,
     BLOCK_ATTACH,
@@ -925,6 +926,14 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                             [BLOCK_ADD_AURA.args0[2].name]: shadowColor(
                                 assumeHexColor("#facade"),
                             ),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_ADD_AURA_PRESET.type,
+                        inputs: {
+                            [BLOCK_ADD_AURA_PRESET.args0[1].name]:
+                                shadowDynamic("Faerie Fire"),
                         },
                     },
                     blockToDefinition(BLOCK_REMOVE_AURAS),

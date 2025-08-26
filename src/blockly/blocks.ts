@@ -2184,6 +2184,30 @@ export const BLOCK_ADD_AURA = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_ADD_AURA_PRESET = {
+    style: "extension_blocks",
+    type: "extension_auras_add_preset",
+    tooltip: "Add an aura preset using the Auras & Emanations extension",
+    message0: "%1 add aura preset %2",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://owlbear-emanation.pages.dev/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Auras extension icon",
+        },
+        {
+            type: "input_value",
+            name: "PRESET",
+            check: ["String", "Number"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 export const BLOCK_REMOVE_AURAS = {
     style: "extension_blocks",
     type: "extension_auras_remove",
@@ -3536,6 +3560,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_ANNOUNCEMENT,
     BLOCK_HOOT,
     BLOCK_ADD_AURA,
+    BLOCK_ADD_AURA_PRESET,
     BLOCK_REMOVE_AURAS,
     BLOCK_EXTENSION_FOG_LIT,
     BLOCK_EXTENSION_FOG_ADD,
