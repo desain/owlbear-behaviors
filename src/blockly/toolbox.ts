@@ -16,6 +16,7 @@ import {
     INPUT_BROADCAST,
     INPUT_TAG,
 } from "../constants";
+import { CharacterDistances } from "../extensions/CharacterDistances";
 import {
     BLOCK_ADD_AURA,
     BLOCK_ADD_AURA_PRESET,
@@ -41,6 +42,8 @@ import {
     BLOCK_EQUALS,
     BLOCK_EXTENSION_BONES_ON_ROLL,
     BLOCK_EXTENSION_BONES_ROLL_DICE,
+    BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT,
+    BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT,
     BLOCK_EXTENSION_CLASH_HP_CHANGE,
     BLOCK_EXTENSION_CLASH_PROPERTY,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
@@ -59,8 +62,8 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP,
-    BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY,
     BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY,
+    BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY,
     BLOCK_EXTENSION_PHASE_CHANGE,
     BLOCK_EXTENSION_PRETTY_MY_INITIATIVE,
     BLOCK_EXTENSION_PRETTY_MY_TURN,
@@ -951,6 +954,25 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         },
                     },
 
+                    ...(isImage(target)
+                        ? [
+                              ...extensionHeader("Character Distances"),
+                              {
+                                  kind: "block",
+                                  type: BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT.type,
+                                  inputs: {
+                                      [BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT
+                                          .args0[1].name]: shadowNumber(
+                                          CharacterDistances.getHeight(target),
+                                      ),
+                                  },
+                              },
+                              blockToDefinition(
+                                  BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT,
+                              ),
+                          ]
+                        : []),
+
                     ...extensionHeader("Clash!"),
                     blockToDefinition(BLOCK_EXTENSION_CLASH_HP_CHANGE),
                     blockToDefinition(BLOCK_EXTENSION_CLASH_PROPERTY),
@@ -1080,7 +1102,9 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                                           .args0[1].name]: shadowNumber(50),
                                   },
                               },
-                              blockToDefinition(BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY),
+                              blockToDefinition(
+                                  BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY,
+                              ),
                           ]
                         : []),
 

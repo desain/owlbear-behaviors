@@ -13,6 +13,7 @@ function rogue(manifest: string) {
 const LINKS = {
     "Auras and Emanations": official("auras-and-emanations"),
     "Bones!": official("bones"),
+    "Character Distances": official("character-distances"),
     "Clash!": official("clash"),
     Hoot: rogue("https://hoot.armindo.eu/manifest.json"),
     Announcement: rogue("https://announcement.sharkbrain.dev/manifest.json"),

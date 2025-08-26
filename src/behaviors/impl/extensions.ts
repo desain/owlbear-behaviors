@@ -3,6 +3,7 @@ import type { BLOCK_EXTENSION_WEATHER_ADD } from "../../blockly/blocks";
 import { Announcement } from "../../extensions/Announcement";
 import { Auras } from "../../extensions/Auras";
 import { Bones } from "../../extensions/Bones";
+import { CharacterDistances } from "../../extensions/CharacterDistances";
 import { Clash } from "../../extensions/Clash";
 import { Codeo } from "../../extensions/Codeo";
 import { Daggerheart } from "../../extensions/Daggerheart";
@@ -667,5 +668,37 @@ export const EXTENSIONS_BEHAVIORS = {
             return 0;
         }
         return Peekaboo.getSolidity(selfItem);
+    },
+
+    // Character Distances
+    getHeight: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return CharacterDistances.getHeight(selfItem);
+    },
+
+    setHeight: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        heightUnknown: unknown,
+    ): Promise<void> => {
+        const height = Number(heightUnknown);
+        if (!isFinite(height) || isNaN(height)) {
+            console.warn(`[setHeight] height invalid: ${height}`);
+            return;
+        }
+
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (draft) => {
+            CharacterDistances.setHeight(draft, height);
+        });
+        signal.throwIfAborted();
     },
 };

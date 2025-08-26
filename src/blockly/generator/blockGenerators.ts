@@ -40,6 +40,7 @@ import {
     BLOCK_EQUALS,
     BLOCK_EXTENSION_BONES_ON_ROLL,
     BLOCK_EXTENSION_BONES_ROLL_DICE,
+    BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT,
     BLOCK_EXTENSION_CLASH_PROPERTY,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
@@ -2479,6 +2480,25 @@ export const GENERATORS: Record<
     },
     extension_peekaboo_get_solidity: () => [
         `await ${behave("getSolidity", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
+        javascript.Order.AWAIT,
+    ],
+
+    // Character Distances
+    extension_dist_setht: (block, generator) => {
+        const height = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT.args0[1].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave(
+            "setHeight",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            height,
+        )};\n`;
+    },
+    extension_dist_getht: () => [
+        `await ${behave("getHeight", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
         javascript.Order.AWAIT,
     ],
 

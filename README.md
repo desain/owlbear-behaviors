@@ -183,9 +183,6 @@ To make a production build run:
         -   Kenku FM?
         -   dddice? get room id from metadata, call API?
         -   Google sheets write
-        -   peekaboo
-            -   get solidity
-        -   character distances: height, set height
     -   Control
         -   tell other to? Snail Mod has it as `as (other) {...}`
     -   Events

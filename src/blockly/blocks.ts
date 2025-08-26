@@ -3304,6 +3304,48 @@ export const BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT = {
+    style: "extension_blocks",
+    type: "extension_dist_setht",
+    tooltip: "Set the height in the Character Distances extension",
+    message0: "%1 set height to %2 %{BKY_OBR_GRID_UNIT}",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://owlbear-distances.onrender.com/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Character Distances extension icon",
+        },
+        {
+            type: "input_value",
+            name: "VALUE",
+            check: ["Number", "String"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT = {
+    style: "extension_blocks",
+    type: "extension_dist_getht",
+    tooltip: "Get the current height from the Character Distances extension",
+    message0: "%1 height",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://owlbear-distances.onrender.com/logo.png",
+            width: 24,
+            height: 24,
+            alt: "Character Distances extension icon",
+        },
+    ],
+    output: "Number",
+    inputsInline: true,
+} as const;
+
 // Menus
 export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
@@ -3646,6 +3688,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_CLASH_HP_CHANGE,
     BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY,
     BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY,
+    BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT,
+    BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,
