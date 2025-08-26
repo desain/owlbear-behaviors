@@ -2477,6 +2477,10 @@ export const GENERATORS: Record<
             solidity,
         )};\n`;
     },
+    extension_peekaboo_get_solidity: () => [
+        `await ${behave("getSolidity", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
+        javascript.Order.AWAIT,
+    ],
 
     // Utility blocks
     looks_opacity_slider: (block) => {

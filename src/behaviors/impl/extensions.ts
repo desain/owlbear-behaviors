@@ -654,4 +654,18 @@ export const EXTENSIONS_BEHAVIORS = {
         });
         signal.throwIfAborted();
     },
+
+    getSolidity: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return Peekaboo.getSolidity(selfItem);
+    },
 };
