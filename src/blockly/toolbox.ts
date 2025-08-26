@@ -59,6 +59,7 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP,
+    BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY,
     BLOCK_EXTENSION_PHASE_CHANGE,
     BLOCK_EXTENSION_PRETTY_MY_INITIATIVE,
     BLOCK_EXTENSION_PRETTY_MY_TURN,
@@ -1061,6 +1062,16 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         inputs: {
                             [BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX.args0[1]
                                 .name]: shadowDynamic("checkbox"),
+                        },
+                    },
+
+                    ...extensionHeader("Peekaboo"),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY.args0[1]
+                                .name]: shadowNumber(50),
                         },
                     },
 

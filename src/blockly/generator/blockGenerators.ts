@@ -49,6 +49,7 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP,
+    BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY,
     BLOCK_EXTENSION_PHASE_CHANGE,
     BLOCK_EXTENSION_PRETTY_SET_INITIATIVE,
     BLOCK_EXTENSION_RUMBLE_ROLL,
@@ -2461,6 +2462,20 @@ export const GENERATORS: Record<
             )}`,
             javascript.Order.AWAIT,
         ];
+    },
+
+    extension_peekaboo_solidity: (block, generator) => {
+        const solidity = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY.args0[1].name,
+            javascript.Order.NONE,
+        );
+        return `await ${behave(
+            "setSolidity",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            solidity,
+        )};\n`;
     },
 
     // Utility blocks

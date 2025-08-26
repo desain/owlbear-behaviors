@@ -2,30 +2,33 @@ import type * as Blockly from "blockly";
 
 const CALLBACK_KEY = "GetExtension";
 
+function official(name: string) {
+    return `https://extensions.owlbear.rodeo/${name}`;
+}
+
 function rogue(manifest: string) {
     return `https://owlbear.rogue.pub/extension/${manifest}`;
 }
 
 const LINKS = {
-    "Auras and Emanations": rogue(
-        "https://owlbear-emanation.pages.dev/manifest.json",
-    ),
-    "Bones!": "https://extensions.owlbear.rodeo/bones",
-    "Clash!": "https://extensions.owlbear.rodeo/clash",
+    "Auras and Emanations": official("auras-and-emanations"),
+    "Bones!": official("bones"),
+    "Clash!": official("clash"),
     Hoot: rogue("https://hoot.armindo.eu/manifest.json"),
     Announcement: rogue("https://announcement.sharkbrain.dev/manifest.json"),
-    "Dynamic Fog": "https://extensions.owlbear.rodeo/dynamic-fog", // https://dynamic-fog.owlbear.rodeo/manifest.json
-    "Game Master's Grimoire": "https://extensions.owlbear.rodeo/hp-tracker",
+    "Dynamic Fog": official("dynamic-fog"),
+    "Game Master's Grimoire": official("hp-tracker"),
     "Game Master's Daggerheart": rogue(
         "https://gmd.tabletop-almanac.com/manifest.json",
     ),
     "Owlbear Codeo": rogue("https://owlbear-codeo.pages.dev/manifest.json"),
-    "Owl Trackers": "https://extensions.owlbear.rodeo/owl-trackers",
-    "Phases Automated": "https://extensions.owlbear.rodeo/phases-automated",
-    "Pretty Sordid": "https://extensions.owlbear.rodeo/pretty-sordid",
-    "Rumble!": "https://extensions.owlbear.rodeo/rumble",
-    "Smoke & Spectre!": "https://extensions.owlbear.rodeo/smoke",
-    Weather: "https://extensions.owlbear.rodeo/weather",
+    "Owl Trackers": official("owl-trackers"),
+    Peekaboo: rogue("https://owlbear-peekaboo.pages.dev/manifest.json"),
+    "Phases Automated": official("phases-automated"),
+    "Pretty Sordid": official("pretty-sordid"),
+    "Rumble!": official("rumble"),
+    "Smoke & Spectre!": official("smoke"),
+    Weather: official("weather"),
 };
 
 export function extensionHeader(extension: keyof typeof LINKS) {

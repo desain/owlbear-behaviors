@@ -11,6 +11,7 @@ import { Gapi } from "../../extensions/Gapi";
 import { Grimoire } from "../../extensions/Grimoire";
 import { Hoot } from "../../extensions/Hoot";
 import { OwlTrackers } from "../../extensions/OwlTrackers";
+import { Peekaboo } from "../../extensions/Peekaboo";
 import { PrettySordid } from "../../extensions/PrettySordid";
 import { Rumble } from "../../extensions/Rumble";
 import { SmokeAndSpectre } from "../../extensions/SmokeAndSpectre";
@@ -634,5 +635,23 @@ export const EXTENSIONS_BEHAVIORS = {
             return 0;
         }
         return Clash.getInitiative(selfItem);
+    },
+
+    // Peekaboo
+    setSolidity: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        solidityUnknown: unknown,
+    ): Promise<void> => {
+        const solidity = Number(solidityUnknown);
+        if (!isFinite(solidity) || isNaN(solidity)) {
+            console.warn(`[setSolidity] solidity invalid: ${solidity}`);
+            return;
+        }
+
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (draft) => {
+            Peekaboo.setSolidity(draft, solidity);
+        });
+        signal.throwIfAborted();
     },
 };

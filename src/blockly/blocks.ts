@@ -3262,6 +3262,30 @@ export const BLOCK_EXTENSION_CLASH_HP_CHANGE = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY = {
+    style: "extension_blocks",
+    type: "extension_peekaboo_solidity",
+    tooltip: "Set the solidity in the Peekaboo extension",
+    message0: "%1 set solidity to %2 %",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://owlbear-peekaboo.pages.dev/logo.svg",
+            width: 24,
+            height: 24,
+            alt: "Peekaboo extension icon",
+        },
+        {
+            type: "input_value",
+            name: "VALUE",
+            check: ["Number", "String"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 // Menus
 export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
@@ -3602,6 +3626,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_WHEN_PRETTY_TURN_CHANGE,
     BLOCK_EXTENSION_CLASH_PROPERTY,
     BLOCK_EXTENSION_CLASH_HP_CHANGE,
+    BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,
