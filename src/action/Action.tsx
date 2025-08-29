@@ -21,6 +21,7 @@ import { activateTool } from "../tool/tool";
 import { BroadcastList } from "./BroadcastList";
 import { SoundList } from "./SoundList";
 import { TagList } from "./TagList";
+import { TokenList } from "./TokenList";
 
 const BASE_HEIGHT = 10;
 const MAX_HEIGHT = 700;
@@ -97,6 +98,10 @@ export function Action() {
                 <>
                     <Box sx={{ px: 2, py: 1 }}>
                         Right click a token to set its behaviors or tags.
+                    </Box>
+                    {/* Tokens with Behaviors Section */}
+                    <Box sx={{ mt: 2 }}>
+                        <TokenList />
                     </Box>
                     {/* Broadcasts Section */}
                     <Box sx={{ mt: 2 }}>
