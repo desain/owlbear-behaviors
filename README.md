@@ -161,6 +161,7 @@ To make a production build run:
 
 ## To do
 
+-   Move executor to the background now that background scripts shouldn't be throttled?
 -   Custom menus
     -   refcount in state, updated by item change handler
     -   on create, register, on destroy, deregister
