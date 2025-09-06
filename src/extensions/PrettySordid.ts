@@ -1,14 +1,14 @@
 import { type Item } from "@owlbear-rodeo/sdk";
-import type { Draft } from "immer";
+import type { Draft, WritableDraft } from "immer";
 
 const METADATA_KEY = "com.pretty-initiative/metadata";
 
 interface PrettySordidMetadata {
-    count: string;
-    active: boolean;
-    group: number;
-    groupIndex: number;
-    ready: boolean;
+    readonly count: string;
+    readonly active: boolean;
+    readonly group: number;
+    readonly groupIndex?: number;
+    readonly ready?: boolean;
 }
 
 export const PrettySordid = {
@@ -16,7 +16,9 @@ export const PrettySordid = {
         item.metadata[METADATA_KEY] !== undefined,
 
     getInitiativeCount: (item: Item): number => {
-        const metadata = item.metadata[METADATA_KEY] as PrettySordidMetadata | undefined;
+        const metadata = item.metadata[METADATA_KEY] as
+            | PrettySordidMetadata
+            | undefined;
         if (!metadata?.count) {
             return 0;
         }
@@ -25,21 +27,25 @@ export const PrettySordid = {
     },
 
     isActiveTurn: (item: Item): boolean => {
-        const metadata = item.metadata[METADATA_KEY] as PrettySordidMetadata | undefined;
-        return metadata?.active ?? false;
+        const metadata = item.metadata[METADATA_KEY] as
+            | PrettySordidMetadata
+            | undefined;
+        return !!metadata?.active;
     },
 
     setInitiativeCount: (item: Draft<Item>, count: number): void => {
-        const metadata = item.metadata[METADATA_KEY] as PrettySordidMetadata | undefined;
-        if (!metadata) {
-            // Don't create metadata if it doesn't exist
-            return;
+        const metadata = item.metadata[METADATA_KEY] as
+            | WritableDraft<PrettySordidMetadata>
+            | undefined;
+
+        if (metadata) {
+            metadata.count = String(count);
+        } else {
+            item.metadata[METADATA_KEY] = {
+                count: String(count),
+                active: false,
+                group: 1,
+            } satisfies PrettySordidMetadata;
         }
-        
-        // Update the count while preserving other properties
-        item.metadata[METADATA_KEY] = {
-            ...metadata,
-            count: String(count),
-        };
     },
 };
