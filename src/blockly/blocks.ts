@@ -6,6 +6,7 @@ import rotateRight from "../../assets/rotate-right.svg";
 
 import {
     EXTENSION_BROADCAST,
+    EXTENSION_SENSING_OF,
     EXTENSION_SOUND,
     EXTENSION_STOP,
     EXTENSION_TAG,
@@ -1081,6 +1082,7 @@ export const BLOCK_OTHER = {
 
 export const BLOCK_SENSING_OF = {
     style: "sensing_blocks",
+    extensions: [EXTENSION_SENSING_OF],
     type: "sensing_of",
     tooltip: "Get a property value of another item",
     message0: "%1 of %2",
@@ -1092,6 +1094,10 @@ export const BLOCK_SENSING_OF = {
                 ["x position", "X_POSITION"],
                 ["y position", "Y_POSITION"],
                 ["rotation", "ROTATION"],
+                "separator",
+                ["text", "TEXT"],
+                ["accessibility name", "NAME"],
+                ["description", "DESCRIPTION"],
             ],
         },
         {

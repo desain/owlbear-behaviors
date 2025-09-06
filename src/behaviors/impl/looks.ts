@@ -317,17 +317,17 @@ export const LOOKS_BEHAVIORS = {
 
     getText: async (
         signal: AbortSignal,
-        selfIdUnknown: unknown,
+        itemIdUnknown: unknown,
     ): Promise<string> => {
-        const selfId = String(selfIdUnknown);
-        const self = await ItemProxy.getInstance().get(selfId);
+        const itemId = String(itemIdUnknown);
+        const item = await ItemProxy.getInstance().get(itemId);
         signal.throwIfAborted();
-        if (!self) {
-            console.warn(`[getText] Item not found: ${selfId}`);
+        if (!item) {
+            console.warn(`[getText] Item not found: ${itemId}`);
             return "";
         }
 
-        return getText(self);
+        return getText(item);
     },
 
     setText: async (

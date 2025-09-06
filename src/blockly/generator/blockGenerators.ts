@@ -138,6 +138,8 @@ import type { CallBlock } from "../procedures/blockCall";
 import { type DefineBlock, isDefineBlock } from "../procedures/blockDefine";
 import type { BehaviorJavascriptGenerator } from "./BehaviorJavascriptGenerator";
 import {
+    awaitBehaveStatement,
+    awaitBehaveValue,
     behave,
     generateAddTriggerHandler,
     generateBlock,
@@ -231,17 +233,17 @@ export const GENERATORS: Record<
             BLOCK_GOTO.args0[1].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "goto",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             x,
             y,
-        )};\n`;
+        );
     },
 
     motion_snap: () =>
-        `await ${behave("snapToGrid", PARAMETER_SIGNAL, PARAMETER_SELF_ID)};\n`,
+        awaitBehaveStatement("snapToGrid", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
     motion_path: (block, generator) => {
         const dist = generator.valueToCode(
@@ -254,13 +256,13 @@ export const GENERATORS: Record<
             BLOCK_PATHFIND.args0[1].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "pathfind",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             dist,
             target,
-        )};\n`;
+        );
     },
 
     motion_glidesecstoxy: (block, generator) => {
@@ -279,7 +281,7 @@ export const GENERATORS: Record<
             BLOCK_GLIDE.args0[2].name,
             javascript.Order.NONE,
         );
-        return `${VAR_LOOP_CHECK} = await ${behave(
+        return `${VAR_LOOP_CHECK} = ${awaitBehaveStatement(
             "glide",
             PARAMETER_SIGNAL,
             VAR_LOOP_CHECK,
@@ -287,7 +289,7 @@ export const GENERATORS: Record<
             duration,
             x,
             y,
-        )};\n`;
+        )}`;
     },
     motion_glide_turnleft: (block, generator) => {
         const duration = generator.valueToCode(
@@ -300,14 +302,14 @@ export const GENERATORS: Record<
             BLOCK_GLIDE_ROTATE_LEFT.args0[2].name,
             javascript.Order.UNARY_NEGATION,
         );
-        return `${VAR_LOOP_CHECK} = await ${behave(
+        return `${VAR_LOOP_CHECK} = ${awaitBehaveStatement(
             "glideRotate",
             PARAMETER_SIGNAL,
             VAR_LOOP_CHECK,
             PARAMETER_SELF_ID,
             duration,
             "-" + degrees,
-        )};\n`;
+        )}`;
     },
     motion_glide_turnright: (block, generator) => {
         const duration = generator.valueToCode(
@@ -320,14 +322,14 @@ export const GENERATORS: Record<
             BLOCK_GLIDE_ROTATE_RIGHT.args0[2].name,
             javascript.Order.NONE,
         );
-        return `${VAR_LOOP_CHECK} = await ${behave(
+        return `${VAR_LOOP_CHECK} = ${awaitBehaveStatement(
             "glideRotate",
             PARAMETER_SIGNAL,
             VAR_LOOP_CHECK,
             PARAMETER_SELF_ID,
             duration,
             degrees,
-        )};\n`;
+        )}`;
     },
     motion_move_direction: (block, generator) => {
         const direction = getStringFieldValue(
@@ -465,12 +467,12 @@ export const GENERATORS: Record<
             BLOCK_FACE.args0[0].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "face",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             target,
-        )};\n`;
+        );
     },
 
     motion_direction: () => [`${SELF}.rotation`, javascript.Order.MEMBER],
@@ -499,13 +501,13 @@ export const GENERATORS: Record<
             javascript.Order.NONE,
         );
 
-        return `await ${behave(
+        return awaitBehaveStatement(
             "say",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             message,
             secs,
-        )};\n`;
+        );
     },
 
     // TODO: should this respect horizontal scaling?
@@ -517,12 +519,12 @@ export const GENERATORS: Record<
             BLOCK_SET_SIZE.args0[0].name,
             javascript.Order.ATOMIC,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setSize",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             size,
-        )};\n`;
+        );
     },
 
     looks_changesizeby: (block, generator) => {
@@ -532,12 +534,12 @@ export const GENERATORS: Record<
             javascript.Order.ATOMIC,
         );
 
-        return `await ${behave(
+        return awaitBehaveStatement(
             "changeSize",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             delta,
-        )};\n`;
+        );
     },
 
     looks_size: () => [
@@ -549,18 +551,16 @@ export const GENERATORS: Record<
         const data = JSON.stringify(
             block.getFieldValue(BLOCK_REPLACE_IMAGE.args0[0].name),
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "replaceImage",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             data,
-        )};\n`;
+        );
     },
 
-    looks_get_label: () => [
-        `await ${behave("getText", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
-        javascript.Order.AWAIT,
-    ],
+    looks_get_label: () =>
+        awaitBehaveValue("getText", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
     looks_set_label: (block, generator) => {
         const text = generator.valueToCode(
@@ -568,22 +568,20 @@ export const GENERATORS: Record<
             BLOCK_SET_TEXT.args0[0].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setText",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             text,
-        )};\n`;
+        );
     },
 
-    looks_get_name: () => [
-        `await ${behave(
+    looks_get_name: () =>
+        awaitBehaveValue(
             "getAccessibilityName",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
-        )}`,
-        javascript.Order.AWAIT,
-    ],
+        ),
 
     looks_set_name: (block, generator) => {
         const name = generator.valueToCode(
@@ -591,22 +589,20 @@ export const GENERATORS: Record<
             BLOCK_SET_ACCESSIBILITY_NAME.args0[0].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setAccessibilityName",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             name,
-        )};\n`;
+        );
     },
 
-    looks_get_description: () => [
-        `await ${behave(
+    looks_get_description: () =>
+        awaitBehaveValue(
             "getAccessibilityDescription",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
-        )}`,
-        javascript.Order.AWAIT,
-    ],
+        ),
 
     looks_set_description: (block, generator) => {
         const description = generator.valueToCode(
@@ -614,12 +610,12 @@ export const GENERATORS: Record<
             BLOCK_SET_ACCESSIBILITY_DESCRIPTION.args0[0].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setAccessibilityDescription",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             description,
-        )};\n`;
+        );
     },
 
     looks_get_layer: () => [`${SELF}.layer`, javascript.Order.MEMBER],
@@ -629,12 +625,12 @@ export const GENERATORS: Record<
             BLOCK_SET_LAYER.args0[0].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setLayer",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             layer,
-        )};\n`;
+        );
     },
 
     looks_set_stroke_color: (block, generator) => {
@@ -772,14 +768,14 @@ export const GENERATORS: Record<
             javascript.Order.NONE,
         );
 
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setEffect",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             generator.quote_(effect),
             intensity,
             "false",
-        )};\n`;
+        );
     },
 
     looks_changeeffectby: (block, generator) => {
@@ -794,14 +790,14 @@ export const GENERATORS: Record<
             javascript.Order.DIVISION,
         );
 
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setEffect",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             generator.quote_(effect),
             intensity,
             "true",
-        )};\n`;
+        );
     },
 
     looks_cleargraphiceffects: (_block, generator) =>
@@ -822,14 +818,14 @@ export const GENERATORS: Record<
             BLOCK_CENTER_VIEW.args0[2].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setViewport",
             PARAMETER_SIGNAL,
             generator.quote_(target),
             "undefined",
             x,
             y,
-        )};\n`;
+        );
     },
 
     looks_set_zoom: (block, generator) => {
@@ -839,14 +835,14 @@ export const GENERATORS: Record<
             BLOCK_ZOOM.args0[1].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setViewport",
             PARAMETER_SIGNAL,
             generator.quote_(target),
             zoom,
             "undefined",
             "undefined",
-        )};\n`;
+        );
     },
 
     looks_zoom_center: (block, generator) => {
@@ -866,14 +862,14 @@ export const GENERATORS: Record<
             BLOCK_CENTER_ZOOM.args0[4].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setViewport",
             PARAMETER_SIGNAL,
             generator.quote_(target),
             zoom,
             x,
             y,
-        )};\n`;
+        );
     },
 
     // Sound blocks
@@ -897,16 +893,18 @@ export const GENERATORS: Record<
             BLOCK_SOUND_PLAY_UNTIL_DONE.args0[0].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
-            "playSoundUntilDone",
-            PARAMETER_SIGNAL,
-            sound,
-            generator.getDeveloperVariableName(VAR_VOLUME),
-        )};\n${PARAMETER_ITEM_PROXY}.invalidate();\n`;
+        return (
+            awaitBehaveStatement(
+                "playSoundUntilDone",
+                PARAMETER_SIGNAL,
+                sound,
+                generator.getDeveloperVariableName(VAR_VOLUME),
+            ) + `${PARAMETER_ITEM_PROXY}.invalidate();\n`
+        );
     },
 
     sound_stopallsounds: () =>
-        `${behave("stopAllSounds", PARAMETER_SIGNAL)};\n`,
+        behave("stopAllSounds", PARAMETER_SIGNAL) + ";\n",
 
     sound_setvolumeto: (block, generator) => {
         const value = generator.valueToCode(
@@ -1238,15 +1236,12 @@ export const GENERATORS: Record<
             BLOCK_CREATE_CLONE_OF.args0[0].name,
             javascript.Order.NONE,
         );
-        return `await ${behave("clone", PARAMETER_SIGNAL, item)};\n`;
+        return awaitBehaveStatement("clone", PARAMETER_SIGNAL, item);
     },
 
     control_delete_this: () =>
-        `await ${behave(
-            "delete",
-            PARAMETER_SIGNAL,
-            PARAMETER_SELF_ID,
-        )};\nreturn;\n`,
+        awaitBehaveStatement("delete", PARAMETER_SIGNAL, PARAMETER_SELF_ID) +
+        "return;\n",
 
     control_match: (block, generator) => {
         const value = generator.valueToCode(
@@ -1285,7 +1280,7 @@ export const GENERATORS: Record<
             INPUT_TAG,
             javascript.Order.NONE,
         );
-        return `await ${behave("addTag", PARAMETER_SIGNAL, target, tag)};\n`;
+        return awaitBehaveStatement("addTag", PARAMETER_SIGNAL, target, tag);
     },
 
     sensing_remove_tag: (block, generator) => {
@@ -1299,7 +1294,7 @@ export const GENERATORS: Record<
             INPUT_TAG,
             javascript.Order.NONE,
         );
-        return `await ${behave("removeTag", PARAMETER_SIGNAL, target, tag)};\n`;
+        return awaitBehaveStatement("removeTag", PARAMETER_SIGNAL, target, tag);
     },
 
     sensing_has_tag_self: (block, generator) => {
@@ -1308,15 +1303,12 @@ export const GENERATORS: Record<
             INPUT_TAG,
             javascript.Order.NONE,
         );
-        return [
-            `await ${behave(
-                "hasTag",
-                PARAMETER_SIGNAL,
-                PARAMETER_SELF_ID,
-                tag,
-            )}`,
-            javascript.Order.AWAIT,
-        ];
+        return awaitBehaveValue(
+            "hasTag",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            tag,
+        );
     },
 
     sensing_has_tag_other: (block, generator) => {
@@ -1330,10 +1322,7 @@ export const GENERATORS: Record<
             INPUT_TAG,
             javascript.Order.NONE,
         );
-        return [
-            `await ${behave("hasTag", PARAMETER_SIGNAL, target, tag)}`,
-            javascript.Order.AWAIT,
-        ];
+        return awaitBehaveValue("hasTag", PARAMETER_SIGNAL, target, tag);
     },
 
     sensing_closest_tagged: (block, generator) => {
@@ -1342,24 +1331,21 @@ export const GENERATORS: Record<
             INPUT_TAG,
             javascript.Order.NONE,
         );
-        return [
-            `await ${behave(
-                "findClosestTagged",
-                PARAMETER_SIGNAL,
-                PARAMETER_SELF_ID,
-                tag,
-            )}`,
-            javascript.Order.AWAIT,
-        ];
+        return awaitBehaveValue(
+            "findClosestTagged",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            tag,
+        );
     },
 
     sensing_deselect: (block) => {
         const target = getDropdownFieldValue(block, BLOCK_DESELECT, 0);
         const deselectArg = target === "THIS" ? `[${PARAMETER_SELF_ID}]` : "";
         return [
-            `await ${behave("deselect", deselectArg)};`,
+            awaitBehaveStatement("deselect", deselectArg),
             THROW_ON_ABORT,
-        ].join("\n");
+        ].join("");
     },
 
     sensing_other_src: () => "",
@@ -1387,6 +1373,18 @@ export const GENERATORS: Record<
             case "ROTATION":
                 return [
                     `(await ${PARAMETER_ITEM_PROXY}.get(${item}))?.rotation ?? 0`,
+                    javascript.Order.LOGICAL_OR,
+                ];
+            case "TEXT":
+                return awaitBehaveValue("getText", PARAMETER_SIGNAL, item);
+            case "NAME":
+                return [
+                    `(await ${PARAMETER_ITEM_PROXY}.get(${item}))?.name ?? ""`,
+                    javascript.Order.LOGICAL_OR,
+                ];
+            case "DESCRIPTION":
+                return [
+                    `(await ${PARAMETER_ITEM_PROXY}.get(${item}))?.description ?? ""`,
                     javascript.Order.LOGICAL_OR,
                 ];
         }
@@ -1418,15 +1416,12 @@ export const GENERATORS: Record<
             BLOCK_DISTANCE_TO.args0[0].name,
             javascript.Order.NONE,
         );
-        return [
-            `await ${behave(
-                "distanceTo",
-                PARAMETER_SIGNAL,
-                PARAMETER_SELF_ID,
-                item,
-            )}`,
-            javascript.Order.AWAIT,
-        ];
+        return awaitBehaveValue(
+            "distanceTo",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            item,
+        );
     },
 
     sensing_touchingobject: (block, generator) => {
@@ -1435,15 +1430,12 @@ export const GENERATORS: Record<
             BLOCK_TOUCHING.args0[0].name,
             javascript.Order.NONE,
         );
-        return [
-            `await ${behave(
-                "touching",
-                PARAMETER_SIGNAL,
-                PARAMETER_SELF_ID,
-                item,
-            )}`,
-            javascript.Order.AWAIT,
-        ];
+        return awaitBehaveValue(
+            "touching",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            item,
+        );
     },
 
     // Operator blocks
@@ -1823,12 +1815,14 @@ export const GENERATORS: Record<
             javascript.Order.NONE,
         );
 
-        return `await ${behave(
-            "announce",
-            PARAMETER_SIGNAL,
-            content,
-            duration,
-        )};${PARAMETER_ITEM_PROXY}.invalidate();`;
+        return (
+            awaitBehaveStatement(
+                "announce",
+                PARAMETER_SIGNAL,
+                content,
+                duration,
+            ) + `${PARAMETER_ITEM_PROXY}.invalidate();`
+        );
     },
 
     extension_hoot_play: (block, generator) => {
@@ -1844,20 +1838,18 @@ export const GENERATORS: Record<
             javascript.Order.NONE,
         );
 
-        return `await ${behave(
-            "hoot",
-            PARAMETER_SIGNAL,
-            track,
-            playlist,
-        )};\n${PARAMETER_ITEM_PROXY}.invalidate();`;
+        return (
+            awaitBehaveStatement("hoot", PARAMETER_SIGNAL, track, playlist) +
+            `${PARAMETER_ITEM_PROXY}.invalidate();`
+        );
     },
 
     extension_auras_remove: () =>
-        `await ${behave(
+        awaitBehaveStatement(
             "removeAuras",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
-        )};\n${PARAMETER_ITEM_PROXY}.invalidate();`,
+        ) + `${PARAMETER_ITEM_PROXY}.invalidate();`,
 
     extension_auras_add: (block, generator) => {
         const size = generator.valueToCode(
@@ -1871,14 +1863,16 @@ export const GENERATORS: Record<
             javascript.Order.NONE,
         );
         const style = getStringFieldValue(block, BLOCK_ADD_AURA.args0[3].name);
-        return `await ${behave(
-            "addAura",
-            PARAMETER_SIGNAL,
-            PARAMETER_SELF_ID,
-            generator.quote_(style),
-            color,
-            size,
-        )};\n${PARAMETER_ITEM_PROXY}.invalidate();`;
+        return (
+            awaitBehaveStatement(
+                "addAura",
+                PARAMETER_SIGNAL,
+                PARAMETER_SELF_ID,
+                generator.quote_(style),
+                color,
+                size,
+            ) + `${PARAMETER_ITEM_PROXY}.invalidate();`
+        );
     },
 
     extension_auras_add_preset: (block, generator) => {
@@ -1887,18 +1881,18 @@ export const GENERATORS: Record<
             BLOCK_ADD_AURA_PRESET.args0[1].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
-            "addAuraPreset",
-            PARAMETER_SIGNAL,
-            PARAMETER_SELF_ID,
-            preset,
-        )};\n${PARAMETER_ITEM_PROXY}.invalidate();`;
+        return (
+            awaitBehaveStatement(
+                "addAuraPreset",
+                PARAMETER_SIGNAL,
+                PARAMETER_SELF_ID,
+                preset,
+            ) + `${PARAMETER_ITEM_PROXY}.invalidate();`
+        );
     },
 
-    extension_fog_lit: () => [
-        `await ${behave("hasLight", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
-        javascript.Order.AWAIT,
-    ],
+    extension_fog_lit: () =>
+        awaitBehaveValue("hasLight", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
     extension_fog_add: (block, generator) => {
         const radius = generator.valueToCode(
@@ -1910,21 +1904,23 @@ export const GENERATORS: Record<
             block,
             BLOCK_EXTENSION_FOG_ADD.args0[2].name,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "addLight",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             radius,
             generator.quote_(shape),
-        )};\n`;
+        );
     },
 
     extension_fog_remove: () =>
-        `await ${behave("removeLight", PARAMETER_SIGNAL, PARAMETER_SELF_ID)};`,
-    extension_smoke_vision: () => [
-        `await ${behave("hasVision", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
-        javascript.Order.AWAIT,
-    ],
+        awaitBehaveStatement(
+            "removeLight",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+        ),
+    extension_smoke_vision: () =>
+        awaitBehaveValue("hasVision", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
     extension_smoke_add: (block, generator) => {
         const radius = generator.valueToCode(
             block,
@@ -1935,31 +1931,31 @@ export const GENERATORS: Record<
             block,
             BLOCK_EXTENSION_SMOKE_ADD.args0[2].name,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "addVision",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             radius,
             generator.quote_(shape),
-        )};\n`;
+        );
     },
     extension_smoke_remove: () =>
-        `await ${behave(
+        awaitBehaveStatement(
             "disableVision",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
-        )};`,
+        ),
     extension_smoke_vision_line: (block) => {
         const enabled = getStringFieldValue(
             block,
             BLOCK_EXTENSION_SMOKE_VISION_LINE.args0[1].name,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setVisionLine",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             enabled,
-        )};\n`;
+        );
     },
 
     extension_smoke_wall: (block) => {
@@ -1988,12 +1984,12 @@ export const GENERATORS: Record<
                 arg = false;
                 break;
         }
-        return `await ${behave(
+        return awaitBehaveStatement(
             func,
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             String(arg),
-        )};\n`;
+        );
     },
 
     extension_smoke_door: (block) => {
@@ -2030,12 +2026,12 @@ export const GENERATORS: Record<
                 arg = false;
                 break;
         }
-        return `await ${behave(
+        return awaitBehaveStatement(
             func,
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             String(arg),
-        )};\n`;
+        );
     },
 
     extension_smoke_window: (block) => {
@@ -2056,12 +2052,12 @@ export const GENERATORS: Record<
                 arg = false;
                 break;
         }
-        return `await ${behave(
+        return awaitBehaveStatement(
             func,
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             String(arg),
-        )};\n`;
+        );
     },
 
     extension_smoke_blind: (block) => {
@@ -2069,12 +2065,12 @@ export const GENERATORS: Record<
             block,
             BLOCK_EXTENSION_SMOKE_BLIND.args0[1].name,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setVisionBlind",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             blind,
-        )};\n`;
+        );
     },
 
     extension_weather_add: (block, generator) => {
@@ -2095,7 +2091,7 @@ export const GENERATORS: Record<
             BLOCK_EXTENSION_WEATHER_ADD.args0[4].name,
         );
 
-        return `await ${behave(
+        return awaitBehaveStatement(
             "addWeather",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
@@ -2103,40 +2099,30 @@ export const GENERATORS: Record<
             generator.quote_(direction),
             speed,
             density,
-        )};\n`;
+        );
     },
 
     extension_weather_remove: () =>
-        `await ${behave(
+        awaitBehaveStatement(
             "removeWeather",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
-        )};\n`,
+        ),
 
-    extension_weather_has: () => [
-        `await ${behave("hasWeather", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
-        javascript.Order.AWAIT,
-    ],
+    extension_weather_has: () =>
+        awaitBehaveValue("hasWeather", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    extension_grimoire_hp: () => [
-        `await ${behave("getHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
-        javascript.Order.AWAIT,
-    ],
+    extension_grimoire_hp: () =>
+        awaitBehaveValue("getHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    extension_grimoire_max_hp: () => [
-        `await ${behave("getMaxHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
-        javascript.Order.AWAIT,
-    ],
+    extension_grimoire_max_hp: () =>
+        awaitBehaveValue("getMaxHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    extension_grimoire_temp_hp: () => [
-        `await ${behave("getTempHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
-        javascript.Order.AWAIT,
-    ],
+    extension_grimoire_temp_hp: () =>
+        awaitBehaveValue("getTempHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    extension_grimoire_ac: () => [
-        `await ${behave("getArmorClass", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
-        javascript.Order.AWAIT,
-    ],
+    extension_grimoire_ac: () =>
+        awaitBehaveValue("getArmorClass", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
     extension_grimoire_hp_change: (block, generator) =>
         generateAddTriggerHandler(block, generator, {
@@ -2174,15 +2160,12 @@ export const GENERATORS: Record<
             BLOCK_EXTENSION_BONES_ROLL_DICE.args0[2].name,
         );
 
-        return [
-            `await ${behave(
-                "bonesRoll",
-                PARAMETER_SIGNAL,
-                notation,
-                generator.quote_(viewers),
-            )}`,
-            javascript.Order.AWAIT,
-        ];
+        return awaitBehaveValue(
+            "bonesRoll",
+            PARAMETER_SIGNAL,
+            notation,
+            generator.quote_(viewers),
+        );
     },
 
     extension_phases_change: (block, generator) => {
@@ -2203,19 +2186,15 @@ export const GENERATORS: Record<
     },
 
     // Pretty Sordid Initiative
-    extension_pretty_initiative: () => [
-        `await ${behave(
+    extension_pretty_initiative: () =>
+        awaitBehaveValue(
             "getMyInitiative",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
-        )}`,
-        javascript.Order.AWAIT,
-    ],
+        ),
 
-    extension_pretty_my_turn: () => [
-        `await ${behave("isMyTurn", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
-        javascript.Order.AWAIT,
-    ],
+    extension_pretty_my_turn: () =>
+        awaitBehaveValue("isMyTurn", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
     extension_pretty_set_initiative: (block, generator) => {
         const count = generator.valueToCode(
@@ -2223,12 +2202,12 @@ export const GENERATORS: Record<
             BLOCK_EXTENSION_PRETTY_SET_INITIATIVE.args0[1].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setMyInitiative",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             count,
-        )};\n`;
+        );
     },
 
     extension_pretty_turn_change: (block, generator) => {
@@ -2252,32 +2231,23 @@ export const GENERATORS: Record<
 
         switch (property) {
             case "HP":
-                return [
-                    `await ${behave(
-                        "getClashHP",
-                        PARAMETER_SIGNAL,
-                        PARAMETER_SELF_ID,
-                    )}`,
-                    javascript.Order.AWAIT,
-                ];
+                return awaitBehaveValue(
+                    "getClashHP",
+                    PARAMETER_SIGNAL,
+                    PARAMETER_SELF_ID,
+                );
             case "MAX_HP":
-                return [
-                    `await ${behave(
-                        "getClashMaxHP",
-                        PARAMETER_SIGNAL,
-                        PARAMETER_SELF_ID,
-                    )}`,
-                    javascript.Order.AWAIT,
-                ];
+                return awaitBehaveValue(
+                    "getClashMaxHP",
+                    PARAMETER_SIGNAL,
+                    PARAMETER_SELF_ID,
+                );
             case "INITIATIVE":
-                return [
-                    `await ${behave(
-                        "getClashInitiative",
-                        PARAMETER_SIGNAL,
-                        PARAMETER_SELF_ID,
-                    )}`,
-                    javascript.Order.AWAIT,
-                ];
+                return awaitBehaveValue(
+                    "getClashInitiative",
+                    PARAMETER_SIGNAL,
+                    PARAMETER_SELF_ID,
+                );
         }
     },
 
@@ -2297,12 +2267,12 @@ export const GENERATORS: Record<
             block,
             BLOCK_EXTENSION_RUMBLE_SAY.args0[2].name,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "rumbleSay",
             PARAMETER_SIGNAL,
             message,
             toSelf,
-        )};\n`;
+        );
     },
 
     extension_rumble_roll: (block, generator) => {
@@ -2311,7 +2281,7 @@ export const GENERATORS: Record<
             BLOCK_EXTENSION_RUMBLE_ROLL.args0[1].name,
             javascript.Order.NONE,
         );
-        return `await ${behave("rumbleRoll", PARAMETER_SIGNAL, notation)};\n`;
+        return awaitBehaveStatement("rumbleRoll", PARAMETER_SIGNAL, notation);
     },
 
     extension_daggerheart_stat: (block, generator) => {
@@ -2319,21 +2289,16 @@ export const GENERATORS: Record<
             block,
             BLOCK_EXTENSION_DAGGERHEART_STAT.args0[1].name,
         );
-        return [
-            `await ${behave(
-                "getDaggerheartStat",
-                PARAMETER_SIGNAL,
-                PARAMETER_SELF_ID,
-                generator.quote_(statName),
-            )}`,
-            javascript.Order.AWAIT,
-        ];
+        return awaitBehaveValue(
+            "getDaggerheartStat",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            generator.quote_(statName),
+        );
     },
 
-    extension_daggerheart_fear: () => [
-        `await ${behave("getDaggerheartFear", PARAMETER_SIGNAL)}`,
-        javascript.Order.AWAIT,
-    ],
+    extension_daggerheart_fear: () =>
+        awaitBehaveValue("getDaggerheartFear", PARAMETER_SIGNAL),
 
     extension_owl_trackers_field: (block, generator) => {
         const fieldName = generator.valueToCode(
@@ -2341,15 +2306,12 @@ export const GENERATORS: Record<
             BLOCK_EXTENSION_OWL_TRACKERS_FIELD.args0[1].name,
             javascript.Order.ATOMIC,
         );
-        return [
-            `await ${behave(
-                "getOwlTrackersField",
-                PARAMETER_SIGNAL,
-                PARAMETER_SELF_ID,
-                String(fieldName),
-            )}`,
-            javascript.Order.AWAIT,
-        ];
+        return awaitBehaveValue(
+            "getOwlTrackersField",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            String(fieldName),
+        );
     },
 
     extension_owl_trackers_checkbox: (block, generator) => {
@@ -2358,15 +2320,12 @@ export const GENERATORS: Record<
             BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX.args0[1].name,
             javascript.Order.ATOMIC,
         );
-        return [
-            `await ${behave(
-                "isOwlTrackersFieldChecked",
-                PARAMETER_SIGNAL,
-                PARAMETER_SELF_ID,
-                String(fieldName),
-            )}`,
-            javascript.Order.AWAIT,
-        ];
+        return awaitBehaveValue(
+            "isOwlTrackersFieldChecked",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            String(fieldName),
+        );
     },
 
     extension_owl_trackers_set_field: (block, generator) => {
@@ -2380,13 +2339,13 @@ export const GENERATORS: Record<
             BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.args0[2].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setOwlTrackersField",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             fieldName,
             value,
-        )};\n`;
+        );
     },
 
     extension_owl_trackers_set_checkbox: (block, generator) => {
@@ -2400,13 +2359,13 @@ export const GENERATORS: Record<
             BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.args0[2].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setOwlTrackersCheckbox",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             fieldName,
             checked,
-        )};\n`;
+        );
     },
 
     extension_owl_trackers_showmap: (block, generator) => {
@@ -2419,13 +2378,13 @@ export const GENERATORS: Record<
             block,
             BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP.args0[1].name,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setOwlTrackerShowOnMap",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             fieldName,
             show,
-        )};\n`;
+        );
     },
 
     extension_codeo_run: (block, generator) => {
@@ -2434,7 +2393,7 @@ export const GENERATORS: Record<
             BLOCK_EXTENSION_CODEO_RUN_SCRIPT.args0[1].name,
             javascript.Order.NONE,
         );
-        return `await ${behave("runScript", PARAMETER_SIGNAL, scriptName)};\n`;
+        return awaitBehaveStatement("runScript", PARAMETER_SIGNAL, scriptName);
     },
 
     extension_sheets_get: (block, generator) => {
@@ -2453,16 +2412,13 @@ export const GENERATORS: Record<
             BLOCK_EXTENSION_SHEETS_GET.args0[3].name,
             javascript.Order.NONE,
         );
-        return [
-            `await ${behave(
-                "getSheetsValue",
-                PARAMETER_SIGNAL,
-                cell,
-                sheet,
-                spreadsheetId,
-            )}`,
-            javascript.Order.AWAIT,
-        ];
+        return awaitBehaveValue(
+            "getSheetsValue",
+            PARAMETER_SIGNAL,
+            cell,
+            sheet,
+            spreadsheetId,
+        );
     },
 
     extension_peekaboo_solidity: (block, generator) => {
@@ -2471,17 +2427,15 @@ export const GENERATORS: Record<
             BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY.args0[1].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setSolidity",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             solidity,
-        )};\n`;
+        );
     },
-    extension_peekaboo_get_solidity: () => [
-        `await ${behave("getSolidity", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
-        javascript.Order.AWAIT,
-    ],
+    extension_peekaboo_get_solidity: () =>
+        awaitBehaveValue("getSolidity", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
     // Character Distances
     extension_dist_setht: (block, generator) => {
@@ -2490,17 +2444,15 @@ export const GENERATORS: Record<
             BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT.args0[1].name,
             javascript.Order.NONE,
         );
-        return `await ${behave(
+        return awaitBehaveStatement(
             "setHeight",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             height,
-        )};\n`;
+        );
     },
-    extension_dist_getht: () => [
-        `await ${behave("getHeight", PARAMETER_SIGNAL, PARAMETER_SELF_ID)}`,
-        javascript.Order.AWAIT,
-    ],
+    extension_dist_getht: () =>
+        awaitBehaveValue("getHeight", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
     // Utility blocks
     looks_opacity_slider: (block) => {

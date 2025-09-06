@@ -1,5 +1,6 @@
 import type { Block } from "blockly";
 import * as Blockly from "blockly";
+import * as javascript from "blockly/javascript";
 import type { DistributiveOmit } from "owlbear-utils";
 import type { BEHAVIORS_IMPL } from "../../behaviors/BehaviorImpl";
 import type { TriggerHandler } from "../../behaviors/TriggerHandler";
@@ -207,4 +208,28 @@ export function behave<T extends keyof typeof BEHAVIORS_IMPL>(
     ...params: BehaviorParams<Parameters<(typeof BEHAVIORS_IMPL)[T]>>
 ) {
     return `${PARAMETER_BEHAVIOR_IMPL}.${behaviorName}(${params.join(", ")})`;
+}
+
+/**
+ * Generate a call to an async behavior function by name, as a value with a JS order.
+ * @param behaviorName The name of the behavior function to call.
+ * @returns A string representing the behavior function call.
+ */
+export function awaitBehaveValue<T extends keyof typeof BEHAVIORS_IMPL>(
+    behaviorName: T,
+    ...params: BehaviorParams<Parameters<(typeof BEHAVIORS_IMPL)[T]>>
+): [code: string, order: javascript.Order] {
+    return [`await ${behave(behaviorName, ...params)}`, javascript.Order.AWAIT];
+}
+
+/**
+ * Generate a call to an async behavior function by name, as a statement.
+ * @param behaviorName The name of the behavior function to call.
+ * @returns A string representing the behavior function call.
+ */
+export function awaitBehaveStatement<T extends keyof typeof BEHAVIORS_IMPL>(
+    behaviorName: T,
+    ...params: BehaviorParams<Parameters<(typeof BEHAVIORS_IMPL)[T]>>
+) {
+    return `await ${behave(behaviorName, ...params)};\n`;
 }

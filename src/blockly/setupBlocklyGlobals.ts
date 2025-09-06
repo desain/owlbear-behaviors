@@ -11,6 +11,7 @@ import { CategoryMyBlocks } from "./CategoryMyBlocks";
 import { CategoryVariables } from "./CategoryVariables";
 import { registerContextMenuEdit } from "./contextMenuEdit";
 import { registerBroadcastExtension } from "./extensionBroadcast";
+import { registerSensingOfExtension } from "./extensionSensingOf";
 import { registerSoundExtension } from "./extensionSound";
 import { registerStopExtension } from "./extensionStop";
 import { registerTagExtension } from "./extensionTags";
@@ -103,6 +104,7 @@ export function setupBlocklyGlobals() {
     registerStopExtension();
     registerSoundExtension();
     registerBroadcastExtension();
+    registerSensingOfExtension();
     registerExtensionLimitIdLength();
     registerMixinDragToDupe();
     registerMixinUsesVolume();
