@@ -1,6 +1,6 @@
 import { type Item } from "@owlbear-rodeo/sdk";
+import type { ItemDiff } from "owlbear-utils";
 import { Patcher } from "./Patcher";
-import type { ItemDiff } from "./diffItemSets";
 
 interface ItemWatcherCtor<GlobalItemType extends Item = Item> {
     isTarget: (item: Item) => item is GlobalItemType;

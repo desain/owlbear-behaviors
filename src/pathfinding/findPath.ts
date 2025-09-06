@@ -4,11 +4,7 @@ import type { Position } from "geojson";
 import * as martinez from "martinez-polygon-clipping";
 import type { Node } from "ngraph.graph";
 import { nba } from "ngraph.path";
-import {
-    toPosition,
-    toVector2Unchecked,
-    type Position as Position2,
-} from "owlbear-utils";
+import { toPosition, toVector2Unchecked, type Position2 } from "owlbear-utils";
 import Offset from "polygon-offset";
 import simplify from "simplify-js";
 import VisibilityGraph from "visibility-graph.js";

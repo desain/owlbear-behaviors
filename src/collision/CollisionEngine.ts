@@ -11,9 +11,9 @@ import {
     type Path,
     type Shape,
 } from "@owlbear-rodeo/sdk";
+import type { ItemDiff } from "owlbear-utils";
 import RBush, { type BBox } from "rbush";
 import { usePlayerStorage } from "../state/usePlayerStorage";
-import type { ItemDiff } from "../watcher/diffItemSets";
 import { getBounds } from "./getBounds";
 
 type CollisionItem = Image | Shape | Line | Curve | Path;

@@ -1,5 +1,5 @@
 import OBR from "@owlbear-rodeo/sdk";
-import { deferCallAll } from "owlbear-utils";
+import { deferCallAll, diffItems } from "owlbear-utils";
 import type { BehaviorItem } from "../BehaviorItem";
 import "../blockly/blocks";
 import { CollisionEngine } from "../collision/CollisionEngine";
@@ -14,7 +14,6 @@ import {
     type BehaviorItemMap,
     type OwlbearStore,
 } from "../state/usePlayerStorage";
-import { diffItemSets } from "../watcher/diffItemSets";
 import { EffectsWatcher } from "../watcher/EffectsWatcher";
 import { Watcher } from "../watcher/Watcher";
 import {
@@ -29,7 +28,7 @@ function handleItemsChange(
     oldItems: BehaviorItemMap,
     newItems: BehaviorItemMap,
 ) {
-    const diff = diffItemSets(oldItems, newItems);
+    const diff = diffItems(oldItems, newItems);
     void watcher.handleGlobalItemsUpdate(diff);
     const { newCollisions, finishedCollisions } =
         collisionEngine.handleGlobalItemsUpdate(diff);
