@@ -162,7 +162,6 @@ To make a production build run:
 ## To do
 
 -   Move executor to the background now that background scripts shouldn't be throttled?
--   String values (text, name, description) on prop block
 -   Custom menus
     -   refcount in state, updated by item change handler
     -   on create, register, on destroy, deregister
@@ -171,9 +170,6 @@ To make a production build run:
     -   inset bounding boxes so barely touching corners don't trigger collisions?
 -   Make new tags in tags field show up in possible tags list in block immediately
 -   Dragging C blocks around statements in stacks like scratch does [here?](https://github.com/scratchfoundation/scratch-blocks/blob/develop/core/insertion_marker_manager.js#L43)
--   Auto features
-    -   auto-tags
-    -   auto-behaviors
 -   Blocks
     -   Motion
         -   Pathfinding: grid based A\* when not in euclidean mode
