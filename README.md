@@ -184,6 +184,7 @@ To make a production build run:
         -   Google sheets write
     -   Control
         -   tell other to? Snail Mod has it as `as (other) {...}`
+        -   for each other token tagged t
     -   Events
         -   When I'm updated in any way?
         -   When I am tagged (tag1 v)?
