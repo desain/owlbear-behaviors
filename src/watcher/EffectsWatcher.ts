@@ -16,11 +16,11 @@ import {
     hexToRgb,
     isObject,
     type HasParameterizedMetadata,
+    type ItemWatcher,
+    type Patcher,
 } from "owlbear-utils";
 import { EFFECT_OPTIONS } from "../blockly/blocks";
 import { METADATA_KEY_EFFECT } from "../constants";
-import type { Patcher } from "./Patcher";
-import type { ItemWatcher } from "./Watcher";
 
 export type BehaviorEffectType = (typeof EFFECT_OPTIONS)[number][0];
 

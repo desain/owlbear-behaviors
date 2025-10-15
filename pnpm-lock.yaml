@@ -69,7 +69,7 @@ importers:
         version: 1.5.0
       owlbear-utils:
         specifier: github:desain/owlbear-utils
-        version: https://codeload.github.com/desain/owlbear-utils/tar.gz/867cd0a70061b8683a73ac33f0a13bd866a052d8(@types/react@19.1.9)(@typescript-eslint/parser@8.38.0(eslint@9.32.0)(typescript@5.8.3))(eslint@9.32.0)(react-dom@19.1.1(react@19.1.1))(typescript@5.8.3)
+        version: https://codeload.github.com/desain/owlbear-utils/tar.gz/98487085c16804a897330630cf258af62703f5b3(@types/react@19.1.9)(@typescript-eslint/parser@8.38.0(eslint@9.32.0)(typescript@5.8.3))(eslint@9.32.0)(react-dom@19.1.1(react@19.1.1))(typescript@5.8.3)
       polygon-offset:
         specifier: ^0.3.2
         version: 0.3.2
@@ -926,8 +926,8 @@ packages:
   '@maxim_mazurok/gapi.client.discovery-v1@0.4.20200806':
     resolution: {integrity: sha512-Jeo/KZqK39DI6ExXHcJ4lqnn1O/wEqboQ6eQ8WnNpu5eJ7wUnX/C5KazOgs1aRhnIB/dVzDe8wm62nmtkMIoaw==}
 
-  '@maxim_mazurok/gapi.client.sheets-v4@0.1.20250902':
-    resolution: {integrity: sha512-BKxCUBIqip7PEOTND0NY4IZWptwSqUmT+vLNwRYza2NGoK1sf9zs7XgQ+3Inp+DeZkjP7XMq8SkuQa0YE9BGUg==}
+  '@maxim_mazurok/gapi.client.sheets-v4@0.1.20250929':
+    resolution: {integrity: sha512-uSkvA3TP099JPo1IB4DJOsR3BihkKJx4HN8wIiUWbv6+EMS9PKvrd+KTYtvAj5clVaRpmg/c3wjnW88xmSbfDg==}
 
   '@mjackson/node-fetch-server@0.6.1':
     resolution: {integrity: sha512-9ZJnk/DJjt805uv5PPv11haJIW+HHf3YEEyVXv+8iLQxLD/iXA68FH220XoiTPBC4gCg5q+IMadDw8qPqlA5wg==}
@@ -2518,8 +2518,8 @@ packages:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
 
-  owlbear-utils@https://codeload.github.com/desain/owlbear-utils/tar.gz/867cd0a70061b8683a73ac33f0a13bd866a052d8:
-    resolution: {tarball: https://codeload.github.com/desain/owlbear-utils/tar.gz/867cd0a70061b8683a73ac33f0a13bd866a052d8}
+  owlbear-utils@https://codeload.github.com/desain/owlbear-utils/tar.gz/98487085c16804a897330630cf258af62703f5b3:
+    resolution: {tarball: https://codeload.github.com/desain/owlbear-utils/tar.gz/98487085c16804a897330630cf258af62703f5b3}
     version: 1.0.0
 
   own-keys@1.0.1:
@@ -3854,7 +3854,7 @@ snapshots:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
 
-  '@maxim_mazurok/gapi.client.sheets-v4@0.1.20250902':
+  '@maxim_mazurok/gapi.client.sheets-v4@0.1.20250929':
     dependencies:
       '@types/gapi.client': 1.0.8
       '@types/gapi.client.discovery-v1': 0.0.4
@@ -4123,7 +4123,7 @@ snapshots:
 
   '@types/gapi.client.sheets-v4@0.0.4':
     dependencies:
-      '@maxim_mazurok/gapi.client.sheets-v4': 0.1.20250902
+      '@maxim_mazurok/gapi.client.sheets-v4': 0.1.20250929
 
   '@types/gapi.client@1.0.8': {}
 
@@ -5784,7 +5784,7 @@ snapshots:
       type-check: 0.4.0
       word-wrap: 1.2.5
 
-  owlbear-utils@https://codeload.github.com/desain/owlbear-utils/tar.gz/867cd0a70061b8683a73ac33f0a13bd866a052d8(@types/react@19.1.9)(@typescript-eslint/parser@8.38.0(eslint@9.32.0)(typescript@5.8.3))(eslint@9.32.0)(react-dom@19.1.1(react@19.1.1))(typescript@5.8.3):
+  owlbear-utils@https://codeload.github.com/desain/owlbear-utils/tar.gz/98487085c16804a897330630cf258af62703f5b3(@types/react@19.1.9)(@typescript-eslint/parser@8.38.0(eslint@9.32.0)(typescript@5.8.3))(eslint@9.32.0)(react-dom@19.1.1(react@19.1.1))(typescript@5.8.3):
     dependencies:
       '@emotion/react': 11.14.0(@types/react@19.1.9)(react@19.1.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.1.9)(react@19.1.1))(@types/react@19.1.9)(react@19.1.1)

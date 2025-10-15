@@ -1,5 +1,5 @@
 import OBR from "@owlbear-rodeo/sdk";
-import { deferCallAll, diffItems } from "owlbear-utils";
+import { deferCallAll, diffItems, Watcher } from "owlbear-utils";
 import type { BehaviorItem } from "../BehaviorItem";
 import "../blockly/blocks";
 import { CollisionEngine } from "../collision/CollisionEngine";
@@ -15,7 +15,6 @@ import {
     type OwlbearStore,
 } from "../state/usePlayerStorage";
 import { EffectsWatcher } from "../watcher/EffectsWatcher";
-import { Watcher } from "../watcher/Watcher";
 import {
     type BehaviorRegistry,
     type NewBehaviorConfig,

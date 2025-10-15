@@ -1,4 +1,4 @@
-import { Patcher } from "../watcher/Patcher";
+import { Patcher } from "owlbear-utils";
 
 interface PendingFlush {
     timeout: NodeJS.Timeout;

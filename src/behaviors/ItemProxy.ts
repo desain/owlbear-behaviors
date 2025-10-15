@@ -1,6 +1,6 @@
 import type { Item } from "@owlbear-rodeo/sdk";
 import OBR from "@owlbear-rodeo/sdk";
-import { Patcher } from "../watcher/Patcher";
+import { Patcher } from "owlbear-utils";
 
 interface PendingFlush {
     timeout: NodeJS.Timeout;

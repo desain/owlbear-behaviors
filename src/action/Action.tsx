@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import OBR from "@owlbear-rodeo/sdk";
 import { useActionResizer, useRehydrate } from "owlbear-utils";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { broadcastStopAllBehaviors } from "../broadcast/broadcast";
 import { ID_POPOVER_EXECUTOR } from "../constants";
 import { openHelp } from "../popoverHelp/openHelp";
@@ -28,7 +28,6 @@ const MAX_HEIGHT = 700;
 export function Action() {
     const role = usePlayerStorage((store) => store.role);
     const sceneReady = usePlayerStorage((store) => store.sceneReady);
-    const box: React.RefObject<HTMLElement | null> = useRef(null);
 
     // Some browsers 'optimize' invisible iframes to not run timeouts or
     // handle messages quickly when they are not visible; the OBR action
@@ -57,7 +56,7 @@ export function Action() {
         return () => void OBR.popover.close(ID_POPOVER_EXECUTOR);
     });
 
-    useActionResizer(BASE_HEIGHT, MAX_HEIGHT, box);
+    const box = useActionResizer(BASE_HEIGHT, MAX_HEIGHT);
     useRehydrate(usePlayerStorage);
 
     return (
