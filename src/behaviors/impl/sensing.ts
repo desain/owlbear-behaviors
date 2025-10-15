@@ -1,5 +1,5 @@
 import OBR, { type BoundingBox } from "@owlbear-rodeo/sdk";
-import { assertItem, cells, cellsToUnits } from "owlbear-utils";
+import { assertItem, cells, cellsToUnits, getName } from "owlbear-utils";
 import { isBehaviorItem, type BehaviorItem } from "../../BehaviorItem";
 import { notifyPlayersToDeselect } from "../../broadcast/broadcast";
 import { getBounds, isBoundableItem } from "../../collision/getBounds";
@@ -77,6 +77,20 @@ export const SENSING_BEHAVIORS = {
         );
     },
 
+    getTagged: async (
+        signal: AbortSignal,
+        tagUnknown: unknown,
+    ): Promise<BehaviorItem["id"][]> => {
+        const tag = String(tagUnknown);
+        const items = await OBR.scene.items.getItems(
+            (item) =>
+                isBehaviorItem(item) &&
+                !!item.metadata[METADATA_KEY_TAGS]?.includes(tag),
+        );
+        signal.throwIfAborted();
+        return items.map((item) => item.id);
+    },
+
     deselect: async (ids?: string[]) => {
         const isGm = usePlayerStorage.getState().role === "GM";
         if (isGm) {
@@ -128,6 +142,21 @@ export const SENSING_BEHAVIORS = {
         }
 
         return closestItem?.id;
+    },
+
+    tokenNamed: (
+        nameUnknown: unknown,
+    ): BehaviorItem["id"] | undefined => {
+        const name = String(nameUnknown);
+        const itemsOfInterest = usePlayerStorage.getState().itemsOfInterest;
+
+        for (const item of itemsOfInterest.values()) {
+            if (getName(item) === name) {
+                return item.id;
+            }
+        }
+
+        return undefined;
     },
 
     distanceTo: async (

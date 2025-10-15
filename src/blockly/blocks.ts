@@ -1043,6 +1043,46 @@ export const BLOCK_CLOSEST_TAGGED = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_TOKEN_NAMED = {
+    style: "sensing_blocks",
+    type: "sensing_named",
+    tooltip: "Find a token by its name",
+    message0: "token named %1",
+    args0: [
+        {
+            type: "input_value",
+            name: "NAME",
+            check: ["String", "Number"],
+        },
+    ],
+    output: "ItemId",
+    inputsInline: true,
+} as const;
+
+export const BLOCK_SENSING_ADD_TAGGED_TO_LIST = {
+    style: "sensing_blocks",
+    type: "sensing_addtagged",
+    tooltip: "Add all tokens with a certain tag to a list of token IDs",
+    message0: "add all tagged %1 to %2",
+    args0: [
+        {
+            type: "input_value",
+            name: INPUT_TAG,
+            check: ["String", "Number"],
+        },
+        {
+            type: "field_variable",
+            name: "VAR",
+            variable: "players",
+            variableTypes: [VARIABLE_TYPE_LIST],
+            defaultType: VARIABLE_TYPE_LIST,
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 export const BLOCK_DESELECT = {
     style: "sensing_blocks",
     type: "sensing_deselect",
@@ -3610,6 +3650,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_HAS_TAG_SELF,
     BLOCK_HAS_TAG_OTHER,
     BLOCK_CLOSEST_TAGGED,
+    BLOCK_TOKEN_NAMED,
+    BLOCK_SENSING_ADD_TAGGED_TO_LIST,
     BLOCK_DESELECT,
     BLOCK_OTHER_SRC,
     BLOCK_OTHER,

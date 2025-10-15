@@ -1223,18 +1223,9 @@ describe("Blockly JavaScript Generation", () => {
                                 y: 17,
                                 next: {
                                     block: {
-                                        type: "sensing_tag",
-                                        id: "A#USw2YL7%spidH;/i!a",
+                                        type: "sensing_addtagged",
+                                        id: "sensing_addtagged",
                                         inputs: {
-                                            TARGET: {
-                                                shadow: {
-                                                    type: "menu_item",
-                                                    id: "Ha+MNN]JiN@5Do|N]ueZ",
-                                                    fields: {
-                                                        ITEM: "MYSELF",
-                                                    },
-                                                },
-                                            },
                                             INPUT_TAG: {
                                                 shadow: {
                                                     type: "menu_tag",
@@ -1243,21 +1234,20 @@ describe("Blockly JavaScript Generation", () => {
                                                         FIELD_TAG: "player",
                                                     },
                                                 },
-                                                block: {
-                                                    type: "looks_get_label",
-                                                    id: "bC]~0t!)qENpq@{OJ)b~",
-                                                },
                                             },
+                                        },
+                                        fields: {
+                                            VAR: { id: "Gih0mzA,|Q%j#XH`O4Af" },
                                         },
                                         next: {
                                             block: {
-                                                type: "sensing_remove_tag",
-                                                id: "G9W!VN-jIN1c-S}rUSIz",
+                                                type: "sensing_tag",
+                                                id: "A#USw2YL7%spidH;/i!a",
                                                 inputs: {
                                                     TARGET: {
                                                         shadow: {
                                                             type: "menu_item",
-                                                            id: "F~4R$Px;R=4,4QQ696Zf",
+                                                            id: "Ha+MNN]JiN@5Do|N]ueZ",
                                                             fields: {
                                                                 ITEM: "MYSELF",
                                                             },
@@ -1266,7 +1256,7 @@ describe("Blockly JavaScript Generation", () => {
                                                     INPUT_TAG: {
                                                         shadow: {
                                                             type: "menu_tag",
-                                                            id: ".WnW#]NUYC3ykg+dQ;sg",
+                                                            id: "#HDDhJ`9!gfJ?lUx%4VC",
                                                             fields: {
                                                                 FIELD_TAG:
                                                                     "player",
@@ -1274,67 +1264,85 @@ describe("Blockly JavaScript Generation", () => {
                                                         },
                                                         block: {
                                                             type: "looks_get_label",
-                                                            id: "=h4$@a0%i6e/`G[Ofy{v",
+                                                            id: "bC]~0t!)qENpq@{OJ)b~",
                                                         },
                                                     },
                                                 },
                                                 next: {
                                                     block: {
-                                                        type: "sensing_deselect",
-                                                        id: "q!J/Y1@fgogzo$~gE;$j",
-                                                        fields: {
-                                                            TARGET: "THIS",
+                                                        type: "sensing_remove_tag",
+                                                        id: "G9W!VN-jIN1c-S}rUSIz",
+                                                        inputs: {
+                                                            TARGET: {
+                                                                shadow: {
+                                                                    type: "menu_item",
+                                                                    id: "F~4R$Px;R=4,4QQ696Zf",
+                                                                    fields: {
+                                                                        ITEM: "MYSELF",
+                                                                    },
+                                                                },
+                                                                block: {
+                                                                    type: "sensing_named",
+                                                                    id: "sensing_named",
+                                                                    inputs: {
+                                                                        NAME: {
+                                                                            shadow: {
+                                                                                type: "behavior_dynamic_val",
+                                                                                id: "sensing_named_dyval",
+                                                                                fields: {
+                                                                                    TEXT: "Token Name",
+                                                                                },
+                                                                            },
+                                                                        },
+                                                                    },
+                                                                },
+                                                            },
+                                                            INPUT_TAG: {
+                                                                shadow: {
+                                                                    type: "menu_tag",
+                                                                    id: ".WnW#]NUYC3ykg+dQ;sg",
+                                                                    fields: {
+                                                                        FIELD_TAG:
+                                                                            "player",
+                                                                    },
+                                                                },
+                                                                block: {
+                                                                    type: "looks_get_label",
+                                                                    id: "=h4$@a0%i6e/`G[Ofy{v",
+                                                                },
+                                                            },
                                                         },
                                                         next: {
                                                             block: {
-                                                                type: "control_behavior_if",
-                                                                id: "R!#U^dw2o(U9RgvxeO%D",
-                                                                inputs: {
-                                                                    CONDITION: {
-                                                                        block: {
-                                                                            type: "logic_operation",
-                                                                            id: "JRuE*x(RI/NNE2(x)(;P",
-                                                                            fields: {
-                                                                                OP: "AND",
-                                                                            },
-                                                                            inputs: {
-                                                                                A: {
+                                                                type: "sensing_deselect",
+                                                                id: "q!J/Y1@fgogzo$~gE;$j",
+                                                                fields: {
+                                                                    TARGET: "THIS",
+                                                                },
+                                                                next: {
+                                                                    block: {
+                                                                        type: "control_behavior_if",
+                                                                        id: "R!#U^dw2o(U9RgvxeO%D",
+                                                                        inputs: {
+                                                                            CONDITION:
+                                                                                {
                                                                                     block: {
-                                                                                        type: "sensing_has_tag_self",
-                                                                                        id: "Z/a7cMXzN7etB%4o,4FB",
-                                                                                        inputs: {
-                                                                                            INPUT_TAG:
-                                                                                                {
-                                                                                                    shadow: {
-                                                                                                        type: "menu_tag",
-                                                                                                        id: "Gw6d6D}@6=B`Q%ri]UM*",
-                                                                                                        fields: {
-                                                                                                            FIELD_TAG:
-                                                                                                                "player",
-                                                                                                        },
-                                                                                                    },
-                                                                                                    block: {
-                                                                                                        type: "looks_get_label",
-                                                                                                        id: "gxq?!;i(W3!x1-Q(v^1w",
-                                                                                                    },
-                                                                                                },
+                                                                                        type: "logic_operation",
+                                                                                        id: "JRuE*x(RI/NNE2(x)(;P",
+                                                                                        fields: {
+                                                                                            OP: "AND",
                                                                                         },
-                                                                                    },
-                                                                                },
-                                                                                B: {
-                                                                                    block: {
-                                                                                        type: "sensing_touchingobject",
-                                                                                        id: "vOq=!HY(9BscS|#Bbh1L",
                                                                                         inputs: {
-                                                                                            ITEM: {
+                                                                                            A: {
                                                                                                 block: {
-                                                                                                    type: "sensing_closest_tagged",
-                                                                                                    id: "-utly8HP)}]~1}@j01=1",
+                                                                                                    type: "sensing_has_tag_self",
+                                                                                                    id: "Z/a7cMXzN7etB%4o,4FB",
                                                                                                     inputs: {
                                                                                                         INPUT_TAG:
                                                                                                             {
                                                                                                                 shadow: {
                                                                                                                     type: "menu_tag",
+                                                                                                                    id: "Gw6d6D}@6=B`Q%ri]UM*",
                                                                                                                     fields: {
                                                                                                                         FIELD_TAG:
                                                                                                                             "player",
@@ -1342,88 +1350,63 @@ describe("Blockly JavaScript Generation", () => {
                                                                                                                 },
                                                                                                                 block: {
                                                                                                                     type: "looks_get_label",
-                                                                                                                    id: "V,x;8)$MU{1DrCr8*4j+",
+                                                                                                                    id: "gxq?!;i(W3!x1-Q(v^1w",
                                                                                                                 },
                                                                                                             },
+                                                                                                    },
+                                                                                                },
+                                                                                            },
+                                                                                            B: {
+                                                                                                block: {
+                                                                                                    type: "sensing_touchingobject",
+                                                                                                    id: "vOq=!HY(9BscS|#Bbh1L",
+                                                                                                    inputs: {
+                                                                                                        ITEM: {
+                                                                                                            block: {
+                                                                                                                type: "sensing_closest_tagged",
+                                                                                                                id: "-utly8HP)}]~1}@j01=1",
+                                                                                                                inputs: {
+                                                                                                                    INPUT_TAG:
+                                                                                                                        {
+                                                                                                                            shadow: {
+                                                                                                                                type: "menu_tag",
+                                                                                                                                fields: {
+                                                                                                                                    FIELD_TAG:
+                                                                                                                                        "player",
+                                                                                                                                },
+                                                                                                                            },
+                                                                                                                            block: {
+                                                                                                                                type: "looks_get_label",
+                                                                                                                                id: "V,x;8)$MU{1DrCr8*4j+",
+                                                                                                                            },
+                                                                                                                        },
+                                                                                                                },
+                                                                                                            },
+                                                                                                        },
                                                                                                     },
                                                                                                 },
                                                                                             },
                                                                                         },
                                                                                     },
                                                                                 },
-                                                                            },
-                                                                        },
-                                                                    },
-                                                                    SUBSTACK: {
-                                                                        block: {
-                                                                            type: "looks_sayforsecs",
-                                                                            id: "+zbxBE^RB]k{r/Q?JN3J",
-                                                                            inputs: {
-                                                                                MESSAGE:
-                                                                                    {
-                                                                                        shadow: {
-                                                                                            type: "behavior_dynamic_val",
-                                                                                            id: "u.R5WDCyLZ])n5H@[5#;",
-                                                                                            fields: {
-                                                                                                TEXT: "Hello!",
-                                                                                            },
-                                                                                        },
-                                                                                        block: {
-                                                                                            type: "math_arithmetic",
-                                                                                            id: "Pd~`P_;ufZQJel((#lmL",
-                                                                                            fields: {
-                                                                                                OP: "ADD",
-                                                                                            },
-                                                                                            inputs: {
-                                                                                                A: {
+                                                                            SUBSTACK:
+                                                                                {
+                                                                                    block: {
+                                                                                        type: "looks_sayforsecs",
+                                                                                        id: "+zbxBE^RB]k{r/Q?JN3J",
+                                                                                        inputs: {
+                                                                                            MESSAGE:
+                                                                                                {
                                                                                                     shadow: {
-                                                                                                        type: "math_number",
-                                                                                                        id: "C1?mgD7.KkSf@pnQJOI.",
+                                                                                                        type: "behavior_dynamic_val",
+                                                                                                        id: "u.R5WDCyLZ])n5H@[5#;",
                                                                                                         fields: {
-                                                                                                            NUM: 0,
-                                                                                                        },
-                                                                                                    },
-                                                                                                    block: {
-                                                                                                        type: "sensing_distanceto",
-                                                                                                        id: "ecb#rW/)_Y9;YgW.V#9f",
-                                                                                                        inputs: {
-                                                                                                            ITEM: {
-                                                                                                                block: {
-                                                                                                                    type: "sensing_closest_tagged",
-                                                                                                                    id: "ohl6P%J!(;]K|bO:oaau",
-                                                                                                                    inputs: {
-                                                                                                                        INPUT_TAG:
-                                                                                                                            {
-                                                                                                                                shadow: {
-                                                                                                                                    type: "menu_tag",
-                                                                                                                                    id: "SUjF#LRAEMpq0}8r6^nc",
-                                                                                                                                    fields: {
-                                                                                                                                        FIELD_TAG:
-                                                                                                                                            "player",
-                                                                                                                                    },
-                                                                                                                                },
-                                                                                                                                block: {
-                                                                                                                                    type: "looks_get_label",
-                                                                                                                                    id: "gnFCl;s3sQQo[N{.=jHw",
-                                                                                                                                },
-                                                                                                                            },
-                                                                                                                    },
-                                                                                                                },
-                                                                                                            },
-                                                                                                        },
-                                                                                                    },
-                                                                                                },
-                                                                                                B: {
-                                                                                                    shadow: {
-                                                                                                        type: "math_number",
-                                                                                                        id: "*7t!pGDXSseMzwCyD`E.",
-                                                                                                        fields: {
-                                                                                                            NUM: 0,
+                                                                                                            TEXT: "Hello!",
                                                                                                         },
                                                                                                     },
                                                                                                     block: {
                                                                                                         type: "math_arithmetic",
-                                                                                                        id: "Xk`X_t66}~f=uiHs~YV$",
+                                                                                                        id: "Pd~`P_;ufZQJel((#lmL",
                                                                                                         fields: {
                                                                                                             OP: "ADD",
                                                                                                         },
@@ -1437,30 +1420,19 @@ describe("Blockly JavaScript Generation", () => {
                                                                                                                     },
                                                                                                                 },
                                                                                                                 block: {
-                                                                                                                    type: "sensing_of",
-                                                                                                                    id: "62.jUT!b6h[}R`@Q~T_l",
-                                                                                                                    fields: {
-                                                                                                                        PROPERTY:
-                                                                                                                            "X_POSITION",
-                                                                                                                    },
+                                                                                                                    type: "sensing_distanceto",
+                                                                                                                    id: "ecb#rW/)_Y9;YgW.V#9f",
                                                                                                                     inputs: {
                                                                                                                         ITEM: {
-                                                                                                                            shadow: {
-                                                                                                                                type: "menu_item",
-                                                                                                                                id: "R/T2/G,zS)vr_{9?lNP]",
-                                                                                                                                fields: {
-                                                                                                                                    ITEM: "MYSELF",
-                                                                                                                                },
-                                                                                                                            },
                                                                                                                             block: {
                                                                                                                                 type: "sensing_closest_tagged",
-                                                                                                                                id: "wQ)Ra(Q9zV,s8zwui;gk",
+                                                                                                                                id: "ohl6P%J!(;]K|bO:oaau",
                                                                                                                                 inputs: {
                                                                                                                                     INPUT_TAG:
                                                                                                                                         {
                                                                                                                                             shadow: {
                                                                                                                                                 type: "menu_tag",
-                                                                                                                                                id: "hf10WhK|bJ;y`tih=DU7",
+                                                                                                                                                id: "SUjF#LRAEMpq0}8r6^nc",
                                                                                                                                                 fields: {
                                                                                                                                                     FIELD_TAG:
                                                                                                                                                         "player",
@@ -1468,7 +1440,7 @@ describe("Blockly JavaScript Generation", () => {
                                                                                                                                             },
                                                                                                                                             block: {
                                                                                                                                                 type: "looks_get_label",
-                                                                                                                                                id: "3R:mp{pe9EowJ1XY!(4M",
+                                                                                                                                                id: "gnFCl;s3sQQo[N{.=jHw",
                                                                                                                                             },
                                                                                                                                         },
                                                                                                                                 },
@@ -1480,35 +1452,101 @@ describe("Blockly JavaScript Generation", () => {
                                                                                                             B: {
                                                                                                                 shadow: {
                                                                                                                     type: "math_number",
-                                                                                                                    id: "Je`(*{tkGR7Im-BF^X|M",
+                                                                                                                    id: "*7t!pGDXSseMzwCyD`E.",
                                                                                                                     fields: {
                                                                                                                         NUM: 0,
                                                                                                                     },
                                                                                                                 },
                                                                                                                 block: {
-                                                                                                                    type: "sensing_current_time",
-                                                                                                                    id: "dW#mz!#zwYhG%Sq6dp@S",
+                                                                                                                    type: "math_arithmetic",
+                                                                                                                    id: "Xk`X_t66}~f=uiHs~YV$",
                                                                                                                     fields: {
-                                                                                                                        UNIT: "YEAR",
+                                                                                                                        OP: "ADD",
+                                                                                                                    },
+                                                                                                                    inputs: {
+                                                                                                                        A: {
+                                                                                                                            shadow: {
+                                                                                                                                type: "math_number",
+                                                                                                                                id: "C1?mgD7.KkSf@pnQJOI.",
+                                                                                                                                fields: {
+                                                                                                                                    NUM: 0,
+                                                                                                                                },
+                                                                                                                            },
+                                                                                                                            block: {
+                                                                                                                                type: "sensing_of",
+                                                                                                                                id: "62.jUT!b6h[}R`@Q~T_l",
+                                                                                                                                fields: {
+                                                                                                                                    PROPERTY:
+                                                                                                                                        "X_POSITION",
+                                                                                                                                },
+                                                                                                                                inputs: {
+                                                                                                                                    ITEM: {
+                                                                                                                                        shadow: {
+                                                                                                                                            type: "menu_item",
+                                                                                                                                            id: "R/T2/G,zS)vr_{9?lNP]",
+                                                                                                                                            fields: {
+                                                                                                                                                ITEM: "MYSELF",
+                                                                                                                                            },
+                                                                                                                                        },
+                                                                                                                                        block: {
+                                                                                                                                            type: "sensing_closest_tagged",
+                                                                                                                                            id: "wQ)Ra(Q9zV,s8zwui;gk",
+                                                                                                                                            inputs: {
+                                                                                                                                                INPUT_TAG:
+                                                                                                                                                    {
+                                                                                                                                                        shadow: {
+                                                                                                                                                            type: "menu_tag",
+                                                                                                                                                            id: "hf10WhK|bJ;y`tih=DU7",
+                                                                                                                                                            fields: {
+                                                                                                                                                                FIELD_TAG:
+                                                                                                                                                                    "player",
+                                                                                                                                                            },
+                                                                                                                                                        },
+                                                                                                                                                        block: {
+                                                                                                                                                            type: "looks_get_label",
+                                                                                                                                                            id: "3R:mp{pe9EowJ1XY!(4M",
+                                                                                                                                                        },
+                                                                                                                                                    },
+                                                                                                                                            },
+                                                                                                                                        },
+                                                                                                                                    },
+                                                                                                                                },
+                                                                                                                            },
+                                                                                                                        },
+                                                                                                                        B: {
+                                                                                                                            shadow: {
+                                                                                                                                type: "math_number",
+                                                                                                                                id: "Je`(*{tkGR7Im-BF^X|M",
+                                                                                                                                fields: {
+                                                                                                                                    NUM: 0,
+                                                                                                                                },
+                                                                                                                            },
+                                                                                                                            block: {
+                                                                                                                                type: "sensing_current_time",
+                                                                                                                                id: "dW#mz!#zwYhG%Sq6dp@S",
+                                                                                                                                fields: {
+                                                                                                                                    UNIT: "YEAR",
+                                                                                                                                },
+                                                                                                                            },
+                                                                                                                        },
                                                                                                                     },
                                                                                                                 },
                                                                                                             },
                                                                                                         },
                                                                                                     },
                                                                                                 },
+                                                                                            SECS: {
+                                                                                                shadow: {
+                                                                                                    type: "math_number",
+                                                                                                    id: "PeMZlDJl9PT!1iDa!D+`",
+                                                                                                    fields: {
+                                                                                                        NUM: 2,
+                                                                                                    },
+                                                                                                },
                                                                                             },
                                                                                         },
                                                                                     },
-                                                                                SECS: {
-                                                                                    shadow: {
-                                                                                        type: "math_number",
-                                                                                        id: "PeMZlDJl9PT!1iDa!D+`",
-                                                                                        fields: {
-                                                                                            NUM: 2,
-                                                                                        },
-                                                                                    },
                                                                                 },
-                                                                            },
                                                                         },
                                                                     },
                                                                 },
@@ -1524,6 +1562,13 @@ describe("Blockly JavaScript Generation", () => {
                         ],
                     },
                     backpack: [],
+                    variables: [
+                        {
+                            name: "l",
+                            id: "Gih0mzA,|Q%j#XH`O4Af",
+                            type: "List",
+                        },
+                    ],
                 },
                 workspace,
             );

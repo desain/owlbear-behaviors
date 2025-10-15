@@ -101,6 +101,7 @@ import {
     BLOCK_ROTATE_LEFT,
     BLOCK_ROTATE_RIGHT,
     BLOCK_SAY,
+    BLOCK_SENSING_ADD_TAGGED_TO_LIST,
     BLOCK_SENSING_ITEM_MENU,
     BLOCK_SENSING_OF,
     BLOCK_SET_ACCESSIBILITY_DESCRIPTION,
@@ -119,6 +120,7 @@ import {
     BLOCK_SOUND_SET_VOLUME_TO,
     BLOCK_STOP,
     BLOCK_TAG,
+    BLOCK_TOKEN_NAMED,
     BLOCK_TOUCH,
     BLOCK_TOUCHING,
     BLOCK_URL,
@@ -1337,6 +1339,31 @@ export const GENERATORS: Record<
             PARAMETER_SELF_ID,
             tag,
         );
+    },
+
+    sensing_named: (block, generator) => {
+        const name = generator.valueToCode(
+            block,
+            BLOCK_TOKEN_NAMED.args0[0].name,
+            javascript.Order.NONE,
+        );
+        return [behave("tokenNamed", name), javascript.Order.FUNCTION_CALL];
+    },
+
+    sensing_addtagged: (block, generator) => {
+        const tag = generator.valueToCode(
+            block,
+            INPUT_TAG,
+            javascript.Order.NONE,
+        );
+        const varId = getStringFieldValue(
+            block,
+            BLOCK_SENSING_ADD_TAGGED_TO_LIST.args0[1].name,
+        );
+        const listRef = generator.getVariableReference(varId);
+        return `(${listRef} ??= []).push(...${
+            awaitBehaveValue("getTagged", PARAMETER_SIGNAL, tag)[0]
+        });\n`;
     },
 
     sensing_deselect: (block) => {

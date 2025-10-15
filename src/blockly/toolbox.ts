@@ -128,6 +128,7 @@ import {
     BLOCK_ROTATE_RIGHT,
     BLOCK_ROTATION,
     BLOCK_SAY,
+    BLOCK_SENSING_ADD_TAGGED_TO_LIST,
     BLOCK_SENSING_OF,
     BLOCK_SET_ACCESSIBILITY_DESCRIPTION,
     BLOCK_SET_ACCESSIBILITY_NAME,
@@ -151,6 +152,7 @@ import {
     BLOCK_STOP,
     BLOCK_TAG,
     BLOCK_TAG_MENU,
+    BLOCK_TOKEN_NAMED,
     BLOCK_TOUCH,
     BLOCK_TOUCHING,
     BLOCK_UNLOCK,
@@ -736,6 +738,11 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     },
                     {
                         kind: "block",
+                        type: BLOCK_SENSING_ADD_TAGGED_TO_LIST.type,
+                        inputs: SHADOW_TAG_MENU,
+                    },
+                    {
+                        kind: "block",
                         type: BLOCK_HAS_TAG_SELF.type,
                         inputs: SHADOW_TAG_MENU,
                     },
@@ -748,6 +755,14 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         kind: "block",
                         type: BLOCK_CLOSEST_TAGGED.type,
                         inputs: SHADOW_TAG_MENU,
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_TOKEN_NAMED.type,
+                        inputs: {
+                            [BLOCK_TOKEN_NAMED.args0[0].name]:
+                                shadowDynamic("Token Name"),
+                        },
                     },
                     GAP50,
                     blockToDefinition(BLOCK_DESELECT),
