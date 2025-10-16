@@ -196,6 +196,7 @@ To make a production build run:
 
 ## Known Bugs
 
+-   GMG text items trigger collision updates, which causes collision blocks to fire multiple times
 -   Audio files played from blocks play in the executor popover, so the action doesn't know about them.
 -   Stacking in backpack - happens when lots of (tall?) items, only on second time opening backpack
 -   Sounds aren't restored when loading an item with behaviors from a prefab

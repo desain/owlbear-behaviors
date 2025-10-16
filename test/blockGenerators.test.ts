@@ -3099,6 +3099,51 @@ describe("Blockly JavaScript Generation", () => {
                                                         NUM: 2,
                                                     },
                                                 },
+                                                block: {
+                                                    type: "extension_grimoire_roll",
+                                                    id: "extension_grimoire_roll",
+                                                    fields: {
+                                                        HIDE: "true",
+                                                    },
+                                                    inputs: {
+                                                        DICE: {
+                                                            shadow: {
+                                                                type: "behavior_dynamic_val",
+                                                                id: "extension_grimoire_roll_dynamic_val",
+                                                                fields: {
+                                                                    TEXT: "1d20",
+                                                                },
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                        next: {
+                                            block: {
+                                                type: "extension_grimoire_set_stat",
+                                                id: "extension_grimoire_set_stat",
+                                                fields: {
+                                                    STAT: "AC",
+                                                },
+                                                inputs: {
+                                                    VALUE: {
+                                                        shadow: {
+                                                            type: "math_number",
+                                                            id: "extension_grimoire_set_stat_dynamic_val",
+                                                            fields: {
+                                                                NUM: 10,
+                                                            },
+                                                        },
+                                                        block: {
+                                                            type: "extension_grimoire_stat",
+                                                            id: "extension_grimoire_stat",
+                                                            fields: {
+                                                                STAT: "INIT",
+                                                            },
+                                                        },
+                                                    },
+                                                },
                                             },
                                         },
                                     },

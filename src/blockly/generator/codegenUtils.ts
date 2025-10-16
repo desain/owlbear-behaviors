@@ -196,7 +196,11 @@ export function getNumberFieldValue(
 }
 
 type BehaviorParams<T extends readonly unknown[]> = {
-    [K in keyof T]: T[K] extends AbortSignal ? typeof PARAMETER_SIGNAL : string;
+    [K in keyof T]: T[K] extends AbortSignal
+        ? typeof PARAMETER_SIGNAL
+        : T[K] extends boolean
+        ? "true" | "false"
+        : string;
 };
 /**
  * Generate a call to a behavior function by name.

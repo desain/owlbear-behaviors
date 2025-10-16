@@ -53,11 +53,10 @@ import {
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_FOG_LIT,
     BLOCK_EXTENSION_FOG_REMOVE,
-    BLOCK_EXTENSION_GRIMOIRE_AC,
-    BLOCK_EXTENSION_GRIMOIRE_HP,
     BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE,
-    BLOCK_EXTENSION_GRIMOIRE_MAX_HP,
-    BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,
+    BLOCK_EXTENSION_GRIMOIRE_ROLL,
+    BLOCK_EXTENSION_GRIMOIRE_SET_STAT,
+    BLOCK_EXTENSION_GRIMOIRE_STAT,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
@@ -1021,10 +1020,23 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
 
                     ...extensionHeader("Game Master's Grimoire"),
                     blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE),
-                    blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_HP),
-                    blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_MAX_HP),
-                    blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_TEMP_HP),
-                    blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_AC),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_GRIMOIRE_SET_STAT.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_GRIMOIRE_SET_STAT.args0[2].name]:
+                                shadowNumber(10),
+                        },
+                    },
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_GRIMOIRE_ROLL.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_GRIMOIRE_ROLL.args0[1].name]:
+                                shadowDynamic("1d20"),
+                        },
+                    },
+                    blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_STAT),
 
                     {
                         kind: "label",

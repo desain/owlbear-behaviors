@@ -26,10 +26,12 @@ import {
     BLOCK_ATTACH,
     BLOCK_ATTACHED,
     BLOCK_BROADCAST,
+    BLOCK_BROADCAST_MENU,
     BLOCK_CENTER_VIEW,
     BLOCK_CENTER_ZOOM,
     BLOCK_CHANGE_EFFECT_BY,
     BLOCK_CHANGE_SIZE,
+    BLOCK_CLEAR_GRAPHIC_EFFECTS,
     BLOCK_CLOSEST_TAGGED,
     BLOCK_COLOR_PICKER,
     BLOCK_CONTAINS,
@@ -44,20 +46,35 @@ import {
     BLOCK_EQUALS,
     BLOCK_EXTENSION_BONES_ON_ROLL,
     BLOCK_EXTENSION_BONES_ROLL_DICE,
+    BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT,
     BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT,
+    BLOCK_EXTENSION_CLASH_HP_CHANGE,
     BLOCK_EXTENSION_CLASH_PROPERTY,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
+    BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_DICE_PLUS_ROLL,
     BLOCK_EXTENSION_FOG_ADD,
+    BLOCK_EXTENSION_FOG_LIT,
+    BLOCK_EXTENSION_FOG_REMOVE,
+    BLOCK_EXTENSION_GRIMOIRE_AC,
+    BLOCK_EXTENSION_GRIMOIRE_HP,
+    BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE,
+    BLOCK_EXTENSION_GRIMOIRE_MAX_HP,
+    BLOCK_EXTENSION_GRIMOIRE_ROLL,
+    BLOCK_EXTENSION_GRIMOIRE_SET_STAT,
+    BLOCK_EXTENSION_GRIMOIRE_STAT,
+    BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
     BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP,
+    BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY,
     BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY,
     BLOCK_EXTENSION_PHASE_CHANGE,
     BLOCK_EXTENSION_PRETTY_MY_INITIATIVE,
+    BLOCK_EXTENSION_PRETTY_MY_TURN,
     BLOCK_EXTENSION_PRETTY_SET_INITIATIVE,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
@@ -65,17 +82,25 @@ import {
     BLOCK_EXTENSION_SMOKE_ADD,
     BLOCK_EXTENSION_SMOKE_BLIND,
     BLOCK_EXTENSION_SMOKE_DOOR,
+    BLOCK_EXTENSION_SMOKE_REMOVE,
     BLOCK_EXTENSION_SMOKE_SWAP,
+    BLOCK_EXTENSION_SMOKE_VISION,
     BLOCK_EXTENSION_SMOKE_VISION_LINE,
     BLOCK_EXTENSION_SMOKE_WHEN_DOOR,
     BLOCK_EXTENSION_SMOKE_WINDOW,
     BLOCK_EXTENSION_WEATHER_ADD,
+    BLOCK_EXTENSION_WEATHER_HAS,
+    BLOCK_EXTENSION_WEATHER_REMOVE,
     BLOCK_FACE,
     BLOCK_FOREVER,
     BLOCK_GET_ACCESSIBILITY_DESCRIPTION,
     BLOCK_GET_ACCESSIBILITY_NAME,
+    BLOCK_GET_FILL_COLOR,
+    BLOCK_GET_FILL_OPACITY,
     BLOCK_GET_LAYER,
     BLOCK_GET_SIZE,
+    BLOCK_GET_STROKE_COLOR,
+    BLOCK_GET_STROKE_OPACITY,
     BLOCK_GET_TEXT,
     BLOCK_GLIDE,
     BLOCK_GLIDE_ROTATE_LEFT,
@@ -88,6 +113,7 @@ import {
     BLOCK_HOOT,
     BLOCK_IF,
     BLOCK_IF_ELSE,
+    BLOCK_IMMEDIATELY,
     BLOCK_JOIN,
     BLOCK_LAYER_MENU,
     BLOCK_LESS_THAN,
@@ -112,6 +138,8 @@ import {
     BLOCK_OTHER_SRC,
     BLOCK_PATHFIND,
     BLOCK_POINT_IN_DIRECTION,
+    BLOCK_RECEIVE_BROADCAST,
+    BLOCK_REMOVE_AURAS,
     BLOCK_REMOVE_TAG,
     BLOCK_REPEAT,
     BLOCK_REPEAT_UNTIL,
@@ -136,11 +164,15 @@ import {
     BLOCK_SHOW,
     BLOCK_SNAP_TO_GRID,
     BLOCK_SOUND_CHANGE_VOLUME_BY,
+    BLOCK_SOUND_MENU,
     BLOCK_SOUND_PLAY,
     BLOCK_SOUND_PLAY_UNTIL_DONE,
     BLOCK_SOUND_SET_VOLUME_TO,
+    BLOCK_SOUND_STOP_ALL,
+    BLOCK_SOUND_VOLUME,
     BLOCK_STOP,
     BLOCK_TAG,
+    BLOCK_TAG_MENU,
     BLOCK_TOKEN_NAMED,
     BLOCK_TOUCH,
     BLOCK_TOUCHING,
@@ -153,6 +185,7 @@ import {
     BLOCK_WAIT,
     BLOCK_WAIT_UNTIL,
     BLOCK_WHEN_I,
+    BLOCK_WHEN_I_START_AS_CLONE,
     BLOCK_WHEN_PRETTY_TURN_CHANGE,
     BLOCK_X_POSITION,
     BLOCK_Y_POSITION,
@@ -692,7 +725,7 @@ export const GENERATORS: Record<
         ].join("\n");
     },
 
-    looks_set_stroke_opacity: (block, generator) => {
+    [BLOCK_SET_STROKE_OPACITY.type]: (block, generator) => {
         const opacity = generator.valueToCode(
             block,
             BLOCK_SET_STROKE_OPACITY.args0[0].name,
@@ -718,7 +751,7 @@ export const GENERATORS: Record<
         ].join("\n");
     },
 
-    looks_set_fill_color: (block, generator) => {
+    [BLOCK_SET_FILL_COLOR.type]: (block, generator) => {
         const color = generator.valueToCode(
             block,
             BLOCK_SET_FILL_COLOR.args0[0].name,
@@ -745,7 +778,7 @@ export const GENERATORS: Record<
         ].join("\n");
     },
 
-    looks_set_fill_opacity: (block, generator) => {
+    [BLOCK_SET_FILL_OPACITY.type]: (block, generator) => {
         const opacity = generator.valueToCode(
             block,
             BLOCK_SET_FILL_OPACITY.args0[0].name,
@@ -771,24 +804,24 @@ export const GENERATORS: Record<
         ].join("\n");
     },
 
-    looks_get_stroke_color: () => [
+    [BLOCK_GET_STROKE_COLOR.type]: () => [
         `${SELF}.style?.strokeColor ?? "#000000"`,
         javascript.Order.LOGICAL_OR,
     ],
-    looks_get_stroke_opacity: () => [
+    [BLOCK_GET_STROKE_OPACITY.type]: () => [
         `100 * (${SELF}.style?.strokeOpacity ?? 1)`,
         javascript.Order.MULTIPLICATION,
     ],
-    looks_get_fill_color: () => [
+    [BLOCK_GET_FILL_COLOR.type]: () => [
         `${SELF}.style?.fillColor ?? "#000000"`,
         javascript.Order.LOGICAL_OR,
     ],
-    looks_get_fill_opacity: () => [
+    [BLOCK_GET_FILL_OPACITY.type]: () => [
         `100 * (${SELF}.style?.fillOpacity ?? 1)`,
         javascript.Order.MULTIPLICATION,
     ],
 
-    looks_seteffectto: (block, generator) => {
+    [BLOCK_SET_EFFECT_TO.type]: (block, generator) => {
         const effect = getStringFieldValue(
             block,
             BLOCK_SET_EFFECT_TO.args0[0].name,
@@ -810,7 +843,7 @@ export const GENERATORS: Record<
         );
     },
 
-    looks_changeeffectby: (block, generator) => {
+    [BLOCK_CHANGE_EFFECT_BY.type]: (block, generator) => {
         const effect = getStringFieldValue(
             block,
             BLOCK_CHANGE_EFFECT_BY.args0[0].name,
@@ -832,13 +865,13 @@ export const GENERATORS: Record<
         );
     },
 
-    looks_cleargraphiceffects: (_block, generator) =>
+    [BLOCK_CLEAR_GRAPHIC_EFFECTS.type]: (_block, generator) =>
         generateSelfUpdate(
             generator,
             `delete self.metadata["${METADATA_KEY_EFFECT}"];`,
         ),
 
-    looks_set_viewport: (block, generator) => {
+    [BLOCK_CENTER_VIEW.type]: (block, generator) => {
         const target = getDropdownFieldValue(block, BLOCK_CENTER_VIEW, 0);
         const x = generator.valueToCode(
             block,
@@ -860,7 +893,7 @@ export const GENERATORS: Record<
         );
     },
 
-    looks_set_zoom: (block, generator) => {
+    [BLOCK_ZOOM.type]: (block, generator) => {
         const target = getDropdownFieldValue(block, BLOCK_ZOOM, 0);
         const zoom = generator.valueToCode(
             block,
@@ -877,7 +910,7 @@ export const GENERATORS: Record<
         );
     },
 
-    looks_zoom_center: (block, generator) => {
+    [BLOCK_CENTER_ZOOM.type]: (block, generator) => {
         const target = getDropdownFieldValue(block, BLOCK_CENTER_ZOOM, 0);
         const zoom = generator.valueToCode(
             block,
@@ -905,7 +938,7 @@ export const GENERATORS: Record<
     },
 
     // Sound blocks
-    sound_play: (block, generator) => {
+    [BLOCK_SOUND_PLAY.type]: (block, generator) => {
         const sound = generator.valueToCode(
             block,
             BLOCK_SOUND_PLAY.args0[0].name,
@@ -919,7 +952,7 @@ export const GENERATORS: Record<
         )};\n`;
     },
 
-    sound_playuntildone: (block, generator) => {
+    [BLOCK_SOUND_PLAY_UNTIL_DONE.type]: (block, generator) => {
         const sound = generator.valueToCode(
             block,
             BLOCK_SOUND_PLAY_UNTIL_DONE.args0[0].name,
@@ -935,10 +968,10 @@ export const GENERATORS: Record<
         );
     },
 
-    sound_stopallsounds: () =>
+    [BLOCK_SOUND_STOP_ALL.type]: () =>
         behave("stopAllSounds", PARAMETER_SIGNAL) + ";\n",
 
-    sound_setvolumeto: (block, generator) => {
+    [BLOCK_SOUND_SET_VOLUME_TO.type]: (block, generator) => {
         const value = generator.valueToCode(
             block,
             BLOCK_SOUND_SET_VOLUME_TO.args0[0].name,
@@ -949,7 +982,7 @@ export const GENERATORS: Record<
         )} = ${value};\n`;
     },
 
-    sound_changevolumeby: (block, generator) => {
+    [BLOCK_SOUND_CHANGE_VOLUME_BY.type]: (block, generator) => {
         const value = generator.valueToCode(
             block,
             BLOCK_SOUND_CHANGE_VOLUME_BY.args0[0].name,
@@ -960,18 +993,18 @@ export const GENERATORS: Record<
         return `${volumeVar} = ${num}(${volumeVar}) + ${num}(${value});\n`;
     },
 
-    sound_volume: (_block, generator) => [
+    [BLOCK_SOUND_VOLUME.type]: (_block, generator) => [
         `${generator.getDeveloperVariableName(VAR_VOLUME)} ?? 100`,
         javascript.Order.LOGICAL_OR,
     ],
 
     // Event blocks
-    event_broadcast_menu: (block, generator) => {
+    [BLOCK_BROADCAST_MENU.type]: (block, generator) => {
         const broadcastId = getStringFieldValue(block, FIELD_BROADCAST);
         return [generator.quote_(broadcastId), javascript.Order.ATOMIC];
     },
 
-    event_broadcast: (block, generator) => {
+    [BLOCK_BROADCAST.type]: (block, generator) => {
         const broadcast = generator.valueToCode(
             block,
             BLOCK_BROADCAST.args0[0].name,
@@ -979,19 +1012,19 @@ export const GENERATORS: Record<
         );
         return `void ${behave("sendMessage", broadcast)};\n`;
     },
-    event_immediately: (block, generator) =>
+    [BLOCK_IMMEDIATELY.type]: (block, generator) =>
         generateAddTriggerHandler(block, generator, {
             type: "immediately",
             hatBlockId: block.id,
         }),
 
-    control_start_as_clone: (block, generator) =>
+    [BLOCK_WHEN_I_START_AS_CLONE.type]: (block, generator) =>
         generateAddTriggerHandler(block, generator, {
             type: "startAsClone",
             hatBlockId: block.id,
         }),
 
-    event_whenbroadcastreceived: (block, generator) => {
+    [BLOCK_RECEIVE_BROADCAST.type]: (block, generator) => {
         const broadcastId = getStringFieldValue(block, FIELD_BROADCAST);
         return generateAddTriggerHandler(block, generator, {
             type: "broadcast",
@@ -1000,7 +1033,7 @@ export const GENERATORS: Record<
         });
     },
 
-    event_on_property_change: (block, generator) => {
+    [BLOCK_WHEN_I.type]: (block, generator) => {
         const spec = getDropdownFieldValue(block, BLOCK_WHEN_I, 0);
         switch (spec) {
             case "position":
@@ -1076,7 +1109,7 @@ export const GENERATORS: Record<
         }
     },
 
-    event_whentouchingobject: (block, generator) => {
+    [BLOCK_TOUCH.type]: (block, generator) => {
         const touchState = getStringFieldValue(
             block,
             BLOCK_TOUCH.args0[0].name,
@@ -1089,7 +1122,7 @@ export const GENERATORS: Record<
         });
     },
 
-    extension_smoke_when_door: (block, generator) => {
+    [BLOCK_EXTENSION_SMOKE_WHEN_DOOR.type]: (block, generator) => {
         const doorState = getStringFieldValue(
             block,
             BLOCK_EXTENSION_SMOKE_WHEN_DOOR.args0[1].name,
@@ -1103,7 +1136,7 @@ export const GENERATORS: Record<
     },
 
     // Control blocks
-    control_wait: (block, generator) => {
+    [BLOCK_WAIT.type]: (block, generator) => {
         const duration = generator.valueToCode(
             block,
             BLOCK_WAIT.args0[0].name,
@@ -1124,7 +1157,7 @@ export const GENERATORS: Record<
         ].join("\n");
     },
 
-    control_behavior_stop: (block) => {
+    [BLOCK_STOP.type]: (block) => {
         const target = getDropdownFieldValue(block, BLOCK_STOP, 0);
         switch (target) {
             case "THIS_SCRIPT":
@@ -1143,7 +1176,7 @@ export const GENERATORS: Record<
         }
     },
 
-    control_behavior_if: (block, generator) => {
+    [BLOCK_IF.type]: (block, generator) => {
         const condition = generator.valueToCode(
             block,
             BLOCK_IF.args0[0].name,
@@ -1156,7 +1189,7 @@ export const GENERATORS: Record<
         return generateBlock(generator, `if (${condition})`, statements);
     },
 
-    control_behavior_if_else: (block, generator) => {
+    [BLOCK_IF_ELSE.type]: (block, generator) => {
         const condition = generator.valueToCode(
             block,
             BLOCK_IF_ELSE.args0[0].name,
@@ -1179,7 +1212,7 @@ export const GENERATORS: Record<
         );
     },
 
-    control_forever: (block, generator) => {
+    [BLOCK_FOREVER.type]: (block, generator) => {
         const statements = generator.statementToCode(
             block,
             BLOCK_FOREVER.args1[0].name,
@@ -1190,7 +1223,7 @@ export const GENERATORS: Record<
         )}\n}\n`;
     },
 
-    control_repeat: (block, generator) => {
+    [BLOCK_REPEAT.type]: (block, generator) => {
         const [countVar, initCountVar] = generateVariable(
             generator,
             "count",
@@ -1223,7 +1256,7 @@ export const GENERATORS: Record<
         )}\n}\n`;
     },
 
-    control_repeat_until: (block, generator) => {
+    [BLOCK_REPEAT_UNTIL.type]: (block, generator) => {
         const condition = generator.valueToCode(
             block,
             BLOCK_REPEAT_UNTIL.args0[0].name,
@@ -1644,13 +1677,13 @@ export const GENERATORS: Record<
     },
 
     // Variable blocks
-    data_variable: variableBlock,
+    [BLOCK_VARIABLE_REPORTER.type]: variableBlock,
     variables_get_dynamic: variableBlock,
 
-    data_setvariableto: variableSetBlock,
+    [BLOCK_VARIABLE_SETTER.type]: variableSetBlock,
     variables_set_dynamic: variableSetBlock,
 
-    data_changevariableby: variableChangeBlock,
+    [BLOCK_VARIABLE_CHANGE.type]: variableChangeBlock,
     math_change: variableChangeBlock,
 
     [BLOCK_LIST_REPORTER.type]: (block, generator) => {
@@ -1721,7 +1754,7 @@ export const GENERATORS: Record<
         ].join("\n");
     },
 
-    data_replaceitemoflist: (block, generator) => {
+    [BLOCK_LIST_REPLACE.type]: (block, generator) => {
         const index = generator.valueToCode(
             block,
             BLOCK_LIST_REPLACE.args0[0].name,
@@ -1741,7 +1774,7 @@ export const GENERATORS: Record<
         return `${listRef}?.splice(${num}(${index}) - 1, 1, ${item});\n`;
     },
 
-    data_itemoflist: (block, generator) => {
+    [BLOCK_LIST_INDEX.type]: (block, generator) => {
         const index = generator.valueToCode(
             block,
             BLOCK_LIST_INDEX.args0[0].name,
@@ -1756,7 +1789,7 @@ export const GENERATORS: Record<
         return [`${listRef}?.[${num}(${index}) - 1]`, javascript.Order.MEMBER];
     },
 
-    data_itemnumoflist: (block, generator) => {
+    [BLOCK_LIST_INDEX_OF.type]: (block, generator) => {
         const item = generator.valueToCode(
             block,
             BLOCK_LIST_INDEX_OF.args0[0].name,
@@ -1773,7 +1806,7 @@ export const GENERATORS: Record<
         ];
     },
 
-    data_lengthoflist: (block, generator) => {
+    [BLOCK_LIST_LENGTH.type]: (block, generator) => {
         const varId = getStringFieldValue(
             block,
             BLOCK_LIST_LENGTH.args0[0].name,
@@ -1782,7 +1815,7 @@ export const GENERATORS: Record<
         return [`(${listRef} ?? []).length`, javascript.Order.MEMBER];
     },
 
-    data_listcontainsitem: (block, generator) => {
+    [BLOCK_LIST_CONTAINS.type]: (block, generator) => {
         const item = generator.valueToCode(
             block,
             BLOCK_LIST_CONTAINS.args0[1].name,
@@ -1860,7 +1893,7 @@ export const GENERATORS: Record<
     },
 
     // Extension blocks
-    extension_announcement: (block, generator) => {
+    [BLOCK_ANNOUNCEMENT.type]: (block, generator) => {
         const content = generator.valueToCode(
             block,
             BLOCK_ANNOUNCEMENT.args0[1].name,
@@ -1882,7 +1915,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_hoot_play: (block, generator) => {
+    [BLOCK_HOOT.type]: (block, generator) => {
         const track = generator.valueToCode(
             block,
             BLOCK_HOOT.args0[1].name,
@@ -1901,14 +1934,14 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_auras_remove: () =>
+    [BLOCK_REMOVE_AURAS.type]: () =>
         awaitBehaveStatement(
             "removeAuras",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
         ) + `${PARAMETER_ITEM_PROXY}.invalidate();`,
 
-    extension_auras_add: (block, generator) => {
+    [BLOCK_ADD_AURA.type]: (block, generator) => {
         const size = generator.valueToCode(
             block,
             BLOCK_ADD_AURA.args0[1].name,
@@ -1932,7 +1965,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_auras_add_preset: (block, generator) => {
+    [BLOCK_ADD_AURA_PRESET.type]: (block, generator) => {
         const preset = generator.valueToCode(
             block,
             BLOCK_ADD_AURA_PRESET.args0[1].name,
@@ -1948,10 +1981,10 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_fog_lit: () =>
+    [BLOCK_EXTENSION_FOG_LIT.type]: () =>
         awaitBehaveValue("hasLight", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    extension_fog_add: (block, generator) => {
+    [BLOCK_EXTENSION_FOG_ADD.type]: (block, generator) => {
         const radius = generator.valueToCode(
             block,
             BLOCK_EXTENSION_FOG_ADD.args0[1].name,
@@ -1970,15 +2003,15 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_fog_remove: () =>
+    [BLOCK_EXTENSION_FOG_REMOVE.type]: () =>
         awaitBehaveStatement(
             "removeLight",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
         ),
-    extension_smoke_vision: () =>
+    [BLOCK_EXTENSION_SMOKE_VISION.type]: () =>
         awaitBehaveValue("hasVision", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
-    extension_smoke_add: (block, generator) => {
+    [BLOCK_EXTENSION_SMOKE_ADD.type]: (block, generator) => {
         const radius = generator.valueToCode(
             block,
             BLOCK_EXTENSION_SMOKE_ADD.args0[1].name,
@@ -1996,13 +2029,13 @@ export const GENERATORS: Record<
             generator.quote_(shape),
         );
     },
-    extension_smoke_remove: () =>
+    [BLOCK_EXTENSION_SMOKE_REMOVE.type]: () =>
         awaitBehaveStatement(
             "disableVision",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
         ),
-    extension_smoke_vision_line: (block) => {
+    [BLOCK_EXTENSION_SMOKE_VISION_LINE.type]: (block) => {
         const enabled = getStringFieldValue(
             block,
             BLOCK_EXTENSION_SMOKE_VISION_LINE.args0[1].name,
@@ -2015,7 +2048,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_smoke_wall: (block) => {
+    [BLOCK_EXTENSION_SMOKE_SWAP.type]: (block) => {
         const prop = getDropdownFieldValue(
             block,
             BLOCK_EXTENSION_SMOKE_SWAP,
@@ -2049,7 +2082,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_smoke_door: (block) => {
+    [BLOCK_EXTENSION_SMOKE_DOOR.type]: (block) => {
         const prop = getDropdownFieldValue(
             block,
             BLOCK_EXTENSION_SMOKE_DOOR,
@@ -2091,7 +2124,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_smoke_window: (block) => {
+    [BLOCK_EXTENSION_SMOKE_WINDOW.type]: (block) => {
         const prop = getDropdownFieldValue(
             block,
             BLOCK_EXTENSION_SMOKE_WINDOW,
@@ -2117,7 +2150,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_smoke_blind: (block) => {
+    [BLOCK_EXTENSION_SMOKE_BLIND.type]: (block) => {
         const blind = getStringFieldValue(
             block,
             BLOCK_EXTENSION_SMOKE_BLIND.args0[1].name,
@@ -2130,7 +2163,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_weather_add: (block, generator) => {
+    [BLOCK_EXTENSION_WEATHER_ADD.type]: (block, generator) => {
         const direction = getStringFieldValue(
             block,
             BLOCK_EXTENSION_WEATHER_ADD.args0[1].name,
@@ -2159,35 +2192,138 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_weather_remove: () =>
+    [BLOCK_EXTENSION_WEATHER_REMOVE.type]: () =>
         awaitBehaveStatement(
             "removeWeather",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
         ),
 
-    extension_weather_has: () =>
+    [BLOCK_EXTENSION_WEATHER_HAS.type]: () =>
         awaitBehaveValue("hasWeather", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    extension_grimoire_hp: () =>
+    [BLOCK_EXTENSION_GRIMOIRE_HP.type]: () =>
         awaitBehaveValue("getHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    extension_grimoire_max_hp: () =>
+    [BLOCK_EXTENSION_GRIMOIRE_MAX_HP.type]: () =>
         awaitBehaveValue("getMaxHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    extension_grimoire_temp_hp: () =>
+    [BLOCK_EXTENSION_GRIMOIRE_TEMP_HP.type]: () =>
         awaitBehaveValue("getTempHp", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    extension_grimoire_ac: () =>
+    [BLOCK_EXTENSION_GRIMOIRE_AC.type]: () =>
         awaitBehaveValue("getArmorClass", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    extension_grimoire_hp_change: (block, generator) =>
+    [BLOCK_EXTENSION_GRIMOIRE_STAT.type]: (block) => {
+        const stat = getDropdownFieldValue(
+            block,
+            BLOCK_EXTENSION_GRIMOIRE_STAT,
+            1,
+        );
+        switch (stat) {
+            case "AC":
+                return awaitBehaveValue(
+                    "getArmorClass",
+                    PARAMETER_SIGNAL,
+                    PARAMETER_SELF_ID,
+                );
+            case "HP":
+                return awaitBehaveValue(
+                    "getHp",
+                    PARAMETER_SIGNAL,
+                    PARAMETER_SELF_ID,
+                );
+            case "MAXHP":
+                return awaitBehaveValue(
+                    "getMaxHp",
+                    PARAMETER_SIGNAL,
+                    PARAMETER_SELF_ID,
+                );
+            case "TEMPHP":
+                return awaitBehaveValue(
+                    "getTempHp",
+                    PARAMETER_SIGNAL,
+                    PARAMETER_SELF_ID,
+                );
+            case "INIT":
+                return awaitBehaveValue(
+                    "getInitiative",
+                    PARAMETER_SIGNAL,
+                    PARAMETER_SELF_ID,
+                );
+        }
+    },
+
+    [BLOCK_EXTENSION_GRIMOIRE_SET_STAT.type]: (block, generator) => {
+        const stat = getDropdownFieldValue(
+            block,
+            BLOCK_EXTENSION_GRIMOIRE_SET_STAT,
+            1,
+        );
+        const value = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_GRIMOIRE_SET_STAT.args0[2].name,
+            javascript.Order.NONE,
+        );
+        switch (stat) {
+            case "HP":
+                return awaitBehaveStatement(
+                    "setHp",
+                    PARAMETER_SIGNAL,
+                    PARAMETER_SELF_ID,
+                    value,
+                );
+            case "TEMPHP":
+                return awaitBehaveStatement(
+                    "setTempHp",
+                    PARAMETER_SIGNAL,
+                    PARAMETER_SELF_ID,
+                    value,
+                );
+            case "INIT":
+                return awaitBehaveStatement(
+                    "setInitiative",
+                    PARAMETER_SIGNAL,
+                    PARAMETER_SELF_ID,
+                    value,
+                );
+            case "AC":
+                return awaitBehaveStatement(
+                    "setAc",
+                    PARAMETER_SIGNAL,
+                    PARAMETER_SELF_ID,
+                    value,
+                );
+        }
+    },
+
+    [BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE.type]: (block, generator) =>
         generateAddTriggerHandler(block, generator, {
             type: "grimoire_hp_change",
             hatBlockId: block.id,
         }),
 
-    extension_bones_roll: (block, generator) => {
+    [BLOCK_EXTENSION_GRIMOIRE_ROLL.type]: (block, generator) => {
+        const notation = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_GRIMOIRE_ROLL.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const who = getDropdownFieldValue(
+            block,
+            BLOCK_EXTENSION_GRIMOIRE_ROLL,
+            2,
+        );
+
+        return awaitBehaveValue(
+            "grimoireRoll",
+            PARAMETER_SIGNAL,
+            notation,
+            who,
+        );
+    },
+
+    [BLOCK_EXTENSION_BONES_ON_ROLL.type]: (block, generator) => {
         const value = getNumberFieldValue(
             block,
             BLOCK_EXTENSION_BONES_ON_ROLL.args0[1].name,
@@ -2206,7 +2342,7 @@ export const GENERATORS: Record<
         });
     },
 
-    extension_bones_dice: (block, generator) => {
+    [BLOCK_EXTENSION_BONES_ROLL_DICE.type]: (block, generator) => {
         const dice = generator.valueToCode(
             block,
             BLOCK_EXTENSION_BONES_ROLL_DICE.args0[1].name,
@@ -2270,7 +2406,7 @@ export const GENERATORS: Record<
             PARAMETER_SELF_ID,
         ),
 
-    extension_pretty_my_turn: () =>
+    [BLOCK_EXTENSION_PRETTY_MY_TURN.type]: () =>
         awaitBehaveValue("isMyTurn", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
     [BLOCK_EXTENSION_PRETTY_SET_INITIATIVE.type]: (block, generator) => {
@@ -2287,7 +2423,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_pretty_turn_change: (block, generator) => {
+    [BLOCK_WHEN_PRETTY_TURN_CHANGE.type]: (block, generator) => {
         const turnState = getStringFieldValue(
             block,
             BLOCK_WHEN_PRETTY_TURN_CHANGE.args0[1].name,
@@ -2328,21 +2464,22 @@ export const GENERATORS: Record<
         }
     },
 
-    extension_clash_hp_change: (block, generator) =>
+    [BLOCK_EXTENSION_CLASH_HP_CHANGE.type]: (block, generator) =>
         generateAddTriggerHandler(block, generator, {
             type: "clash_hp_change",
             hatBlockId: block.id,
         }),
 
-    extension_rumble_say: (block, generator) => {
+    [BLOCK_EXTENSION_RUMBLE_SAY.type]: (block, generator) => {
         const message = generator.valueToCode(
             block,
             BLOCK_EXTENSION_RUMBLE_SAY.args0[1].name,
             javascript.Order.NONE,
         );
-        const toSelf = getStringFieldValue(
+        const toSelf = getDropdownFieldValue(
             block,
-            BLOCK_EXTENSION_RUMBLE_SAY.args0[2].name,
+            BLOCK_EXTENSION_RUMBLE_SAY,
+            2,
         );
         return awaitBehaveStatement(
             "rumbleSay",
@@ -2352,7 +2489,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_rumble_roll: (block, generator) => {
+    [BLOCK_EXTENSION_RUMBLE_ROLL.type]: (block, generator) => {
         const notation = generator.valueToCode(
             block,
             BLOCK_EXTENSION_RUMBLE_ROLL.args0[1].name,
@@ -2361,7 +2498,7 @@ export const GENERATORS: Record<
         return awaitBehaveStatement("rumbleRoll", PARAMETER_SIGNAL, notation);
     },
 
-    extension_daggerheart_stat: (block, generator) => {
+    [BLOCK_EXTENSION_DAGGERHEART_STAT.type]: (block, generator) => {
         const statName = getStringFieldValue(
             block,
             BLOCK_EXTENSION_DAGGERHEART_STAT.args0[1].name,
@@ -2374,10 +2511,10 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_daggerheart_fear: () =>
+    [BLOCK_EXTENSION_DAGGERHEART_FEAR.type]: () =>
         awaitBehaveValue("getDaggerheartFear", PARAMETER_SIGNAL),
 
-    extension_owl_trackers_field: (block, generator) => {
+    [BLOCK_EXTENSION_OWL_TRACKERS_FIELD.type]: (block, generator) => {
         const fieldName = generator.valueToCode(
             block,
             BLOCK_EXTENSION_OWL_TRACKERS_FIELD.args0[1].name,
@@ -2391,7 +2528,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_owl_trackers_checkbox: (block, generator) => {
+    [BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX.type]: (block, generator) => {
         const fieldName = generator.valueToCode(
             block,
             BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX.args0[1].name,
@@ -2405,7 +2542,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_owl_trackers_set_field: (block, generator) => {
+    [BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.type]: (block, generator) => {
         const fieldName = generator.valueToCode(
             block,
             BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.args0[1].name,
@@ -2425,7 +2562,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_owl_trackers_set_checkbox: (block, generator) => {
+    [BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.type]: (block, generator) => {
         const fieldName = generator.valueToCode(
             block,
             BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.args0[1].name,
@@ -2445,7 +2582,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_owl_trackers_showmap: (block, generator) => {
+    [BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP.type]: (block, generator) => {
         const fieldName = generator.valueToCode(
             block,
             BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP.args0[2].name,
@@ -2464,7 +2601,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_codeo_run: (block, generator) => {
+    [BLOCK_EXTENSION_CODEO_RUN_SCRIPT.type]: (block, generator) => {
         const scriptName = generator.valueToCode(
             block,
             BLOCK_EXTENSION_CODEO_RUN_SCRIPT.args0[1].name,
@@ -2473,7 +2610,7 @@ export const GENERATORS: Record<
         return awaitBehaveStatement("runScript", PARAMETER_SIGNAL, scriptName);
     },
 
-    extension_sheets_get: (block, generator) => {
+    [BLOCK_EXTENSION_SHEETS_GET.type]: (block, generator) => {
         const cell = generator.valueToCode(
             block,
             BLOCK_EXTENSION_SHEETS_GET.args0[1].name,
@@ -2498,7 +2635,7 @@ export const GENERATORS: Record<
         );
     },
 
-    extension_peekaboo_solidity: (block, generator) => {
+    [BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY.type]: (block, generator) => {
         const solidity = generator.valueToCode(
             block,
             BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY.args0[1].name,
@@ -2511,11 +2648,14 @@ export const GENERATORS: Record<
             solidity,
         );
     },
-    extension_peekaboo_get_solidity: () =>
+    [BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY.type]: () =>
         awaitBehaveValue("getSolidity", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
     // Character Distances
-    extension_dist_setht: (block, generator) => {
+    [BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT.type]: (
+        block,
+        generator,
+    ) => {
         const height = generator.valueToCode(
             block,
             BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT.args0[1].name,
@@ -2528,11 +2668,11 @@ export const GENERATORS: Record<
             height,
         );
     },
-    extension_dist_getht: () =>
+    [BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT.type]: () =>
         awaitBehaveValue("getHeight", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
     // Utility blocks
-    looks_opacity_slider: (block) => {
+    [BLOCK_OPACITY_SLIDER.type]: (block) => {
         // Output the slider value as a stringified number
         const opacity: unknown = block.getFieldValue(
             BLOCK_OPACITY_SLIDER.args0[0].name,
@@ -2543,7 +2683,7 @@ export const GENERATORS: Record<
         return [opacity.toString(), javascript.Order.ATOMIC];
     },
 
-    behavior_dynamic_val: (block, generator) => {
+    [BLOCK_DYNAMIC_VAL.type]: (block, generator) => {
         const text = getStringFieldValue(
             block,
             BLOCK_DYNAMIC_VAL.args0[0].name,
@@ -2557,12 +2697,12 @@ export const GENERATORS: Record<
         return [code, javascript.Order.ATOMIC];
     },
 
-    behavior_url: (block, generator) => {
+    [BLOCK_URL.type]: (block, generator) => {
         const url = getStringFieldValue(block, BLOCK_URL.args0[0].name);
         return [generator.quote_(url), javascript.Order.ATOMIC];
     },
 
-    math_angle: (block) => {
+    [BLOCK_ANGLE.type]: (block) => {
         const angle: unknown = block.getFieldValue(BLOCK_ANGLE.args0[0].name);
         if (typeof angle !== "number") {
             throw Error("Angle should be number");
@@ -2570,7 +2710,7 @@ export const GENERATORS: Record<
         return [String(angle), javascript.Order.ATOMIC];
     },
 
-    color_hsv_sliders: (block, generator) => {
+    [BLOCK_COLOR_PICKER.type]: (block, generator) => {
         // This block just outputs the color string from the field
         const color = getStringFieldValue(
             block,
@@ -2582,17 +2722,17 @@ export const GENERATORS: Record<
         return [generator.quote_(color), javascript.Order.ATOMIC];
     },
 
-    menu_tag: (block, generator) => {
+    [BLOCK_TAG_MENU.type]: (block, generator) => {
         const tagId = getStringFieldValue(block, FIELD_TAG);
         return [generator.quote_(tagId), javascript.Order.ATOMIC];
     },
 
-    menu_sound: (block, generator) => {
+    [BLOCK_SOUND_MENU.type]: (block, generator) => {
         const soundId = getStringFieldValue(block, FIELD_SOUND);
         return [generator.quote_(soundId), javascript.Order.ATOMIC];
     },
 
-    menu_layer: (block, generator) => {
+    [BLOCK_LAYER_MENU.type]: (block, generator) => {
         const layer = getStringFieldValue(
             block,
             BLOCK_LAYER_MENU.args0[0].name,
@@ -2600,14 +2740,14 @@ export const GENERATORS: Record<
         return [generator.quote_(layer), javascript.Order.ATOMIC];
     },
 
-    menu_item: (block) => {
+    [BLOCK_SENSING_ITEM_MENU.type]: (block) => {
         const ref = getDropdownFieldValue(block, BLOCK_SENSING_ITEM_MENU, 0);
         switch (ref) {
             case "MYSELF":
                 return [PARAMETER_SELF_ID, javascript.Order.ATOMIC];
         }
     },
-    control_menu_item: (block) => {
+    [BLOCK_CONTROL_ITEM_MENU.type]: (block) => {
         const ref = getDropdownFieldValue(block, BLOCK_CONTROL_ITEM_MENU, 0);
         switch (ref) {
             case "MYSELF":

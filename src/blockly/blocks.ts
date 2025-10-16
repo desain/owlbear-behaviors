@@ -1950,7 +1950,7 @@ export const BLOCK_LIST_INSERT = {
         {
             type: "input_value",
             name: "ITEM",
-            check: ["String", "Number"],
+            check: ["String", "Number", "ItemId"],
         },
         {
             type: "input_value",
@@ -1992,7 +1992,7 @@ export const BLOCK_LIST_REPLACE = {
         {
             type: "input_value",
             name: "ITEM",
-            check: ["String", "Number"],
+            check: ["String", "Number", "ItemId"],
         },
     ],
     previousStatement: null,
@@ -2019,7 +2019,7 @@ export const BLOCK_LIST_INDEX = {
             defaultType: VARIABLE_TYPE_LIST,
         },
     ],
-    output: ["String", "Number"],
+    output: ["String", "Number", "ItemId"],
     inputsInline: true,
 } as const;
 
@@ -2032,7 +2032,7 @@ export const BLOCK_LIST_INDEX_OF = {
         {
             type: "input_value",
             name: "ITEM",
-            check: ["String", "Number"],
+            check: ["String", "Number", "ItemId"],
         },
         {
             type: "field_variable",
@@ -2081,7 +2081,7 @@ export const BLOCK_LIST_CONTAINS = {
         {
             type: "input_value",
             name: "ITEM",
-            check: ["String", "Number"],
+            check: ["String", "Number", "ItemId"],
         },
     ],
     output: "Boolean",
@@ -2573,6 +2573,9 @@ export const BLOCK_EXTENSION_SMOKE_WHEN_DOOR = {
     nextStatement: null,
 } as const;
 
+/**
+ * @deprecated Use BLOCK_EXTENSION_GRIMOIRE_STAT instead
+ */
 export const BLOCK_EXTENSION_GRIMOIRE_HP = {
     style: "extension_blocks",
     type: "extension_grimoire_hp",
@@ -2590,6 +2593,9 @@ export const BLOCK_EXTENSION_GRIMOIRE_HP = {
     output: "Number",
 } as const;
 
+/**
+ * @deprecated Use BLOCK_EXTENSION_GRIMOIRE_STAT instead
+ */
 export const BLOCK_EXTENSION_GRIMOIRE_MAX_HP = {
     style: "extension_blocks",
     type: "extension_grimoire_max_hp",
@@ -2607,6 +2613,9 @@ export const BLOCK_EXTENSION_GRIMOIRE_MAX_HP = {
     output: "Number",
 } as const;
 
+/**
+ * @deprecated Use BLOCK_EXTENSION_GRIMOIRE_STAT instead
+ */
 export const BLOCK_EXTENSION_GRIMOIRE_TEMP_HP = {
     style: "extension_blocks",
     type: "extension_grimoire_temp_hp",
@@ -2624,6 +2633,9 @@ export const BLOCK_EXTENSION_GRIMOIRE_TEMP_HP = {
     output: "Number",
 } as const;
 
+/**
+ * @deprecated Use BLOCK_EXTENSION_GRIMOIRE_STAT instead
+ */
 export const BLOCK_EXTENSION_GRIMOIRE_AC = {
     style: "extension_blocks",
     type: "extension_grimoire_ac",
@@ -2639,6 +2651,99 @@ export const BLOCK_EXTENSION_GRIMOIRE_AC = {
         },
     ],
     output: "Number",
+} as const;
+
+export const BLOCK_EXTENSION_GRIMOIRE_STAT = {
+    style: "extension_blocks",
+    type: "extension_grimoire_stat",
+    tooltip: "Get a stat from Game Master's Grimoire extension",
+    message0: "%1 my %2",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://hp-tracker.bitperfect-software.com/GMG.svg",
+            width: 24,
+            height: 24,
+            alt: "Game Master's Grimoire extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "STAT",
+            options: [
+                ["HP", "HP"],
+                ["Max HP", "MAXHP"],
+                ["Temp HP", "TEMPHP"],
+                ["AC", "AC"],
+                ["Initiative", "INIT"],
+            ],
+        },
+    ],
+    output: "Number",
+} as const;
+
+export const BLOCK_EXTENSION_GRIMOIRE_SET_STAT = {
+    style: "extension_blocks",
+    type: "extension_grimoire_set_stat",
+    tooltip: "Set a stat using the Game Master's Grimoire extension",
+    message0: "%1 set my %2 to %3",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://hp-tracker.bitperfect-software.com/GMG.svg",
+            width: 24,
+            height: 24,
+            alt: "Game Master's Grimoire extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "STAT",
+            options: [
+                ["HP", "HP"],
+                ["Temp HP", "TEMPHP"],
+                ["AC", "AC"],
+                ["Initiative", "INIT"],
+            ],
+        },
+        {
+            type: "input_value",
+            name: "VALUE",
+            check: ["Number", "String"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_GRIMOIRE_ROLL = {
+    style: "extension_blocks",
+    type: "extension_grimoire_roll",
+    tooltip: "Roll dice using the Game Master's Grimoire extension",
+    message0: "%1 roll %2 to %3",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://hp-tracker.bitperfect-software.com/GMG.svg",
+            width: 24,
+            height: 24,
+            alt: "Game Master's Grimoire extension icon",
+        },
+        {
+            type: "input_value",
+            name: "DICE",
+            check: ["String", "Number"],
+        },
+        {
+            type: "field_dropdown",
+            name: "HIDE",
+            options: [
+                ["all", "false"],
+                ["GM", "true"],
+            ],
+        },
+    ],
+    output: "Number",
+    inputsInline: true,
 } as const;
 
 export const BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE = {
@@ -3741,6 +3846,9 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_GRIMOIRE_MAX_HP,
     BLOCK_EXTENSION_GRIMOIRE_TEMP_HP,
     BLOCK_EXTENSION_GRIMOIRE_AC,
+    BLOCK_EXTENSION_GRIMOIRE_STAT,
+    BLOCK_EXTENSION_GRIMOIRE_SET_STAT,
+    BLOCK_EXTENSION_GRIMOIRE_ROLL,
     BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_RUMBLE_ROLL,

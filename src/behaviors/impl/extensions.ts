@@ -320,6 +320,90 @@ export const EXTENSIONS_BEHAVIORS = {
         return Grimoire.getArmorClass(selfItem);
     },
 
+    getInitiative: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+    ): Promise<number> => {
+        const selfItem = await ItemProxy.getInstance().get(
+            String(selfIdUnknown),
+        );
+        signal.throwIfAborted();
+        if (!selfItem) {
+            return 0;
+        }
+        return Grimoire.getInitiative(selfItem);
+    },
+
+    setHp: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        hpUnknown: unknown,
+    ): Promise<void> => {
+        const hp = Number(hpUnknown);
+        if (!isFinite(hp) || isNaN(hp)) {
+            console.warn(`[setHp] hp invalid: ${hp}`);
+            return;
+        }
+        await Grimoire.setHp(String(selfIdUnknown), hp);
+        signal.throwIfAborted();
+    },
+
+    setTempHp: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        tempHpUnknown: unknown,
+    ): Promise<void> => {
+        const tempHp = Number(tempHpUnknown);
+        if (!isFinite(tempHp) || isNaN(tempHp)) {
+            console.warn(`[setTempHp] tempHp invalid: ${tempHp}`);
+            return;
+        }
+        await Grimoire.setTempHp(String(selfIdUnknown), tempHp);
+        signal.throwIfAborted();
+    },
+
+    setAc: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        acUnknown: unknown,
+    ): Promise<void> => {
+        const ac = Number(acUnknown);
+        if (!isFinite(ac) || isNaN(ac)) {
+            console.warn(`[setAc] ac invalid: ${ac}`);
+            return;
+        }
+        await Grimoire.setAc(String(selfIdUnknown), ac);
+        signal.throwIfAborted();
+    },
+
+    setInitiative: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        initiativeUnknown: unknown,
+    ): Promise<void> => {
+        const initiative = Number(initiativeUnknown);
+        if (!isFinite(initiative) || isNaN(initiative)) {
+            console.warn(`[setInitiative] initiative invalid: ${initiative}`);
+            return;
+        }
+        await Grimoire.setInitiative(String(selfIdUnknown), initiative);
+        signal.throwIfAborted();
+    },
+
+    grimoireRoll: async (
+        signal: AbortSignal,
+        notationUnknown: unknown,
+        hidden: boolean,
+    ): Promise<number> => {
+        const result = await Grimoire.roll(
+            String(notationUnknown),
+            hidden,
+            "Behaviors",
+        );
+        signal.throwIfAborted();
+        return result ?? 0;
+    },
+
     // Rumble
     rumbleSay: async (
         signal: AbortSignal,
