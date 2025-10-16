@@ -64,7 +64,7 @@ importers:
         version: 1.5.0
       owlbear-utils:
         specifier: github:desain/owlbear-utils
-        version: https://codeload.github.com/desain/owlbear-utils/tar.gz/98487085c16804a897330630cf258af62703f5b3(@types/react@19.2.2)(@typescript-eslint/parser@8.46.1(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
+        version: https://codeload.github.com/desain/owlbear-utils/tar.gz/c64cd8f814b50668222c12f284e2b5f07778cdf2(@types/react@19.2.2)(@typescript-eslint/parser@8.46.1(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3)
       polygon-offset:
         specifier: ^0.3.2
         version: 0.3.2
@@ -2526,8 +2526,8 @@ packages:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
 
-  owlbear-utils@https://codeload.github.com/desain/owlbear-utils/tar.gz/98487085c16804a897330630cf258af62703f5b3:
-    resolution: {tarball: https://codeload.github.com/desain/owlbear-utils/tar.gz/98487085c16804a897330630cf258af62703f5b3}
+  owlbear-utils@https://codeload.github.com/desain/owlbear-utils/tar.gz/c64cd8f814b50668222c12f284e2b5f07778cdf2:
+    resolution: {tarball: https://codeload.github.com/desain/owlbear-utils/tar.gz/c64cd8f814b50668222c12f284e2b5f07778cdf2}
     version: 1.0.0
 
   own-keys@1.0.1:
@@ -5805,7 +5805,7 @@ snapshots:
       type-check: 0.4.0
       word-wrap: 1.2.5
 
-  owlbear-utils@https://codeload.github.com/desain/owlbear-utils/tar.gz/98487085c16804a897330630cf258af62703f5b3(@types/react@19.2.2)(@typescript-eslint/parser@8.46.1(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3):
+  owlbear-utils@https://codeload.github.com/desain/owlbear-utils/tar.gz/c64cd8f814b50668222c12f284e2b5f07778cdf2(@types/react@19.2.2)(@typescript-eslint/parser@8.46.1(eslint@9.37.0)(typescript@5.9.3))(eslint@9.37.0)(react-dom@19.2.0(react@19.2.0))(typescript@5.9.3):
     dependencies:
       '@emotion/react': 11.14.0(@types/react@19.2.2)(react@19.2.0)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.2.2)(react@19.2.0))(@types/react@19.2.2)(react@19.2.0)

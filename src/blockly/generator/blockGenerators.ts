@@ -24,17 +24,21 @@ import {
     BLOCK_ANGLE,
     BLOCK_ANNOUNCEMENT,
     BLOCK_ATTACH,
+    BLOCK_ATTACHED,
     BLOCK_BROADCAST,
     BLOCK_CENTER_VIEW,
     BLOCK_CENTER_ZOOM,
     BLOCK_CHANGE_EFFECT_BY,
     BLOCK_CHANGE_SIZE,
+    BLOCK_CLOSEST_TAGGED,
     BLOCK_COLOR_PICKER,
     BLOCK_CONTAINS,
     BLOCK_CONTROL_ITEM_MENU,
     BLOCK_CREATE_CLONE_OF,
     BLOCK_CURRENT_TIME,
+    BLOCK_DELETE_THIS,
     BLOCK_DESELECT,
+    BLOCK_DETACH,
     BLOCK_DISTANCE_TO,
     BLOCK_DYNAMIC_VAL,
     BLOCK_EQUALS,
@@ -44,6 +48,7 @@ import {
     BLOCK_EXTENSION_CLASH_PROPERTY,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
+    BLOCK_EXTENSION_DICE_PLUS_ROLL,
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
     BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
@@ -52,6 +57,7 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP,
     BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY,
     BLOCK_EXTENSION_PHASE_CHANGE,
+    BLOCK_EXTENSION_PRETTY_MY_INITIATIVE,
     BLOCK_EXTENSION_PRETTY_SET_INITIATIVE,
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
@@ -66,12 +72,19 @@ import {
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_FACE,
     BLOCK_FOREVER,
+    BLOCK_GET_ACCESSIBILITY_DESCRIPTION,
+    BLOCK_GET_ACCESSIBILITY_NAME,
+    BLOCK_GET_LAYER,
+    BLOCK_GET_SIZE,
+    BLOCK_GET_TEXT,
     BLOCK_GLIDE,
     BLOCK_GLIDE_ROTATE_LEFT,
     BLOCK_GLIDE_ROTATE_RIGHT,
     BLOCK_GOTO,
     BLOCK_GREATER_THAN,
     BLOCK_HAS_TAG_OTHER,
+    BLOCK_HAS_TAG_SELF,
+    BLOCK_HIDE,
     BLOCK_HOOT,
     BLOCK_IF,
     BLOCK_IF_ELSE,
@@ -89,9 +102,14 @@ import {
     BLOCK_LIST_LENGTH,
     BLOCK_LIST_REPLACE,
     BLOCK_LIST_REPORTER,
+    BLOCK_LOCK,
+    BLOCK_LOCKED,
     BLOCK_MATCH,
     BLOCK_MOVE_DIRECTION,
+    BLOCK_MY_PARENT,
     BLOCK_OPACITY_SLIDER,
+    BLOCK_OTHER,
+    BLOCK_OTHER_SRC,
     BLOCK_PATHFIND,
     BLOCK_POINT_IN_DIRECTION,
     BLOCK_REMOVE_TAG,
@@ -100,6 +118,7 @@ import {
     BLOCK_REPLACE_IMAGE,
     BLOCK_ROTATE_LEFT,
     BLOCK_ROTATE_RIGHT,
+    BLOCK_ROTATION,
     BLOCK_SAY,
     BLOCK_SENSING_ADD_TAGGED_TO_LIST,
     BLOCK_SENSING_ITEM_MENU,
@@ -114,6 +133,8 @@ import {
     BLOCK_SET_STROKE_COLOR,
     BLOCK_SET_STROKE_OPACITY,
     BLOCK_SET_TEXT,
+    BLOCK_SHOW,
+    BLOCK_SNAP_TO_GRID,
     BLOCK_SOUND_CHANGE_VOLUME_BY,
     BLOCK_SOUND_PLAY,
     BLOCK_SOUND_PLAY_UNTIL_DONE,
@@ -123,14 +144,18 @@ import {
     BLOCK_TOKEN_NAMED,
     BLOCK_TOUCH,
     BLOCK_TOUCHING,
+    BLOCK_UNLOCK,
     BLOCK_URL,
     BLOCK_VARIABLE_CHANGE,
     BLOCK_VARIABLE_REPORTER,
     BLOCK_VARIABLE_SETTER,
+    BLOCK_VISIBLE,
     BLOCK_WAIT,
     BLOCK_WAIT_UNTIL,
     BLOCK_WHEN_I,
     BLOCK_WHEN_PRETTY_TURN_CHANGE,
+    BLOCK_X_POSITION,
+    BLOCK_Y_POSITION,
     BLOCK_ZOOM,
     type CustomBlockType,
 } from "../blocks";
@@ -222,9 +247,15 @@ export const GENERATORS: Record<
     CodeGenerator
 > = {
     // Motion blocks
-    motion_xposition: () => [`${SELF}.position.x`, javascript.Order.MEMBER],
-    motion_yposition: () => [`${SELF}.position.y`, javascript.Order.MEMBER],
-    motion_gotoxy: (block, generator) => {
+    [BLOCK_X_POSITION.type]: () => [
+        `${SELF}.position.x`,
+        javascript.Order.MEMBER,
+    ],
+    [BLOCK_Y_POSITION.type]: () => [
+        `${SELF}.position.y`,
+        javascript.Order.MEMBER,
+    ],
+    [BLOCK_GOTO.type]: (block, generator) => {
         const x = generator.valueToCode(
             block,
             BLOCK_GOTO.args0[0].name,
@@ -244,10 +275,10 @@ export const GENERATORS: Record<
         );
     },
 
-    motion_snap: () =>
+    [BLOCK_SNAP_TO_GRID.type]: () =>
         awaitBehaveStatement("snapToGrid", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    motion_path: (block, generator) => {
+    [BLOCK_PATHFIND.type]: (block, generator) => {
         const dist = generator.valueToCode(
             block,
             BLOCK_PATHFIND.args0[0].name,
@@ -267,7 +298,7 @@ export const GENERATORS: Record<
         );
     },
 
-    motion_glidesecstoxy: (block, generator) => {
+    [BLOCK_GLIDE.type]: (block, generator) => {
         const duration = generator.valueToCode(
             block,
             BLOCK_GLIDE.args0[0].name,
@@ -293,7 +324,7 @@ export const GENERATORS: Record<
             y,
         )}`;
     },
-    motion_glide_turnleft: (block, generator) => {
+    [BLOCK_GLIDE_ROTATE_LEFT.type]: (block, generator) => {
         const duration = generator.valueToCode(
             block,
             BLOCK_GLIDE_ROTATE_LEFT.args0[0].name,
@@ -313,7 +344,7 @@ export const GENERATORS: Record<
             "-" + degrees,
         )}`;
     },
-    motion_glide_turnright: (block, generator) => {
+    [BLOCK_GLIDE_ROTATE_RIGHT.type]: (block, generator) => {
         const duration = generator.valueToCode(
             block,
             BLOCK_GLIDE_ROTATE_RIGHT.args0[0].name,
@@ -333,7 +364,7 @@ export const GENERATORS: Record<
             degrees,
         )}`;
     },
-    motion_move_direction: (block, generator) => {
+    [BLOCK_MOVE_DIRECTION.type]: (block, generator) => {
         const direction = getStringFieldValue(
             block,
             BLOCK_MOVE_DIRECTION.args0[0].name,
@@ -380,7 +411,7 @@ export const GENERATORS: Record<
         }
     },
 
-    motion_attach: (block, generator) => {
+    [BLOCK_ATTACH.type]: (block, generator) => {
         const item = generator.valueToCode(
             block,
             BLOCK_ATTACH.args0[0].name,
@@ -397,17 +428,20 @@ export const GENERATORS: Record<
         ].join("\n");
     },
 
-    motion_detach: (_block, generator) =>
+    [BLOCK_DETACH.type]: (_block, generator) =>
         generateSelfUpdate(generator, "self.attachedTo = undefined;"),
 
-    motion_my_parent: () => [`${SELF}.attachedTo`, javascript.Order.MEMBER],
+    [BLOCK_MY_PARENT.type]: () => [
+        `${SELF}.attachedTo`,
+        javascript.Order.MEMBER,
+    ],
 
-    motion_attached: () => [
+    [BLOCK_ATTACHED.type]: () => [
         `${SELF}.attachedTo !== undefined`,
         javascript.Order.EQUALITY,
     ],
 
-    motion_turnleft: (block, generator) => {
+    [BLOCK_ROTATE_LEFT.type]: (block, generator) => {
         const degrees = generator.valueToCode(
             block,
             BLOCK_ROTATE_LEFT.args0[1].name,
@@ -426,7 +460,7 @@ export const GENERATORS: Record<
             ),
         ].join("\n");
     },
-    motion_turnright: (block, generator) => {
+    [BLOCK_ROTATE_RIGHT.type]: (block, generator) => {
         const degrees = generator.valueToCode(
             block,
             BLOCK_ROTATE_RIGHT.args0[1].name,
@@ -446,7 +480,7 @@ export const GENERATORS: Record<
         ].join("\n");
     },
 
-    motion_pointindirection: (block, generator) => {
+    [BLOCK_POINT_IN_DIRECTION.type]: (block, generator) => {
         const direction = generator.valueToCode(
             block,
             BLOCK_POINT_IN_DIRECTION.args0[0].name,
@@ -463,7 +497,7 @@ export const GENERATORS: Record<
         ].join("\n");
     },
 
-    motion_pointtowards: (block, generator) => {
+    [BLOCK_FACE.type]: (block, generator) => {
         const target = generator.valueToCode(
             block,
             BLOCK_FACE.args0[0].name,
@@ -477,21 +511,21 @@ export const GENERATORS: Record<
         );
     },
 
-    motion_direction: () => [`${SELF}.rotation`, javascript.Order.MEMBER],
+    [BLOCK_ROTATION.type]: () => [`${SELF}.rotation`, javascript.Order.MEMBER],
 
     // Looks blocks
-    looks_show: (_block, generator) =>
+    [BLOCK_SHOW.type]: (_block, generator) =>
         generateSelfUpdate(generator, `self.visible = true;`),
-    looks_hide: (_block, generator) =>
+    [BLOCK_HIDE.type]: (_block, generator) =>
         generateSelfUpdate(generator, `self.visible = false;`),
-    looks_lock: (_block, generator) =>
+    [BLOCK_LOCK.type]: (_block, generator) =>
         generateSelfUpdate(generator, `self.locked = true;`),
-    looks_unlock: (_block, generator) =>
+    [BLOCK_UNLOCK.type]: (_block, generator) =>
         generateSelfUpdate(generator, `self.locked = false;`),
-    looks_visible: () => [`${SELF}.visible`, javascript.Order.MEMBER],
-    looks_locked: () => [`${SELF}.locked`, javascript.Order.MEMBER],
+    [BLOCK_VISIBLE.type]: () => [`${SELF}.visible`, javascript.Order.MEMBER],
+    [BLOCK_LOCKED.type]: () => [`${SELF}.locked`, javascript.Order.MEMBER],
 
-    looks_sayforsecs: (block, generator) => {
+    [BLOCK_SAY.type]: (block, generator) => {
         const message = generator.valueToCode(
             block,
             BLOCK_SAY.args0[0].name,
@@ -515,7 +549,7 @@ export const GENERATORS: Record<
     // TODO: should this respect horizontal scaling?
     // eg if the item is flipped horizontally (scale.x = -1)
     // then setting size to 200 should make scale.x = -2
-    looks_setsizeto: (block, generator) => {
+    [BLOCK_SET_SIZE.type]: (block, generator) => {
         const size = generator.valueToCode(
             block,
             BLOCK_SET_SIZE.args0[0].name,
@@ -528,8 +562,7 @@ export const GENERATORS: Record<
             size,
         );
     },
-
-    looks_changesizeby: (block, generator) => {
+    [BLOCK_CHANGE_SIZE.type]: (block, generator) => {
         const delta = generator.valueToCode(
             block,
             BLOCK_CHANGE_SIZE.args0[0].name,
@@ -543,13 +576,12 @@ export const GENERATORS: Record<
             delta,
         );
     },
-
-    looks_size: () => [
+    [BLOCK_GET_SIZE.type]: () => [
         `100 * Math.max(${SELF}.scale.x, ${SELF}.scale.y)`,
         javascript.Order.MULTIPLICATION,
     ],
 
-    looks_replace_image: (block) => {
+    [BLOCK_REPLACE_IMAGE.type]: (block) => {
         const data = JSON.stringify(
             block.getFieldValue(BLOCK_REPLACE_IMAGE.args0[0].name),
         );
@@ -561,10 +593,10 @@ export const GENERATORS: Record<
         );
     },
 
-    looks_get_label: () =>
+    [BLOCK_GET_TEXT.type]: () =>
         awaitBehaveValue("getText", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    looks_set_label: (block, generator) => {
+    [BLOCK_SET_TEXT.type]: (block, generator) => {
         const text = generator.valueToCode(
             block,
             BLOCK_SET_TEXT.args0[0].name,
@@ -578,14 +610,13 @@ export const GENERATORS: Record<
         );
     },
 
-    looks_get_name: () =>
+    [BLOCK_GET_ACCESSIBILITY_NAME.type]: () =>
         awaitBehaveValue(
             "getAccessibilityName",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
         ),
-
-    looks_set_name: (block, generator) => {
+    [BLOCK_SET_ACCESSIBILITY_NAME.type]: (block, generator) => {
         const name = generator.valueToCode(
             block,
             BLOCK_SET_ACCESSIBILITY_NAME.args0[0].name,
@@ -599,14 +630,13 @@ export const GENERATORS: Record<
         );
     },
 
-    looks_get_description: () =>
+    [BLOCK_GET_ACCESSIBILITY_DESCRIPTION.type]: () =>
         awaitBehaveValue(
             "getAccessibilityDescription",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
         ),
-
-    looks_set_description: (block, generator) => {
+    [BLOCK_SET_ACCESSIBILITY_DESCRIPTION.type]: (block, generator) => {
         const description = generator.valueToCode(
             block,
             BLOCK_SET_ACCESSIBILITY_DESCRIPTION.args0[0].name,
@@ -620,8 +650,8 @@ export const GENERATORS: Record<
         );
     },
 
-    looks_get_layer: () => [`${SELF}.layer`, javascript.Order.MEMBER],
-    looks_set_layer: (block, generator) => {
+    [BLOCK_GET_LAYER.type]: () => [`${SELF}.layer`, javascript.Order.MEMBER],
+    [BLOCK_SET_LAYER.type]: (block, generator) => {
         const layer = generator.valueToCode(
             block,
             BLOCK_SET_LAYER.args0[0].name,
@@ -635,7 +665,7 @@ export const GENERATORS: Record<
         );
     },
 
-    looks_set_stroke_color: (block, generator) => {
+    [BLOCK_SET_STROKE_COLOR.type]: (block, generator) => {
         const color = generator.valueToCode(
             block,
             BLOCK_SET_STROKE_COLOR.args0[0].name,
@@ -1212,7 +1242,7 @@ export const GENERATORS: Record<
         )}\n}\n`;
     },
 
-    control_wait_until: (block, generator) => {
+    [BLOCK_WAIT_UNTIL.type]: (block, generator) => {
         const condition = generator.valueToCode(
             block,
             BLOCK_WAIT_UNTIL.args0[0].name,
@@ -1232,7 +1262,7 @@ export const GENERATORS: Record<
         )}\n}\n`;
     },
 
-    control_create_clone_of: (block, generator) => {
+    [BLOCK_CREATE_CLONE_OF.type]: (block, generator) => {
         const item = generator.valueToCode(
             block,
             BLOCK_CREATE_CLONE_OF.args0[0].name,
@@ -1241,11 +1271,11 @@ export const GENERATORS: Record<
         return awaitBehaveStatement("clone", PARAMETER_SIGNAL, item);
     },
 
-    control_delete_this: () =>
+    [BLOCK_DELETE_THIS.type]: () =>
         awaitBehaveStatement("delete", PARAMETER_SIGNAL, PARAMETER_SELF_ID) +
         "return;\n",
 
-    control_match: (block, generator) => {
+    [BLOCK_MATCH.type]: (block, generator) => {
         const value = generator.valueToCode(
             block,
             BLOCK_MATCH.args0[0].name,
@@ -1271,7 +1301,7 @@ export const GENERATORS: Record<
     },
 
     // Sensing blocks
-    sensing_tag: (block, generator) => {
+    [BLOCK_TAG.type]: (block, generator) => {
         const target = generator.valueToCode(
             block,
             BLOCK_TAG.args0[0].name,
@@ -1285,7 +1315,7 @@ export const GENERATORS: Record<
         return awaitBehaveStatement("addTag", PARAMETER_SIGNAL, target, tag);
     },
 
-    sensing_remove_tag: (block, generator) => {
+    [BLOCK_REMOVE_TAG.type]: (block, generator) => {
         const target = generator.valueToCode(
             block,
             BLOCK_REMOVE_TAG.args0[0].name,
@@ -1299,7 +1329,7 @@ export const GENERATORS: Record<
         return awaitBehaveStatement("removeTag", PARAMETER_SIGNAL, target, tag);
     },
 
-    sensing_has_tag_self: (block, generator) => {
+    [BLOCK_HAS_TAG_SELF.type]: (block, generator) => {
         const tag = generator.valueToCode(
             block,
             INPUT_TAG,
@@ -1313,7 +1343,7 @@ export const GENERATORS: Record<
         );
     },
 
-    sensing_has_tag_other: (block, generator) => {
+    [BLOCK_HAS_TAG_OTHER.type]: (block, generator) => {
         const target = generator.valueToCode(
             block,
             BLOCK_HAS_TAG_OTHER.args0[0].name,
@@ -1327,7 +1357,7 @@ export const GENERATORS: Record<
         return awaitBehaveValue("hasTag", PARAMETER_SIGNAL, target, tag);
     },
 
-    sensing_closest_tagged: (block, generator) => {
+    [BLOCK_CLOSEST_TAGGED.type]: (block, generator) => {
         const tag = generator.valueToCode(
             block,
             INPUT_TAG,
@@ -1341,7 +1371,7 @@ export const GENERATORS: Record<
         );
     },
 
-    sensing_named: (block, generator) => {
+    [BLOCK_TOKEN_NAMED.type]: (block, generator) => {
         const name = generator.valueToCode(
             block,
             BLOCK_TOKEN_NAMED.args0[0].name,
@@ -1350,7 +1380,7 @@ export const GENERATORS: Record<
         return [behave("tokenNamed", name), javascript.Order.FUNCTION_CALL];
     },
 
-    sensing_addtagged: (block, generator) => {
+    [BLOCK_SENSING_ADD_TAGGED_TO_LIST.type]: (block, generator) => {
         const tag = generator.valueToCode(
             block,
             INPUT_TAG,
@@ -1366,7 +1396,7 @@ export const GENERATORS: Record<
         });\n`;
     },
 
-    sensing_deselect: (block) => {
+    [BLOCK_DESELECT.type]: (block) => {
         const target = getDropdownFieldValue(block, BLOCK_DESELECT, 0);
         const deselectArg = target === "THIS" ? `[${PARAMETER_SELF_ID}]` : "";
         return [
@@ -1375,10 +1405,10 @@ export const GENERATORS: Record<
         ].join("");
     },
 
-    sensing_other_src: () => "",
-    sensing_other_val: () => [PARAMETER_OTHER_ID, javascript.Order.ATOMIC],
+    [BLOCK_OTHER_SRC.type]: () => "",
+    [BLOCK_OTHER.type]: () => [PARAMETER_OTHER_ID, javascript.Order.ATOMIC],
 
-    sensing_of: (block, generator) => {
+    [BLOCK_SENSING_OF.type]: (block, generator) => {
         const property = getDropdownFieldValue(block, BLOCK_SENSING_OF, 0);
         const item = generator.valueToCode(
             block,
@@ -1417,7 +1447,7 @@ export const GENERATORS: Record<
         }
     },
 
-    sensing_current_time: (block) => {
+    [BLOCK_CURRENT_TIME.type]: (block) => {
         const unit = getDropdownFieldValue(block, BLOCK_CURRENT_TIME, 0);
         switch (unit) {
             case "YEAR":
@@ -1437,7 +1467,7 @@ export const GENERATORS: Record<
         }
     },
 
-    sensing_distanceto: (block, generator) => {
+    [BLOCK_DISTANCE_TO.type]: (block, generator) => {
         const item = generator.valueToCode(
             block,
             BLOCK_DISTANCE_TO.args0[0].name,
@@ -1451,7 +1481,7 @@ export const GENERATORS: Record<
         );
     },
 
-    sensing_touchingobject: (block, generator) => {
+    [BLOCK_TOUCHING.type]: (block, generator) => {
         const item = generator.valueToCode(
             block,
             BLOCK_TOUCHING.args0[0].name,
@@ -1466,7 +1496,7 @@ export const GENERATORS: Record<
     },
 
     // Operator blocks
-    operator_join: (block, generator) => {
+    [BLOCK_JOIN.type]: (block, generator) => {
         const string1 = generator.valueToCode(
             block,
             BLOCK_JOIN.args0[0].name,
@@ -1483,7 +1513,7 @@ export const GENERATORS: Record<
         ];
     },
 
-    operator_gt: (block, generator) => {
+    [BLOCK_GREATER_THAN.type]: (block, generator) => {
         const operarand1 = generator.valueToCode(
             block,
             BLOCK_GREATER_THAN.args0[0].name,
@@ -1501,7 +1531,7 @@ export const GENERATORS: Record<
         ];
     },
 
-    operator_lt: (block, generator) => {
+    [BLOCK_LESS_THAN.type]: (block, generator) => {
         const operarand1 = generator.valueToCode(
             block,
             BLOCK_LESS_THAN.args0[0].name,
@@ -1519,7 +1549,7 @@ export const GENERATORS: Record<
         ];
     },
 
-    operator_equals: (block, generator) => {
+    [BLOCK_EQUALS.type]: (block, generator) => {
         const operarand1 = generator.valueToCode(
             block,
             BLOCK_EQUALS.args0[0].name,
@@ -1537,7 +1567,7 @@ export const GENERATORS: Record<
         ];
     },
 
-    operator_letter_of: (block, generator) => {
+    [BLOCK_LETTER_OF.type]: (block, generator) => {
         const letter = generator.valueToCode(
             block,
             BLOCK_LETTER_OF.args0[0].name,
@@ -1555,7 +1585,7 @@ export const GENERATORS: Record<
         ];
     },
 
-    operator_contains: (block, generator) => {
+    [BLOCK_CONTAINS.type]: (block, generator) => {
         const string1 = generator.valueToCode(
             block,
             BLOCK_CONTAINS.args0[0].name,
@@ -1623,7 +1653,7 @@ export const GENERATORS: Record<
     data_changevariableby: variableChangeBlock,
     math_change: variableChangeBlock,
 
-    data_listcontents: (block, generator) => {
+    [BLOCK_LIST_REPORTER.type]: (block, generator) => {
         const varId = getStringFieldValue(
             block,
             BLOCK_LIST_REPORTER.args0[0].name,
@@ -1634,7 +1664,7 @@ export const GENERATORS: Record<
         ];
     },
 
-    data_addtolist: (block, generator) => {
+    [BLOCK_LIST_ADD.type]: (block, generator) => {
         const item = generator.valueToCode(
             block,
             BLOCK_LIST_ADD.args0[0].name,
@@ -1645,7 +1675,7 @@ export const GENERATORS: Record<
         return `(${listRef} ??= []).push(${item});\n`;
     },
 
-    data_deleteoflist: (block, generator) => {
+    [BLOCK_LIST_DELETE.type]: (block, generator) => {
         const index = generator.valueToCode(
             block,
             BLOCK_LIST_DELETE.args0[0].name,
@@ -1660,7 +1690,7 @@ export const GENERATORS: Record<
         return `${listRef}?.splice(${num}(${index}) - 1, 1);\n`;
     },
 
-    data_deletealloflist: (block, generator) => {
+    [BLOCK_LIST_CLEAR.type]: (block, generator) => {
         const varId = getStringFieldValue(
             block,
             BLOCK_LIST_CLEAR.args0[0].name,
@@ -1669,7 +1699,7 @@ export const GENERATORS: Record<
         return `${listRef} = [];\n`;
     },
 
-    data_insertatlist: (block, generator) => {
+    [BLOCK_LIST_INSERT.type]: (block, generator) => {
         const item = generator.valueToCode(
             block,
             BLOCK_LIST_INSERT.args0[0].name,
@@ -2177,25 +2207,45 @@ export const GENERATORS: Record<
     },
 
     extension_bones_dice: (block, generator) => {
-        const notation = generator.valueToCode(
+        const dice = generator.valueToCode(
             block,
             BLOCK_EXTENSION_BONES_ROLL_DICE.args0[1].name,
             javascript.Order.NONE,
         );
-        const viewers = getStringFieldValue(
+        const viewers = getDropdownFieldValue(
             block,
-            BLOCK_EXTENSION_BONES_ROLL_DICE.args0[2].name,
+            BLOCK_EXTENSION_BONES_ROLL_DICE,
+            2,
         );
-
         return awaitBehaveValue(
             "bonesRoll",
             PARAMETER_SIGNAL,
-            notation,
+            dice,
             generator.quote_(viewers),
         );
     },
 
-    extension_phases_change: (block, generator) => {
+    [BLOCK_EXTENSION_DICE_PLUS_ROLL.type]: (block, generator) => {
+        const notation = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_DICE_PLUS_ROLL.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const who = getDropdownFieldValue(
+            block,
+            BLOCK_EXTENSION_DICE_PLUS_ROLL,
+            2,
+        );
+
+        return awaitBehaveValue(
+            "dicePlusRoll",
+            PARAMETER_SIGNAL,
+            notation,
+            generator.quote_(who),
+        );
+    },
+
+    [BLOCK_EXTENSION_PHASE_CHANGE.type]: (block, generator) => {
         const name = getStringFieldValue(
             block,
             BLOCK_EXTENSION_PHASE_CHANGE.args0[1].name,
@@ -2213,7 +2263,7 @@ export const GENERATORS: Record<
     },
 
     // Pretty Sordid Initiative
-    extension_pretty_initiative: () =>
+    [BLOCK_EXTENSION_PRETTY_MY_INITIATIVE.type]: () =>
         awaitBehaveValue(
             "getMyInitiative",
             PARAMETER_SIGNAL,
@@ -2223,7 +2273,7 @@ export const GENERATORS: Record<
     extension_pretty_my_turn: () =>
         awaitBehaveValue("isMyTurn", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
 
-    extension_pretty_set_initiative: (block, generator) => {
+    [BLOCK_EXTENSION_PRETTY_SET_INITIATIVE.type]: (block, generator) => {
         const count = generator.valueToCode(
             block,
             BLOCK_EXTENSION_PRETTY_SET_INITIATIVE.args0[1].name,
@@ -2249,7 +2299,7 @@ export const GENERATORS: Record<
         });
     },
 
-    extension_clash_property: (block) => {
+    [BLOCK_EXTENSION_CLASH_PROPERTY.type]: (block) => {
         const property = getDropdownFieldValue(
             block,
             BLOCK_EXTENSION_CLASH_PROPERTY,

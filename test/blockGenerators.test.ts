@@ -3045,6 +3045,24 @@ describe("Blockly JavaScript Generation", () => {
                                                         NUM: 2,
                                                     },
                                                 },
+                                                block: {
+                                                    type: "extension_dicep_roll",
+                                                    id: "extension_dicep_roll",
+                                                    fields: {
+                                                        WHO: "everyone",
+                                                    },
+                                                    inputs: {
+                                                        DICE: {
+                                                            shadow: {
+                                                                type: "behavior_dynamic_val",
+                                                                id: "extension_dicep_roll_dynamic_val",
+                                                                fields: {
+                                                                    TEXT: "1d20",
+                                                                },
+                                                            },
+                                                        },
+                                                    },
+                                                },
                                             },
                                         },
                                     },

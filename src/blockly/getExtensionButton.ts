@@ -30,6 +30,7 @@ const LINKS = {
     "Rumble!": official("rumble"),
     "Smoke & Spectre!": official("smoke"),
     Weather: official("weather"),
+    "Dice+": rogue("https://dice-plus.missinglinkdev.com/manifest.json"),
 };
 
 export function extensionHeader(extension: keyof typeof LINKS) {

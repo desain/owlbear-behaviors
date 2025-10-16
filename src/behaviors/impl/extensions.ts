@@ -7,6 +7,7 @@ import { CharacterDistances } from "../../extensions/CharacterDistances";
 import { Clash } from "../../extensions/Clash";
 import { Codeo } from "../../extensions/Codeo";
 import { Daggerheart } from "../../extensions/Daggerheart";
+import { DicePlus } from "../../extensions/DicePlus";
 import { Fog } from "../../extensions/Fog";
 import { Gapi } from "../../extensions/Gapi";
 import { Grimoire } from "../../extensions/Grimoire";
@@ -347,6 +348,20 @@ export const EXTENSIONS_BEHAVIORS = {
         const viewers = String(viewersUnknown) as "GM" | "ALL";
 
         const result = await Bones.roll(notation, viewers);
+        signal.throwIfAborted();
+
+        return result ?? 0;
+    },
+
+    // Dice Plus
+    dicePlusRoll: async (
+        signal: AbortSignal,
+        notationUnknown: unknown,
+        whoUnknown: unknown,
+    ): Promise<number> => {
+        const notation = String(notationUnknown);
+        const who = String(whoUnknown) as "everyone" | "dm";
+        const result = await DicePlus.roll(notation, who);
         signal.throwIfAborted();
 
         return result ?? 0;

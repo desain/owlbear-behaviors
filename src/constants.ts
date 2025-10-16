@@ -1,7 +1,8 @@
-const PLUGIN_ID = "com.desain.behavior";
+export const PLUGIN_ID = "com.desain.behavior";
 
 // Broadcasts
 export const CHANNEL_MESSAGE = `${PLUGIN_ID}/message`;
+export const TIMEOUT_DICE_MS = 30_000;
 
 // Storage
 export const LOCAL_STORAGE_STORE_NAME = `${PLUGIN_ID}/localStorage`;

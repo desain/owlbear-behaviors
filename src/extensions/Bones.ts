@@ -1,5 +1,6 @@
 import OBR from "@owlbear-rodeo/sdk";
-import { isObject } from "owlbear-utils";
+import { isObject, makeIdempotent } from "owlbear-utils";
+import { TIMEOUT_DICE_MS } from "../constants";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
 export interface BonesRoll {
@@ -24,16 +25,6 @@ function isBonesLogRoll(data: unknown): data is BonesLogRoll {
     );
 }
 
-function makeIdempotent(f: VoidFunction): VoidFunction {
-    let called = false;
-    return () => {
-        if (!called) {
-            f();
-            called = true;
-        }
-    }
-}
-
 const ROLL_HTML_REGEX = /\s*=\s*<strong>\s*(\d+)\s*<\/strong>\s*$/;
 
 export const Bones = {
@@ -51,23 +42,27 @@ export const Bones = {
     roll: (notation: string, viewers: "GM" | "SELF" | "ALL") => {
         const created = new Date().toISOString();
         return new Promise<number | undefined>((resolve) => {
-            const unsubscribePlayerMetadata = makeIdempotent(OBR.player.onChange((player) => {
-                const resultMetadata =
-                    player.metadata["com.battle-system.bones/metadata_logroll"];
-                if (
-                    !isBonesLogRoll(resultMetadata) ||
-                    resultMetadata.created <= created
-                ) {
-                    return;
-                }
-                const match = ROLL_HTML_REGEX.exec(
-                    resultMetadata.rollHtml,
-                )?.[1];
-                if (match) {
-                    unsubscribePlayerMetadata();
-                    resolve(Number(match));
-                }
-            }));
+            const unsubscribePlayerMetadata = makeIdempotent(
+                OBR.player.onChange((player) => {
+                    const resultMetadata =
+                        player.metadata[
+                            "com.battle-system.bones/metadata_logroll"
+                        ];
+                    if (
+                        !isBonesLogRoll(resultMetadata) ||
+                        resultMetadata.created <= created
+                    ) {
+                        return;
+                    }
+                    const match = ROLL_HTML_REGEX.exec(
+                        resultMetadata.rollHtml,
+                    )?.[1];
+                    if (match) {
+                        unsubscribePlayerMetadata();
+                        resolve(Number(match));
+                    }
+                }),
+            );
             void OBR.player.setMetadata({
                 "com.battle-system.bones/metadata_bonesroll": {
                     notation,
@@ -80,7 +75,7 @@ export const Bones = {
             setTimeout(() => {
                 unsubscribePlayerMetadata();
                 resolve(undefined);
-            }, 30_000);
+            }, TIMEOUT_DICE_MS);
         });
     },
 };

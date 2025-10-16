@@ -49,6 +49,7 @@ import {
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
+    BLOCK_EXTENSION_DICE_PLUS_ROLL,
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_FOG_LIT,
     BLOCK_EXTENSION_FOG_REMOVE,
@@ -991,6 +992,16 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     ...extensionHeader("Clash!"),
                     blockToDefinition(BLOCK_EXTENSION_CLASH_HP_CHANGE),
                     blockToDefinition(BLOCK_EXTENSION_CLASH_PROPERTY),
+
+                    ...extensionHeader("Dice+"),
+                    {
+                        kind: "block",
+                        type: BLOCK_EXTENSION_DICE_PLUS_ROLL.type,
+                        inputs: {
+                            [BLOCK_EXTENSION_DICE_PLUS_ROLL.args0[1].name]:
+                                shadowDynamic("1d20"),
+                        },
+                    },
 
                     ...extensionHeader("Dynamic Fog"),
                     {

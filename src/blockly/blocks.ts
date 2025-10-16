@@ -3148,6 +3148,37 @@ export const BLOCK_EXTENSION_BONES_ROLL_DICE = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_EXTENSION_DICE_PLUS_ROLL = {
+    style: "extension_blocks",
+    type: "extension_dicep_roll",
+    tooltip: "Roll dice using the Dice Plus extension",
+    helpUrl: "https://dice-plus.missinglinkdev.com/learn-more",
+    message0: "%1 roll %2 to %3",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://dice-plus.missinglinkdev.com/logo.png",
+            width: 24,
+            height: 24,
+        },
+        {
+            type: "input_value",
+            name: "DICE",
+            check: ["String", "Number"],
+        },
+        {
+            type: "field_dropdown",
+            name: "WHO",
+            options: [
+                ["all", "everyone"],
+                ["GM", "dm"],
+            ],
+        },
+    ],
+    output: "Number",
+    inputsInline: true,
+} as const;
+
 export const BLOCK_EXTENSION_PHASE_CHANGE = {
     style: "extension_blocks",
     type: "extension_phases_change",
@@ -3727,6 +3758,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_WEATHER_HAS,
     BLOCK_EXTENSION_BONES_ON_ROLL,
     BLOCK_EXTENSION_BONES_ROLL_DICE,
+    BLOCK_EXTENSION_DICE_PLUS_ROLL,
     BLOCK_EXTENSION_PHASE_CHANGE,
     BLOCK_EXTENSION_PRETTY_MY_INITIATIVE,
     BLOCK_EXTENSION_PRETTY_MY_TURN,
