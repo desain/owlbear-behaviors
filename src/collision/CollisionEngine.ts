@@ -146,8 +146,6 @@ export class CollisionEngine {
             }
         }
 
-        console.log(newCollisions);
-
         return { newCollisions, finishedCollisions };
     }
 }
