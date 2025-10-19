@@ -1,4 +1,4 @@
-import type { Item } from "@owlbear-rodeo/sdk";
+import type { InteractionManager, Item } from "@owlbear-rodeo/sdk";
 import OBR from "@owlbear-rodeo/sdk";
 import { Patcher } from "owlbear-utils";
 
@@ -15,6 +15,11 @@ export class ItemProxy {
     readonly #FLUSH_DELAY_MS = 16; // ~1 frame at 60fps
 
     readonly #cache = new Map<Item["id"], Item>();
+    readonly #interactions = new Map<
+        Item["id"],
+        | { creating: Promise<InteractionManager<Item>> }
+        | { count: number; manager: InteractionManager<Item> }
+    >();
 
     static getInstance = (): ItemProxy => {
         if (!ItemProxy.#instance) {
@@ -52,7 +57,7 @@ export class ItemProxy {
      * Add an item update to the batch and schedule a flush.
      * Returns a promise that resolves when the batch is flushed.
      */
-    update = (
+    readonly update = (
         ...[itemOrId, updater]: Parameters<Patcher["updateGlobal"]>
     ): Promise<void> => {
         const id = typeof itemOrId === "string" ? itemOrId : itemOrId.id;
@@ -61,7 +66,7 @@ export class ItemProxy {
         return this.#scheduleFlush();
     };
 
-    get = async (id?: Item["id"]): Promise<Item | undefined> => {
+    readonly get = async (id?: Item["id"]): Promise<Item | undefined> => {
         if (!id) {
             return undefined;
         }
@@ -81,5 +86,50 @@ export class ItemProxy {
         return item;
     };
 
-    invalidate = () => this.#cache.clear();
+    readonly invalidate = () => this.#cache.clear();
+
+    readonly attachInteraction = async (
+        item: Item,
+    ): Promise<InteractionManager<Item>> => {
+        const existing = this.#interactions.get(item.id);
+        let manager: InteractionManager<Item>;
+        if (existing && "manager" in existing) {
+            manager = existing.manager;
+        } else if (existing && "creating" in existing) {
+            manager = await existing.creating;
+        } else {
+            const creating = OBR.interaction.startItemInteraction(item);
+            this.#interactions.set(item.id, { creating });
+            manager = await creating;
+        }
+
+        this.#incrementInteractionCount(item.id, manager);
+
+        return [manager[0], () => this.#detachInteraction(item.id)];
+    };
+
+    readonly #incrementInteractionCount = (
+        itemId: Item["id"],
+        manager: InteractionManager<Item>,
+    ) => {
+        const existing = this.#interactions.get(itemId);
+        if (existing && "count" in existing) {
+            existing.count++;
+        } else if (existing) {
+            this.#interactions.set(itemId, { count: 1, manager });
+        }
+    };
+
+    readonly #detachInteraction = (itemId: Item["id"]) => {
+        const existing = this.#interactions.get(itemId);
+        if (existing && "count" in existing) {
+            existing.count--;
+            if (existing.count === 0) {
+                existing.manager[1]();
+                this.#interactions.delete(itemId);
+            }
+        } else {
+            console.warn("cannot detach nonexistent interaction");
+        }
+    };
 }

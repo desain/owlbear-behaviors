@@ -238,9 +238,8 @@ export const MOTION_BEHAVIORS = {
         xUnknown: unknown,
         yUnknown: unknown,
     ): Promise<number> => {
-        const selfItem = await ItemProxy.getInstance().get(
-            String(selfIdUnknown),
-        );
+        const itemProxy = ItemProxy.getInstance();
+        const selfItem = await itemProxy.get(String(selfIdUnknown));
         if (!selfItem) {
             console.warn(`[glide] self does not exist`);
             return loopCheck;
@@ -265,9 +264,7 @@ export const MOTION_BEHAVIORS = {
         try {
             const startPosition = selfItem.position;
             if (duration > 0) {
-                const interaction = await OBR.interaction.startItemInteraction([
-                    selfItem,
-                ]);
+                const interaction = await itemProxy.attachInteraction(selfItem);
                 const update = interaction[0];
                 stop = interaction[1];
 
@@ -278,30 +275,23 @@ export const MOTION_BEHAVIORS = {
                 while (elapsedTime < maxRunTime) {
                     loopCheck = loopTrap(loopCheck);
 
-                    update(([self]) => {
-                        if (self) {
-                            self.position.x =
-                                startPosition.x +
-                                (elapsedTime / maxRunTime) *
-                                    (x - startPosition.x);
-                            self.position.y =
-                                startPosition.y +
-                                (elapsedTime / maxRunTime) *
-                                    (y - startPosition.y);
-                        }
+                    update((self) => {
+                        self.position.x =
+                            startPosition.x +
+                            (elapsedTime / maxRunTime) * (x - startPosition.x);
+                        self.position.y =
+                            startPosition.y +
+                            (elapsedTime / maxRunTime) * (y - startPosition.y);
                     });
                     await new Promise((resolve) => setTimeout(resolve, 30));
                     signal.throwIfAborted();
                     elapsedTime = Date.now() - startTime;
                 }
             }
-            await ItemProxy.getInstance().update(
-                String(selfIdUnknown),
-                (self) => {
-                    self.position.x = x;
-                    self.position.y = y;
-                },
-            );
+            await itemProxy.update(String(selfIdUnknown), (self) => {
+                self.position.x = x;
+                self.position.y = y;
+            });
             signal.throwIfAborted();
         } finally {
             stop?.();
@@ -321,9 +311,8 @@ export const MOTION_BEHAVIORS = {
         durationUnknown: unknown,
         thetaUnknown: unknown,
     ): Promise<number> => {
-        const selfItem = await ItemProxy.getInstance().get(
-            String(selfIdUnknown),
-        );
+        const itemProxy = ItemProxy.getInstance();
+        const selfItem = await itemProxy.get(String(selfIdUnknown));
         if (!selfItem) {
             console.warn(`[glide] self does not exist`);
             return loopCheck;
@@ -343,9 +332,7 @@ export const MOTION_BEHAVIORS = {
         try {
             const startRotation = selfItem.rotation;
             if (duration > 0) {
-                const interaction = await OBR.interaction.startItemInteraction([
-                    selfItem,
-                ]);
+                const interaction = await itemProxy.attachInteraction(selfItem);
                 const update = interaction[0];
                 stop = interaction[1];
 
@@ -356,24 +343,18 @@ export const MOTION_BEHAVIORS = {
                 while (elapsedTime < maxRunTime) {
                     loopCheck = loopTrap(loopCheck);
 
-                    update(([self]) => {
-                        if (self) {
-                            self.rotation =
-                                startRotation +
-                                (elapsedTime / maxRunTime) * theta;
-                        }
+                    update((self) => {
+                        self.rotation =
+                            startRotation + (elapsedTime / maxRunTime) * theta;
                     });
                     await new Promise((resolve) => setTimeout(resolve, 30));
                     signal.throwIfAborted();
                     elapsedTime = Date.now() - startTime;
                 }
             }
-            await ItemProxy.getInstance().update(
-                String(selfIdUnknown),
-                (self) => {
-                    self.rotation = (startRotation + theta + 360) % 360;
-                },
-            );
+            await itemProxy.update(String(selfIdUnknown), (self) => {
+                self.rotation = (startRotation + theta + 360) % 360;
+            });
             signal.throwIfAborted();
         } finally {
             stop?.();
