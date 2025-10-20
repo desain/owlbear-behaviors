@@ -67,6 +67,7 @@ export const DicePlus = {
             timestamp: Date.now(),
             source: SOURCE,
         } satisfies RollRequest;
+        console.log(request);
 
         return new Promise((resolve) => {
             const unsubscribeRollResult = makeIdempotent(

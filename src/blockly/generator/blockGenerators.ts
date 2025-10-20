@@ -23,6 +23,8 @@ import {
     BLOCK_ADD_AURA_PRESET,
     BLOCK_ANGLE,
     BLOCK_ANNOUNCEMENT,
+    BLOCK_ARGUMENT_EDITOR_BOOLEAN,
+    BLOCK_ARGUMENT_EDITOR_STRNUM,
     BLOCK_ATTACH,
     BLOCK_ATTACHED,
     BLOCK_BROADCAST,
@@ -132,6 +134,9 @@ import {
     BLOCK_LOCK,
     BLOCK_LOCKED,
     BLOCK_MATCH,
+    BLOCK_MATCH_CASE,
+    BLOCK_MATCH_MATCH,
+    BLOCK_MATCH_RANGE,
     BLOCK_MOVE_DIRECTION,
     BLOCK_MY_PARENT,
     BLOCK_OPACITY_SLIDER,
@@ -139,6 +144,7 @@ import {
     BLOCK_OTHER_SRC,
     BLOCK_PATHFIND,
     BLOCK_POINT_IN_DIRECTION,
+    BLOCK_PROCEDURE_PREVIEW,
     BLOCK_RECEIVE_BROADCAST,
     BLOCK_REMOVE_AURAS,
     BLOCK_REMOVE_TAG,
@@ -193,7 +199,7 @@ import {
     BLOCK_ZOOM,
     type CustomBlockType,
 } from "../blocks";
-import { getCaseInputs, getCaseName } from "../mutatorMatch";
+import { caseStatementInputName, type MatchBlock } from "../mutatorMatch";
 import type { ArgumentReporterBlock } from "../procedures/blockArgumentReporter";
 import type { CallBlock } from "../procedures/blockCall";
 import { type DefineBlock, isDefineBlock } from "../procedures/blockDefine";
@@ -1328,23 +1334,55 @@ export const GENERATORS: Record<
             BLOCK_MATCH.args0[0].name,
             javascript.Order.NONE,
         );
+        const [valueVar, initValueVar] = generateVariable(
+            generator,
+            "matchValue",
+            value,
+        );
+
+        const matchBlock = block as MatchBlock;
+
+        const lt = provideComparison(generator, "<");
+        const eq = provideComparison(generator, "===");
+        const gt = provideComparison(generator, ">");
+
+        let code = initValueVar + "\n";
+        let needsElse = false;
+        matchBlock.matchState.cases.forEach((caseData, i) => {
+            const condition =
+                "exact" in caseData
+                    ? `${eq}(${valueVar}, ${generator.quote_(caseData.exact)})`
+                    : `(${gt}(${valueVar}, ${generator.quote_(
+                          caseData.lo,
+                      )}) || ${eq}(${valueVar}, ${generator.quote_(
+                          caseData.lo,
+                      )})) && ${lt}(${valueVar}, ${generator.quote_(
+                          caseData.hi,
+                      )})`;
+            code += generateBlock(
+                generator,
+                `${needsElse ? "else " : ""}if (${condition})`,
+                generator.statementToCode(
+                    matchBlock,
+                    caseStatementInputName(i),
+                ),
+            );
+            needsElse = true;
+        });
+
         const defaultCode = block.getInput(BLOCK_MATCH.args4[0].name)
             ? generator.statementToCode(block, BLOCK_MATCH.args4[0].name)
             : undefined;
-        return generateBlock(
-            generator,
-            `switch (String(${value}))`,
-            getCaseInputs(block)
-                .map(
-                    ({ caseInput, caseLabelInput }) =>
-                        `case ${generator.quote_(
-                            getCaseName(caseLabelInput),
-                        )}:\n` +
-                        generator.statementToCode(block, caseInput.name) +
-                        `\n${generator.INDENT}break;`,
-                )
-                .join("\n") + (defaultCode ? `\ndefault:\n${defaultCode}` : ""),
-        );
+        if (defaultCode) {
+            const defaultNeedsElse = matchBlock.matchState.cases.length > 0;
+            code += generateBlock(
+                generator,
+                defaultNeedsElse ? "else" : "",
+                defaultCode,
+            );
+        }
+
+        return code;
     },
 
     // Sensing blocks
@@ -2770,9 +2808,10 @@ export const GENERATORS: Record<
     },
 
     // Non-codegen blocks
-    procedures_declaration: noCodegen,
-    argument_editor_string_number: noCodegen,
-    argument_editor_boolean: noCodegen,
-    controls_match_match: noCodegen,
-    controls_match_case: noCodegen,
+    [BLOCK_PROCEDURE_PREVIEW.type]: noCodegen,
+    [BLOCK_ARGUMENT_EDITOR_STRNUM.type]: noCodegen,
+    [BLOCK_ARGUMENT_EDITOR_BOOLEAN.type]: noCodegen,
+    [BLOCK_MATCH_MATCH.type]: noCodegen,
+    [BLOCK_MATCH_CASE.type]: noCodegen,
+    [BLOCK_MATCH_RANGE.type]: noCodegen,
 };

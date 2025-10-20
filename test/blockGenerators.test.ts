@@ -1090,6 +1090,39 @@ describe("Blockly JavaScript Generation", () => {
                                                                         STOP_TARGET:
                                                                             "OTHER_SCRIPTS",
                                                                     },
+                                                                    next: {
+                                                                        block: {
+                                                                            type: "control_match",
+                                                                            id: "control_match",
+                                                                            extraState:
+                                                                                {
+                                                                                    cases: [
+                                                                                        {
+                                                                                            exact: "apple",
+                                                                                        },
+                                                                                        {
+                                                                                            lo: "0",
+                                                                                            hi: "10",
+                                                                                        },
+                                                                                    ],
+                                                                                    default:
+                                                                                        true,
+                                                                                },
+                                                                            inputs: {
+                                                                                VAL: {
+                                                                                    shadow: {
+                                                                                        type: "behavior_dynamic_val",
+                                                                                        id: "control_match_dynamic_val",
+                                                                                        fields: {
+                                                                                            TEXT: "apple",
+                                                                                        },
+                                                                                    },
+                                                                                },
+                                                                                // CASE_0: {},
+                                                                                // DEFAULT: {}
+                                                                            },
+                                                                        },
+                                                                    },
                                                                 },
                                                             },
                                                         },
@@ -3333,6 +3366,185 @@ describe("Blockly JavaScript Generation", () => {
                                 y: 0,
                                 fields: {
                                     NAME: "My menu item",
+                                },
+                            },
+                        ],
+                    },
+                },
+                workspace,
+            );
+
+            checkCompiles(workspace);
+        });
+    });
+
+    describe("control_match block", () => {
+        it("should generate valid JS when all features used", () => {
+            const workspace = new Blockly.Workspace();
+            Blockly.serialization.workspaces.load(
+                {
+                    blocks: {
+                        languageVersion: 0,
+                        blocks: [
+                            {
+                                type: "event_immediately",
+                                id: "event_immediately",
+                                x: 0,
+                                y: 0,
+                                next: {
+                                    block: {
+                                        type: "control_match",
+                                        id: "control_match",
+                                        extraState: {
+                                            cases: [
+                                                {
+                                                    exact: "apple",
+                                                },
+                                                {
+                                                    lo: "0",
+                                                    hi: "10",
+                                                },
+                                            ],
+                                            default: true,
+                                        },
+                                        inputs: {
+                                            VAL: {
+                                                shadow: {
+                                                    type: "behavior_dynamic_val",
+                                                    id: "control_match_dynamic_val",
+                                                    fields: {
+                                                        TEXT: "apple",
+                                                    },
+                                                },
+                                            },
+                                            CASE_0: {
+                                                block: {
+                                                    type: "control_behavior_stop",
+                                                    id: "case_0_stop",
+                                                    fields: {
+                                                        STOP_TARGET:
+                                                            "THIS_SCRIPT",
+                                                    },
+                                                },
+                                            },
+                                            CASE_1: {
+                                                block: {
+                                                    type: "control_behavior_stop",
+                                                    id: "case_1_stop",
+                                                    fields: {
+                                                        STOP_TARGET:
+                                                            "THIS_SCRIPT",
+                                                    },
+                                                },
+                                            },
+                                            DEFAULT: {
+                                                block: {
+                                                    type: "control_behavior_stop",
+                                                    id: "default_stop",
+                                                    fields: {
+                                                        STOP_TARGET:
+                                                            "THIS_SCRIPT",
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+                workspace,
+            );
+
+            checkCompiles(workspace);
+        });
+
+        it("should generate valid JS when there's only a default", () => {
+            const workspace = new Blockly.Workspace();
+            Blockly.serialization.workspaces.load(
+                {
+                    blocks: {
+                        languageVersion: 0,
+                        blocks: [
+                            {
+                                type: "event_immediately",
+                                id: "event_immediately",
+                                x: 0,
+                                y: 0,
+                                next: {
+                                    block: {
+                                        type: "control_match",
+                                        id: "control_match",
+                                        extraState: {
+                                            cases: [],
+                                            default: true,
+                                        },
+                                        inputs: {
+                                            VAL: {
+                                                shadow: {
+                                                    type: "behavior_dynamic_val",
+                                                    id: "control_match_dynamic_val",
+                                                    fields: {
+                                                        TEXT: "apple",
+                                                    },
+                                                },
+                                            },
+                                            DEFAULT: {
+                                                block: {
+                                                    type: "control_behavior_stop",
+                                                    id: "default_stop",
+                                                    fields: {
+                                                        STOP_TARGET:
+                                                            "THIS_SCRIPT",
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+                workspace,
+            );
+
+            checkCompiles(workspace);
+        });
+
+        it("should generate valid JS when there's no inputs", () => {
+            const workspace = new Blockly.Workspace();
+            Blockly.serialization.workspaces.load(
+                {
+                    blocks: {
+                        languageVersion: 0,
+                        blocks: [
+                            {
+                                type: "event_immediately",
+                                id: "event_immediately",
+                                x: 0,
+                                y: 0,
+                                next: {
+                                    block: {
+                                        type: "control_match",
+                                        id: "control_match",
+                                        extraState: {
+                                            cases: [],
+                                            default: false,
+                                        },
+                                        inputs: {
+                                            VAL: {
+                                                shadow: {
+                                                    type: "behavior_dynamic_val",
+                                                    id: "control_match_dynamic_val",
+                                                    fields: {
+                                                        TEXT: "apple",
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
                                 },
                             },
                         ],

@@ -1478,7 +1478,7 @@ export const BLOCK_MATCH = {
     tooltip:
         "Match a value with various options and execute the blocks under the matching one",
     helpUrl: "https://en.wikipedia.org/wiki/Switch_statement",
-    message0: "match %1 with %2",
+    message0: "when %1 %2",
     args0: [
         {
             type: "input_value",
@@ -1490,7 +1490,7 @@ export const BLOCK_MATCH = {
             name: "WITH",
         },
     ],
-    message1: "apple %1",
+    message1: "is apple %1",
     args1: [
         {
             type: "input_dummy",
@@ -3669,7 +3669,7 @@ export const BLOCK_CONTROL_ITEM_MENU = {
 export const BLOCK_MATCH_MATCH = {
     style: "control_blocks",
     type: "controls_match_match",
-    message0: "match",
+    message0: "when input",
     message1: "%1",
     args1: [
         {
@@ -3689,12 +3689,33 @@ export const BLOCK_MATCH_MATCH = {
 export const BLOCK_MATCH_CASE = {
     style: "control_blocks",
     type: "controls_match_case",
-    message0: "case %1",
+    message0: "is %1",
     args0: [
         {
             type: "field_input",
             name: "TEXT",
             text: "value",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_MATCH_RANGE = {
+    style: "control_blocks",
+    type: "controls_match_range",
+    message0: "is between %1 and %2",
+    args0: [
+        {
+            type: "field_input",
+            name: "LO",
+            text: "0",
+        },
+        {
+            type: "field_input",
+            name: "HI",
+            text: "10",
         },
     ],
     previousStatement: null,
@@ -3909,6 +3930,7 @@ export const CUSTOM_JSON_BLOCKS = [
     // Mutator blocks
     BLOCK_MATCH_MATCH,
     BLOCK_MATCH_CASE,
+    BLOCK_MATCH_RANGE,
 ];
 
 export type CustomBlockType =

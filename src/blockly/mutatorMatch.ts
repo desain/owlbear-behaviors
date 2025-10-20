@@ -1,20 +1,37 @@
 import * as Blockly from "blockly";
 import { MUTATOR_MATCH } from "../constants";
-import { BLOCK_MATCH, BLOCK_MATCH_CASE, BLOCK_MATCH_MATCH } from "./blocks";
+import {
+    BLOCK_MATCH,
+    BLOCK_MATCH_CASE,
+    BLOCK_MATCH_MATCH,
+    BLOCK_MATCH_RANGE,
+} from "./blocks";
+interface ExactCaseState {
+    exact: string;
+}
+interface RangeCaseState {
+    lo: string;
+    hi: string;
+}
+type MatchCaseState = ExactCaseState | RangeCaseState;
 
-interface MatchBlockExtraState {
+export interface MatchBlockExtraState {
     readonly default: boolean;
-    readonly cases: string[];
+    readonly cases: MatchCaseState[];
 }
 
-type MatchMatchBlock = Blockly.BlockSvg & {
+export interface MatchBlock extends Blockly.Block {
+    matchState: MatchBlockExtraState;
+}
+
+interface MatchMatchBlock extends Blockly.BlockSvg {
     /**
      * Previous connection of topmost input block of 'default' input.
      */
     matchDefaultConnection?: Blockly.Connection;
-};
+}
 
-type MatchCaseBlock = Blockly.BlockSvg & {
+type MatchCaseOrRangeBlock = Blockly.BlockSvg & {
     /**
      * Previous connection of topmost of corresponding case input.
      */
@@ -24,19 +41,32 @@ type MatchCaseBlock = Blockly.BlockSvg & {
 const INPUT_MATCH_DEFAULTNAME = BLOCK_MATCH.args3[0].name;
 const INPUT_MATCH_DEFAULT = BLOCK_MATCH.args4[0].name;
 
-function hasDefault(match: Blockly.Block): boolean {
-    return !!match.getInput(INPUT_MATCH_DEFAULT);
-}
-
-function caseLabel(i: number) {
+/**
+ * @returns Name for dummy input that labels the i'th case.
+ */
+function caseLabelInputName(i: number) {
     return `CASELABEL_${i}`;
 }
 
-function caseI(i: number) {
+/**
+ * @returns Text for dummy input that labels the case.
+ */
+function caseLabelText(state: MatchCaseState) {
+    if ("exact" in state) {
+        return `is ${state.exact}`;
+    } else {
+        return `is between ${state.lo} and ${state.hi}`;
+    }
+}
+
+/**
+ * @returns Name of case statement input for i'th case.
+ */
+export function caseStatementInputName(i: number) {
     return `CASE_${i}`;
 }
 
-export function getCaseInputs(
+function getCaseInputs(
     match: Blockly.Block,
 ): { caseLabelInput: Blockly.Input; caseInput: Blockly.Input }[] {
     const inputs: {
@@ -47,8 +77,8 @@ export function getCaseInputs(
         let i = 0,
             caseLabelInput: Blockly.Input | null,
             caseInput: Blockly.Input | null;
-        (caseInput = match.getInput(caseI(i))),
-            (caseLabelInput = match.getInput(caseLabel(i))),
+        (caseInput = match.getInput(caseStatementInputName(i))),
+            (caseLabelInput = match.getInput(caseLabelInputName(i))),
             caseInput && caseLabelInput;
         i++
     ) {
@@ -60,82 +90,120 @@ export function getCaseInputs(
     return inputs;
 }
 
-export function getCaseName(caseLabelInput: Blockly.Input): string {
-    return String(caseLabelInput.fieldRow[0]?.getValue() ?? "");
-}
+function mutatorTopBlockToState(match: MatchMatchBlock): {
+    state: MatchBlockExtraState;
+    matchCaseConnections: (Blockly.Connection | undefined)[];
+    defaultConnection?: Blockly.Connection;
+} {
+    const state: MatchBlockExtraState = {
+        cases: [],
+        default:
+            match.getFieldValue(BLOCK_MATCH_MATCH.args2[0].name) === "TRUE",
+    };
+    const matchCaseConnections: (Blockly.Connection | undefined)[] = [];
 
-function getCases(match: Blockly.Block): string[] {
-    return getCaseInputs(match).map(({ caseLabelInput }) =>
-        getCaseName(caseLabelInput),
-    );
-}
-
-function getMutatorCases(
-    match: MatchMatchBlock,
-): { name: string; connection?: Blockly.Connection }[] {
-    const cases: { name: string; connection?: Blockly.Connection }[] = [];
     for (
         let caseBlock: Blockly.Block | null | undefined =
             match.getInputTargetBlock(BLOCK_MATCH_MATCH.args1[0].name);
         caseBlock && !caseBlock.isInsertionMarker();
         caseBlock = caseBlock?.getNextBlock()
     ) {
-        cases.push({
-            name: String(
-                caseBlock.getFieldValue(BLOCK_MATCH_CASE.args0[0].name),
-            ),
-            connection: (caseBlock as MatchCaseBlock).matchCaseConnection,
-        });
+        if (caseBlock.type === BLOCK_MATCH_CASE.type) {
+            state.cases.push({
+                exact: String(
+                    caseBlock.getFieldValue(BLOCK_MATCH_CASE.args0[0].name),
+                ),
+            });
+        } else if (caseBlock.type === BLOCK_MATCH_RANGE.type) {
+            state.cases.push({
+                lo: String(
+                    caseBlock.getFieldValue(BLOCK_MATCH_RANGE.args0[0].name),
+                ),
+                hi: String(
+                    caseBlock.getFieldValue(BLOCK_MATCH_RANGE.args0[1].name),
+                ),
+            });
+        } else {
+            throw Error("invalid case block");
+        }
+        matchCaseConnections.push(
+            (caseBlock as MatchCaseOrRangeBlock).matchCaseConnection,
+        );
     }
-    return cases;
+    return {
+        state,
+        matchCaseConnections,
+        defaultConnection: match.matchDefaultConnection,
+    };
+}
+
+function setupMatchBlockFromState(
+    match: MatchBlock,
+    state: MatchBlockExtraState,
+    matchCaseConnections?: (Blockly.Connection | undefined)[],
+    defaultConnection?: Blockly.Connection,
+) {
+    // save state
+    match.matchState = state;
+
+    // remove existing case inputs
+    getCaseInputs(match).forEach(({ caseInput, caseLabelInput }) => {
+        match.removeInput(caseInput.name);
+        match.removeInput(caseLabelInput.name);
+    });
+
+    // append new case inputs
+    state.cases.forEach((caseState, i) => {
+        match
+            .appendDummyInput(caseLabelInputName(i))
+            .appendField(caseLabelText(caseState));
+        const statementInput = match.appendStatementInput(
+            caseStatementInputName(i),
+        );
+        const connection = matchCaseConnections?.[i];
+        if (connection) {
+            statementInput.connection?.connect(connection);
+        }
+    });
+
+    // remove existing default input
+    match.removeInput(INPUT_MATCH_DEFAULTNAME, true);
+    match.removeInput(INPUT_MATCH_DEFAULT, true);
+
+    // append new default input
+    if (state.default) {
+        match.appendDummyInput(INPUT_MATCH_DEFAULTNAME).appendField("default");
+        const statementInput = match.appendStatementInput(INPUT_MATCH_DEFAULT);
+        if (defaultConnection) {
+            statementInput.connection?.connect(defaultConnection);
+        }
+    }
 }
 
 export function registerMutatorMatch() {
     Blockly.Extensions.registerMutator(
         MUTATOR_MATCH,
         {
-            saveExtraState: function (
-                this: Blockly.Block,
-            ): MatchBlockExtraState {
-                return {
-                    default: hasDefault(this),
-                    cases: getCases(this),
-                };
+            saveExtraState: function (this: MatchBlock): MatchBlockExtraState {
+                return this.matchState;
             },
 
             loadExtraState: function (
-                this: Blockly.Block,
+                this: MatchBlock,
                 extraState: MatchBlockExtraState,
             ) {
-                // remove existing case inputs
-                getCaseInputs(this).forEach(({ caseInput, caseLabelInput }) => {
-                    this.removeInput(caseInput.name);
-                    this.removeInput(caseLabelInput.name);
-                });
-
-                // append new case inputs
-                extraState.cases.forEach((name, i) => {
-                    this.appendDummyInput(caseLabel(i)).appendField(name);
-                    this.appendStatementInput(caseI(i));
-                });
-
-                // remove existing default input
-                this.removeInput(INPUT_MATCH_DEFAULTNAME, true);
-                this.removeInput(INPUT_MATCH_DEFAULT, true);
-
-                // append new default input
-                if (extraState.default) {
-                    this.appendDummyInput(INPUT_MATCH_DEFAULTNAME).appendField(
-                        "default",
-                    );
-                    this.appendStatementInput(INPUT_MATCH_DEFAULT);
-                }
+                setupMatchBlockFromState(this, extraState);
             },
 
+            /**
+             * Turn this block into a set of blocks in the mutator workspace
+             * @param workspace mutator workspace
+             * @returns top level mutator match block
+             */
             decompose: function (
-                this: Blockly.BlockSvg,
+                this: MatchBlock,
                 workspace: Blockly.WorkspaceSvg,
-            ) {
+            ): Blockly.Block {
                 const match = workspace.newBlock(BLOCK_MATCH_MATCH.type);
                 match.initSvg();
                 match.render();
@@ -143,17 +211,31 @@ export function registerMutatorMatch() {
                 let caseConnection = match.getInput(
                     BLOCK_MATCH_MATCH.args1[0].name,
                 )?.connection;
-                if (!caseConnection) {
-                    throw Error("match should have case connection");
-                }
 
-                const cases = getCases(this);
-                for (const caseName of cases) {
-                    const caseBlock = workspace.newBlock(BLOCK_MATCH_CASE.type);
-                    caseBlock.setFieldValue(
-                        caseName,
-                        BLOCK_MATCH_CASE.args0[0].name,
-                    );
+                for (const caseData of this.matchState.cases) {
+                    let caseBlock: Blockly.BlockSvg;
+                    if ("exact" in caseData) {
+                        caseBlock = workspace.newBlock(BLOCK_MATCH_CASE.type);
+                        caseBlock.setFieldValue(
+                            caseData.exact,
+                            BLOCK_MATCH_CASE.args0[0].name,
+                        );
+                    } else {
+                        caseBlock = workspace.newBlock(BLOCK_MATCH_RANGE.type);
+                        caseBlock.setFieldValue(
+                            caseData.lo,
+                            BLOCK_MATCH_RANGE.args0[0].name,
+                        );
+                        caseBlock.setFieldValue(
+                            caseData.hi,
+                            BLOCK_MATCH_RANGE.args0[1].name,
+                        );
+                    }
+
+                    if (!caseConnection || !caseBlock.previousConnection) {
+                        throw Error("[match decompose] missing connections");
+                    }
+
                     caseConnection.connect(caseBlock.previousConnection);
                     caseConnection = caseBlock.nextConnection;
                     caseBlock.initSvg();
@@ -161,7 +243,7 @@ export function registerMutatorMatch() {
                 }
 
                 match.setFieldValue(
-                    String(hasDefault(this)).toUpperCase(),
+                    String(this.matchState.default).toUpperCase(),
                     BLOCK_MATCH_MATCH.args2[0].name,
                 );
 
@@ -185,57 +267,34 @@ export function registerMutatorMatch() {
                     caseBlock && !caseBlock.isInsertionMarker();
                     caseBlock = caseBlock?.getNextBlock(), i++
                 ) {
-                    (caseBlock as MatchCaseBlock).matchCaseConnection =
-                        this.getInputTargetBlock(caseI(i))
+                    (caseBlock as MatchCaseOrRangeBlock).matchCaseConnection =
+                        this.getInputTargetBlock(caseStatementInputName(i))
                             ?.previousConnection ?? undefined;
                 }
             },
 
-            compose: function (
-                this: Blockly.BlockSvg,
-                topBlock: MatchMatchBlock,
-            ) {
-                // remove existing case inputs
-                getCaseInputs(this).forEach(({ caseInput, caseLabelInput }) => {
-                    this.removeInput(caseInput.name);
-                    this.removeInput(caseLabelInput.name);
-                });
+            /**
+             * Modify this block based on what happened in the mutator workspace
+             * @param topBlock top block in mutator workspace
+             * @returns
+             */
+            compose: function (this: MatchBlock, topBlock: MatchMatchBlock) {
+                const { state, matchCaseConnections, defaultConnection } =
+                    mutatorTopBlockToState(topBlock);
 
-                // append new case inputs
-                getMutatorCases(topBlock).forEach(({ name, connection }, i) => {
-                    this.appendDummyInput(caseLabel(i)).appendField(name);
-                    const caseInput = this.appendStatementInput(caseI(i));
-                    if (connection) {
-                        caseInput.connection?.connect(connection);
-                    }
-                });
-
-                const shouldHaveDefault =
-                    topBlock.getFieldValue(BLOCK_MATCH_MATCH.args2[0].name) ===
-                    "TRUE";
-
-                // remove existing default input
-                this.removeInput(INPUT_MATCH_DEFAULTNAME, true);
-                this.removeInput(INPUT_MATCH_DEFAULT, true);
-
-                // append new default input
-                if (shouldHaveDefault) {
-                    this.appendDummyInput(INPUT_MATCH_DEFAULTNAME).appendField(
-                        "default",
-                    );
-                    const defaultInput =
-                        this.appendStatementInput(INPUT_MATCH_DEFAULT);
-                    if (topBlock.matchDefaultConnection) {
-                        defaultInput.connection?.connect(
-                            topBlock.matchDefaultConnection,
-                        );
-                    }
-                }
-
-                return;
+                setupMatchBlockFromState(
+                    this,
+                    state,
+                    matchCaseConnections,
+                    defaultConnection,
+                );
             },
         },
-        undefined,
-        [BLOCK_MATCH_CASE.type],
+        function (this: MatchBlock) {
+            if (!this.matchState) {
+                this.matchState = { cases: [], default: false };
+            }
+        },
+        [BLOCK_MATCH_CASE.type, BLOCK_MATCH_RANGE.type],
     );
 }

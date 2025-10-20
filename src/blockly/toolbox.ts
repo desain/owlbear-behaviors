@@ -170,6 +170,7 @@ import {
 } from "./blocks";
 import { FieldTokenImage } from "./FieldTokenImage";
 import { extensionHeader } from "./getExtensionButton";
+import type { MatchBlockExtraState } from "./mutatorMatch";
 import {
     shadowColor,
     shadowDynamic,
@@ -692,6 +693,14 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         inputs: {
                             [BLOCK_MATCH.args0[0].name]: shadowDynamic("apple"),
                         },
+                        extraState: {
+                            cases: [
+                                {
+                                    exact: "apple",
+                                },
+                            ],
+                            default: false,
+                        } satisfies MatchBlockExtraState,
                     }),
                     blockToDefinition(BLOCK_WAIT_UNTIL),
                     blockToDefinition(BLOCK_REPEAT_UNTIL),

@@ -161,10 +161,8 @@ To make a production build run:
 
 ## To do
 
+-   Dice+: roll to all and log
 -   Move executor to the background now that background scripts shouldn't be throttled?
--   Custom menus
-    -   refcount in state, updated by item change handler
-    -   on create, register, on destroy, deregister
 -   Collision system improvements
     -   base it on polygon overlap instead of bounding boxes? turf js?
     -   inset bounding boxes so barely touching corners don't trigger collisions?
@@ -192,17 +190,18 @@ To make a production build run:
     -   Operators
         -   Min, max?
 -   Fix Blockly bug? [hideIfOwnerIsInWorkspace](https://github.com/google/blockly/blob/develop/core/widgetdiv.ts#L201) should initialize `currentWorkspace` to `ownerWorkspace`, and should reference itself in the loop.
--   Figure out multiline text - https://www.npmjs.com/package/@blockly/field-multilineinput doesn't display correctly.
+-   Figure out multiline text inputs - https://www.npmjs.com/package/@blockly/field-multilineinput doesn't display correctly.
 
 ## Known Bugs
 
+-   Prefabbing multiple items that use a global variable, then adding them to a scene that doesn't have that global variable, breaks - they'll each end up with a different copy of it
+-   For some users, doing multiple glides at once snaps the item back at the end of the glide (can't repro)
 -   GMG text items trigger collision updates, which causes collision blocks to fire multiple times
 -   Audio files played from blocks play in the executor popover, so the action doesn't know about them.
 -   Stacking in backpack - happens when lots of (tall?) items, only on second time opening backpack
 -   Sounds aren't restored when loading an item with behaviors from a prefab
 -   If you put a procedure definition that references itself (by using its parameters or making it recursive) in the backpack, then drag a copy of the procedure into a workspace that already has the procedure, the self-referential elements of the new copy will attach to the original definition, rather than the newly copied in one.
     -   solution - onchange, try to reattach to new parent?
--   Prefabbing multiple items that use a global variable, then adding them to a scene that doesn't have that global variable, breaks - they'll each end up with a different copy of it
 
 ## License
 
