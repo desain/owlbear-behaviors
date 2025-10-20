@@ -44,6 +44,7 @@ import {
     BLOCK_DISTANCE_TO,
     BLOCK_DYNAMIC_VAL,
     BLOCK_EQUALS,
+    BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED,
     BLOCK_EXTENSION_BONES_ON_ROLL,
     BLOCK_EXTENSION_BONES_ROLL_DICE,
     BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT,
@@ -1107,6 +1108,19 @@ export const GENERATORS: Record<
                     selectedState: false,
                 });
         }
+    },
+
+    [BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED.type]: (block, generator) => {
+        const menuName = getStringFieldValue(
+            block,
+            BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED.args0[0].name,
+        );
+
+        return generateAddTriggerHandler(block, generator, {
+            type: "context_menu",
+            hatBlockId: block.id,
+            menuName,
+        });
     },
 
     [BLOCK_TOUCH.type]: (block, generator) => {

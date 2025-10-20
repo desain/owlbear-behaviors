@@ -40,6 +40,7 @@ import {
     BLOCK_DETACH,
     BLOCK_DISTANCE_TO,
     BLOCK_EQUALS,
+    BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED,
     BLOCK_EXTENSION_BONES_ON_ROLL,
     BLOCK_EXTENSION_BONES_ROLL_DICE,
     BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT,
@@ -176,7 +177,11 @@ import {
     shadowNumber,
 } from "./shadows";
 
-export function blockToDefinition(block: Pick<Block, "type">) {
+function devOnly<T>(t: T): T[] {
+    return import.meta.env.DEV ? [t] : [];
+}
+
+function blockToDefinition(block: Pick<Block, "type">) {
     return {
         kind: "block",
         type: block.type,
@@ -281,20 +286,15 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                             ),
                         },
                     },
-                    ...(import.meta.env.DEV
-                        ? [
-                              {
-                                  kind: "block",
-                                  type: BLOCK_PATHFIND.type,
-                                  inputs: {
-                                      [BLOCK_PATHFIND.args0[0].name]:
-                                          shadowNumber(
-                                              grid.parsedScale.multiplier,
-                                          ),
-                                  },
-                              },
-                          ]
-                        : []),
+                    ...devOnly({
+                        kind: "block",
+                        type: BLOCK_PATHFIND.type,
+                        inputs: {
+                            [BLOCK_PATHFIND.args0[0].name]: shadowNumber(
+                                grid.parsedScale.multiplier,
+                            ),
+                        },
+                    }),
                     blockToDefinition(BLOCK_SNAP_TO_GRID),
                     GAP50,
                     {
@@ -657,6 +657,11 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                             },
                         },
                     },
+                    ...devOnly(
+                        blockToDefinition(
+                            BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED,
+                        ),
+                    ),
                 ],
             },
             /* control */ {
@@ -681,18 +686,13 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     GAP50,
                     blockToDefinition(BLOCK_IF),
                     blockToDefinition(BLOCK_IF_ELSE),
-                    ...(import.meta.env.DEV
-                        ? [
-                              {
-                                  kind: "block",
-                                  type: BLOCK_MATCH.type,
-                                  inputs: {
-                                      [BLOCK_MATCH.args0[0].name]:
-                                          shadowDynamic("apple"),
-                                  },
-                              },
-                          ]
-                        : []),
+                    ...devOnly({
+                        kind: "block",
+                        type: BLOCK_MATCH.type,
+                        inputs: {
+                            [BLOCK_MATCH.args0[0].name]: shadowDynamic("apple"),
+                        },
+                    }),
                     blockToDefinition(BLOCK_WAIT_UNTIL),
                     blockToDefinition(BLOCK_REPEAT_UNTIL),
                     GAP50,

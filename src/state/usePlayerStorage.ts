@@ -10,7 +10,11 @@ import { create } from "zustand";
 import { persist, subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { isBehaviorItem, type BehaviorItem } from "../BehaviorItem";
-import { LOCAL_STORAGE_STORE_NAME, METADATA_KEY_SCENE } from "../constants";
+import {
+    LOCAL_STORAGE_STORE_NAME,
+    METADATA_KEY_MENU_ITEMS,
+    METADATA_KEY_SCENE,
+} from "../constants";
 import {
     DEFAULT_SCENE_METADATA,
     isSceneMetadata,
@@ -78,6 +82,7 @@ export interface OwlbearStore {
     readonly sceneMetadata: SceneMetadata;
     readonly itemsOfInterest: BehaviorItemMap;
     readonly activeSounds: Map<string, VoidFunction>;
+    readonly activeMenuItems: Set<string>;
 
     readonly setSceneReady: (this: void, sceneReady: boolean) => void;
     readonly handleThemeChange: (this: void, theme: Theme) => void;
@@ -202,6 +207,7 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 sceneMetadata: DEFAULT_SCENE_METADATA,
                 itemsOfInterest: new Map(),
                 activeSounds: new Map(),
+                activeMenuItems: new Set(),
                 setSceneReady: (sceneReady: boolean) =>
                     set({
                         sceneReady,
@@ -238,7 +244,19 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                             itemsOfInterest.set(item.id, item);
                         }
                     }
-                    set({ itemsOfInterest });
+
+                    const activeMenuItems = new Set<string>();
+                    for (const item of itemsOfInterest.values()) {
+                        const menuItems =
+                            item.metadata[METADATA_KEY_MENU_ITEMS];
+                        if (menuItems) {
+                            for (const name of Object.keys(menuItems)) {
+                                activeMenuItems.add(name);
+                            }
+                        }
+                    }
+
+                    set({ itemsOfInterest, activeMenuItems });
                 },
                 // handleRoomMetadataChange: (metadata) => {
                 //     const roomMetadata = metadata[METADATA_KEY_ROOM];

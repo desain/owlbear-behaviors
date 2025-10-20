@@ -23,7 +23,9 @@ async function installBackgroundExtension(): Promise<VoidFunction> {
 
     const behaviorRegistry = new BehaviorRegistry();
 
-    const stopWatchingContextMenu = await startWatchingContextMenuEnabled();
+    const stopWatchingContextMenu = await startWatchingContextMenuEnabled(
+        behaviorRegistry,
+    );
     const uninstallBroadcastListener =
         installBroadcastListener(behaviorRegistry);
     const uninstallBehaviorRunner = installBehaviorRunner(behaviorRegistry);

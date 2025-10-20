@@ -16,7 +16,10 @@ import { useCallback, useEffect, useState } from "react";
 import type { BehaviorItem } from "../BehaviorItem";
 import { getTags, isBehaviorItem } from "../BehaviorItem";
 import { Renderer } from "../blockly/blockRendering/Renderer";
-import { BLOCK_IMMEDIATELY } from "../blockly/blocks";
+import {
+    BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED,
+    BLOCK_IMMEDIATELY,
+} from "../blockly/blocks";
 import { ConnectionChecker } from "../blockly/ConnectionChecker";
 import { Dragger } from "../blockly/Dragger";
 import { isShowCreateVariable } from "../blockly/EventShowCreateVariable";
@@ -29,6 +32,7 @@ import { createBlocklyTheme, GRID_COLOR } from "../blockly/theme";
 import { createToolbox } from "../blockly/toolbox";
 import {
     METADATA_KEY_BEHAVIORS,
+    METADATA_KEY_MENU_ITEMS,
     METADATA_KEY_TAGS,
     MODAL_EDIT_BEHAVIOR_ID,
 } from "../constants";
@@ -254,6 +258,17 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
         if (save) {
             // Save the workspace serialized to JSON in the item behavior key
             if (workspace && item) {
+                const menuItems = workspace
+                    .getBlocksByType(BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED.type)
+                    .map((block) =>
+                        String(
+                            block.getFieldValue(
+                                BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED.args0[0]
+                                    .name,
+                            ),
+                        ),
+                    );
+
                 await OBR.scene.items.updateItems([item], (items) =>
                     items.forEach((item) => {
                         if (
@@ -276,6 +291,15 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
                             item.metadata[METADATA_KEY_TAGS] = pendingTags;
                         } else {
                             delete item.metadata[METADATA_KEY_TAGS];
+                        }
+
+                        if (menuItems.length > 0) {
+                            item.metadata[METADATA_KEY_MENU_ITEMS] =
+                                Object.fromEntries(
+                                    menuItems.map((name) => [name, true]),
+                                );
+                        } else {
+                            delete item.metadata[METADATA_KEY_MENU_ITEMS];
                         }
                     }),
                 );

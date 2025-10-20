@@ -922,6 +922,21 @@ export const BLOCK_WHEN_I = {
     nextStatement: null,
 } as const;
 
+export const BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED = {
+    style: "event_blocks",
+    type: "event_ctxmenu",
+    tooltip: "Define what to do when a custom context menu item is clicked.",
+    message0: "when %1 clicked in menu",
+    args0: [
+        {
+            type: "field_input",
+            name: "NAME",
+            text: "Item",
+        },
+    ],
+    nextStatement: null,
+} as const;
+
 export const BLOCK_TOUCH = {
     style: "event_blocks",
     type: "event_whentouchingobject",
@@ -3765,6 +3780,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_BROADCAST_MENU,
     BLOCK_WHEN_I,
     BLOCK_TOUCH,
+    BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED,
 
     // Control blocks
     BLOCK_WAIT,

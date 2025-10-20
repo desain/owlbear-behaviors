@@ -166,6 +166,19 @@ export class BehaviorRegistry {
         });
     };
 
+    readonly handleContextMenuClicked = (
+        itemIds: string[],
+        menuName: string,
+    ) => {
+        itemIds.forEach((itemId) =>
+            this.#triggerHandlers
+                .get(itemId)
+                ?.filter((handler) => handler.type === "context_menu")
+                .filter((handler) => handler.menuName === menuName)
+                .forEach((handler) => executeTriggerHandler(handler)),
+        );
+    };
+
     readonly handlePropertyChange = <K extends keyof BehaviorItem>(
         itemId: string,
         property: K,

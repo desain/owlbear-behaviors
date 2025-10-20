@@ -3317,4 +3317,31 @@ describe("Blockly JavaScript Generation", () => {
             checkCompiles(workspace);
         });
     });
+
+    describe("context menu hat block", () => {
+        it("should generate syntactically valid JavaScript", () => {
+            const workspace = new Blockly.Workspace();
+            Blockly.serialization.workspaces.load(
+                {
+                    blocks: {
+                        languageVersion: 0,
+                        blocks: [
+                            {
+                                type: "event_ctxmenu",
+                                id: "event_ctxmenu",
+                                x: 0,
+                                y: 0,
+                                fields: {
+                                    NAME: "My menu item",
+                                },
+                            },
+                        ],
+                    },
+                },
+                workspace,
+            );
+
+            checkCompiles(workspace);
+        });
+    });
 });

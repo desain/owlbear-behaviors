@@ -13,10 +13,17 @@ import {
     type Shape,
     type Text,
 } from "@owlbear-rodeo/sdk";
-import { isObject, type HasParameterizedMetadata } from "owlbear-utils";
+import {
+    containsImplies,
+    isObject,
+    isString,
+    isTrue,
+    type HasParameterizedMetadata,
+} from "owlbear-utils";
 import {
     METADATA_KEY_BEHAVIORS,
     METADATA_KEY_CLONE,
+    METADATA_KEY_MENU_ITEMS,
     METADATA_KEY_TAGS,
 } from "./constants";
 
@@ -40,7 +47,11 @@ export type BehaviorItem = (Image | Line | Curve | Shape | Path | Text) &
         typeof METADATA_KEY_BEHAVIORS,
         BehaviorData | undefined
     > &
-    HasParameterizedMetadata<typeof METADATA_KEY_CLONE, true | undefined>;
+    HasParameterizedMetadata<typeof METADATA_KEY_CLONE, true | undefined> &
+    HasParameterizedMetadata<
+        typeof METADATA_KEY_MENU_ITEMS,
+        Record<string, boolean> | undefined
+    >;
 export function isBehaviorItem(item: Item): item is BehaviorItem {
     return (
         (isImage(item) ||
@@ -49,15 +60,24 @@ export function isBehaviorItem(item: Item): item is BehaviorItem {
             isShape(item) ||
             isPath(item) ||
             isText(item)) &&
-        (!(METADATA_KEY_TAGS in item.metadata) ||
-            (Array.isArray(item.metadata[METADATA_KEY_TAGS]) &&
-                item.metadata[METADATA_KEY_TAGS].every(
-                    (tag) => typeof tag === "string",
-                ))) &&
-        (!(METADATA_KEY_BEHAVIORS in item.metadata) ||
-            isBehaviorData(item.metadata[METADATA_KEY_BEHAVIORS])) &&
-        (!(METADATA_KEY_CLONE in item.metadata) ||
-            item.metadata[METADATA_KEY_CLONE] === true)
+        containsImplies(
+            item.metadata,
+            METADATA_KEY_TAGS,
+            (tags) => Array.isArray(tags) && tags.every(isString),
+        ) &&
+        containsImplies(
+            item.metadata,
+            METADATA_KEY_BEHAVIORS,
+            isBehaviorData,
+        ) &&
+        containsImplies(item.metadata, METADATA_KEY_CLONE, isTrue) &&
+        containsImplies(
+            item.metadata,
+            METADATA_KEY_MENU_ITEMS,
+            (items) =>
+                isObject(items) &&
+                Object.values(items).every((value) => typeof value === "boolean"),
+        )
     );
 }
 

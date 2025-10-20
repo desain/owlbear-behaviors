@@ -79,6 +79,11 @@ interface ClashHpChangeTriggerHandler extends BaseTriggerHandler {
     readonly type: "clash_hp_change";
 }
 
+export interface ContextMenuTriggerHandler extends BaseTriggerHandler {
+    readonly type: "context_menu";
+    readonly menuName: string;
+}
+
 export type TriggerHandler =
     | ImmediateTriggerHandler
     | StartAsCloneTriggerHandler
@@ -96,7 +101,8 @@ export type TriggerHandler =
     | PhaseTriggerHandler
     | SmokeSpectreDoorTriggerHandler
     | PrettySordidTurnTriggerHandler
-    | ClashHpChangeTriggerHandler;
+    | ClashHpChangeTriggerHandler
+    | ContextMenuTriggerHandler;
 
 export function propertyChangeTriggers<K extends keyof BehaviorItem>(
     handler: PropertyChanged<K>,
