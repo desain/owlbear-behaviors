@@ -19,6 +19,7 @@ import {
     VAR_VOLUME,
 } from "../../constants";
 import {
+    BLOCK_ADD_ATTACHMENT,
     BLOCK_ADD_AURA,
     BLOCK_ADD_AURA_PRESET,
     BLOCK_ANGLE,
@@ -110,6 +111,7 @@ import {
     BLOCK_GLIDE_ROTATE_RIGHT,
     BLOCK_GOTO,
     BLOCK_GREATER_THAN,
+    BLOCK_HAS_ATTACHMENT,
     BLOCK_HAS_TAG_OTHER,
     BLOCK_HAS_TAG_SELF,
     BLOCK_HIDE,
@@ -146,6 +148,7 @@ import {
     BLOCK_POINT_IN_DIRECTION,
     BLOCK_PROCEDURE_PREVIEW,
     BLOCK_RECEIVE_BROADCAST,
+    BLOCK_REMOVE_ATTACHMENT,
     BLOCK_REMOVE_AURAS,
     BLOCK_REMOVE_TAG,
     BLOCK_REPEAT,
@@ -627,6 +630,40 @@ export const GENERATORS: Record<
         );
         return awaitBehaveStatement(
             "replaceImage",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            data,
+        );
+    },
+
+    [BLOCK_ADD_ATTACHMENT.type]: (block) => {
+        const data = JSON.stringify(
+            block.getFieldValue(BLOCK_ADD_ATTACHMENT.args0[0].name),
+        );
+        return awaitBehaveStatement(
+            "addAttachment",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            data,
+        );
+    },
+    [BLOCK_REMOVE_ATTACHMENT.type]: (block) => {
+        const data = JSON.stringify(
+            block.getFieldValue(BLOCK_REMOVE_ATTACHMENT.args0[0].name),
+        );
+        return awaitBehaveStatement(
+            "removeAttachment",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            data,
+        );
+    },
+    [BLOCK_HAS_ATTACHMENT.type]: (block) => {
+        const data = JSON.stringify(
+            block.getFieldValue(BLOCK_HAS_ATTACHMENT.args0[0].name),
+        );
+        return awaitBehaveValue(
+            "hasAttachment",
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             data,

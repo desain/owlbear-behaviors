@@ -1,9 +1,11 @@
 import OBR, {
+    buildImage,
     buildLabel,
     isImage,
     isText,
     Math2,
     type Descendant,
+    type ImageContent,
     type Item,
     type Vector2,
 } from "@owlbear-rodeo/sdk";
@@ -13,8 +15,8 @@ import {
     isObject,
     isVector2,
     ORIGIN,
-    type ImageBuildParams,
 } from "owlbear-utils";
+import type { ImageFieldValue } from "../../blockly/FieldTokenImage";
 import {
     broadcastSetViewport,
     broadcastShowSpeechBubble,
@@ -219,6 +221,22 @@ export async function setViewport(
     });
 }
 
+/**
+ * Get an existing
+ * @param id ID of parent item
+ * @param url URL to look for in attachment image
+ * @returns Attachment, or undefined if it doesn't exist
+ */
+async function getAttachment(
+    id: Item["id"],
+    { url }: Pick<ImageContent, "url">,
+) {
+    const attachedItems = await OBR.scene.items.getItemAttachments([id]);
+    return attachedItems.find(
+        (item) => isImage(item) && item.id !== id && item.image.url === url,
+    );
+}
+
 export const LOOKS_BEHAVIORS = {
     say: async (
         signal: AbortSignal,
@@ -301,8 +319,8 @@ export const LOOKS_BEHAVIORS = {
     replaceImage: async (
         signal: AbortSignal,
         selfIdUnknown: unknown,
-        { image, grid }: ImageBuildParams,
-    ): Promise<null> => {
+        { image, grid }: ImageFieldValue,
+    ): Promise<void> => {
         await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
             if (!isImage(self)) {
                 console.warn("replace image called on non-image");
@@ -312,7 +330,63 @@ export const LOOKS_BEHAVIORS = {
             self.grid = grid;
         });
         signal.throwIfAborted();
-        return null;
+    },
+
+    addAttachment: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        { image, grid, imageName }: ImageFieldValue,
+    ): Promise<void> => {
+        const selfId = String(selfIdUnknown);
+
+        // Don't create more than one of the same attachment
+        if (await getAttachment(selfId, image)) {
+            console.warn(
+                `[Behaviors] Item already has attachment: ${imageName}`,
+            );
+            return;
+        }
+
+        const self = await ItemProxy.getInstance().get(selfId);
+        if (!self) {
+            return;
+        }
+        const attachment = buildImage(image, grid)
+            .attachedTo(selfId)
+            .layer("ATTACHMENT")
+            .name(imageName)
+            .position(self.position)
+            .rotation(self.rotation)
+            .scale(self.scale)
+            .build();
+        await OBR.scene.items.addItems([attachment]);
+        signal.throwIfAborted();
+    },
+
+    removeAttachment: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        { image, imageName }: ImageFieldValue,
+    ): Promise<void> => {
+        const selfId = String(selfIdUnknown);
+        const attachmentToRemove = await getAttachment(selfId, image);
+        if (attachmentToRemove) {
+            await OBR.scene.items.deleteItems([attachmentToRemove.id]);
+        } else {
+            console.warn(`[Behaviors] No attachment to delete: ${imageName}`);
+        }
+        signal.throwIfAborted();
+    },
+
+    hasAttachment: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        { image }: ImageFieldValue,
+    ): Promise<boolean> => {
+        const selfId = String(selfIdUnknown);
+        const attachment = await getAttachment(selfId, image);
+        signal.throwIfAborted();
+        return !!attachment;
     },
 
     getText: async (
@@ -335,7 +409,6 @@ export const LOOKS_BEHAVIORS = {
         selfIdUnknown: unknown,
         textUnknown: unknown,
     ) => {
-        console.log(textUnknown);
         const text = String(textUnknown).replace(
             /\\(.)/g,
             (match, code: string) => {

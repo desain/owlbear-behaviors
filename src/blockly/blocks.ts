@@ -20,6 +20,7 @@ import {
     MUTATOR_MATCH,
     VARIABLE_TYPE_LIST,
 } from "../constants";
+import type { ImageFieldValue } from "./FieldTokenImage";
 import type { BLOCK_TYPE_ARGUMENT_REPORTER } from "./procedures/blockArgumentReporter";
 import type { BLOCK_TYPE_CALL } from "./procedures/blockCall";
 import type { BLOCK_TYPE_DEFINE } from "./procedures/blockDefine";
@@ -493,6 +494,104 @@ export const BLOCK_REPLACE_IMAGE = {
     ],
     previousStatement: null,
     nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_ADD_ATTACHMENT = {
+    style: "looks_blocks",
+    type: "looks_add_atch",
+    tooltip: "Add an attachment to this token",
+    message0: "add attachment %1",
+    args0: [
+        {
+            type: "field_token_image",
+            name: "IMAGE",
+            value: {
+                image: {
+                    url: "https://images.owlbear.rodeo/shared/items/owlbear-status-rings/Blessed.png",
+                    mime: "image/png",
+                    width: 300,
+                    height: 300,
+                },
+                grid: {
+                    dpi: 300,
+                    offset: {
+                        x: 150,
+                        y: 150,
+                    },
+                },
+                imageName: "Blessed",
+            } satisfies ImageFieldValue,
+            imageAssetType: "ATTACHMENT",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_REMOVE_ATTACHMENT = {
+    style: "looks_blocks",
+    type: "looks_del_atch",
+    tooltip: "Remove an attachment from this token",
+    message0: "remove attachment %1",
+    args0: [
+        {
+            type: "field_token_image",
+            name: "IMAGE",
+            value: {
+                image: {
+                    url: "https://images.owlbear.rodeo/shared/items/owlbear-status-rings/Blessed.png",
+                    mime: "image/png",
+                    width: 300,
+                    height: 300,
+                },
+                grid: {
+                    dpi: 300,
+                    offset: {
+                        x: 150,
+                        y: 150,
+                    },
+                },
+                imageName: "Blessed",
+            } satisfies ImageFieldValue,
+            imageAssetType: "ATTACHMENT",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_HAS_ATTACHMENT = {
+    style: "looks_blocks",
+    type: "looks_has_atch",
+    tooltip: "Whether this token has a certain attachment",
+    message0: "I have attachment %1 ?",
+    args0: [
+        {
+            type: "field_token_image",
+            name: "IMAGE",
+            value: {
+                image: {
+                    url: "https://images.owlbear.rodeo/shared/items/owlbear-status-rings/Blessed.png",
+                    mime: "image/png",
+                    width: 300,
+                    height: 300,
+                },
+                grid: {
+                    dpi: 300,
+                    offset: {
+                        x: 150,
+                        y: 150,
+                    },
+                },
+                imageName: "Blessed",
+            } satisfies ImageFieldValue,
+            imageAssetType: "ATTACHMENT",
+        },
+    ],
+    output: "Boolean",
     inputsInline: true,
 } as const;
 
@@ -3762,6 +3861,9 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_CHANGE_SIZE,
     BLOCK_GET_SIZE,
     BLOCK_REPLACE_IMAGE,
+    BLOCK_ADD_ATTACHMENT,
+    BLOCK_REMOVE_ATTACHMENT,
+    BLOCK_HAS_ATTACHMENT,
     BLOCK_GET_TEXT,
     BLOCK_SET_TEXT,
     BLOCK_GET_ACCESSIBILITY_NAME,

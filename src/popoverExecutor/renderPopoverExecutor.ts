@@ -11,7 +11,7 @@ import { startSyncing } from "../state/startSyncing";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
 async function installBackgroundExtension(): Promise<VoidFunction> {
-    console.log(`Behaviors version ${version}`);
+    console.info(`Behaviors version ${version}`);
 
     // Zustand setup
     const [initialized] = startSyncing();
@@ -32,7 +32,7 @@ async function installBackgroundExtension(): Promise<VoidFunction> {
     const stopWatchingSelection = watchSelection(behaviorRegistry);
 
     return deferCallAll(
-        () => console.log("Uninstalling Behaviors"),
+        () => console.info("Uninstalling Behaviors"),
         stopRehydrating,
         behaviorRegistry.stopAll,
         stopWatchingContextMenu,
@@ -43,7 +43,7 @@ async function installBackgroundExtension(): Promise<VoidFunction> {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("Background process starting...");
+    // console.debug("Background process starting...");
     if (OBR.isReady) {
         void installBackgroundExtension();
     } else {

@@ -1,15 +1,33 @@
-import OBR, { type Image } from "@owlbear-rodeo/sdk";
+import OBR, { type Image, type ImageAssetType } from "@owlbear-rodeo/sdk";
 import * as Blockly from "blockly";
-import { isImageBuildParams, type ImageBuildParams } from "owlbear-utils";
+import {
+    containsImplies,
+    isImageAssetType,
+    isImageBuildParams,
+    type ImageBuildParams,
+} from "owlbear-utils";
 
-interface ImageData extends ImageBuildParams {
+export interface ImageFieldValue extends ImageBuildParams {
     imageName: string;
 }
-function isImageData(data: unknown): data is ImageData {
+function isImageFieldValue(data: unknown): data is ImageFieldValue {
     return (
         isImageBuildParams(data) &&
         "imageName" in data &&
         typeof data.imageName === "string"
+    );
+}
+
+interface ImageFieldConfig extends Blockly.FieldConfig {
+    value?: ImageFieldValue;
+    imageAssetType?: ImageAssetType;
+}
+function isImageFieldConfig(
+    config: Blockly.FieldConfig,
+): config is ImageFieldConfig {
+    return (
+        containsImplies(config, "value", isImageFieldValue) &&
+        containsImplies(config, "imageAssetType", isImageAssetType)
     );
 }
 
@@ -28,13 +46,13 @@ const DEFAULT_IMAGE_DATA = {
         },
     },
     imageName: "Click to change",
-} satisfies ImageData;
+} satisfies ImageFieldValue;
 
 const IMG_SIZE = 30;
 const IMG_TEXT_SEP_PX = 10;
 
-export class FieldTokenImage extends Blockly.Field<ImageData> {
-    static valueFromImage = (image: Image): ImageData => ({
+export class FieldTokenImage extends Blockly.Field<ImageFieldValue> {
+    static valueFromImage = (image: Image): ImageFieldValue => ({
         image: image.image,
         grid: image.grid,
         imageName: image.text.plainText || image.name,
@@ -56,22 +74,26 @@ export class FieldTokenImage extends Blockly.Field<ImageData> {
        }
     `;
 
+    readonly #imageAssetType: ImageAssetType;
     #img?: HTMLImageElement;
 
     static override fromJson = (options: Blockly.FieldConfig) => {
-        void options;
+        if (!isImageFieldConfig(options)) {
+            throw Error("Invalid image field config");
+        }
         // const optsParsed =
         //     Blockly.utils.parsing.replaceMessageReferences(options);
-        return new this(DEFAULT_IMAGE_DATA, null);
+        return new this(options.value ?? DEFAULT_IMAGE_DATA, null, options);
     };
 
     constructor(
-        value: ImageData | typeof Blockly.Field.SKIP_SETUP,
-        validator: Blockly.FieldValidator<ImageData> | null,
-        config?: Blockly.FieldConfig,
+        value: ImageFieldValue | typeof Blockly.Field.SKIP_SETUP,
+        validator: Blockly.FieldValidator<ImageFieldValue> | null,
+        config?: ImageFieldConfig,
     ) {
         super(value, validator, config);
         this.SERIALIZABLE = true;
+        this.#imageAssetType = config?.imageAssetType ?? "CHARACTER";
     }
 
     // Initialize DOM elements
@@ -111,10 +133,6 @@ export class FieldTokenImage extends Blockly.Field<ImageData> {
                 this.textElement_,
                 "fieldTokenImageText",
             );
-
-            // this.textElement_.addEventListener('mouseenter', function() {
-            //     this.
-            // });
         }
     }
 
@@ -154,7 +172,7 @@ export class FieldTokenImage extends Blockly.Field<ImageData> {
     // Handle clicks - open asset picker
     override showEditor_() {
         void OBR.assets
-            .downloadImages(false, undefined, "CHARACTER")
+            .downloadImages(false, undefined, this.#imageAssetType)
             .then((images) => {
                 const image = images[0];
                 if (image) {
@@ -173,7 +191,7 @@ export class FieldTokenImage extends Blockly.Field<ImageData> {
     // Serialization
     // eslint-disable-next-line class-methods-use-this
     override doClassValidation_ = (newValue: unknown) => {
-        if (isImageData(newValue)) {
+        if (isImageFieldValue(newValue)) {
             return newValue;
         } else {
             return null;

@@ -18,6 +18,7 @@ import {
 } from "../constants";
 import { CharacterDistances } from "../extensions/CharacterDistances";
 import {
+    BLOCK_ADD_ATTACHMENT,
     BLOCK_ADD_AURA,
     BLOCK_ADD_AURA_PRESET,
     BLOCK_ANGLE,
@@ -100,6 +101,7 @@ import {
     BLOCK_GLIDE_ROTATE_RIGHT,
     BLOCK_GOTO,
     BLOCK_GREATER_THAN,
+    BLOCK_HAS_ATTACHMENT,
     BLOCK_HAS_TAG_OTHER,
     BLOCK_HAS_TAG_SELF,
     BLOCK_HIDE,
@@ -120,6 +122,7 @@ import {
     BLOCK_PATHFIND,
     BLOCK_POINT_IN_DIRECTION,
     BLOCK_RECEIVE_BROADCAST,
+    BLOCK_REMOVE_ATTACHMENT,
     BLOCK_REMOVE_AURAS,
     BLOCK_REMOVE_TAG,
     BLOCK_REPEAT,
@@ -178,8 +181,8 @@ import {
     shadowNumber,
 } from "./shadows";
 
-function devOnly<T>(t: T): T[] {
-    return import.meta.env.DEV ? [t] : [];
+function devOnly<T>(...ts: T[]): T[] {
+    return import.meta.env.DEV ? ts : [];
 }
 
 function blockToDefinition(block: Pick<Block, "type">) {
@@ -356,6 +359,10 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                                           ),
                                   },
                               },
+                              ...devOnly(
+                                  blockToDefinition(BLOCK_ADD_ATTACHMENT),
+                                  blockToDefinition(BLOCK_REMOVE_ATTACHMENT),
+                              ),
                           ]
                         : []),
                     GAP50,
@@ -577,6 +584,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         : []),
                     blockToDefinition(BLOCK_GET_ACCESSIBILITY_NAME),
                     blockToDefinition(BLOCK_GET_ACCESSIBILITY_DESCRIPTION),
+                    ...devOnly(blockToDefinition(BLOCK_HAS_ATTACHMENT)),
                     blockToDefinition(BLOCK_VISIBLE),
                 ],
             },

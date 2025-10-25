@@ -175,7 +175,6 @@ To make a production build run:
         -   Pathfinding: grid based A\* when not in euclidean mode
     -   Looks
         -   Set width and height scale independently
-        -   Add/remove attachments (using default scale)
     -   Extensions
         -   Initiative Tracker same as Pretty Sordid?
         -   On field change for Daggerheart, Owl Trackers

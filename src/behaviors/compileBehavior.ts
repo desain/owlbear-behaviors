@@ -45,7 +45,7 @@ const ${CONSTANT_TRIGGER_HANDLERS} = [];
 ${code}
 return ${CONSTANT_TRIGGER_HANDLERS};`;
     if (import.meta.env.DEV) {
-        console.log(
+        console.debug(
             `[${import.meta.env.MODE}] compiling`,
             behaviorDefinitionCode,
         );

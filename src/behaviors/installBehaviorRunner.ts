@@ -155,14 +155,14 @@ function handleItemsChange(
     }
 
     // if (newCollisions.length > 0) {
-    //     console.log("newCollisions", newCollisions);
+    //     console.debug("newCollisions", newCollisions);
     // }
     for (const newCollision of newCollisions) {
         behaviorRegistry.handleCollisionUpdate(newCollision, true);
     }
 
     // if (finishedCollisions.length > 0) {
-    //     console.log("finishedCollision", finishedCollisions);
+    //     console.debug("finishedCollision", finishedCollisions);
     // }
     for (const finishedCollision of finishedCollisions) {
         behaviorRegistry.handleCollisionUpdate(finishedCollision, false);

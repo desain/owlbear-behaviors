@@ -2,7 +2,11 @@ import * as Blockly from "blockly";
 import { beforeAll, describe, expect, it } from "vitest";
 import { compileBehavior } from "../src/behaviors/compileBehavior";
 import {
+    BLOCK_ADD_ATTACHMENT,
     BLOCK_GOTO,
+    BLOCK_HAS_ATTACHMENT,
+    BLOCK_IF,
+    BLOCK_REMOVE_ATTACHMENT,
     BLOCK_REPEAT,
     BLOCK_REPEAT_UNTIL,
 } from "../src/blockly/blocks";
@@ -3552,6 +3556,32 @@ describe("Blockly JavaScript Generation", () => {
                 },
                 workspace,
             );
+
+            checkCompiles(workspace);
+        });
+    });
+
+    describe("attachment blocks", () => {
+        it("should generate syntactically valid JavaScript", () => {
+            const workspace = new Blockly.Workspace();
+
+            const addBlock = addImmediatelyWith(
+                workspace,
+                BLOCK_ADD_ATTACHMENT.type,
+            );
+
+            const removeBlock = workspace.newBlock(
+                BLOCK_REMOVE_ATTACHMENT.type,
+            );
+            addBlock.nextConnection?.connect(removeBlock.previousConnection!);
+
+            const ifBlock = workspace.newBlock(BLOCK_IF.type);
+            removeBlock.nextConnection?.connect(ifBlock.previousConnection!);
+
+            const hasBlock = workspace.newBlock(BLOCK_HAS_ATTACHMENT.type);
+            ifBlock
+                .getInput(BLOCK_IF.args0[0].name)
+                ?.connection?.connect(hasBlock.outputConnection!);
 
             checkCompiles(workspace);
         });
