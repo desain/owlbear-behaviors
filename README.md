@@ -161,8 +161,10 @@ To make a production build run:
 
 ## To do
 
--   Dice+: roll to all and log
 -   Move executor to the background now that background scripts shouldn't be throttled?
+-   Safety
+    -   Check token total size before saving against OBR max update size
+    -   Add trycatch for each update, exponential backoff when rate limit exceeded?
 -   Collision system improvements
     -   base it on polygon overlap instead of bounding boxes? turf js?
     -   inset bounding boxes so barely touching corners don't trigger collisions?
@@ -180,9 +182,13 @@ To make a production build run:
         -   Kenku FM?
         -   dddice? get room id from metadata, call API?
         -   Google sheets write
+        -   Phases
+            -   When (Automation 1) changes phase
+            -   Phase of (Automation 1)
     -   Control
         -   tell other to? Snail Mod has it as `as (other) {...}`
         -   for each other token tagged t
+        -   match: 'when (val) is', 'exactly (whatever)', 'between () and ()', 'none of the above' (no next)
     -   Events
         -   When I'm updated in any way?
         -   When I am tagged (tag1 v)?
@@ -195,7 +201,7 @@ To make a production build run:
 ## Known Bugs
 
 -   Prefabbing multiple items that use a global variable, then adding them to a scene that doesn't have that global variable, breaks - they'll each end up with a different copy of it
--   For some users, doing multiple glides at once snaps the item back at the end of the glide (can't repro)
+-   For some users, glides snap the item back at the end of the glide (can't repro)
 -   GMG text items trigger collision updates, which causes collision blocks to fire multiple times
 -   Audio files played from blocks play in the executor popover, so the action doesn't know about them.
 -   Stacking in backpack - happens when lots of (tall?) items, only on second time opening backpack

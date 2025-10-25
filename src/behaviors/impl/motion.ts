@@ -6,6 +6,7 @@ import OBR, {
 } from "@owlbear-rodeo/sdk";
 import {
     ANGLE_DIMETRIC_RADIANS,
+    complain,
     ORIGIN,
     SQRT_3,
     units,
@@ -293,6 +294,8 @@ export const MOTION_BEHAVIORS = {
                 self.position.y = y;
             });
             signal.throwIfAborted();
+        } catch (e) {
+            complain(String(e));
         } finally {
             stop?.();
         }
@@ -356,6 +359,8 @@ export const MOTION_BEHAVIORS = {
                 self.rotation = (startRotation + theta + 360) % 360;
             });
             signal.throwIfAborted();
+        } catch (e) {
+            complain(String(e));
         } finally {
             stop?.();
         }
