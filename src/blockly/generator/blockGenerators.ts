@@ -2783,6 +2783,7 @@ export const GENERATORS: Record<
             text !== "" && /^-?\d*(\.\d+)?$/.exec(text)
                 ? text
                 : generator.multiline_quote_(text);
+
         return [code, javascript.Order.ATOMIC];
     },
 

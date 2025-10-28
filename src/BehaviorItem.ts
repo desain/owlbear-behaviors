@@ -74,9 +74,11 @@ export function isBehaviorItem(item: Item): item is BehaviorItem {
         containsImplies(
             item.metadata,
             METADATA_KEY_MENU_ITEMS,
-            (items) =>
+            (items): items is Record<string, boolean> =>
                 isObject(items) &&
-                Object.values(items).every((value) => typeof value === "boolean"),
+                Object.values(items).every(
+                    (value) => typeof value === "boolean",
+                ),
         )
     );
 }

@@ -135,38 +135,6 @@ export async function showSpeechBubble({
 }
 
 /**
- * Animate the viewport to center on specified coordinates.
- */
-// export async function animateViewportTo(x: number, y: number): Promise<void> {
-//     const [viewportPosition, viewportWidth, viewportHeight, scale] =
-//         await Promise.all([
-//             OBR.viewport.transformPoint({ x, y }),
-//             OBR.viewport.getWidth(),
-//             OBR.viewport.getHeight(),
-//             OBR.viewport.getScale(),
-//         ]);
-
-//     // Get the center of the viewport in screen-space
-//     const viewportCenter: Vector2 = {
-//         x: viewportWidth / 2,
-//         y: viewportHeight / 2,
-//     };
-
-//     // Offset the item center by the viewport center
-//     const viewportDelta = Math2.subtract(viewportPosition, viewportCenter);
-
-//     // Convert the position to world-space
-//     const worldTopLeft = await OBR.viewport.inverseTransformPoint(
-//         viewportDelta,
-//     );
-
-//     // Invert and scale the world-space position to match a viewport position offset
-//     const position = Math2.multiply(worldTopLeft, -scale);
-
-//     await OBR.viewport.animateTo({ position, scale });
-// }
-
-/**
  * Animate the viewport to zoom to specified scale and move to the specified center.
  */
 export async function setViewport(

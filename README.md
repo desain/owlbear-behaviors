@@ -169,6 +169,11 @@ To make a production build run:
     -   base it on polygon overlap instead of bounding boxes? turf js?
     -   inset bounding boxes so barely touching corners don't trigger collisions?
 -   Make new tags in tags field show up in possible tags list in block immediately
+-   Advanced blocks setting
+    -   Multi join
+    -   Broadcast to token
+    -   Replace image with image of other
+    -   switchcase
 -   Dragging C blocks around statements in stacks like scratch does [here?](https://github.com/scratchfoundation/scratch-blocks/blob/develop/core/insertion_marker_manager.js#L43)
 -   Blocks
     -   Motion

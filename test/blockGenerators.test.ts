@@ -17,7 +17,9 @@ function checkCompiles(workspace: Blockly.Workspace) {
     const code = new BehaviorJavascriptGenerator().workspaceToCode(workspace);
     expect(typeof code).toBe("string");
     expect(code).not.toBe("");
-    compileBehavior(String(code));
+    const codeString = String(code);
+    compileBehavior(codeString);
+    return codeString;
 }
 
 function addImmediatelyWith(
@@ -2409,7 +2411,7 @@ describe("Blockly JavaScript Generation", () => {
         });
     });
 
-    describe("variable blocks", () => {
+    describe("procedure blocks", () => {
         it("should generate syntactially valid JavaScript for all blocks", () => {
             const workspace = new Blockly.Workspace();
             Blockly.serialization.workspaces.load(
@@ -3584,6 +3586,71 @@ describe("Blockly JavaScript Generation", () => {
                 ?.connection?.connect(hasBlock.outputConnection!);
 
             checkCompiles(workspace);
+        });
+    });
+
+    describe("behavior_dynamic_val block", () => {
+        it("should produce text for text blocks", () => {
+            const workspace = new Blockly.Workspace();
+            Blockly.serialization.workspaces.load(
+                {
+                    blocks: {
+                        languageVersion: 0,
+                        blocks: [
+                            {
+                                type: "event_immediately",
+                                id: "nMJc:9#M:qZn%jWp$+-O",
+                                x: 270,
+                                y: 310,
+                                next: {
+                                    block: {
+                                        type: "looks_set_label",
+                                        id: "3.Z.{?)(1#9+QCu]}xM7",
+                                        inputs: {
+                                            LABEL: {
+                                                shadow: {
+                                                    type: "behavior_dynamic_val",
+                                                    id: "FL-V$la}.k5NV9Wl`;6+",
+                                                    fields: {
+                                                        TEXT: "",
+                                                    },
+                                                },
+                                                block: {
+                                                    type: "operator_join",
+                                                    id: "Ljd;U(|Kwxorhuhyy+CU",
+                                                    inputs: {
+                                                        STRING1: {
+                                                            shadow: {
+                                                                type: "behavior_dynamic_val",
+                                                                id: ",P87eo!#GDp:%sI]p(?S",
+                                                                fields: {
+                                                                    TEXT: "\\n$",
+                                                                },
+                                                            },
+                                                        },
+                                                        STRING2: {
+                                                            shadow: {
+                                                                type: "behavior_dynamic_val",
+                                                                id: "%9(MU)(487e]aDXpFVP7",
+                                                                fields: {
+                                                                    TEXT: "",
+                                                                },
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            },
+                        ],
+                    },
+                },
+                workspace,
+            );
+            const code = checkCompiles(workspace);
+            expect(code).toMatch(/.*String\('\\\\n\$'\).*/);
         });
     });
 });

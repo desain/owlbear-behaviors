@@ -1,4 +1,4 @@
-import { compileObrFunction, type ObrFunction } from "owlbear-utils";
+import { compileObrFunction, complain, type ObrFunction } from "owlbear-utils";
 import type { BehaviorItem } from "../BehaviorItem";
 import {
     CONSTANT_TRIGGER_HANDLERS,
@@ -51,11 +51,16 @@ return ${CONSTANT_TRIGGER_HANDLERS};`;
         );
     }
 
-    return compileObrFunction(behaviorDefinitionCode, [
-        PARAMETER_SELF_ID,
-        PARAMETER_BEHAVIOR_IMPL,
-        PARAMETER_ITEM_PROXY,
-        PARAMETER_GLOBALS,
-        PARAMETER_BEHAVIOR_REGISTRY,
-    ]);
+    try {
+        return compileObrFunction(behaviorDefinitionCode, [
+            PARAMETER_SELF_ID,
+            PARAMETER_BEHAVIOR_IMPL,
+            PARAMETER_ITEM_PROXY,
+            PARAMETER_GLOBALS,
+            PARAMETER_BEHAVIOR_REGISTRY,
+        ]);
+    } catch (e) {
+        complain(String(e));
+        return () => [];
+    }
 }

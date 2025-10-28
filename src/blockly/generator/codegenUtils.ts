@@ -119,7 +119,9 @@ export function generateAddTriggerHandler(
     const behaviorFunction = getHatBlockBehaviorFunction(block, generator);
     const handlerJson = JSON.stringify(handler).replace(
         /}$/,
-        ', "behaviorFunction": ' + behaviorFunction + "}",
+        // Use a function here because passing a string as the replacement parses the string
+        // for special $ escape codes, and we want pure string replacement
+        () => `, "behaviorFunction": ${behaviorFunction}}`,
     );
     return `${CONSTANT_TRIGGER_HANDLERS}.push(${handlerJson});`;
 }
