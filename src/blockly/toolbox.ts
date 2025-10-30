@@ -17,6 +17,7 @@ import {
     INPUT_TAG,
 } from "../constants";
 import { CharacterDistances } from "../extensions/CharacterDistances";
+import { usePlayerStorage } from "../state/usePlayerStorage";
 import {
     BLOCK_ADD_ATTACHMENT,
     BLOCK_ADD_AURA,
@@ -208,6 +209,8 @@ const SHADOW_TAG_MENU = {
  * With source: https://github.com/google/blockly/blob/master/blocks
  */
 export function createToolbox(target: BehaviorItem, grid: GridParsed) {
+    const useAdvancedBlocks = usePlayerStorage.getState().useAdvancedBlocks;
+
     return {
         kind: "categoryToolbox",
         contents: [
@@ -693,23 +696,34 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     },
                     blockToDefinition(BLOCK_FOREVER),
                     GAP50,
-                    blockToDefinition(BLOCK_IF),
-                    blockToDefinition(BLOCK_IF_ELSE),
-                    ...devOnly({
-                        kind: "block",
-                        type: BLOCK_MATCH.type,
-                        inputs: {
-                            [BLOCK_MATCH.args0[0].name]: shadowDynamic("apple"),
-                        },
-                        extraState: {
-                            cases: [
-                                {
-                                    exact: "apple",
-                                },
-                            ],
-                            default: false,
-                        } satisfies MatchBlockExtraState,
-                    }),
+                    ...(useAdvancedBlocks
+                        ? [
+                              blockToDefinition(BLOCK_IF),
+                              blockToDefinition(BLOCK_IF_ELSE),
+                          ]
+                        : [
+                              {
+                                  kind: "block",
+                                  type: "controls_if",
+                              },
+                              {
+                                  kind: "block",
+                                  type: BLOCK_MATCH.type,
+                                  inputs: {
+                                      [BLOCK_MATCH.args0[0].name]:
+                                          shadowDynamic("apple"),
+                                  },
+                                  extraState: {
+                                      cases: [
+                                          {
+                                              exact: "apple",
+                                          },
+                                      ],
+                                      default: false,
+                                  } satisfies MatchBlockExtraState,
+                              },
+                          ]),
+
                     blockToDefinition(BLOCK_WAIT_UNTIL),
                     blockToDefinition(BLOCK_REPEAT_UNTIL),
                     GAP50,

@@ -5,17 +5,18 @@ import {
     Button,
     CardHeader,
     IconButton,
+    Paper,
     Stack,
     Tooltip,
     Typography,
 } from "@mui/material";
 import OBR from "@owlbear-rodeo/sdk";
 import { useActionResizer, useRehydrate } from "owlbear-utils";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { broadcastStopAllBehaviors } from "../broadcast/broadcast";
 import { ID_POPOVER_EXECUTOR } from "../constants";
 import { openHelp } from "../popoverHelp/openHelp";
-import { openSettings } from "../popoverSettings/openSettings";
+import { Settings as SettingsPanel } from "../popoverSettings/Settings";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 import { activateTool } from "../tool/tool";
 import { BroadcastList } from "./BroadcastList";
@@ -28,6 +29,7 @@ const MAX_HEIGHT = 700;
 export function Action() {
     const role = usePlayerStorage((store) => store.role);
     const sceneReady = usePlayerStorage((store) => store.sceneReady);
+    const [showSettings, setShowSettings] = useState(false);
 
     // Some browsers 'optimize' invisible iframes to not run timeouts or
     // handle messages quickly when they are not visible; the OBR action
@@ -60,7 +62,7 @@ export function Action() {
     useRehydrate(usePlayerStorage);
 
     return (
-        <Box ref={box}>
+        <Box ref={box} sx={{ position: "relative", overflow: "hidden", px: 2 }}>
             <CardHeader
                 title={"Behaviors"}
                 slotProps={{
@@ -82,7 +84,9 @@ export function Action() {
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title="Settings">
-                                <IconButton onClick={openSettings}>
+                                <IconButton
+                                    onClick={() => setShowSettings(true)}
+                                >
                                     <Settings />
                                 </IconButton>
                             </Tooltip>
@@ -143,6 +147,23 @@ export function Action() {
                     This extension is for the GM's use only.
                 </Alert>
             )}
+            <Box
+                sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    transition: "transform 0.2s ease-in-out",
+                    transform: showSettings
+                        ? "translateX(0)"
+                        : "translateX(-100%)",
+                }}
+            >
+                <Paper elevation={2} sx={{ height: "100%" }}>
+                    <SettingsPanel onBack={() => setShowSettings(false)} />
+                </Paper>
+            </Box>
         </Box>
     );
 }

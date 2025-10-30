@@ -29,6 +29,7 @@ export interface LocalStorage {
     readonly showAddTagsContextMenu?: boolean;
     readonly muteBlockly?: boolean;
     readonly showCopyPasteContextMenu?: boolean;
+    readonly useAdvancedBlocks?: boolean;
 
     readonly setContextMenuEnabled: (
         this: void,
@@ -46,6 +47,10 @@ export interface LocalStorage {
     readonly setShowCopyPasteContextMenu: (
         this: void,
         showCopyPasteContextMenu: boolean,
+    ) => void;
+    readonly setUseAdvancedBlocks: (
+        this: void,
+        useAdvancedBlocks: boolean,
     ) => void;
 }
 function partializeLocalStorage({
@@ -162,6 +167,8 @@ export const usePlayerStorage = create<LocalStorage & OwlbearStore>()(
                 setMuteBlockly: (muteBlockly) => set({ muteBlockly }),
                 setShowCopyPasteContextMenu: (showCopyPasteContextMenu) =>
                     set({ showCopyPasteContextMenu }),
+                setUseAdvancedBlocks: (useAdvancedBlocks) =>
+                    set({ useAdvancedBlocks }),
 
                 // owlbear store
                 sceneReady: false,

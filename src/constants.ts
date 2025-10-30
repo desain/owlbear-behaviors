@@ -85,3 +85,6 @@ export const INPUT_CUSTOM_BLOCK = "custom_block";
 
 // Blockly renderer
 export const RENDERER_CAT = "cat_zelos";
+
+// Utilities
+export const LOOKS_LIKE_NUMBER = /^-?Infinity$|^-?\d*(\.\d+)?$/;

@@ -1,5 +1,5 @@
 import * as Blockly from "blockly";
-import { MUTATOR_MATCH } from "../constants";
+import { LOOKS_LIKE_NUMBER, MUTATOR_MATCH } from "../constants";
 import {
     BLOCK_MATCH,
     BLOCK_MATCH_CASE,
@@ -52,10 +52,12 @@ function caseLabelInputName(i: number) {
  * @returns Text for dummy input that labels the case.
  */
 function caseLabelText(state: MatchCaseState) {
+    const display = (s: string) =>
+        LOOKS_LIKE_NUMBER.exec(s) ? s.replace("Infinity", "∞") : `"${s}"`;
     if ("exact" in state) {
-        return `is ${state.exact}`;
+        return `is ${display(state.exact)}`;
     } else {
-        return `is between ${state.lo} and ${state.hi}`;
+        return `is between ${display(state.lo)} and ${display(state.hi)}`;
     }
 }
 
@@ -172,7 +174,9 @@ function setupMatchBlockFromState(
 
     // append new default input
     if (state.default) {
-        match.appendDummyInput(INPUT_MATCH_DEFAULTNAME).appendField("default");
+        match
+            .appendDummyInput(INPUT_MATCH_DEFAULTNAME)
+            .appendField("is none of the above");
         const statementInput = match.appendStatementInput(INPUT_MATCH_DEFAULT);
         if (defaultConnection) {
             statementInput.connection?.connect(defaultConnection);

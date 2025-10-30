@@ -8,6 +8,7 @@ import {
     FIELD_SOUND,
     FIELD_TAG,
     INPUT_TAG,
+    LOOKS_LIKE_NUMBER,
     METADATA_KEY_EFFECT,
     PARAMETER_BEHAVIOR_REGISTRY,
     PARAMETER_HAT_ID,
@@ -1381,7 +1382,6 @@ export const GENERATORS: Record<
 
         const lt = provideComparison(generator, "<");
         const eq = provideComparison(generator, "===");
-        const gt = provideComparison(generator, ">");
 
         let code = initValueVar + "\n";
         let needsElse = false;
@@ -1389,13 +1389,15 @@ export const GENERATORS: Record<
             const condition =
                 "exact" in caseData
                     ? `${eq}(${valueVar}, ${generator.quote_(caseData.exact)})`
-                    : `(${gt}(${valueVar}, ${generator.quote_(
+                    : `(${eq}(${generator.quote_(
                           caseData.lo,
-                      )}) || ${eq}(${valueVar}, ${generator.quote_(
+                      )}, ${valueVar}) || ${lt}(${generator.quote_(
                           caseData.lo,
-                      )})) && ${lt}(${valueVar}, ${generator.quote_(
+                      )}, ${valueVar})) && (${eq}(${valueVar}, ${generator.quote_(
                           caseData.hi,
-                      )})`;
+                      )}) || ${lt}(${valueVar}, ${generator.quote_(
+                          caseData.hi,
+                      )}))`;
             code += generateBlock(
                 generator,
                 `${needsElse ? "else " : ""}if (${condition})`,
@@ -2780,7 +2782,7 @@ export const GENERATORS: Record<
 
         // Check if the raw input is a number
         const code =
-            text !== "" && /^-?\d*(\.\d+)?$/.exec(text)
+            text !== "" && LOOKS_LIKE_NUMBER.exec(text)
                 ? text
                 : generator.multiline_quote_(text);
 

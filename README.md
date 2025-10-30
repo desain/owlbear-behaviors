@@ -161,19 +161,19 @@ To make a production build run:
 
 ## To do
 
--   Move executor to the background now that background scripts shouldn't be throttled?
+-   Advanced blocks setting
+    -   Multi join
+    -   Broadcast to token / my children / tokens tagged
+    -   Replace image with image of other
+    -   set text font/color/size
 -   Safety
     -   Check token total size before saving against OBR max update size
     -   Add trycatch for each update, exponential backoff when rate limit exceeded?
+-   Move executor to the background now that background scripts shouldn't be throttled?
 -   Collision system improvements
     -   base it on polygon overlap instead of bounding boxes? turf js?
     -   inset bounding boxes so barely touching corners don't trigger collisions?
 -   Make new tags in tags field show up in possible tags list in block immediately
--   Advanced blocks setting
-    -   Multi join
-    -   Broadcast to token
-    -   Replace image with image of other
-    -   switchcase
 -   Dragging C blocks around statements in stacks like scratch does [here?](https://github.com/scratchfoundation/scratch-blocks/blob/develop/core/insertion_marker_manager.js#L43)
 -   Blocks
     -   Motion
@@ -189,14 +189,10 @@ To make a production build run:
         -   Phases
             -   When (Automation 1) changes phase
             -   Phase of (Automation 1)
+        -   D&D beyond
+            -   my HP, max HP, temp HP, initiative bonus, stats, proficiency, cuagau, skills
     -   Control
         -   tell other to? Snail Mod has it as `as (other) {...}`
-        -   for each other token tagged t
-        -   match: 'when (val) is', 'exactly (whatever)', 'between () and ()', 'none of the above' (no next)
-    -   Events
-        -   When I'm updated in any way?
-        -   When I am tagged (tag1 v)?
-        -   Broadcast to myself / my children / other token?
     -   Operators
         -   Min, max?
 -   Fix Blockly bug? [hideIfOwnerIsInWorkspace](https://github.com/google/blockly/blob/develop/core/widgetdiv.ts#L201) should initialize `currentWorkspace` to `ownerWorkspace`, and should reference itself in the loop.

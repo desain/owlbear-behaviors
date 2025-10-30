@@ -3768,7 +3768,8 @@ export const BLOCK_CONTROL_ITEM_MENU = {
 export const BLOCK_MATCH_MATCH = {
     style: "control_blocks",
     type: "controls_match_match",
-    message0: "when input",
+    tooltip: "configure the shape of your block by adding cases",
+    message0: "when the input",
     message1: "%1",
     args1: [
         {
@@ -3776,7 +3777,7 @@ export const BLOCK_MATCH_MATCH = {
             name: "CASES",
         },
     ],
-    message2: "default? %1",
+    message2: '%1 include "none of the above"?',
     args2: [
         {
             type: "field_checkbox",
@@ -3789,6 +3790,7 @@ export const BLOCK_MATCH_CASE = {
     style: "control_blocks",
     type: "controls_match_case",
     message0: "is %1",
+    tooltip: "check if the value is equal to a constant",
     args0: [
         {
             type: "field_input",
@@ -3805,6 +3807,7 @@ export const BLOCK_MATCH_RANGE = {
     style: "control_blocks",
     type: "controls_match_range",
     message0: "is between %1 and %2",
+    tooltip: "check if the value is in a range (inclusive)",
     args0: [
         {
             type: "field_input",
