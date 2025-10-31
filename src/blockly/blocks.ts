@@ -672,6 +672,65 @@ export const BLOCK_SET_ACCESSIBILITY_DESCRIPTION = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_SET_FONT_SIZE = {
+    style: "looks_blocks",
+    type: "looks_stfntsz",
+    tooltip: "Set the font size of this token's text",
+    message0: "set font size to %1",
+    args0: [
+        {
+            type: "input_value",
+            name: "SIZE",
+            check: ["Number", "String"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_SET_TEXT_COLOR = {
+    style: "looks_blocks",
+    type: "looks_stfntclr",
+    tooltip: "Set the color of this token's text",
+    message0: "set text color to %1",
+    args0: [
+        {
+            type: "input_value",
+            name: "COL",
+            check: "String",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_SET_FONT_FAMILY = {
+    style: "looks_blocks",
+    type: "looks_stfnt",
+    tooltip: "Set the font of this token's text",
+    message0: "set font to %1",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "FONT",
+            options: [
+                ["Rounded", "Roboto"],
+                ["Fantasy", "Gotica"],
+                ["Marker", "Permanent Marker"],
+                ["Script", "Lemon Tuesday"],
+                ["Cursive", "Dancing Script"],
+                ["Mono", "Courier Prime"],
+                ["Serif", "EB Garamond"],
+            ],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 export const BLOCK_GET_LAYER = {
     style: "looks_blocks",
     type: "looks_get_layer",
@@ -3869,6 +3928,9 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_HAS_ATTACHMENT,
     BLOCK_GET_TEXT,
     BLOCK_SET_TEXT,
+    BLOCK_SET_FONT_SIZE,
+    BLOCK_SET_TEXT_COLOR,
+    BLOCK_SET_FONT_FAMILY,
     BLOCK_GET_ACCESSIBILITY_NAME,
     BLOCK_SET_ACCESSIBILITY_NAME,
     BLOCK_GET_ACCESSIBILITY_DESCRIPTION,

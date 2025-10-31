@@ -167,11 +167,14 @@ import {
     BLOCK_SET_EFFECT_TO,
     BLOCK_SET_FILL_COLOR,
     BLOCK_SET_FILL_OPACITY,
+    BLOCK_SET_FONT_FAMILY,
+    BLOCK_SET_FONT_SIZE,
     BLOCK_SET_LAYER,
     BLOCK_SET_SIZE,
     BLOCK_SET_STROKE_COLOR,
     BLOCK_SET_STROKE_OPACITY,
     BLOCK_SET_TEXT,
+    BLOCK_SET_TEXT_COLOR,
     BLOCK_SHOW,
     BLOCK_SNAP_TO_GRID,
     BLOCK_SOUND_CHANGE_VOLUME_BY,
@@ -685,6 +688,47 @@ export const GENERATORS: Record<
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             text,
+        );
+    },
+
+    [BLOCK_SET_FONT_SIZE.type]: (block, generator) => {
+        const size = generator.valueToCode(
+            block,
+            BLOCK_SET_FONT_SIZE.args0[0].name,
+            javascript.Order.NONE,
+        );
+        return awaitBehaveStatement(
+            "setFontSize",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            size,
+        );
+    },
+
+    [BLOCK_SET_TEXT_COLOR.type]: (block, generator) => {
+        const color = generator.valueToCode(
+            block,
+            BLOCK_SET_TEXT_COLOR.args0[0].name,
+            javascript.Order.NONE,
+        );
+        return awaitBehaveStatement(
+            "setTextColor",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            color,
+        );
+    },
+
+    [BLOCK_SET_FONT_FAMILY.type]: (block, generator) => {
+        const font = getStringFieldValue(
+            block,
+            BLOCK_SET_FONT_FAMILY.args0[0].name,
+        );
+        return awaitBehaveStatement(
+            "setFontFamily",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            generator.quote_(font),
         );
     },
 

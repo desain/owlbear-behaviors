@@ -210,13 +210,13 @@ Add blocks to the Extensions category with proper grouping:
 ```typescript
 // In Extensions category contents:
 ...extensionHeader("Dynamic Fog"),
-blockToDefinition(BLOCK_EXTENSION_FOG_LIT),
+blockInfo(BLOCK_EXTENSION_FOG_LIT),
 ```
 
 **Key patterns:**
 
 -   Group related blocks under extension headers using `extensionHeader()`
--   Use `blockToDefinition()` for simple blocks without complex inputs
+-   Use `blockInfo()` for simple blocks without complex inputs
 -   Place extension blocks in the Extensions category
 
 #### 6. **Extension Button System** (`src/blockly/getExtensionButton.ts`)

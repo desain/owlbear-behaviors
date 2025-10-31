@@ -59,6 +59,7 @@ function partializeLocalStorage({
     backpackContents,
     muteBlockly,
     showCopyPasteContextMenu,
+    useAdvancedBlocks,
 }: LocalStorage): ExtractNonFunctions<LocalStorage> {
     return {
         contextMenuEnabled,
@@ -66,6 +67,7 @@ function partializeLocalStorage({
         backpackContents,
         muteBlockly,
         showCopyPasteContextMenu,
+        useAdvancedBlocks,
     };
 }
 

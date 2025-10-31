@@ -3,12 +3,16 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { compileBehavior } from "../src/behaviors/compileBehavior";
 import {
     BLOCK_ADD_ATTACHMENT,
+    BLOCK_COLOR_PICKER,
     BLOCK_GOTO,
     BLOCK_HAS_ATTACHMENT,
     BLOCK_IF,
     BLOCK_REMOVE_ATTACHMENT,
     BLOCK_REPEAT,
     BLOCK_REPEAT_UNTIL,
+    BLOCK_SET_FONT_FAMILY,
+    BLOCK_SET_FONT_SIZE,
+    BLOCK_SET_TEXT_COLOR,
 } from "../src/blockly/blocks";
 import { BehaviorJavascriptGenerator } from "../src/blockly/generator/BehaviorJavascriptGenerator";
 import { setupBlocklyGlobals } from "../src/blockly/setupBlocklyGlobals";
@@ -3651,6 +3655,42 @@ describe("Blockly JavaScript Generation", () => {
             );
             const code = checkCompiles(workspace);
             expect(code).toMatch(/.*String\('\\\\n\$'\).*/);
+        });
+    });
+
+    describe("text style blocks", () => {
+        it("should generate syntactically valid JavaScript for set font size", () => {
+            const workspace = new Blockly.Workspace();
+            const block = addImmediatelyWith(
+                workspace,
+                BLOCK_SET_FONT_SIZE.type,
+            );
+            const value = workspace.newBlock("math_number");
+            value.setFieldValue("12", "NUM");
+            block
+                .getInput(BLOCK_SET_FONT_SIZE.args0[0].name)!
+                .connection!.connect(value.outputConnection!);
+            checkCompiles(workspace);
+        });
+
+        it("should generate syntactically valid JavaScript for set text color", () => {
+            const workspace = new Blockly.Workspace();
+            const block = addImmediatelyWith(
+                workspace,
+                BLOCK_SET_TEXT_COLOR.type,
+            );
+            const value = workspace.newBlock(BLOCK_COLOR_PICKER.type);
+            value.setFieldValue("#ff0000", BLOCK_COLOR_PICKER.args0[0].name);
+            block
+                .getInput(BLOCK_SET_TEXT_COLOR.args0[0].name)!
+                .connection!.connect(value.outputConnection!);
+            checkCompiles(workspace);
+        });
+
+        it("should generate syntactically valid JavaScript for set font family", () => {
+            const workspace = new Blockly.Workspace();
+            addImmediatelyWith(workspace, BLOCK_SET_FONT_FAMILY.type);
+            checkCompiles(workspace);
         });
     });
 });

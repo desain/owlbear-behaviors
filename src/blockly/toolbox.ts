@@ -6,14 +6,13 @@ import {
     isShape,
     isText,
 } from "@owlbear-rodeo/sdk";
-import type { Block } from "blockly";
+import type * as Blockly from "blockly";
 import { assumeHexColor, type GridParsed } from "owlbear-utils";
 import type { BehaviorItem } from "../BehaviorItem";
 import { getText } from "../behaviors/impl/looks";
 import {
     CUSTOM_DYNAMIC_CATEGORY_MY_BLOCKS,
     CUSTOM_DYNAMIC_CATEGORY_VARIABLES,
-    INPUT_BROADCAST,
     INPUT_TAG,
 } from "../constants";
 import { CharacterDistances } from "../extensions/CharacterDistances";
@@ -27,7 +26,6 @@ import {
     BLOCK_ATTACH,
     BLOCK_ATTACHED,
     BLOCK_BROADCAST,
-    BLOCK_BROADCAST_MENU,
     BLOCK_CENTER_VIEW,
     BLOCK_CENTER_ZOOM,
     BLOCK_CHANGE_EFFECT_BY,
@@ -118,8 +116,6 @@ import {
     BLOCK_MATCH,
     BLOCK_MOVE_DIRECTION,
     BLOCK_MY_PARENT,
-    BLOCK_OPACITY_SLIDER,
-    BLOCK_OTHER,
     BLOCK_PATHFIND,
     BLOCK_POINT_IN_DIRECTION,
     BLOCK_RECEIVE_BROADCAST,
@@ -140,15 +136,17 @@ import {
     BLOCK_SET_EFFECT_TO,
     BLOCK_SET_FILL_COLOR,
     BLOCK_SET_FILL_OPACITY,
+    BLOCK_SET_FONT_FAMILY,
+    BLOCK_SET_FONT_SIZE,
     BLOCK_SET_LAYER,
     BLOCK_SET_SIZE,
     BLOCK_SET_STROKE_COLOR,
     BLOCK_SET_STROKE_OPACITY,
     BLOCK_SET_TEXT,
+    BLOCK_SET_TEXT_COLOR,
     BLOCK_SHOW,
     BLOCK_SNAP_TO_GRID,
     BLOCK_SOUND_CHANGE_VOLUME_BY,
-    BLOCK_SOUND_MENU,
     BLOCK_SOUND_PLAY,
     BLOCK_SOUND_PLAY_UNTIL_DONE,
     BLOCK_SOUND_SET_VOLUME_TO,
@@ -161,7 +159,6 @@ import {
     BLOCK_TOUCH,
     BLOCK_TOUCHING,
     BLOCK_UNLOCK,
-    BLOCK_URL,
     BLOCK_VISIBLE,
     BLOCK_WAIT,
     BLOCK_WAIT_UNTIL,
@@ -176,20 +173,58 @@ import { FieldTokenImage } from "./FieldTokenImage";
 import { extensionHeader } from "./getExtensionButton";
 import type { MatchBlockExtraState } from "./mutatorMatch";
 import {
+    shadowBroadcastMenu,
     shadowColor,
     shadowDynamic,
     shadowItemMenu,
     shadowNumber,
+    shadowOpacitySlider,
+    shadowOther,
+    shadowSoundMenu,
+    shadowUrl,
 } from "./shadows";
 
 function devOnly<T>(...ts: T[]): T[] {
     return import.meta.env.DEV ? ts : [];
 }
 
-function blockToDefinition(block: Pick<Block, "type">) {
+function advanced<T>(advanced: T[], basic?: T[]): T[] {
+    return usePlayerStorage.getState().useAdvancedBlocks
+        ? advanced
+        : basic ?? [];
+}
+
+function blockInfo(
+    block: Pick<Blockly.utils.toolbox.BlockInfo, "type"> & {
+        readonly args0?: readonly {
+            readonly type: string;
+            readonly name?: string;
+        }[];
+    },
+    ...inputShadows: object[]
+): Blockly.utils.toolbox.BlockInfo {
+    if (inputShadows.length > (block.args0?.length ?? 0)) {
+        throw Error("more shadows than args0 inputs");
+    }
+    const valueInputs = (block.args0 ?? []).filter(
+        (input) => input.type === "input_value",
+    );
+    const inputs =
+        inputShadows.length === 0
+            ? undefined
+            : Object.fromEntries(
+                  inputShadows.map((shadow, i) => {
+                      const name = valueInputs[i]?.name;
+                      if (!name) {
+                          throw Error("missing input name");
+                      }
+                      return [name, shadow];
+                  }),
+              );
     return {
         kind: "block",
         type: block.type,
+        inputs,
     };
 }
 
@@ -209,8 +244,6 @@ const SHADOW_TAG_MENU = {
  * With source: https://github.com/google/blockly/blob/master/blocks
  */
 export function createToolbox(target: BehaviorItem, grid: GridParsed) {
-    const useAdvancedBlocks = usePlayerStorage.getState().useAdvancedBlocks;
-
     return {
         kind: "categoryToolbox",
         contents: [
@@ -219,121 +252,71 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                 name: "Motion",
                 categorystyle: "style_category_motion",
                 contents: [
-                    {
-                        kind: "block",
-                        type: BLOCK_ROTATE_RIGHT.type,
-                        inputs: {
-                            [BLOCK_ROTATE_RIGHT.args0[1].name]:
-                                shadowNumber(15),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_GLIDE_ROTATE_RIGHT.type,
-                        inputs: {
-                            [BLOCK_GLIDE_ROTATE_RIGHT.args0[0].name]:
-                                shadowNumber(1),
-                            [BLOCK_GLIDE_ROTATE_RIGHT.args0[2].name]:
-                                shadowNumber(90),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_ROTATE_LEFT.type,
-                        inputs: {
-                            [BLOCK_ROTATE_LEFT.args0[1].name]: shadowNumber(15),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_GLIDE_ROTATE_LEFT.type,
-                        inputs: {
-                            [BLOCK_GLIDE_ROTATE_LEFT.args0[0].name]:
-                                shadowNumber(1),
-                            [BLOCK_GLIDE_ROTATE_LEFT.args0[2].name]:
-                                shadowNumber(90),
-                        },
-                    },
+                    blockInfo(BLOCK_ROTATE_RIGHT, shadowNumber(15)),
+                    blockInfo(
+                        BLOCK_GLIDE_ROTATE_RIGHT,
+                        shadowNumber(1),
+                        shadowNumber(90),
+                    ),
+                    blockInfo(BLOCK_ROTATE_LEFT, shadowNumber(15)),
+                    blockInfo(
+                        BLOCK_GLIDE_ROTATE_LEFT,
+                        shadowNumber(1),
+                        shadowNumber(90),
+                    ),
                     GAP50,
                     {
-                        kind: "block",
-                        type: BLOCK_MOVE_DIRECTION.type,
+                        ...blockInfo(
+                            BLOCK_MOVE_DIRECTION,
+                            shadowNumber(grid.parsedScale.multiplier),
+                        ),
                         fields: {
                             [BLOCK_MOVE_DIRECTION.args0[0].name]: "FORWARD",
                             [BLOCK_MOVE_DIRECTION.args0[2].name]: "UNITS",
                         },
-                        inputs: {
-                            [BLOCK_MOVE_DIRECTION.args0[1].name]: shadowNumber(
-                                grid.parsedScale.multiplier,
-                            ),
-                        },
                     },
-                    {
-                        kind: "block",
-                        type: BLOCK_GOTO.type,
-                        inputs: {
-                            [BLOCK_GOTO.args0[0].name]: shadowNumber(
-                                Math.round(target.position.x),
-                            ),
-                            [BLOCK_GOTO.args0[1].name]: shadowNumber(
-                                Math.round(target.position.y),
-                            ),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_GLIDE.type,
-                        inputs: {
-                            [BLOCK_GLIDE.args0[0].name]: shadowNumber(1),
-                            [BLOCK_GLIDE.args0[1].name]: shadowNumber(
-                                Math.round(target.position.x),
-                            ),
-                            [BLOCK_GLIDE.args0[2].name]: shadowNumber(
-                                Math.round(target.position.y),
-                            ),
-                        },
-                    },
-                    ...devOnly({
-                        kind: "block",
-                        type: BLOCK_PATHFIND.type,
-                        inputs: {
-                            [BLOCK_PATHFIND.args0[0].name]: shadowNumber(
-                                grid.parsedScale.multiplier,
-                            ),
-                        },
-                    }),
-                    blockToDefinition(BLOCK_SNAP_TO_GRID),
+                    blockInfo(
+                        BLOCK_GOTO,
+                        shadowNumber(Math.round(target.position.x)),
+                        shadowNumber(Math.round(target.position.y)),
+                    ),
+                    blockInfo(
+                        BLOCK_GLIDE,
+                        shadowNumber(1),
+                        shadowNumber(Math.round(target.position.x)),
+                        shadowNumber(Math.round(target.position.y)),
+                    ),
+                    ...devOnly(
+                        blockInfo(
+                            BLOCK_PATHFIND,
+                            shadowNumber(grid.parsedScale.multiplier),
+                        ),
+                    ),
+                    blockInfo(BLOCK_SNAP_TO_GRID),
                     GAP50,
-                    {
-                        kind: "block",
-                        type: BLOCK_POINT_IN_DIRECTION.type,
-                        inputs: {
-                            [BLOCK_POINT_IN_DIRECTION.args0[0].name]: {
-                                shadow: {
-                                    type: BLOCK_ANGLE.type,
-                                    fields: {
-                                        [BLOCK_ANGLE.args0[0].name]:
-                                            ((target.rotation % 360) + 360) %
-                                            360, // ensure 0-359
-                                    },
-                                },
+                    blockInfo(BLOCK_POINT_IN_DIRECTION, {
+                        shadow: {
+                            type: BLOCK_ANGLE.type,
+                            fields: {
+                                [BLOCK_ANGLE.args0[0].name]:
+                                    ((target.rotation % 360) + 360) % 360, // ensure 0-359
                             },
                         },
-                    },
-                    blockToDefinition(BLOCK_FACE),
+                    }),
+                    blockInfo(BLOCK_FACE),
                     GAP50,
-                    blockToDefinition(BLOCK_ATTACH),
-                    blockToDefinition(BLOCK_DETACH),
+                    blockInfo(BLOCK_ATTACH),
+                    blockInfo(BLOCK_DETACH),
                     GAP50,
-                    blockToDefinition(BLOCK_LOCK),
-                    blockToDefinition(BLOCK_UNLOCK),
+                    blockInfo(BLOCK_LOCK),
+                    blockInfo(BLOCK_UNLOCK),
                     GAP50,
-                    blockToDefinition(BLOCK_X_POSITION),
-                    blockToDefinition(BLOCK_Y_POSITION),
-                    blockToDefinition(BLOCK_ROTATION),
-                    blockToDefinition(BLOCK_MY_PARENT),
-                    blockToDefinition(BLOCK_LOCKED),
-                    blockToDefinition(BLOCK_ATTACHED),
+                    blockInfo(BLOCK_X_POSITION),
+                    blockInfo(BLOCK_Y_POSITION),
+                    blockInfo(BLOCK_ROTATION),
+                    blockInfo(BLOCK_MY_PARENT),
+                    blockInfo(BLOCK_LOCKED),
+                    blockInfo(BLOCK_ATTACHED),
                 ],
             },
             /* looks */ {
@@ -341,14 +324,11 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                 name: "Looks",
                 categorystyle: "style_category_looks",
                 contents: [
-                    {
-                        kind: "block",
-                        type: BLOCK_SAY.type,
-                        inputs: {
-                            [BLOCK_SAY.args0[0].name]: shadowDynamic("Hello!"),
-                            [BLOCK_SAY.args0[1].name]: shadowNumber(2),
-                        },
-                    },
+                    blockInfo(
+                        BLOCK_SAY,
+                        shadowDynamic("Hello!"),
+                        shadowNumber(2),
+                    ),
                     ...(isImage(target)
                         ? [
                               GAP50,
@@ -363,130 +343,92 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                                   },
                               },
                               ...devOnly(
-                                  blockToDefinition(BLOCK_ADD_ATTACHMENT),
-                                  blockToDefinition(BLOCK_REMOVE_ATTACHMENT),
+                                  blockInfo(BLOCK_ADD_ATTACHMENT),
+                                  blockInfo(BLOCK_REMOVE_ATTACHMENT),
                               ),
                           ]
                         : []),
                     GAP50,
-                    {
-                        kind: "block",
-                        type: BLOCK_SET_SIZE.type,
-                        inputs: {
-                            [BLOCK_SET_SIZE.args0[0].name]: shadowNumber(100),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_CHANGE_SIZE.type,
-                        inputs: {
-                            [BLOCK_CHANGE_SIZE.args0[0].name]: shadowNumber(10),
-                        },
-                    },
+                    blockInfo(BLOCK_SET_SIZE, shadowNumber(100)),
+                    blockInfo(BLOCK_CHANGE_SIZE, shadowNumber(10)),
                     GAP50,
                     // Only show effects-based blocks for shapes, curves, and paths
                     ...(isShape(target) || isCurve(target) || isPath(target)
                         ? [
-                              {
-                                  kind: "block",
-                                  type: BLOCK_CHANGE_EFFECT_BY.type,
-                                  inputs: {
-                                      [BLOCK_CHANGE_EFFECT_BY.args0[1].name]:
-                                          shadowNumber(25),
-                                  },
-                              },
-                              {
-                                  kind: "block",
-                                  type: BLOCK_SET_EFFECT_TO.type,
-                                  inputs: {
-                                      [BLOCK_SET_EFFECT_TO.args0[1].name]:
-                                          shadowNumber(100),
-                                  },
-                              },
-                              blockToDefinition(BLOCK_CLEAR_GRAPHIC_EFFECTS),
+                              blockInfo(
+                                  BLOCK_CHANGE_EFFECT_BY,
+                                  shadowNumber(25),
+                              ),
+                              blockInfo(BLOCK_SET_EFFECT_TO, shadowNumber(100)),
+                              blockInfo(BLOCK_CLEAR_GRAPHIC_EFFECTS),
                               GAP50,
                           ]
                         : []),
-                    blockToDefinition(BLOCK_SHOW),
-                    blockToDefinition(BLOCK_HIDE),
+                    blockInfo(BLOCK_SHOW),
+                    blockInfo(BLOCK_HIDE),
                     GAP50,
-                    {
-                        kind: "block",
-                        type: BLOCK_SET_LAYER.type,
-                        inputs: {
-                            [BLOCK_SET_LAYER.args0[0].name]: {
-                                shadow: {
-                                    type: BLOCK_LAYER_MENU.type,
-                                    fields: {
-                                        [BLOCK_LAYER_MENU.args0[0].name]:
-                                            target.layer,
-                                    },
-                                },
+                    blockInfo(BLOCK_SET_LAYER, {
+                        shadow: {
+                            type: BLOCK_LAYER_MENU.type,
+                            fields: {
+                                [BLOCK_LAYER_MENU.args0[0].name]: target.layer,
                             },
                         },
-                    },
+                    }),
                     GAP50,
                     ...(isImage(target) || isText(target)
                         ? [
-                              {
-                                  kind: "block",
-                                  type: BLOCK_SET_TEXT.type,
-                                  inputs: {
-                                      [BLOCK_SET_TEXT.args0[0].name]:
-                                          shadowDynamic(getText(target)),
+                              blockInfo(
+                                  BLOCK_SET_TEXT,
+                                  shadowDynamic(getText(target)),
+                              ),
+                              ...advanced([
+                                  blockInfo(
+                                      BLOCK_SET_FONT_SIZE,
+                                      shadowNumber(target.text.style.fontSize),
+                                  ),
+                                  blockInfo(
+                                      BLOCK_SET_TEXT_COLOR,
+                                      shadowColor(
+                                          assumeHexColor(
+                                              target.text.style.fillColor,
+                                          ),
+                                      ),
+                                  ),
+                                  {
+                                      ...blockInfo(BLOCK_SET_FONT_FAMILY),
+                                      fields: {
+                                          [BLOCK_SET_FONT_FAMILY.args0[0].name]:
+                                              target.text.style.fontFamily,
+                                      },
                                   },
-                              },
+                              ]),
                           ]
                         : []),
-                    {
-                        kind: "block",
-                        type: BLOCK_SET_ACCESSIBILITY_NAME.type,
-                        inputs: {
-                            [BLOCK_SET_ACCESSIBILITY_NAME.args0[0].name]:
-                                shadowDynamic(target.name),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_SET_ACCESSIBILITY_DESCRIPTION.type,
-                        inputs: {
-                            [BLOCK_SET_ACCESSIBILITY_DESCRIPTION.args0[0].name]:
-                                shadowDynamic(target.description),
-                        },
-                    },
+                    blockInfo(
+                        BLOCK_SET_ACCESSIBILITY_NAME,
+                        shadowDynamic(target.name),
+                    ),
+                    blockInfo(
+                        BLOCK_SET_ACCESSIBILITY_DESCRIPTION,
+                        shadowDynamic(target.description),
+                    ),
                     GAP50,
                     // Only show set fill color and fill opacity for shapes, curves, and paths (not lines)
                     ...(isShape(target) || isCurve(target) || isPath(target)
                         ? [
-                              {
-                                  kind: "block",
-                                  type: BLOCK_SET_FILL_COLOR.type,
-                                  inputs: {
-                                      [BLOCK_SET_FILL_COLOR.args0[0].name]:
-                                          shadowColor(
-                                              assumeHexColor(
-                                                  target.style.fillColor,
-                                              ),
-                                          ),
-                                  },
-                              },
-                              {
-                                  kind: "block",
-                                  type: BLOCK_SET_FILL_OPACITY.type,
-                                  inputs: {
-                                      [BLOCK_SET_FILL_OPACITY.args0[0].name]: {
-                                          shadow: {
-                                              type: BLOCK_OPACITY_SLIDER.type,
-                                              fields: {
-                                                  [BLOCK_OPACITY_SLIDER.args0[0]
-                                                      .name]:
-                                                      target.style.fillOpacity *
-                                                      100,
-                                              },
-                                          },
-                                      },
-                                  },
-                              },
+                              blockInfo(
+                                  BLOCK_SET_FILL_COLOR,
+                                  shadowColor(
+                                      assumeHexColor(target.style.fillColor),
+                                  ),
+                              ),
+                              blockInfo(
+                                  BLOCK_SET_FILL_OPACITY,
+                                  shadowOpacitySlider(
+                                      target.style.fillOpacity * 100,
+                                  ),
+                              ),
                           ]
                         : []),
                     // Only show set stroke color for supported types using OBR type guards
@@ -495,79 +437,39 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     isCurve(target) ||
                     isPath(target)
                         ? [
-                              {
-                                  kind: "block",
-                                  type: BLOCK_SET_STROKE_COLOR.type,
-                                  inputs: {
-                                      [BLOCK_SET_STROKE_COLOR.args0[0].name]:
-                                          shadowColor(
-                                              assumeHexColor(
-                                                  target.style.strokeColor,
-                                              ),
-                                          ),
-                                  },
-                              },
-                              {
-                                  kind: "block",
-                                  type: BLOCK_SET_STROKE_OPACITY.type,
-                                  inputs: {
-                                      [BLOCK_SET_STROKE_OPACITY.args0[0].name]:
-                                          {
-                                              shadow: {
-                                                  type: BLOCK_OPACITY_SLIDER.type,
-                                                  fields: {
-                                                      [BLOCK_OPACITY_SLIDER
-                                                          .args0[0].name]:
-                                                          target.style
-                                                              .strokeOpacity *
-                                                          100,
-                                                  },
-                                              },
-                                          },
-                                  },
-                              },
+                              blockInfo(
+                                  BLOCK_SET_STROKE_COLOR,
+                                  shadowColor(
+                                      assumeHexColor(target.style.strokeColor),
+                                  ),
+                              ),
+                              blockInfo(
+                                  BLOCK_SET_STROKE_OPACITY,
+                                  shadowOpacitySlider(
+                                      target.style.strokeOpacity * 100,
+                                  ),
+                              ),
                               GAP50,
                           ]
                         : []),
-                    {
-                        kind: "block",
-                        type: BLOCK_CENTER_VIEW.type,
-                        inputs: {
-                            [BLOCK_CENTER_VIEW.args0[1].name]: shadowNumber(
-                                Math.round(target.position.x),
-                            ),
-                            [BLOCK_CENTER_VIEW.args0[2].name]: shadowNumber(
-                                Math.round(target.position.y),
-                            ),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_ZOOM.type,
-                        inputs: {
-                            [BLOCK_ZOOM.args0[1].name]: shadowNumber(100),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_CENTER_ZOOM.type,
-                        inputs: {
-                            [BLOCK_CENTER_ZOOM.args0[1].name]:
-                                shadowNumber(100),
-                            [BLOCK_CENTER_ZOOM.args0[3].name]: shadowNumber(
-                                Math.round(target.position.x),
-                            ),
-                            [BLOCK_CENTER_ZOOM.args0[4].name]: shadowNumber(
-                                Math.round(target.position.y),
-                            ),
-                        },
-                    },
+                    blockInfo(
+                        BLOCK_CENTER_VIEW,
+                        shadowNumber(Math.round(target.position.x)),
+                        shadowNumber(Math.round(target.position.y)),
+                    ),
+                    blockInfo(BLOCK_ZOOM, shadowNumber(100)),
+                    blockInfo(
+                        BLOCK_CENTER_ZOOM,
+                        shadowNumber(100),
+                        shadowNumber(Math.round(target.position.x)),
+                        shadowNumber(Math.round(target.position.y)),
+                    ),
                     GAP50,
                     // Only show fill getters for items that support fill setters
                     ...(isShape(target) || isCurve(target) || isPath(target)
                         ? [
-                              blockToDefinition(BLOCK_GET_FILL_COLOR),
-                              blockToDefinition(BLOCK_GET_FILL_OPACITY),
+                              blockInfo(BLOCK_GET_FILL_COLOR),
+                              blockInfo(BLOCK_GET_FILL_OPACITY),
                           ]
                         : []),
                     // Only show stroke getters for items that support stroke setters
@@ -576,19 +478,19 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     isCurve(target) ||
                     isPath(target)
                         ? [
-                              blockToDefinition(BLOCK_GET_STROKE_COLOR),
-                              blockToDefinition(BLOCK_GET_STROKE_OPACITY),
+                              blockInfo(BLOCK_GET_STROKE_COLOR),
+                              blockInfo(BLOCK_GET_STROKE_OPACITY),
                           ]
                         : []),
-                    blockToDefinition(BLOCK_GET_SIZE),
-                    blockToDefinition(BLOCK_GET_LAYER),
+                    blockInfo(BLOCK_GET_SIZE),
+                    blockInfo(BLOCK_GET_LAYER),
                     ...(isImage(target) || isText(target)
-                        ? [blockToDefinition(BLOCK_GET_TEXT)]
+                        ? [blockInfo(BLOCK_GET_TEXT)]
                         : []),
-                    blockToDefinition(BLOCK_GET_ACCESSIBILITY_NAME),
-                    blockToDefinition(BLOCK_GET_ACCESSIBILITY_DESCRIPTION),
-                    ...devOnly(blockToDefinition(BLOCK_HAS_ATTACHMENT)),
-                    blockToDefinition(BLOCK_VISIBLE),
+                    blockInfo(BLOCK_GET_ACCESSIBILITY_NAME),
+                    blockInfo(BLOCK_GET_ACCESSIBILITY_DESCRIPTION),
+                    ...devOnly(blockInfo(BLOCK_HAS_ATTACHMENT)),
+                    blockInfo(BLOCK_VISIBLE),
                 ],
             },
             /* sound */ {
@@ -596,47 +498,13 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                 name: "Sound",
                 categorystyle: "style_category_sound",
                 contents: [
-                    {
-                        kind: "block",
-                        type: BLOCK_SOUND_PLAY.type,
-                        inputs: {
-                            [BLOCK_SOUND_PLAY.args0[0].name]: {
-                                shadow: {
-                                    type: BLOCK_SOUND_MENU.type,
-                                },
-                            },
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_SOUND_PLAY_UNTIL_DONE.type,
-                        inputs: {
-                            [BLOCK_SOUND_PLAY_UNTIL_DONE.args0[0].name]: {
-                                shadow: {
-                                    type: BLOCK_SOUND_MENU.type,
-                                },
-                            },
-                        },
-                    },
-                    blockToDefinition(BLOCK_SOUND_STOP_ALL),
+                    blockInfo(BLOCK_SOUND_PLAY, shadowSoundMenu()),
+                    blockInfo(BLOCK_SOUND_PLAY_UNTIL_DONE, shadowSoundMenu()),
+                    blockInfo(BLOCK_SOUND_STOP_ALL),
                     GAP50,
-                    {
-                        kind: "block",
-                        type: BLOCK_SOUND_CHANGE_VOLUME_BY.type,
-                        inputs: {
-                            [BLOCK_SOUND_CHANGE_VOLUME_BY.args0[0].name]:
-                                shadowNumber(-10),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_SOUND_SET_VOLUME_TO.type,
-                        inputs: {
-                            [BLOCK_SOUND_SET_VOLUME_TO.args0[0].name]:
-                                shadowNumber(100),
-                        },
-                    },
-                    blockToDefinition(BLOCK_SOUND_VOLUME),
+                    blockInfo(BLOCK_SOUND_CHANGE_VOLUME_BY, shadowNumber(-10)),
+                    blockInfo(BLOCK_SOUND_SET_VOLUME_TO, shadowNumber(100)),
+                    blockInfo(BLOCK_SOUND_VOLUME),
                 ],
             },
             /* events */ {
@@ -644,35 +512,13 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                 name: "Events",
                 categorystyle: "style_category_events",
                 contents: [
-                    blockToDefinition(BLOCK_IMMEDIATELY),
-                    blockToDefinition(BLOCK_WHEN_I),
-                    blockToDefinition(BLOCK_RECEIVE_BROADCAST),
-                    {
-                        kind: "block",
-                        type: BLOCK_BROADCAST.type,
-                        inputs: {
-                            [INPUT_BROADCAST]: {
-                                shadow: {
-                                    type: BLOCK_BROADCAST_MENU.type,
-                                },
-                            },
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_TOUCH.type,
-                        inputs: {
-                            [BLOCK_TOUCH.args0[1].name]: {
-                                shadow: {
-                                    type: BLOCK_OTHER.type,
-                                },
-                            },
-                        },
-                    },
+                    blockInfo(BLOCK_IMMEDIATELY),
+                    blockInfo(BLOCK_WHEN_I),
+                    blockInfo(BLOCK_RECEIVE_BROADCAST),
+                    blockInfo(BLOCK_BROADCAST, shadowBroadcastMenu()),
+                    blockInfo(BLOCK_TOUCH, shadowOther()),
                     ...devOnly(
-                        blockToDefinition(
-                            BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED,
-                        ),
+                        blockInfo(BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED),
                     ),
                 ],
             },
@@ -681,64 +527,43 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                 name: "Control",
                 categorystyle: "style_category_control",
                 contents: [
-                    /* wait */ {
-                        kind: "block",
-                        type: BLOCK_WAIT.type,
-                        inputs: { [BLOCK_WAIT.args0[0].name]: shadowNumber(1) },
-                    },
+                    blockInfo(BLOCK_WAIT, shadowNumber(1)),
                     GAP50,
-                    /* repeat */ {
-                        kind: "block",
-                        type: BLOCK_REPEAT.type,
-                        inputs: {
-                            [BLOCK_REPEAT.args0[0].name]: shadowNumber(5),
-                        },
-                    },
-                    blockToDefinition(BLOCK_FOREVER),
+                    blockInfo(BLOCK_REPEAT, shadowNumber(5)),
+                    blockInfo(BLOCK_FOREVER),
                     GAP50,
-                    ...(useAdvancedBlocks
-                        ? [
-                              blockToDefinition(BLOCK_IF),
-                              blockToDefinition(BLOCK_IF_ELSE),
-                          ]
-                        : [
-                              {
-                                  kind: "block",
-                                  type: "controls_if",
-                              },
-                              {
-                                  kind: "block",
-                                  type: BLOCK_MATCH.type,
-                                  inputs: {
-                                      [BLOCK_MATCH.args0[0].name]:
-                                          shadowDynamic("apple"),
-                                  },
-                                  extraState: {
-                                      cases: [
-                                          {
-                                              exact: "apple",
-                                          },
-                                      ],
-                                      default: false,
-                                  } satisfies MatchBlockExtraState,
-                              },
-                          ]),
+                    ...advanced<Blockly.utils.toolbox.BlockInfo>(
+                        [
+                            {
+                                kind: "block",
+                                type: "controls_if",
+                            },
+                            {
+                                ...blockInfo(
+                                    BLOCK_MATCH,
+                                    shadowDynamic("apple"),
+                                ),
+                                extraState: {
+                                    cases: [
+                                        {
+                                            exact: "apple",
+                                        },
+                                    ],
+                                    default: false,
+                                } satisfies MatchBlockExtraState,
+                            },
+                        ],
+                        [blockInfo(BLOCK_IF), blockInfo(BLOCK_IF_ELSE)],
+                    ),
 
-                    blockToDefinition(BLOCK_WAIT_UNTIL),
-                    blockToDefinition(BLOCK_REPEAT_UNTIL),
+                    blockInfo(BLOCK_WAIT_UNTIL),
+                    blockInfo(BLOCK_REPEAT_UNTIL),
                     GAP50,
-                    blockToDefinition(BLOCK_STOP),
+                    blockInfo(BLOCK_STOP),
                     GAP50,
-                    blockToDefinition(BLOCK_WHEN_I_START_AS_CLONE),
-                    {
-                        kind: "block",
-                        type: BLOCK_CREATE_CLONE_OF.type,
-                        inputs: {
-                            [BLOCK_CREATE_CLONE_OF.args0[0].name]:
-                                shadowItemMenu("control"),
-                        },
-                    },
-                    blockToDefinition(BLOCK_DELETE_THIS),
+                    blockInfo(BLOCK_WHEN_I_START_AS_CLONE),
+                    blockInfo(BLOCK_CREATE_CLONE_OF, shadowItemMenu("control")),
+                    blockInfo(BLOCK_DELETE_THIS),
                 ],
             },
             /* events */ {
@@ -746,12 +571,11 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                 name: "Sensing",
                 categorystyle: "style_category_sensing",
                 contents: [
-                    blockToDefinition(BLOCK_TOUCHING),
-                    blockToDefinition(BLOCK_DISTANCE_TO),
+                    blockInfo(BLOCK_TOUCHING),
+                    blockInfo(BLOCK_DISTANCE_TO),
                     GAP50,
                     {
-                        kind: "block",
-                        type: BLOCK_TAG.type,
+                        ...blockInfo(BLOCK_TAG),
                         inputs: {
                             [BLOCK_TAG.args0[0].name]:
                                 shadowItemMenu("sensing"),
@@ -759,8 +583,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         },
                     },
                     {
-                        kind: "block",
-                        type: BLOCK_REMOVE_TAG.type,
+                        ...blockInfo(BLOCK_REMOVE_TAG),
                         inputs: {
                             [BLOCK_REMOVE_TAG.args0[0].name]:
                                 shadowItemMenu("sensing"),
@@ -768,46 +591,28 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         },
                     },
                     {
-                        kind: "block",
-                        type: BLOCK_SENSING_ADD_TAGGED_TO_LIST.type,
+                        ...blockInfo(BLOCK_SENSING_ADD_TAGGED_TO_LIST),
                         inputs: SHADOW_TAG_MENU,
                     },
                     {
-                        kind: "block",
-                        type: BLOCK_HAS_TAG_SELF.type,
+                        ...blockInfo(BLOCK_HAS_TAG_SELF),
                         inputs: SHADOW_TAG_MENU,
                     },
                     {
-                        kind: "block",
-                        type: BLOCK_HAS_TAG_OTHER.type,
+                        ...blockInfo(BLOCK_HAS_TAG_OTHER),
                         inputs: SHADOW_TAG_MENU,
                     },
                     {
-                        kind: "block",
-                        type: BLOCK_CLOSEST_TAGGED.type,
+                        ...blockInfo(BLOCK_CLOSEST_TAGGED),
                         inputs: SHADOW_TAG_MENU,
                     },
-                    {
-                        kind: "block",
-                        type: BLOCK_TOKEN_NAMED.type,
-                        inputs: {
-                            [BLOCK_TOKEN_NAMED.args0[0].name]:
-                                shadowDynamic("Token Name"),
-                        },
-                    },
+                    blockInfo(BLOCK_TOKEN_NAMED, shadowDynamic("Token Name")),
                     GAP50,
-                    blockToDefinition(BLOCK_DESELECT),
+                    blockInfo(BLOCK_DESELECT),
                     GAP50,
-                    {
-                        kind: "block",
-                        type: BLOCK_SENSING_OF.type,
-                        inputs: {
-                            [BLOCK_SENSING_OF.args0[1].name]:
-                                shadowItemMenu("sensing"),
-                        },
-                    },
+                    blockInfo(BLOCK_SENSING_OF, shadowItemMenu("sensing")),
                     GAP50,
-                    blockToDefinition(BLOCK_CURRENT_TIME),
+                    blockInfo(BLOCK_CURRENT_TIME),
                 ],
             },
             /* operators */ {
@@ -833,30 +638,17 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         },
                     },
                     GAP50,
-                    {
-                        kind: "block",
-                        type: BLOCK_GREATER_THAN.type,
-                        inputs: {
-                            [BLOCK_GREATER_THAN.args0[0].name]: shadowDynamic(),
-                            [BLOCK_GREATER_THAN.args0[1].name]: shadowDynamic(),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_LESS_THAN.type,
-                        inputs: {
-                            [BLOCK_LESS_THAN.args0[0].name]: shadowDynamic(),
-                            [BLOCK_LESS_THAN.args0[1].name]: shadowDynamic(),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_EQUALS.type,
-                        inputs: {
-                            [BLOCK_EQUALS.args0[0].name]: shadowDynamic(),
-                            [BLOCK_EQUALS.args0[1].name]: shadowDynamic(),
-                        },
-                    },
+                    blockInfo(
+                        BLOCK_GREATER_THAN,
+                        shadowDynamic(),
+                        shadowDynamic(),
+                    ),
+                    blockInfo(
+                        BLOCK_LESS_THAN,
+                        shadowDynamic(),
+                        shadowDynamic(),
+                    ),
+                    blockInfo(BLOCK_EQUALS, shadowDynamic(), shadowDynamic()),
                     GAP50,
                     { kind: "block", type: "logic_operation" },
                     { kind: "block", type: "logic_negate" },
@@ -869,15 +661,11 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                             STRING2: shadowDynamic("banana"),
                         },
                     },
-                    {
-                        kind: "block",
-                        type: BLOCK_LETTER_OF.type,
-                        inputs: {
-                            [BLOCK_LETTER_OF.args0[0].name]: shadowNumber(1),
-                            [BLOCK_LETTER_OF.args0[1].name]:
-                                shadowDynamic("apple"),
-                        },
-                    },
+                    blockInfo(
+                        BLOCK_LETTER_OF,
+                        shadowNumber(1),
+                        shadowDynamic("apple"),
+                    ),
                     {
                         kind: "block",
                         type: "text_length",
@@ -885,15 +673,11 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                             VALUE: shadowDynamic("apple"),
                         },
                     },
-                    {
-                        kind: "block",
-                        type: BLOCK_CONTAINS.type,
-                        inputs: {
-                            [BLOCK_CONTAINS.args0[0].name]:
-                                shadowDynamic("apple"),
-                            [BLOCK_CONTAINS.args0[1].name]: shadowDynamic("a"),
-                        },
-                    },
+                    blockInfo(
+                        BLOCK_CONTAINS,
+                        shadowDynamic("apple"),
+                        shadowDynamic("a"),
+                    ),
                     GAP50,
                     {
                         kind: "block",
@@ -956,206 +740,123 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                 categorystyle: "style_category_extensions",
                 contents: [
                     ...extensionHeader("Announcement"),
-                    {
-                        kind: "block",
-                        type: BLOCK_ANNOUNCEMENT.type,
-                        inputs: {
-                            [BLOCK_ANNOUNCEMENT.args0[1].name]:
-                                shadowDynamic("# *Hello*"),
-                            [BLOCK_ANNOUNCEMENT.args0[2].name]: shadowNumber(3),
-                        },
-                    },
-
+                    blockInfo(
+                        BLOCK_ANNOUNCEMENT,
+                        shadowDynamic("# *Hello*"),
+                        shadowNumber(3),
+                    ),
                     ...extensionHeader("Auras and Emanations"),
-                    {
-                        kind: "block",
-                        type: BLOCK_ADD_AURA.type,
-                        inputs: {
-                            [BLOCK_ADD_AURA.args0[1].name]: shadowNumber(
-                                grid.parsedScale.multiplier,
-                            ),
-                            [BLOCK_ADD_AURA.args0[2].name]: shadowColor(
-                                assumeHexColor("#facade"),
-                            ),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_ADD_AURA_PRESET.type,
-                        inputs: {
-                            [BLOCK_ADD_AURA_PRESET.args0[1].name]:
-                                shadowDynamic("Faerie Fire"),
-                        },
-                    },
-                    blockToDefinition(BLOCK_REMOVE_AURAS),
+                    blockInfo(
+                        BLOCK_ADD_AURA,
+                        shadowNumber(1),
+                        shadowColor(assumeHexColor("#facade")),
+                    ),
+                    blockInfo(
+                        BLOCK_ADD_AURA_PRESET,
+                        shadowDynamic("Faerie Fire"),
+                    ),
+                    blockInfo(BLOCK_REMOVE_AURAS),
 
                     ...extensionHeader("Bones!"),
-                    blockToDefinition(BLOCK_EXTENSION_BONES_ON_ROLL),
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_BONES_ROLL_DICE.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_BONES_ROLL_DICE.args0[1].name]:
-                                shadowDynamic("1d20"),
-                        },
-                    },
+                    blockInfo(BLOCK_EXTENSION_BONES_ON_ROLL),
+                    blockInfo(
+                        BLOCK_EXTENSION_BONES_ROLL_DICE,
+                        shadowDynamic("1d20"),
+                    ),
 
                     ...(isImage(target)
                         ? [
                               ...extensionHeader("Character Distances"),
-                              {
-                                  kind: "block",
-                                  type: BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT.type,
-                                  inputs: {
-                                      [BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT
-                                          .args0[1].name]: shadowNumber(
-                                          CharacterDistances.getHeight(target),
-                                      ),
-                                  },
-                              },
-                              blockToDefinition(
+                              blockInfo(
+                                  BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT,
+                                  shadowNumber(
+                                      CharacterDistances.getHeight(target),
+                                  ),
+                              ),
+                              blockInfo(
                                   BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT,
                               ),
                           ]
                         : []),
 
                     ...extensionHeader("Clash!"),
-                    blockToDefinition(BLOCK_EXTENSION_CLASH_HP_CHANGE),
-                    blockToDefinition(BLOCK_EXTENSION_CLASH_PROPERTY),
+                    blockInfo(BLOCK_EXTENSION_CLASH_HP_CHANGE),
+                    blockInfo(BLOCK_EXTENSION_CLASH_PROPERTY),
 
                     ...extensionHeader("Dice+"),
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_DICE_PLUS_ROLL.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_DICE_PLUS_ROLL.args0[1].name]:
-                                shadowDynamic("1d20"),
-                        },
-                    },
+                    blockInfo(
+                        BLOCK_EXTENSION_DICE_PLUS_ROLL,
+                        shadowDynamic("1d20"),
+                    ),
 
                     ...extensionHeader("Dynamic Fog"),
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_FOG_ADD.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_FOG_ADD.args0[1].name]:
-                                shadowNumber(grid.parsedScale.multiplier),
-                        },
-                    },
-                    blockToDefinition(BLOCK_EXTENSION_FOG_REMOVE),
-                    blockToDefinition(BLOCK_EXTENSION_FOG_LIT),
+                    blockInfo(
+                        BLOCK_EXTENSION_FOG_ADD,
+                        shadowNumber(grid.parsedScale.multiplier),
+                    ),
+                    blockInfo(BLOCK_EXTENSION_FOG_REMOVE),
+                    blockInfo(BLOCK_EXTENSION_FOG_LIT),
 
                     ...extensionHeader("Game Master's Daggerheart"),
-                    blockToDefinition(BLOCK_EXTENSION_DAGGERHEART_STAT),
-                    blockToDefinition(BLOCK_EXTENSION_DAGGERHEART_FEAR),
+                    blockInfo(BLOCK_EXTENSION_DAGGERHEART_STAT),
+                    blockInfo(BLOCK_EXTENSION_DAGGERHEART_FEAR),
 
                     ...extensionHeader("Game Master's Grimoire"),
-                    blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE),
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_GRIMOIRE_SET_STAT.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_GRIMOIRE_SET_STAT.args0[2].name]:
-                                shadowNumber(10),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_GRIMOIRE_ROLL.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_GRIMOIRE_ROLL.args0[1].name]:
-                                shadowDynamic("1d20"),
-                        },
-                    },
-                    blockToDefinition(BLOCK_EXTENSION_GRIMOIRE_STAT),
+                    blockInfo(BLOCK_EXTENSION_GRIMOIRE_HP_CHANGE),
+                    blockInfo(
+                        BLOCK_EXTENSION_GRIMOIRE_SET_STAT,
+                        shadowNumber(10),
+                    ),
+                    blockInfo(
+                        BLOCK_EXTENSION_GRIMOIRE_ROLL,
+                        shadowDynamic("1d20"),
+                    ),
+                    blockInfo(BLOCK_EXTENSION_GRIMOIRE_STAT),
 
                     {
                         kind: "label",
                         text: "Google Sheets",
                     },
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_SHEETS_GET.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_SHEETS_GET.args0[1].name]:
-                                shadowDynamic("A1"),
-                            [BLOCK_EXTENSION_SHEETS_GET.args0[2].name]:
-                                shadowDynamic("Sheet1"),
-                            [BLOCK_EXTENSION_SHEETS_GET.args0[3].name]: {
-                                shadow: {
-                                    type: BLOCK_URL.type,
-                                    fields: {
-                                        [BLOCK_URL.args0[0].name]:
-                                            "https://docs.google.com/spreadsheets/d/1ZVKsRBdWjpWXt9c7cJSI2-EEiUOvBFDbNjmpa8m-9Gw",
-                                    },
-                                },
-                            },
-                        },
-                    },
+                    blockInfo(
+                        BLOCK_EXTENSION_SHEETS_GET,
+                        shadowDynamic("A1"),
+                        shadowDynamic("Sheet1"),
+                        shadowUrl(
+                            "https://docs.google.com/spreadsheets/d/1ZVKsRBdWjpWXt9c7cJSI2-EEiUOvBFDbNjmpa8m-9Gw",
+                        ),
+                    ),
 
                     ...extensionHeader("Hoot"),
-                    {
-                        kind: "block",
-                        type: BLOCK_HOOT.type,
-                        inputs: {
-                            [BLOCK_HOOT.args0[1].name]: shadowDynamic(),
-                            [BLOCK_HOOT.args0[2].name]: shadowDynamic(),
-                        },
-                    },
+                    blockInfo(BLOCK_HOOT, shadowDynamic(), shadowDynamic()),
 
                     ...extensionHeader("Owlbear Codeo"),
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_CODEO_RUN_SCRIPT.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_CODEO_RUN_SCRIPT.args0[1].name]:
-                                shadowDynamic("My New Script"),
-                        },
-                    },
+                    blockInfo(
+                        BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
+                        shadowDynamic("My New Script"),
+                    ),
 
                     ...extensionHeader("Owl Trackers"),
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.args0[1]
-                                .name]: shadowDynamic("HP"),
-                            [BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD.args0[2]
-                                .name]: shadowNumber(10),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX.args0[1]
-                                .name]: shadowDynamic("checkbox"),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP
-                                .args0[2].name]: shadowDynamic("HP"),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_OWL_TRACKERS_FIELD.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_OWL_TRACKERS_FIELD.args0[1].name]:
-                                shadowDynamic("HP"),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX.args0[1]
-                                .name]: shadowDynamic("checkbox"),
-                        },
-                    },
+                    blockInfo(
+                        BLOCK_EXTENSION_OWL_TRACKERS_SET_FIELD,
+                        shadowDynamic("HP"),
+                        shadowNumber(10),
+                    ),
+                    blockInfo(
+                        BLOCK_EXTENSION_OWL_TRACKERS_SET_CHECKBOX,
+                        shadowDynamic("checkbox"),
+                    ),
+                    blockInfo(
+                        BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP,
+                        shadowDynamic("HP"),
+                    ),
+                    blockInfo(
+                        BLOCK_EXTENSION_OWL_TRACKERS_FIELD,
+                        shadowDynamic("HP"),
+                    ),
+                    blockInfo(
+                        BLOCK_EXTENSION_OWL_TRACKERS_CHECKBOX,
+                        shadowDynamic("checkbox"),
+                    ),
 
                     ...(isCurve(target) ||
                     isShape(target) ||
@@ -1163,91 +864,63 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     isPath(target)
                         ? [
                               ...extensionHeader("Peekaboo"),
-                              {
-                                  kind: "block",
-                                  type: BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY.type,
-                                  inputs: {
-                                      [BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY
-                                          .args0[1].name]: shadowNumber(50),
-                                  },
-                              },
-                              blockToDefinition(
-                                  BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY,
+                              blockInfo(
+                                  BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY,
+                                  shadowNumber(50),
                               ),
+                              blockInfo(BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY),
                           ]
                         : []),
 
                     ...extensionHeader("Phases Automated"),
-                    blockToDefinition(BLOCK_EXTENSION_PHASE_CHANGE),
+                    blockInfo(BLOCK_EXTENSION_PHASE_CHANGE),
 
                     ...extensionHeader("Pretty Sordid"),
-                    blockToDefinition(BLOCK_WHEN_PRETTY_TURN_CHANGE),
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_PRETTY_SET_INITIATIVE.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_PRETTY_SET_INITIATIVE.args0[1]
-                                .name]: shadowNumber(10),
-                        },
-                    },
-                    blockToDefinition(BLOCK_EXTENSION_PRETTY_MY_INITIATIVE),
-                    blockToDefinition(BLOCK_EXTENSION_PRETTY_MY_TURN),
+                    blockInfo(BLOCK_WHEN_PRETTY_TURN_CHANGE),
+                    blockInfo(
+                        BLOCK_EXTENSION_PRETTY_SET_INITIATIVE,
+                        shadowNumber(10),
+                    ),
+                    blockInfo(BLOCK_EXTENSION_PRETTY_MY_INITIATIVE),
+                    blockInfo(BLOCK_EXTENSION_PRETTY_MY_TURN),
 
                     ...extensionHeader("Smoke & Spectre!"),
                     ...(isImage(target)
                         ? [
-                              {
-                                  kind: "block",
-                                  type: BLOCK_EXTENSION_SMOKE_ADD.type,
-                                  inputs: {
-                                      [BLOCK_EXTENSION_SMOKE_ADD.args0[1].name]:
-                                          shadowNumber(
-                                              grid.parsedScale.multiplier,
-                                          ),
-                                  },
-                              },
-                              blockToDefinition(BLOCK_EXTENSION_SMOKE_REMOVE),
-                              blockToDefinition(BLOCK_EXTENSION_SMOKE_BLIND),
-                              blockToDefinition(BLOCK_EXTENSION_SMOKE_VISION),
+                              blockInfo(
+                                  BLOCK_EXTENSION_SMOKE_ADD,
+                                  shadowNumber(grid.parsedScale.multiplier),
+                              ),
+                              blockInfo(BLOCK_EXTENSION_SMOKE_REMOVE),
+                              blockInfo(BLOCK_EXTENSION_SMOKE_BLIND),
+                              blockInfo(BLOCK_EXTENSION_SMOKE_VISION),
                           ]
                         : []),
 
                     ...(isCurve(target)
                         ? [
-                              blockToDefinition(
-                                  BLOCK_EXTENSION_SMOKE_WHEN_DOOR,
-                              ),
-                              blockToDefinition(
-                                  BLOCK_EXTENSION_SMOKE_VISION_LINE,
-                              ),
-                              blockToDefinition(BLOCK_EXTENSION_SMOKE_SWAP),
-                              blockToDefinition(BLOCK_EXTENSION_SMOKE_WINDOW),
-                              blockToDefinition(BLOCK_EXTENSION_SMOKE_DOOR),
+                              blockInfo(BLOCK_EXTENSION_SMOKE_WHEN_DOOR),
+                              blockInfo(BLOCK_EXTENSION_SMOKE_VISION_LINE),
+                              blockInfo(BLOCK_EXTENSION_SMOKE_SWAP),
+                              blockInfo(BLOCK_EXTENSION_SMOKE_WINDOW),
+                              blockInfo(BLOCK_EXTENSION_SMOKE_DOOR),
                           ]
                         : []),
 
                     ...extensionHeader("Rumble!"),
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_RUMBLE_SAY.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_RUMBLE_SAY.args0[1].name]:
-                                shadowDynamic("Hello!"),
-                        },
-                    },
-                    {
-                        kind: "block",
-                        type: BLOCK_EXTENSION_RUMBLE_ROLL.type,
-                        inputs: {
-                            [BLOCK_EXTENSION_RUMBLE_ROLL.args0[1].name]:
-                                shadowDynamic("1d20"),
-                        },
-                    },
+                    blockInfo(
+                        BLOCK_EXTENSION_RUMBLE_SAY,
+                        shadowDynamic("Hello!"),
+                    ),
+                    blockInfo(
+                        BLOCK_EXTENSION_RUMBLE_ROLL,
+                        shadowDynamic("1d20"),
+                    ),
 
                     ...extensionHeader("Weather"),
-                    blockToDefinition(BLOCK_EXTENSION_WEATHER_ADD),
-                    blockToDefinition(BLOCK_EXTENSION_WEATHER_REMOVE),
-                    blockToDefinition(BLOCK_EXTENSION_WEATHER_HAS),
+                    blockInfo(BLOCK_EXTENSION_WEATHER_ADD),
+                    blockInfo(BLOCK_EXTENSION_WEATHER_REMOVE),
+                    blockInfo(BLOCK_EXTENSION_WEATHER_HAS),
                 ],
             },
         ],

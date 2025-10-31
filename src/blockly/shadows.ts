@@ -1,9 +1,14 @@
 import type { HexColor } from "owlbear-utils";
 import {
+    BLOCK_BROADCAST_MENU,
     BLOCK_COLOR_PICKER,
     BLOCK_CONTROL_ITEM_MENU,
     BLOCK_DYNAMIC_VAL,
+    BLOCK_OPACITY_SLIDER,
+    BLOCK_OTHER,
     BLOCK_SENSING_ITEM_MENU,
+    BLOCK_SOUND_MENU,
+    BLOCK_URL,
 } from "./blocks";
 
 export function shadowNumber(n?: number) {
@@ -13,6 +18,41 @@ export function shadowNumber(n?: number) {
             fields: {
                 NUM: n,
             },
+        },
+    };
+}
+
+export function shadowOpacitySlider(opacity: number) {
+    return {
+        shadow: {
+            type: BLOCK_OPACITY_SLIDER.type,
+            fields: {
+                [BLOCK_OPACITY_SLIDER.args0[0].name]: opacity,
+            },
+        },
+    };
+}
+
+export function shadowSoundMenu() {
+    return {
+        shadow: {
+            type: BLOCK_SOUND_MENU.type,
+        },
+    };
+}
+
+export function shadowBroadcastMenu() {
+    return {
+        shadow: {
+            type: BLOCK_BROADCAST_MENU.type,
+        },
+    };
+}
+
+export function shadowOther() {
+    return {
+        shadow: {
+            type: BLOCK_OTHER.type,
         },
     };
 }
@@ -46,6 +86,17 @@ export function shadowItemMenu(category: "sensing" | "control") {
                 category === "sensing"
                     ? BLOCK_SENSING_ITEM_MENU.type
                     : BLOCK_CONTROL_ITEM_MENU.type,
+        },
+    };
+}
+
+export function shadowUrl(url: string) {
+    return {
+        shadow: {
+            type: BLOCK_URL.type,
+            fields: {
+                [BLOCK_URL.args0[0].name]: url,
+            },
         },
     };
 }

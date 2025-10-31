@@ -11,6 +11,7 @@ import OBR, {
 } from "@owlbear-rodeo/sdk";
 import {
     assertItem,
+    complain,
     isLayer,
     isObject,
     isVector2,
@@ -214,7 +215,7 @@ export const LOOKS_BEHAVIORS = {
     ) => {
         const secs = Number(secsUnknown);
         if (!isFinite(secs) || isNaN(secs) || secs <= 0) {
-            console.warn(`[say] secs invalid: ${secs}`);
+            complain(`[say] duration invalid: ${secs}`);
             return;
         }
 
@@ -253,7 +254,7 @@ export const LOOKS_BEHAVIORS = {
     ) => {
         const size = Number(sizeUnknown);
         if (!isFinite(size) || isNaN(size)) {
-            console.warn(`[setSize] size invalid: ${size}`);
+            complain(`[setSize] size invalid: ${size}`);
             return;
         }
 
@@ -272,7 +273,7 @@ export const LOOKS_BEHAVIORS = {
     ) => {
         const delta = Number(deltaUnknown);
         if (!isFinite(delta) || isNaN(delta)) {
-            console.warn(`[changeSize] delta invalid: ${delta}`);
+            complain(`[changeSize] delta invalid: ${delta}`);
             return;
         }
 
@@ -291,7 +292,7 @@ export const LOOKS_BEHAVIORS = {
     ): Promise<void> => {
         await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
             if (!isImage(self)) {
-                console.warn("replace image called on non-image");
+                complain("replace image called on non-image");
                 return;
             }
             self.image = image;
@@ -365,7 +366,7 @@ export const LOOKS_BEHAVIORS = {
         const item = await ItemProxy.getInstance().get(itemId);
         signal.throwIfAborted();
         if (!item) {
-            console.warn(`[getText] Item not found: ${itemId}`);
+            complain(`[getText] Item not found: ${itemId}`);
             return "";
         }
 
@@ -491,7 +492,7 @@ export const LOOKS_BEHAVIORS = {
                     ) + 1;
             });
         } else {
-            console.warn(`[setLayer] invalid layer: ${layer}`);
+            complain(`[setLayer] invalid layer: ${layer}`);
             return;
         }
 
@@ -507,7 +508,7 @@ export const LOOKS_BEHAVIORS = {
     ) => {
         const intensity = Number(intensityUnknown) / 100;
         if (!isFinite(intensity) || isNaN(intensity)) {
-            console.warn(`[setEffect] intensity invalid: ${intensity}`);
+            complain(`[setEffect] intensity invalid: ${intensity}`);
             return;
         }
         await ItemProxy.getInstance().update(String(selfIdUnknown), (draft) => {
@@ -560,15 +561,15 @@ export const LOOKS_BEHAVIORS = {
         const zoom =
             zoomUnknown === undefined ? undefined : Number(zoomUnknown);
         if (typeof zoom === "number" && (!isFinite(zoom) || isNaN(zoom))) {
-            console.warn(`[setViewport] zoom invalid: ${zoom}`);
+            complain(`zoom invalid: ${zoom}`);
         }
         const x = xUnknown === undefined ? undefined : Number(xUnknown);
         if (typeof x === "number" && (!isFinite(x) || isNaN(x))) {
-            console.warn(`[setViewport] x invalid: ${x}`);
+            complain(`[setViewport] x invalid: ${x}`);
         }
         const y = yUnknown === undefined ? undefined : Number(yUnknown);
         if (typeof y === "number" && (!isFinite(y) || isNaN(y))) {
-            console.warn(`[setViewport] y invalid: ${y}`);
+            complain(`[setViewport] y invalid: ${y}`);
         }
 
         const center =
@@ -578,6 +579,52 @@ export const LOOKS_BEHAVIORS = {
         if (targetUnknown === "EVERYONE") {
             await broadcastSetViewport(zoom, center);
         }
+        signal.throwIfAborted();
+    },
+
+    setFontSize: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        sizeUnknown: unknown,
+    ) => {
+        const size = Number(sizeUnknown);
+        if (!isFinite(size) || isNaN(size) || size <= 0) {
+            complain(`font size invalid: ${size}`);
+            return;
+        }
+
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            if (isImage(self) || isText(self)) {
+                self.text.style.fontSize = size;
+            }
+        });
+        signal.throwIfAborted();
+    },
+
+    setTextColor: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        colorUnknown: unknown,
+    ) => {
+        const color = String(colorUnknown);
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            if (isImage(self) || isText(self)) {
+                self.text.style.fillColor = color;
+            }
+        });
+        signal.throwIfAborted();
+    },
+
+    setFontFamily: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        fontUnknown: unknown,
+    ) => {
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            if (isImage(self) || isText(self)) {
+                self.text.style.fontFamily = String(fontUnknown);
+            }
+        });
         signal.throwIfAborted();
     },
 };
