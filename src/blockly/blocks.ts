@@ -3457,10 +3457,11 @@ export const BLOCK_EXTENSION_DICE_PLUS_ROLL = {
     inputsInline: true,
 } as const;
 
-export const BLOCK_EXTENSION_PHASE_CHANGE = {
+export const BLOCK_EXTENSION_PHASE_CHANGE_TO = {
     style: "extension_blocks",
     type: "extension_phases_change",
-    tooltip: "Runs the blocks below when a phase in Phases Automated changes",
+    tooltip:
+        "Runs the blocks below when an automation in Phases Automated changes to a specific phase",
     message0: "%1 when %2 enters phase %3",
     args0: [
         {
@@ -3482,6 +3483,54 @@ export const BLOCK_EXTENSION_PHASE_CHANGE = {
         },
     ],
     nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_PHASE_CHANGES = {
+    style: "extension_blocks",
+    type: "extension_phases_changes",
+    tooltip:
+        "Runs the blocks below when an automation in Phases Automated changes phase",
+    message0: "%1 when %2 changes phase",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://phases-automated.onrender.com/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Phases extension icon",
+        },
+        {
+            type: "field_input",
+            name: "NAME",
+            text: "Automation 1",
+        },
+    ],
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_PHASE_OF = {
+    style: "extension_blocks",
+    type: "extension_phases_of",
+    tooltip:
+        "Get the current phase of a Phases Automated automation (or 0 if the phase doesn't exist)",
+    message0: "%1 phase of %2",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://phases-automated.onrender.com/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Phases extension icon",
+        },
+        {
+            type: "input_value",
+            name: "NAME",
+            check: ["String", "Number"],
+        },
+    ],
+    output: "Number",
     inputsInline: true,
 } as const;
 
@@ -4071,7 +4120,9 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_BONES_ON_ROLL,
     BLOCK_EXTENSION_BONES_ROLL_DICE,
     BLOCK_EXTENSION_DICE_PLUS_ROLL,
-    BLOCK_EXTENSION_PHASE_CHANGE,
+    BLOCK_EXTENSION_PHASE_CHANGE_TO,
+    BLOCK_EXTENSION_PHASE_CHANGES,
+    BLOCK_EXTENSION_PHASE_OF,
     BLOCK_EXTENSION_PRETTY_MY_INITIATIVE,
     BLOCK_EXTENSION_PRETTY_MY_TURN,
     BLOCK_EXTENSION_PRETTY_SET_INITIATIVE,

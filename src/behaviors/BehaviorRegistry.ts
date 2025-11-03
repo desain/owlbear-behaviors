@@ -263,7 +263,7 @@ export class BehaviorRegistry {
                 .filter(
                     (handler) =>
                         handler.name === phaseName &&
-                        handler.phase === phaseValue,
+                        (handler.phase === undefined || handler.phase === phaseValue),
                 )
                 .forEach((handler) => executeTriggerHandler(handler)),
         );

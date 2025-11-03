@@ -59,10 +59,10 @@ interface BonesRollTriggerHandler extends BaseTriggerHandler {
     readonly value: number;
 }
 
-interface PhaseTriggerHandler extends BaseTriggerHandler {
+interface PhaseChangeTriggerHandler extends BaseTriggerHandler {
     readonly type: "phase_change";
     readonly name: string;
-    readonly phase: number;
+    readonly phase?: number;
 }
 
 interface SmokeSpectreDoorTriggerHandler extends BaseTriggerHandler {
@@ -98,7 +98,7 @@ export type TriggerHandler =
     | CollisionTriggerHandler
     | GrimoireHpChangeTriggerHandler
     | BonesRollTriggerHandler
-    | PhaseTriggerHandler
+    | PhaseChangeTriggerHandler
     | SmokeSpectreDoorTriggerHandler
     | PrettySordidTurnTriggerHandler
     | ClashHpChangeTriggerHandler

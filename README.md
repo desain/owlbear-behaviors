@@ -186,9 +186,6 @@ To make a production build run:
         -   Kenku FM?
         -   dddice? get room id from metadata, call API?
         -   Google sheets write
-        -   Phases
-            -   When (Automation 1) changes phase
-            -   Phase of (Automation 1)
         -   D&D beyond
             -   my HP, max HP, temp HP, initiative bonus, stats, proficiency, cuagau, skills
     -   Control

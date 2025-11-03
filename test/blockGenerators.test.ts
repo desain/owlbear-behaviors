@@ -4,12 +4,17 @@ import { compileBehavior } from "../src/behaviors/compileBehavior";
 import {
     BLOCK_ADD_ATTACHMENT,
     BLOCK_COLOR_PICKER,
+    BLOCK_DYNAMIC_VAL,
+    BLOCK_EXTENSION_PHASE_CHANGES,
+    BLOCK_EXTENSION_PHASE_OF,
     BLOCK_GOTO,
     BLOCK_HAS_ATTACHMENT,
     BLOCK_IF,
+    BLOCK_IMMEDIATELY,
     BLOCK_REMOVE_ATTACHMENT,
     BLOCK_REPEAT,
     BLOCK_REPEAT_UNTIL,
+    BLOCK_SAY,
     BLOCK_SET_FONT_FAMILY,
     BLOCK_SET_FONT_SIZE,
     BLOCK_SET_TEXT_COLOR,
@@ -30,7 +35,7 @@ function addImmediatelyWith(
     workspace: Blockly.Workspace,
     blockType: Blockly.Block["type"],
 ) {
-    const immediately = workspace.newBlock("event_immediately");
+    const immediately = workspace.newBlock(BLOCK_IMMEDIATELY.type);
     const block = workspace.newBlock(blockType);
     expect(block.previousConnection).not.toBeNull();
     immediately.nextConnection?.connect(block.previousConnection!);
@@ -3349,6 +3354,28 @@ describe("Blockly JavaScript Generation", () => {
                 workspace,
             );
 
+            checkCompiles(workspace);
+        });
+
+        it("should generate syntactically valid JavaScript for 'phase of <name>' block", () => {
+            const workspace = new Blockly.Workspace();
+            const say = addImmediatelyWith(workspace, BLOCK_SAY.type);
+            const ofBlock = workspace.newBlock(BLOCK_EXTENSION_PHASE_OF.type);
+            ofBlock
+                .getInput(BLOCK_EXTENSION_PHASE_OF.args0[1].name)!
+                .connection!.connect(
+                    workspace.newBlock(BLOCK_DYNAMIC_VAL.type)
+                        .outputConnection!,
+                );
+            say.getInput(BLOCK_SAY.args0[0].name)!.connection!.connect(
+                ofBlock.outputConnection!,
+            );
+            checkCompiles(workspace);
+        });
+
+        it("should generate syntactically valid JavaScript for 'when phase <name> changes' hat block", () => {
+            const workspace = new Blockly.Workspace();
+            workspace.newBlock(BLOCK_EXTENSION_PHASE_CHANGES.type);
             checkCompiles(workspace);
         });
     });

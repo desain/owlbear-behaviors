@@ -65,7 +65,9 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP,
     BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY,
     BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY,
-    BLOCK_EXTENSION_PHASE_CHANGE,
+    BLOCK_EXTENSION_PHASE_CHANGE_TO,
+    BLOCK_EXTENSION_PHASE_CHANGES,
+    BLOCK_EXTENSION_PHASE_OF,
     BLOCK_EXTENSION_PRETTY_MY_INITIATIVE,
     BLOCK_EXTENSION_PRETTY_MY_TURN,
     BLOCK_EXTENSION_PRETTY_SET_INITIATIVE,
@@ -873,7 +875,12 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         : []),
 
                     ...extensionHeader("Phases Automated"),
-                    blockInfo(BLOCK_EXTENSION_PHASE_CHANGE),
+                    blockInfo(BLOCK_EXTENSION_PHASE_CHANGE_TO),
+                    blockInfo(BLOCK_EXTENSION_PHASE_CHANGES),
+                    blockInfo(
+                        BLOCK_EXTENSION_PHASE_OF,
+                        shadowDynamic("Automation 1"),
+                    ),
 
                     ...extensionHeader("Pretty Sordid"),
                     blockInfo(BLOCK_WHEN_PRETTY_TURN_CHANGE),

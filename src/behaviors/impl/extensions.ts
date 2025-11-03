@@ -1,3 +1,4 @@
+import OBR from "@owlbear-rodeo/sdk";
 import { isHexColor, units, unitsToPixels } from "owlbear-utils";
 import type { BLOCK_EXTENSION_WEATHER_ADD } from "../../blockly/blocks";
 import { Announcement } from "../../extensions/Announcement";
@@ -14,6 +15,7 @@ import { Grimoire } from "../../extensions/Grimoire";
 import { Hoot } from "../../extensions/Hoot";
 import { OwlTrackers } from "../../extensions/OwlTrackers";
 import { Peekaboo } from "../../extensions/Peekaboo";
+import { Phases } from "../../extensions/Phases";
 import { PrettySordid } from "../../extensions/PrettySordid";
 import { Rumble } from "../../extensions/Rumble";
 import { SmokeAndSpectre } from "../../extensions/SmokeAndSpectre";
@@ -799,5 +801,16 @@ export const EXTENSIONS_BEHAVIORS = {
             CharacterDistances.setHeight(draft, height);
         });
         signal.throwIfAborted();
+    },
+
+    getPhase: async (
+        signal: AbortSignal,
+        nameUnknown: unknown,
+    ): Promise<number> => {
+        const name = String(nameUnknown);
+        const metadata = await OBR.scene.getMetadata();
+        signal.throwIfAborted();
+        const phases = Phases.getPhases(metadata);
+        return phases[name] ?? 0;
     },
 };

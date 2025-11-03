@@ -77,7 +77,9 @@ import {
     BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP,
     BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY,
     BLOCK_EXTENSION_PEEKABOO_SET_SOLIDITY,
-    BLOCK_EXTENSION_PHASE_CHANGE,
+    BLOCK_EXTENSION_PHASE_CHANGE_TO,
+    BLOCK_EXTENSION_PHASE_CHANGES,
+    BLOCK_EXTENSION_PHASE_OF,
     BLOCK_EXTENSION_PRETTY_MY_INITIATIVE,
     BLOCK_EXTENSION_PRETTY_MY_TURN,
     BLOCK_EXTENSION_PRETTY_SET_INITIATIVE,
@@ -2516,14 +2518,14 @@ export const GENERATORS: Record<
         );
     },
 
-    [BLOCK_EXTENSION_PHASE_CHANGE.type]: (block, generator) => {
+    [BLOCK_EXTENSION_PHASE_CHANGE_TO.type]: (block, generator) => {
         const name = getStringFieldValue(
             block,
-            BLOCK_EXTENSION_PHASE_CHANGE.args0[1].name,
+            BLOCK_EXTENSION_PHASE_CHANGE_TO.args0[1].name,
         );
         const phase = getNumberFieldValue(
             block,
-            BLOCK_EXTENSION_PHASE_CHANGE.args0[2].name,
+            BLOCK_EXTENSION_PHASE_CHANGE_TO.args0[2].name,
         );
         return generateAddTriggerHandler(block, generator, {
             type: "phase_change",
@@ -2531,6 +2533,27 @@ export const GENERATORS: Record<
             name,
             phase,
         });
+    },
+
+    [BLOCK_EXTENSION_PHASE_CHANGES.type]: (block, generator) => {
+        const name = getStringFieldValue(
+            block,
+            BLOCK_EXTENSION_PHASE_CHANGES.args0[1].name,
+        );
+        return generateAddTriggerHandler(block, generator, {
+            type: "phase_change",
+            hatBlockId: block.id,
+            name: name,
+        });
+    },
+
+    [BLOCK_EXTENSION_PHASE_OF.type]: (block, generator) => {
+        const name = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_PHASE_OF.args0[1].name,
+            javascript.Order.NONE,
+        );
+        return awaitBehaveValue("getPhase", PARAMETER_SIGNAL, name);
     },
 
     // Pretty Sordid Initiative
