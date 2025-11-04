@@ -118,6 +118,7 @@ import {
     BLOCK_MATCH,
     BLOCK_MIN_MAX,
     BLOCK_MOVE_DIRECTION,
+    BLOCK_MULTI_JOIN,
     BLOCK_MY_PARENT,
     BLOCK_PATHFIND,
     BLOCK_POINT_IN_DIRECTION,
@@ -664,6 +665,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                             STRING2: shadowDynamic("banana"),
                         },
                     },
+                    ...advanced(devOnly(blockInfo(BLOCK_MULTI_JOIN))),
                     blockInfo(
                         BLOCK_LETTER_OF,
                         shadowNumber(1),

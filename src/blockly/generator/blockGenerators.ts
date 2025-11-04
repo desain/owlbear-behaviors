@@ -144,6 +144,9 @@ import {
     BLOCK_MATCH_RANGE,
     BLOCK_MIN_MAX,
     BLOCK_MOVE_DIRECTION,
+    BLOCK_MULTI_JOIN,
+    BLOCK_MULTI_JOIN_CONTAINER,
+    BLOCK_MULTI_JOIN_ITEM,
     BLOCK_MY_PARENT,
     BLOCK_OPACITY_SLIDER,
     BLOCK_OTHER,
@@ -210,9 +213,10 @@ import {
     type CustomBlockType,
 } from "../blocks";
 import { caseStatementInputName, type MatchBlock } from "../mutatorMatch";
+import { multiJoinInputName, type MultiJoinBlock } from "../mutatorMultiJoin";
 import type { ArgumentReporterBlock } from "../procedures/blockArgumentReporter";
 import type { CallBlock } from "../procedures/blockCall";
-import { type DefineBlock, isDefineBlock } from "../procedures/blockDefine";
+import { isDefineBlock, type DefineBlock } from "../procedures/blockDefine";
 import type { BehaviorJavascriptGenerator } from "./BehaviorJavascriptGenerator";
 import {
     awaitBehaveStatement,
@@ -1684,6 +1688,20 @@ export const GENERATORS: Record<
         ];
     },
 
+    [BLOCK_MULTI_JOIN.type]: (block, generator) => {
+        const multiJoinBlock = block as MultiJoinBlock;
+        const elements = new Array(multiJoinBlock.itemCount);
+        for (let i = 0; i < multiJoinBlock.itemCount; i++) {
+            elements[i] = generator.valueToCode(
+                block,
+                multiJoinInputName(i),
+                javascript.Order.NONE,
+            );
+        }
+        const code = `[${elements.join(",")}].join('')`;
+        return [code, javascript.Order.FUNCTION_CALL];
+    },
+
     [BLOCK_GREATER_THAN.type]: (block, generator) => {
         const operarand1 = generator.valueToCode(
             block,
@@ -2941,4 +2959,6 @@ export const GENERATORS: Record<
     [BLOCK_MATCH_MATCH.type]: noCodegen,
     [BLOCK_MATCH_CASE.type]: noCodegen,
     [BLOCK_MATCH_RANGE.type]: noCodegen,
+    [BLOCK_MULTI_JOIN_CONTAINER.type]: noCodegen,
+    [BLOCK_MULTI_JOIN_ITEM.type]: noCodegen,
 };

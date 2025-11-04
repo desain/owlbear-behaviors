@@ -12,6 +12,7 @@ import {
     BLOCK_IF,
     BLOCK_IMMEDIATELY,
     BLOCK_MIN_MAX,
+    BLOCK_MULTI_JOIN,
     BLOCK_REMOVE_ATTACHMENT,
     BLOCK_REPEAT,
     BLOCK_REPEAT_UNTIL,
@@ -2428,6 +2429,58 @@ describe("Blockly JavaScript Generation", () => {
                 addDynamicValToInput(ofBlock, BLOCK_MIN_MAX.args0[1].name, "2");
                 addDynamicValToInput(ofBlock, BLOCK_MIN_MAX.args0[2].name, "3");
                 checkCompiles(workspace);
+            });
+        });
+
+        describe("multi-join block", () => {
+            it("should generate syntactically valid javascript for 2 inputs", () => {
+                const workspace = new Blockly.Workspace();
+                const block = addImmediatelySayWith(
+                    workspace,
+                    BLOCK_MULTI_JOIN.type,
+                );
+                block.loadExtraState!({ itemCount: 2 });
+                addDynamicValToInput(block, "S0", "a");
+                addDynamicValToInput(block, "S1", "b");
+                const code = checkCompiles(workspace);
+                expect(code).toContain("['a','b'].join('')");
+            });
+
+            it("should generate syntactically valid javascript for 3 inputs", () => {
+                const workspace = new Blockly.Workspace();
+                const block = addImmediatelySayWith(
+                    workspace,
+                    BLOCK_MULTI_JOIN.type,
+                );
+                block.loadExtraState!({ itemCount: 3 });
+                addDynamicValToInput(block, "S0", "a");
+                addDynamicValToInput(block, "S1", "b");
+                addDynamicValToInput(block, "S2", "c");
+                const code = checkCompiles(workspace);
+                expect(code).toContain("['a','b','c'].join('')");
+            });
+
+            it("should generate syntactically valid javascript for 0 inputs", () => {
+                const workspace = new Blockly.Workspace();
+                const block = addImmediatelySayWith(
+                    workspace,
+                    BLOCK_MULTI_JOIN.type,
+                );
+                block.loadExtraState!({ itemCount: 0 });
+                const code = checkCompiles(workspace);
+                expect(code).toContain("[].join('')");
+            });
+
+            it("should generate syntactically valid javascript for 1 input", () => {
+                const workspace = new Blockly.Workspace();
+                const block = addImmediatelySayWith(
+                    workspace,
+                    BLOCK_MULTI_JOIN.type,
+                );
+                block.loadExtraState!({ itemCount: 1 });
+                addDynamicValToInput(block, "S0", "a");
+                const code = checkCompiles(workspace);
+                expect(code).toContain("['a'].join('')");
             });
         });
     });

@@ -18,6 +18,7 @@ import {
     MIXIN_DRAG_TO_DUPE,
     MIXIN_USES_VOLUME,
     MUTATOR_MATCH,
+    MUTATOR_MULTI_JOIN,
     VARIABLE_TYPE_LIST,
 } from "../constants";
 import type { ImageFieldValue } from "./FieldTokenImage";
@@ -1702,6 +1703,17 @@ export const BLOCK_JOIN = {
     ],
     output: "String",
     inputsInline: true,
+} as const;
+
+export const BLOCK_MULTI_JOIN = {
+    style: "operators_blocks",
+    type: "operator_joins",
+    tooltip: "Join any number of values into a text string",
+    helpUrl: "%{BKY_TEXT_JOIN_HELPURL}",
+    message0: "%{BKY_TEXT_CREATE_JOIN_TITLE_JOIN} all",
+    output: "String",
+    mutator: MUTATOR_MULTI_JOIN,
+    inputsInline: false,
 } as const;
 
 /**
@@ -3962,6 +3974,31 @@ export const BLOCK_MATCH_RANGE = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_MULTI_JOIN_CONTAINER = {
+    style: "operators_blocks",
+    type: "operator_multi_join_container",
+    tooltip: "Add, remove, or reorder inputs to join strings.",
+    message0: "join all",
+    message1: "%1",
+    args1: [
+        {
+            type: "input_statement",
+            name: "STACK",
+        },
+    ],
+    inputsInline: true,
+} as const;
+
+export const BLOCK_MULTI_JOIN_ITEM = {
+    style: "operators_blocks",
+    type: "operator_multi_join_item",
+    tooltip: "Item to join.",
+    message0: "item",
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 /**
  * Custom blocks.
  * Make blocks with https://google.github.io/blockly-samples/examples/developer-tools/index.html
@@ -4080,6 +4117,7 @@ export const CUSTOM_JSON_BLOCKS = [
 
     // Operator blocks
     BLOCK_JOIN,
+    BLOCK_MULTI_JOIN,
     BLOCK_LESS_THAN,
     BLOCK_EQUALS,
     BLOCK_GREATER_THAN,
@@ -4179,6 +4217,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_MATCH_MATCH,
     BLOCK_MATCH_CASE,
     BLOCK_MATCH_RANGE,
+    BLOCK_MULTI_JOIN_CONTAINER,
+    BLOCK_MULTI_JOIN_ITEM,
 ];
 
 export type CustomBlockType =

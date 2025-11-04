@@ -77,6 +77,7 @@ export const EXTENSION_SENSING_OF = "extension_sensing_of";
 export const MIXIN_DRAG_TO_DUPE = "mixin_drag_to_dupe";
 export const MIXIN_USES_VOLUME = "mixin_uses_volume";
 export const MUTATOR_MATCH = "mutator_match";
+export const MUTATOR_MULTI_JOIN = "mutator_multi_join";
 
 export const CREATE_NEW_RESOURCE = "__create_new__";
 

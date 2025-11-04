@@ -13,7 +13,7 @@
         "workers:dry-run": "pnpm build && wrangler deploy --dry-run",
         "workers:dev": "wrangler dev",
         "lint": "eslint .",
-        "test": "vitest",
+        "test": "vitest run",
         "coverage": "vitest run --coverage"
     },
     "keywords": [],

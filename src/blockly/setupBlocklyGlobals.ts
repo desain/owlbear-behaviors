@@ -21,6 +21,7 @@ import { registerFieldTokenImage } from "./FieldTokenImage";
 import { registerMixinDragToDupe } from "./mixinDragToDupe";
 import { registerMixinUsesVolume } from "./mixinUsesVolume";
 import { registerMutatorMatch } from "./mutatorMatch";
+import { registerMutatorMultiJoin } from "./mutatorMultiJoin";
 import { BehaviorParameterModel } from "./procedures/BehaviorParameterModel";
 import { BehaviorProcedureModel } from "./procedures/BehaviorProcedureModel";
 import { registerBlockArgumentReporter } from "./procedures/blockArgumentReporter";
@@ -109,6 +110,7 @@ export function setupBlocklyGlobals() {
     registerMixinDragToDupe();
     registerMixinUsesVolume();
     registerMutatorMatch();
+    registerMutatorMultiJoin();
 
     blocklySetup = true;
 }

@@ -162,10 +162,8 @@ To make a production build run:
 ## To do
 
 -   Advanced blocks setting
-    -   Multi join
     -   Broadcast to token / my children / tokens tagged
     -   Replace image with image of other
-    -   set text font/color/size
     -   Looks
         -   Set width and height scale independently
 -   Safety

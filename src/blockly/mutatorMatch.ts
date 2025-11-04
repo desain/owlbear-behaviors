@@ -254,6 +254,14 @@ export function registerMutatorMatch() {
                 return match;
             },
 
+            /**
+             * Called after decomposing source block into mutator block workspace.
+             * Saves connections on the source block to the mutator blocks, so when
+             * mutator blocks are moved around, the blocks that are connected to
+             * the source block move with them.
+             * @param this source block.
+             * @param topBlock top level block in mutator workspace.
+             */
             saveConnections: function (
                 this: Blockly.BlockSvg,
                 topBlock: MatchMatchBlock,
