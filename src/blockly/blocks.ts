@@ -1877,6 +1877,35 @@ export const BLOCK_CONTAINS = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_MIN_MAX = {
+    style: "operators_blocks",
+    type: "operator_minmax",
+    tooltip: "Return the smaller/larger of two numbers",
+    message0: "%1 of %2 and %3",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "OP",
+            options: [
+                ["smaller", "min"],
+                ["larger", "max"],
+            ],
+        },
+        {
+            type: "input_value",
+            name: "A",
+            check: ["Number", "String"],
+        },
+        {
+            type: "input_value",
+            name: "B",
+            check: ["Number", "String"],
+        },
+    ],
+    output: "Number",
+    inputsInline: true,
+} as const;
+
 export const BLOCK_SOUND_PLAY = {
     style: "sound_blocks",
     type: "sound_play",
@@ -4056,6 +4085,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_GREATER_THAN,
     BLOCK_LETTER_OF,
     BLOCK_CONTAINS,
+    BLOCK_MIN_MAX,
 
     // Variable blocks
     BLOCK_VARIABLE_REPORTER,

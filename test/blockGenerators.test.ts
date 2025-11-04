@@ -11,6 +11,7 @@ import {
     BLOCK_HAS_ATTACHMENT,
     BLOCK_IF,
     BLOCK_IMMEDIATELY,
+    BLOCK_MIN_MAX,
     BLOCK_REMOVE_ATTACHMENT,
     BLOCK_REPEAT,
     BLOCK_REPEAT_UNTIL,
@@ -42,108 +43,37 @@ function addImmediatelyWith(
     return block;
 }
 
+function addImmediatelySayWith(
+    workspace: Blockly.Workspace,
+    blockType: Blockly.Block["type"],
+) {
+    const say = addImmediatelyWith(workspace, BLOCK_SAY.type);
+    const block = workspace.newBlock(blockType);
+    say.getInput(BLOCK_SAY.args0[0].name)!.connection!.connect(
+        block.outputConnection!,
+    );
+    return block;
+}
+
+function addDynamicValToInput(
+    block: Blockly.Block,
+    inputName: string,
+    value = "",
+) {
+    const input = block.getInput(inputName);
+    expect(input).not.toBeNull();
+    expect(input?.connection).toBeTruthy();
+
+    const dynamicValue = block.workspace.newBlock(BLOCK_DYNAMIC_VAL.type);
+    expect(dynamicValue.outputConnection).toBeTruthy();
+    dynamicValue.setFieldValue(value, BLOCK_DYNAMIC_VAL.args0[0].name);
+
+    input!.connection!.connect(dynamicValue.outputConnection!);
+}
+
 describe("Blockly JavaScript Generation", () => {
     beforeAll(() => {
         setupBlocklyGlobals();
-    });
-
-    describe("control_repeat_until block", () => {
-        it("should generate syntactically valid JavaScript for basic repeat until loop", () => {
-            const workspace = new Blockly.Workspace();
-
-            // Create the repeat until block
-            const repeatBlock = addImmediatelyWith(
-                workspace,
-                BLOCK_REPEAT_UNTIL.type,
-            );
-
-            // Create a simple boolean condition block (true)
-            const conditionBlock = workspace.newBlock("logic_boolean");
-            conditionBlock.setFieldValue("TRUE", "BOOL");
-
-            // Connect condition to the repeat block
-            repeatBlock
-                .getInput(BLOCK_REPEAT_UNTIL.args0[0].name)
-                ?.connection?.connect(conditionBlock.outputConnection!);
-
-            // Should be syntactically valid JavaScript
-            checkCompiles(workspace);
-        });
-
-        it("should handle empty condition gracefully", () => {
-            const workspace = new Blockly.Workspace();
-
-            // Create repeat block without connecting a condition
-            addImmediatelyWith(workspace, BLOCK_REPEAT_UNTIL.type);
-
-            // Should be syntactically valid JavaScript
-            checkCompiles(workspace);
-        });
-    });
-
-    describe("control_repeat block", () => {
-        it("should generate syntactically valid JavaScript for basic repeat loop", () => {
-            const workspace = new Blockly.Workspace();
-
-            // Create the repeat block
-            const repeatBlock = addImmediatelyWith(
-                workspace,
-                BLOCK_REPEAT.type,
-            );
-
-            // Create a number block for times (e.g., 5)
-            const timesBlock = workspace.newBlock("math_number");
-            timesBlock.setFieldValue("5", "NUM");
-            expect(timesBlock.outputConnection).not.toBeNull();
-
-            // Connect times to the repeat block
-            repeatBlock
-                .getInput(BLOCK_REPEAT.args0[0].name)
-                ?.connection?.connect(timesBlock.outputConnection!);
-
-            checkCompiles(workspace);
-        });
-
-        it("should handle mathematical expressions for repeat count", () => {
-            const workspace = new Blockly.Workspace();
-
-            // Create the repeat block
-            const repeatBlock = addImmediatelyWith(
-                workspace,
-                BLOCK_REPEAT.type,
-            );
-
-            // Create a math arithmetic block (e.g., 3 + 2)
-            const mathBlock = workspace.newBlock("math_arithmetic");
-            mathBlock.setFieldValue("ADD", "OP");
-
-            // Create number blocks for the math operation
-            const leftNumber = workspace.newBlock("math_number");
-            leftNumber.setFieldValue("3", "NUM");
-            const rightNumber = workspace.newBlock("math_number");
-            rightNumber.setFieldValue("2", "NUM");
-
-            // Connect numbers to math block
-            mathBlock
-                .getInput("A")
-                ?.connection?.connect(leftNumber.outputConnection!);
-            mathBlock
-                .getInput("B")
-                ?.connection?.connect(rightNumber.outputConnection!);
-
-            // Connect math block to repeat block
-            repeatBlock
-                .getInput(BLOCK_REPEAT.args0[0].name)
-                ?.connection?.connect(mathBlock.outputConnection!);
-
-            checkCompiles(workspace);
-        });
-
-        it("should handle empty times input gracefully", () => {
-            const workspace = new Blockly.Workspace();
-            addImmediatelyWith(workspace, BLOCK_REPEAT.type);
-            checkCompiles(workspace);
-        });
     });
 
     describe("motion blocks", () => {
@@ -468,6 +398,14 @@ describe("Blockly JavaScript Generation", () => {
             );
 
             checkCompiles(workspace);
+        });
+
+        describe("motion_gotoxy block", () => {
+            it("should handle empty coordinate inputs gracefully", () => {
+                const workspace = new Blockly.Workspace();
+                addImmediatelyWith(workspace, BLOCK_GOTO.type);
+                checkCompiles(workspace);
+            });
         });
     });
 
@@ -1027,6 +965,75 @@ describe("Blockly JavaScript Generation", () => {
 
             checkCompiles(workspace);
         });
+
+        describe("attachment blocks", () => {
+            it("should generate syntactically valid JavaScript", () => {
+                const workspace = new Blockly.Workspace();
+
+                const addBlock = addImmediatelyWith(
+                    workspace,
+                    BLOCK_ADD_ATTACHMENT.type,
+                );
+
+                const removeBlock = workspace.newBlock(
+                    BLOCK_REMOVE_ATTACHMENT.type,
+                );
+                addBlock.nextConnection?.connect(
+                    removeBlock.previousConnection!,
+                );
+
+                const ifBlock = workspace.newBlock(BLOCK_IF.type);
+                removeBlock.nextConnection?.connect(
+                    ifBlock.previousConnection!,
+                );
+
+                const hasBlock = workspace.newBlock(BLOCK_HAS_ATTACHMENT.type);
+                ifBlock
+                    .getInput(BLOCK_IF.args0[0].name)
+                    ?.connection?.connect(hasBlock.outputConnection!);
+
+                checkCompiles(workspace);
+            });
+        });
+
+        describe("text style blocks", () => {
+            it("should generate syntactically valid JavaScript for set font size", () => {
+                const workspace = new Blockly.Workspace();
+                const block = addImmediatelyWith(
+                    workspace,
+                    BLOCK_SET_FONT_SIZE.type,
+                );
+                const value = workspace.newBlock("math_number");
+                value.setFieldValue("12", "NUM");
+                block
+                    .getInput(BLOCK_SET_FONT_SIZE.args0[0].name)!
+                    .connection!.connect(value.outputConnection!);
+                checkCompiles(workspace);
+            });
+
+            it("should generate syntactically valid JavaScript for set text color", () => {
+                const workspace = new Blockly.Workspace();
+                const block = addImmediatelyWith(
+                    workspace,
+                    BLOCK_SET_TEXT_COLOR.type,
+                );
+                const value = workspace.newBlock(BLOCK_COLOR_PICKER.type);
+                value.setFieldValue(
+                    "#ff0000",
+                    BLOCK_COLOR_PICKER.args0[0].name,
+                );
+                block
+                    .getInput(BLOCK_SET_TEXT_COLOR.args0[0].name)!
+                    .connection!.connect(value.outputConnection!);
+                checkCompiles(workspace);
+            });
+
+            it("should generate syntactically valid JavaScript for set font family", () => {
+                const workspace = new Blockly.Workspace();
+                addImmediatelyWith(workspace, BLOCK_SET_FONT_FAMILY.type);
+                checkCompiles(workspace);
+            });
+        });
     });
 
     describe("control blocks", () => {
@@ -1253,6 +1260,311 @@ describe("Blockly JavaScript Generation", () => {
             );
 
             checkCompiles(workspace);
+        });
+
+        describe("control_repeat block", () => {
+            it("should generate syntactically valid JavaScript for basic repeat loop", () => {
+                const workspace = new Blockly.Workspace();
+
+                // Create the repeat block
+                const repeatBlock = addImmediatelyWith(
+                    workspace,
+                    BLOCK_REPEAT.type,
+                );
+
+                // Create a number block for times (e.g., 5)
+                const timesBlock = workspace.newBlock("math_number");
+                timesBlock.setFieldValue("5", "NUM");
+                expect(timesBlock.outputConnection).not.toBeNull();
+
+                // Connect times to the repeat block
+                repeatBlock
+                    .getInput(BLOCK_REPEAT.args0[0].name)
+                    ?.connection?.connect(timesBlock.outputConnection!);
+
+                checkCompiles(workspace);
+            });
+
+            it("should handle mathematical expressions for repeat count", () => {
+                const workspace = new Blockly.Workspace();
+
+                // Create the repeat block
+                const repeatBlock = addImmediatelyWith(
+                    workspace,
+                    BLOCK_REPEAT.type,
+                );
+
+                // Create a math arithmetic block (e.g., 3 + 2)
+                const mathBlock = workspace.newBlock("math_arithmetic");
+                mathBlock.setFieldValue("ADD", "OP");
+
+                // Create number blocks for the math operation
+                const leftNumber = workspace.newBlock("math_number");
+                leftNumber.setFieldValue("3", "NUM");
+                const rightNumber = workspace.newBlock("math_number");
+                rightNumber.setFieldValue("2", "NUM");
+
+                // Connect numbers to math block
+                mathBlock
+                    .getInput("A")
+                    ?.connection?.connect(leftNumber.outputConnection!);
+                mathBlock
+                    .getInput("B")
+                    ?.connection?.connect(rightNumber.outputConnection!);
+
+                // Connect math block to repeat block
+                repeatBlock
+                    .getInput(BLOCK_REPEAT.args0[0].name)
+                    ?.connection?.connect(mathBlock.outputConnection!);
+
+                checkCompiles(workspace);
+            });
+
+            it("should handle empty times input gracefully", () => {
+                const workspace = new Blockly.Workspace();
+                addImmediatelyWith(workspace, BLOCK_REPEAT.type);
+                checkCompiles(workspace);
+            });
+        });
+
+        describe("control_repeat_until block", () => {
+            it("should generate syntactically valid JavaScript for basic repeat until loop", () => {
+                const workspace = new Blockly.Workspace();
+
+                // Create the repeat until block
+                const repeatBlock = addImmediatelyWith(
+                    workspace,
+                    BLOCK_REPEAT_UNTIL.type,
+                );
+
+                // Create a simple boolean condition block (true)
+                const conditionBlock = workspace.newBlock("logic_boolean");
+                conditionBlock.setFieldValue("TRUE", "BOOL");
+
+                // Connect condition to the repeat block
+                repeatBlock
+                    .getInput(BLOCK_REPEAT_UNTIL.args0[0].name)
+                    ?.connection?.connect(conditionBlock.outputConnection!);
+
+                // Should be syntactically valid JavaScript
+                checkCompiles(workspace);
+            });
+
+            it("should handle empty condition gracefully", () => {
+                const workspace = new Blockly.Workspace();
+
+                // Create repeat block without connecting a condition
+                addImmediatelyWith(workspace, BLOCK_REPEAT_UNTIL.type);
+
+                // Should be syntactically valid JavaScript
+                checkCompiles(workspace);
+            });
+        });
+
+        describe("context menu hat block", () => {
+            it("should generate syntactically valid JavaScript", () => {
+                const workspace = new Blockly.Workspace();
+                Blockly.serialization.workspaces.load(
+                    {
+                        blocks: {
+                            languageVersion: 0,
+                            blocks: [
+                                {
+                                    type: "event_ctxmenu",
+                                    id: "event_ctxmenu",
+                                    x: 0,
+                                    y: 0,
+                                    fields: {
+                                        NAME: "My menu item",
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    workspace,
+                );
+
+                checkCompiles(workspace);
+            });
+        });
+
+        describe("control_match block", () => {
+            it("should generate valid JS when all features used", () => {
+                const workspace = new Blockly.Workspace();
+                Blockly.serialization.workspaces.load(
+                    {
+                        blocks: {
+                            languageVersion: 0,
+                            blocks: [
+                                {
+                                    type: "event_immediately",
+                                    id: "event_immediately",
+                                    x: 0,
+                                    y: 0,
+                                    next: {
+                                        block: {
+                                            type: "control_match",
+                                            id: "control_match",
+                                            extraState: {
+                                                cases: [
+                                                    {
+                                                        exact: "apple",
+                                                    },
+                                                    {
+                                                        lo: "0",
+                                                        hi: "10",
+                                                    },
+                                                ],
+                                                default: true,
+                                            },
+                                            inputs: {
+                                                VAL: {
+                                                    shadow: {
+                                                        type: "behavior_dynamic_val",
+                                                        id: "control_match_dynamic_val",
+                                                        fields: {
+                                                            TEXT: "apple",
+                                                        },
+                                                    },
+                                                },
+                                                CASE_0: {
+                                                    block: {
+                                                        type: "control_behavior_stop",
+                                                        id: "case_0_stop",
+                                                        fields: {
+                                                            STOP_TARGET:
+                                                                "THIS_SCRIPT",
+                                                        },
+                                                    },
+                                                },
+                                                CASE_1: {
+                                                    block: {
+                                                        type: "control_behavior_stop",
+                                                        id: "case_1_stop",
+                                                        fields: {
+                                                            STOP_TARGET:
+                                                                "THIS_SCRIPT",
+                                                        },
+                                                    },
+                                                },
+                                                DEFAULT: {
+                                                    block: {
+                                                        type: "control_behavior_stop",
+                                                        id: "default_stop",
+                                                        fields: {
+                                                            STOP_TARGET:
+                                                                "THIS_SCRIPT",
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    workspace,
+                );
+
+                checkCompiles(workspace);
+            });
+
+            it("should generate valid JS when there's only a default", () => {
+                const workspace = new Blockly.Workspace();
+                Blockly.serialization.workspaces.load(
+                    {
+                        blocks: {
+                            languageVersion: 0,
+                            blocks: [
+                                {
+                                    type: "event_immediately",
+                                    id: "event_immediately",
+                                    x: 0,
+                                    y: 0,
+                                    next: {
+                                        block: {
+                                            type: "control_match",
+                                            id: "control_match",
+                                            extraState: {
+                                                cases: [],
+                                                default: true,
+                                            },
+                                            inputs: {
+                                                VAL: {
+                                                    shadow: {
+                                                        type: "behavior_dynamic_val",
+                                                        id: "control_match_dynamic_val",
+                                                        fields: {
+                                                            TEXT: "apple",
+                                                        },
+                                                    },
+                                                },
+                                                DEFAULT: {
+                                                    block: {
+                                                        type: "control_behavior_stop",
+                                                        id: "default_stop",
+                                                        fields: {
+                                                            STOP_TARGET:
+                                                                "THIS_SCRIPT",
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    workspace,
+                );
+
+                checkCompiles(workspace);
+            });
+
+            it("should generate valid JS when there's no inputs", () => {
+                const workspace = new Blockly.Workspace();
+                Blockly.serialization.workspaces.load(
+                    {
+                        blocks: {
+                            languageVersion: 0,
+                            blocks: [
+                                {
+                                    type: "event_immediately",
+                                    id: "event_immediately",
+                                    x: 0,
+                                    y: 0,
+                                    next: {
+                                        block: {
+                                            type: "control_match",
+                                            id: "control_match",
+                                            extraState: {
+                                                cases: [],
+                                                default: false,
+                                            },
+                                            inputs: {
+                                                VAL: {
+                                                    shadow: {
+                                                        type: "behavior_dynamic_val",
+                                                        id: "control_match_dynamic_val",
+                                                        fields: {
+                                                            TEXT: "apple",
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    },
+                                },
+                            ],
+                        },
+                    },
+                    workspace,
+                );
+
+                checkCompiles(workspace);
+            });
         });
     });
 
@@ -2104,6 +2416,19 @@ describe("Blockly JavaScript Generation", () => {
             );
 
             checkCompiles(workspace);
+        });
+
+        describe("min/max block", () => {
+            it("should generate syntactically valid javascript", () => {
+                const workspace = new Blockly.Workspace();
+                const ofBlock = addImmediatelySayWith(
+                    workspace,
+                    BLOCK_MIN_MAX.type,
+                );
+                addDynamicValToInput(ofBlock, BLOCK_MIN_MAX.args0[1].name, "2");
+                addDynamicValToInput(ofBlock, BLOCK_MIN_MAX.args0[2].name, "3");
+                checkCompiles(workspace);
+            });
         });
     });
 
@@ -3357,266 +3682,26 @@ describe("Blockly JavaScript Generation", () => {
             checkCompiles(workspace);
         });
 
-        it("should generate syntactically valid JavaScript for 'phase of <name>' block", () => {
-            const workspace = new Blockly.Workspace();
-            const say = addImmediatelyWith(workspace, BLOCK_SAY.type);
-            const ofBlock = workspace.newBlock(BLOCK_EXTENSION_PHASE_OF.type);
-            ofBlock
-                .getInput(BLOCK_EXTENSION_PHASE_OF.args0[1].name)!
-                .connection!.connect(
-                    workspace.newBlock(BLOCK_DYNAMIC_VAL.type)
-                        .outputConnection!,
+        describe("phases blocks", () => {
+            it("should generate syntactically valid JavaScript for 'phase of <name>' block", () => {
+                const workspace = new Blockly.Workspace();
+                const ofBlock = addImmediatelySayWith(
+                    workspace,
+                    BLOCK_EXTENSION_PHASE_OF.type,
                 );
-            say.getInput(BLOCK_SAY.args0[0].name)!.connection!.connect(
-                ofBlock.outputConnection!,
-            );
-            checkCompiles(workspace);
-        });
+                addDynamicValToInput(
+                    ofBlock,
+                    BLOCK_EXTENSION_PHASE_OF.args0[1].name,
+                    "Automation 1",
+                );
+                checkCompiles(workspace);
+            });
 
-        it("should generate syntactically valid JavaScript for 'when phase <name> changes' hat block", () => {
-            const workspace = new Blockly.Workspace();
-            workspace.newBlock(BLOCK_EXTENSION_PHASE_CHANGES.type);
-            checkCompiles(workspace);
-        });
-    });
-
-    describe("motion_gotoxy block", () => {
-        it("should handle empty coordinate inputs gracefully", () => {
-            const workspace = new Blockly.Workspace();
-            addImmediatelyWith(workspace, BLOCK_GOTO.type);
-            checkCompiles(workspace);
-        });
-    });
-
-    describe("context menu hat block", () => {
-        it("should generate syntactically valid JavaScript", () => {
-            const workspace = new Blockly.Workspace();
-            Blockly.serialization.workspaces.load(
-                {
-                    blocks: {
-                        languageVersion: 0,
-                        blocks: [
-                            {
-                                type: "event_ctxmenu",
-                                id: "event_ctxmenu",
-                                x: 0,
-                                y: 0,
-                                fields: {
-                                    NAME: "My menu item",
-                                },
-                            },
-                        ],
-                    },
-                },
-                workspace,
-            );
-
-            checkCompiles(workspace);
-        });
-    });
-
-    describe("control_match block", () => {
-        it("should generate valid JS when all features used", () => {
-            const workspace = new Blockly.Workspace();
-            Blockly.serialization.workspaces.load(
-                {
-                    blocks: {
-                        languageVersion: 0,
-                        blocks: [
-                            {
-                                type: "event_immediately",
-                                id: "event_immediately",
-                                x: 0,
-                                y: 0,
-                                next: {
-                                    block: {
-                                        type: "control_match",
-                                        id: "control_match",
-                                        extraState: {
-                                            cases: [
-                                                {
-                                                    exact: "apple",
-                                                },
-                                                {
-                                                    lo: "0",
-                                                    hi: "10",
-                                                },
-                                            ],
-                                            default: true,
-                                        },
-                                        inputs: {
-                                            VAL: {
-                                                shadow: {
-                                                    type: "behavior_dynamic_val",
-                                                    id: "control_match_dynamic_val",
-                                                    fields: {
-                                                        TEXT: "apple",
-                                                    },
-                                                },
-                                            },
-                                            CASE_0: {
-                                                block: {
-                                                    type: "control_behavior_stop",
-                                                    id: "case_0_stop",
-                                                    fields: {
-                                                        STOP_TARGET:
-                                                            "THIS_SCRIPT",
-                                                    },
-                                                },
-                                            },
-                                            CASE_1: {
-                                                block: {
-                                                    type: "control_behavior_stop",
-                                                    id: "case_1_stop",
-                                                    fields: {
-                                                        STOP_TARGET:
-                                                            "THIS_SCRIPT",
-                                                    },
-                                                },
-                                            },
-                                            DEFAULT: {
-                                                block: {
-                                                    type: "control_behavior_stop",
-                                                    id: "default_stop",
-                                                    fields: {
-                                                        STOP_TARGET:
-                                                            "THIS_SCRIPT",
-                                                    },
-                                                },
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        ],
-                    },
-                },
-                workspace,
-            );
-
-            checkCompiles(workspace);
-        });
-
-        it("should generate valid JS when there's only a default", () => {
-            const workspace = new Blockly.Workspace();
-            Blockly.serialization.workspaces.load(
-                {
-                    blocks: {
-                        languageVersion: 0,
-                        blocks: [
-                            {
-                                type: "event_immediately",
-                                id: "event_immediately",
-                                x: 0,
-                                y: 0,
-                                next: {
-                                    block: {
-                                        type: "control_match",
-                                        id: "control_match",
-                                        extraState: {
-                                            cases: [],
-                                            default: true,
-                                        },
-                                        inputs: {
-                                            VAL: {
-                                                shadow: {
-                                                    type: "behavior_dynamic_val",
-                                                    id: "control_match_dynamic_val",
-                                                    fields: {
-                                                        TEXT: "apple",
-                                                    },
-                                                },
-                                            },
-                                            DEFAULT: {
-                                                block: {
-                                                    type: "control_behavior_stop",
-                                                    id: "default_stop",
-                                                    fields: {
-                                                        STOP_TARGET:
-                                                            "THIS_SCRIPT",
-                                                    },
-                                                },
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        ],
-                    },
-                },
-                workspace,
-            );
-
-            checkCompiles(workspace);
-        });
-
-        it("should generate valid JS when there's no inputs", () => {
-            const workspace = new Blockly.Workspace();
-            Blockly.serialization.workspaces.load(
-                {
-                    blocks: {
-                        languageVersion: 0,
-                        blocks: [
-                            {
-                                type: "event_immediately",
-                                id: "event_immediately",
-                                x: 0,
-                                y: 0,
-                                next: {
-                                    block: {
-                                        type: "control_match",
-                                        id: "control_match",
-                                        extraState: {
-                                            cases: [],
-                                            default: false,
-                                        },
-                                        inputs: {
-                                            VAL: {
-                                                shadow: {
-                                                    type: "behavior_dynamic_val",
-                                                    id: "control_match_dynamic_val",
-                                                    fields: {
-                                                        TEXT: "apple",
-                                                    },
-                                                },
-                                            },
-                                        },
-                                    },
-                                },
-                            },
-                        ],
-                    },
-                },
-                workspace,
-            );
-
-            checkCompiles(workspace);
-        });
-    });
-
-    describe("attachment blocks", () => {
-        it("should generate syntactically valid JavaScript", () => {
-            const workspace = new Blockly.Workspace();
-
-            const addBlock = addImmediatelyWith(
-                workspace,
-                BLOCK_ADD_ATTACHMENT.type,
-            );
-
-            const removeBlock = workspace.newBlock(
-                BLOCK_REMOVE_ATTACHMENT.type,
-            );
-            addBlock.nextConnection?.connect(removeBlock.previousConnection!);
-
-            const ifBlock = workspace.newBlock(BLOCK_IF.type);
-            removeBlock.nextConnection?.connect(ifBlock.previousConnection!);
-
-            const hasBlock = workspace.newBlock(BLOCK_HAS_ATTACHMENT.type);
-            ifBlock
-                .getInput(BLOCK_IF.args0[0].name)
-                ?.connection?.connect(hasBlock.outputConnection!);
-
-            checkCompiles(workspace);
+            it("should generate syntactically valid JavaScript for 'when phase of automation changes' hat block", () => {
+                const workspace = new Blockly.Workspace();
+                workspace.newBlock(BLOCK_EXTENSION_PHASE_CHANGES.type);
+                checkCompiles(workspace);
+            });
         });
     });
 
@@ -3682,42 +3767,6 @@ describe("Blockly JavaScript Generation", () => {
             );
             const code = checkCompiles(workspace);
             expect(code).toMatch(/.*String\('\\\\n\$'\).*/);
-        });
-    });
-
-    describe("text style blocks", () => {
-        it("should generate syntactically valid JavaScript for set font size", () => {
-            const workspace = new Blockly.Workspace();
-            const block = addImmediatelyWith(
-                workspace,
-                BLOCK_SET_FONT_SIZE.type,
-            );
-            const value = workspace.newBlock("math_number");
-            value.setFieldValue("12", "NUM");
-            block
-                .getInput(BLOCK_SET_FONT_SIZE.args0[0].name)!
-                .connection!.connect(value.outputConnection!);
-            checkCompiles(workspace);
-        });
-
-        it("should generate syntactically valid JavaScript for set text color", () => {
-            const workspace = new Blockly.Workspace();
-            const block = addImmediatelyWith(
-                workspace,
-                BLOCK_SET_TEXT_COLOR.type,
-            );
-            const value = workspace.newBlock(BLOCK_COLOR_PICKER.type);
-            value.setFieldValue("#ff0000", BLOCK_COLOR_PICKER.args0[0].name);
-            block
-                .getInput(BLOCK_SET_TEXT_COLOR.args0[0].name)!
-                .connection!.connect(value.outputConnection!);
-            checkCompiles(workspace);
-        });
-
-        it("should generate syntactically valid JavaScript for set font family", () => {
-            const workspace = new Blockly.Workspace();
-            addImmediatelyWith(workspace, BLOCK_SET_FONT_FAMILY.type);
-            checkCompiles(workspace);
         });
     });
 });

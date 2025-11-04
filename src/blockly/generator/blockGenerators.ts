@@ -142,6 +142,7 @@ import {
     BLOCK_MATCH_CASE,
     BLOCK_MATCH_MATCH,
     BLOCK_MATCH_RANGE,
+    BLOCK_MIN_MAX,
     BLOCK_MOVE_DIRECTION,
     BLOCK_MY_PARENT,
     BLOCK_OPACITY_SLIDER,
@@ -1733,6 +1734,25 @@ export const GENERATORS: Record<
         const eq = provideComparison(generator, "===");
         return [
             `${eq}(${operarand1}, ${operarand2})`,
+            javascript.Order.FUNCTION_CALL,
+        ];
+    },
+
+    [BLOCK_MIN_MAX.type]: (block, generator) => {
+        const op = getDropdownFieldValue(block, BLOCK_MIN_MAX, 0);
+        const a = generator.valueToCode(
+            block,
+            BLOCK_MIN_MAX.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const b = generator.valueToCode(
+            block,
+            BLOCK_MIN_MAX.args0[2].name,
+            javascript.Order.NONE,
+        );
+        const num = provideNum(generator);
+        return [
+            `Math.${op}(${num}(${a}), ${num}(${b}))`,
             javascript.Order.FUNCTION_CALL,
         ];
     },

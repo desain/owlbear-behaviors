@@ -166,6 +166,8 @@ To make a production build run:
     -   Broadcast to token / my children / tokens tagged
     -   Replace image with image of other
     -   set text font/color/size
+    -   Looks
+        -   Set width and height scale independently
 -   Safety
     -   Check token total size before saving against OBR max update size
     -   Add trycatch for each update, exponential backoff when rate limit exceeded?
@@ -178,8 +180,6 @@ To make a production build run:
 -   Blocks
     -   Motion
         -   Pathfinding: grid based A\* when not in euclidean mode
-    -   Looks
-        -   Set width and height scale independently
     -   Extensions
         -   Initiative Tracker same as Pretty Sordid?
         -   On field change for Daggerheart, Owl Trackers
@@ -190,8 +190,6 @@ To make a production build run:
             -   my HP, max HP, temp HP, initiative bonus, stats, proficiency, cuagau, skills
     -   Control
         -   tell other to? Snail Mod has it as `as (other) {...}`
-    -   Operators
-        -   Min, max?
 -   Fix Blockly bug? [hideIfOwnerIsInWorkspace](https://github.com/google/blockly/blob/develop/core/widgetdiv.ts#L201) should initialize `currentWorkspace` to `ownerWorkspace`, and should reference itself in the loop.
 -   Figure out multiline text inputs - https://www.npmjs.com/package/@blockly/field-multilineinput doesn't display correctly.
 

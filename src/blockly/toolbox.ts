@@ -116,6 +116,7 @@ import {
     BLOCK_LOCK,
     BLOCK_LOCKED,
     BLOCK_MATCH,
+    BLOCK_MIN_MAX,
     BLOCK_MOVE_DIRECTION,
     BLOCK_MY_PARENT,
     BLOCK_PATHFIND,
@@ -703,6 +704,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                             HIGH: shadowNumber(100),
                         },
                     },
+                    blockInfo(BLOCK_MIN_MAX, shadowNumber(1), shadowNumber(10)),
                     GAP50,
                     {
                         kind: "block",
