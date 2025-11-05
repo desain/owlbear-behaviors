@@ -11,8 +11,8 @@ import { usePlayerStorage } from "../state/usePlayerStorage";
 import {
     BLOCK_BROADCAST_MENU,
     BLOCK_RECEIVE_BROADCAST,
+    BLOCK_SENSING_TAG_MENU,
     BLOCK_SOUND_MENU,
-    BLOCK_TAG_MENU,
 } from "./blocks";
 
 export function handleNewSceneMetadata(workspace: Blockly.WorkspaceSvg): void {
@@ -34,7 +34,9 @@ export function handleNewSceneMetadata(workspace: Blockly.WorkspaceSvg): void {
                     dropdown.setValue(oldValue);
                 } else {
                     // Fall back to the first available broadcast
-                    dropdown.setValue(broadcasts[0] ?? DROPDOWN_BROADCAST_DEFAULT);
+                    dropdown.setValue(
+                        broadcasts[0] ?? DROPDOWN_BROADCAST_DEFAULT,
+                    );
                 }
                 dropdown.forceRerender();
             }
@@ -43,7 +45,7 @@ export function handleNewSceneMetadata(workspace: Blockly.WorkspaceSvg): void {
 
     // Remove tags that no longer exist in scene metadata
     workspace.getAllBlocks().forEach((block) => {
-        if (block.type === BLOCK_TAG_MENU.type) {
+        if (block.type === BLOCK_SENSING_TAG_MENU.type) {
             const dropdown = block.getField(FIELD_TAG);
             if (dropdown && dropdown instanceof Blockly.FieldDropdown) {
                 const oldValue = dropdown.getValue();

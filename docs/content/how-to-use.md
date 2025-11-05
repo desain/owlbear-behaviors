@@ -46,7 +46,7 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 
 -   **Send messages** between tokens using broadcast blocks
 -   Broadcast messages from the main Behaviors panel as well as from behavior scripts
--   Drag blocks onto the message field in message blocks to dynamically choose or construct tags at runtime
+-   Drag blocks onto the message field in message blocks to dynamically choose or construct messages at runtime
 
 ![Sending a Message](https://owlbear-behaviors.pages.dev/docs/assets/sending-message.gif)
 

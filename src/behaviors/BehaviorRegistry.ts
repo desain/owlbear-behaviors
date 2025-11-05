@@ -1,4 +1,4 @@
-import type { Item } from "@owlbear-rodeo/sdk";
+import { type Item } from "@owlbear-rodeo/sdk";
 import type { Block } from "blockly";
 import * as Blockly from "blockly";
 import { executeObrFunction } from "owlbear-utils";
@@ -154,16 +154,32 @@ export class BehaviorRegistry {
         }
     };
 
-    readonly handleBroadcast = (broadcast: string) => {
-        this.#triggerHandlers.forEach((handlers) => {
-            handlers
-                .filter(
-                    (handler) =>
-                        handler.type === "broadcast" &&
-                        handler.broadcast === broadcast,
-                )
-                .forEach((handler) => executeTriggerHandler(handler));
-        });
+    readonly handleBroadcast = (
+        message: string,
+        targets?: readonly Item["id"][],
+    ) => {
+        if (targets) {
+            for (const target of targets) {
+                this.#triggerHandlers
+                    .get(target)
+                    ?.filter(
+                        (handler) =>
+                            handler.type === "broadcast" &&
+                            handler.broadcast === message,
+                    )
+                    .forEach((handler) => executeTriggerHandler(handler));
+            }
+        } else {
+            this.#triggerHandlers.forEach((handlers) => {
+                handlers
+                    .filter(
+                        (handler) =>
+                            handler.type === "broadcast" &&
+                            handler.broadcast === message,
+                    )
+                    .forEach((handler) => executeTriggerHandler(handler));
+            });
+        }
     };
 
     readonly handleContextMenuClicked = (
@@ -263,7 +279,8 @@ export class BehaviorRegistry {
                 .filter(
                     (handler) =>
                         handler.name === phaseName &&
-                        (handler.phase === undefined || handler.phase === phaseValue),
+                        (handler.phase === undefined ||
+                            handler.phase === phaseValue),
                 )
                 .forEach((handler) => executeTriggerHandler(handler)),
         );

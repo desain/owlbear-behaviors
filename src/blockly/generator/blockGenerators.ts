@@ -31,6 +31,9 @@ import {
     BLOCK_ATTACHED,
     BLOCK_BROADCAST,
     BLOCK_BROADCAST_MENU,
+    BLOCK_BROADCAST_TARGET_MENU,
+    BLOCK_BROADCAST_TO,
+    BLOCK_BROADCAST_TO_TAGGED,
     BLOCK_CENTER_VIEW,
     BLOCK_CENTER_ZOOM,
     BLOCK_CHANGE_EFFECT_BY,
@@ -49,6 +52,7 @@ import {
     BLOCK_DYNAMIC_VAL,
     BLOCK_EQUALS,
     BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED,
+    BLOCK_EVENTS_TAG_MENU,
     BLOCK_EXTENSION_BONES_ON_ROLL,
     BLOCK_EXTENSION_BONES_ROLL_DICE,
     BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT,
@@ -168,6 +172,7 @@ import {
     BLOCK_SENSING_ADD_TAGGED_TO_LIST,
     BLOCK_SENSING_ITEM_MENU,
     BLOCK_SENSING_OF,
+    BLOCK_SENSING_TAG_MENU,
     BLOCK_SET_ACCESSIBILITY_DESCRIPTION,
     BLOCK_SET_ACCESSIBILITY_NAME,
     BLOCK_SET_EFFECT_TO,
@@ -192,7 +197,6 @@ import {
     BLOCK_SOUND_VOLUME,
     BLOCK_STOP,
     BLOCK_TAG,
-    BLOCK_TAG_MENU,
     BLOCK_TOKEN_NAMED,
     BLOCK_TOUCH,
     BLOCK_TOUCHING,
@@ -1101,13 +1105,66 @@ export const GENERATORS: Record<
     },
 
     [BLOCK_BROADCAST.type]: (block, generator) => {
-        const broadcast = generator.valueToCode(
+        const message = generator.valueToCode(
             block,
             BLOCK_BROADCAST.args0[0].name,
             javascript.Order.NONE,
         );
-        return `void ${behave("sendMessage", broadcast)};\n`;
+        return awaitBehaveStatement(
+            "broadcastToAll",
+            PARAMETER_SIGNAL,
+            message,
+        );
     },
+
+    [BLOCK_BROADCAST_TO.type]: (block, generator) => {
+        const message = generator.valueToCode(
+            block,
+            BLOCK_BROADCAST_TO.args0[0].name,
+            javascript.Order.NONE,
+        );
+        const target = generator.valueToCode(
+            block,
+            BLOCK_BROADCAST_TO.args0[1].name,
+            javascript.Order.NONE,
+        );
+        return awaitBehaveStatement(
+            "broadcastTo",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            message,
+            target,
+        );
+    },
+
+    [BLOCK_BROADCAST_TO_TAGGED.type]: (block, generator) => {
+        const message = generator.valueToCode(
+            block,
+            BLOCK_BROADCAST_TO_TAGGED.args0[0].name,
+            javascript.Order.NONE,
+        );
+        const tag = generator.valueToCode(
+            block,
+            BLOCK_BROADCAST_TO_TAGGED.args0[1].name,
+            javascript.Order.NONE,
+        );
+        return awaitBehaveStatement(
+            "broadcastToTagged",
+            PARAMETER_SIGNAL,
+            message,
+            tag,
+        );
+    },
+
+    [BLOCK_BROADCAST_TARGET_MENU.type]: (block, generator) => {
+        const target = getDropdownFieldValue(
+            block,
+            BLOCK_BROADCAST_TARGET_MENU,
+            0,
+        );
+        return [generator.quote_(target), javascript.Order.ATOMIC];
+    },
+
     [BLOCK_IMMEDIATELY.type]: (block, generator) =>
         generateAddTriggerHandler(block, generator, {
             type: "immediately",
@@ -2919,7 +2976,12 @@ export const GENERATORS: Record<
         return [generator.quote_(color), javascript.Order.ATOMIC];
     },
 
-    [BLOCK_TAG_MENU.type]: (block, generator) => {
+    [BLOCK_SENSING_TAG_MENU.type]: (block, generator) => {
+        const tagId = getStringFieldValue(block, FIELD_TAG);
+        return [generator.quote_(tagId), javascript.Order.ATOMIC];
+    },
+
+    [BLOCK_EVENTS_TAG_MENU.type]: (block, generator) => {
         const tagId = getStringFieldValue(block, FIELD_TAG);
         return [generator.quote_(tagId), javascript.Order.ATOMIC];
     },

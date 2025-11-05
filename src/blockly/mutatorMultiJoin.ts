@@ -38,7 +38,6 @@ const mutator = {
         extraState: MultiJoinBlockExtraState,
     ) {
         this.itemCount = extraState.itemCount;
-        console.log("load");
         updateShape(this);
     },
 
@@ -131,7 +130,6 @@ function updateShape(
         block.removeInput(multiJoinInputName(i));
     }
 
-    console.log(connections);
     // Add new inputs.
     for (let i = 0; i < block.itemCount; i++) {
         const input = block
@@ -139,15 +137,16 @@ function updateShape(
             .setCheck(["String", "Number"]);
 
         const connection = connections[i];
+        input.connection?.setShadowState({
+            type: BLOCK_DYNAMIC_VAL.type,
+            fields: {
+                [BLOCK_DYNAMIC_VAL.args0[0].name]:
+                    typeof connection === "string" ? connection : "",
+            },
+        });
+
         if (connection instanceof Blockly.Connection) {
             input.connection?.connect(connection);
-        } else {
-            input.connection?.setShadowState({
-                type: BLOCK_DYNAMIC_VAL.type,
-                fields: {
-                    [BLOCK_DYNAMIC_VAL.args0[0].name]: connection,
-                },
-            });
         }
     }
 }

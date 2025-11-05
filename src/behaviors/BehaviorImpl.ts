@@ -1,5 +1,5 @@
 import { isHexColor } from "owlbear-utils";
-import { sendMessage } from "../broadcast/broadcast";
+import { EVENTS_BEHAVIORS } from "./events";
 import { CONTROL_BEHAVIORS } from "./impl/control";
 import { EXTENSIONS_BEHAVIORS } from "./impl/extensions";
 import { LOOKS_BEHAVIORS } from "./impl/looks";
@@ -8,7 +8,6 @@ import { SENSING_BEHAVIORS } from "./impl/sensing";
 import { SOUND_BEHAVIORS } from "./impl/sound";
 
 export const BEHAVIORS_IMPL = {
-    sendMessage,
     isHexColor,
 
     ...MOTION_BEHAVIORS,
@@ -16,6 +15,8 @@ export const BEHAVIORS_IMPL = {
     ...LOOKS_BEHAVIORS,
 
     ...SOUND_BEHAVIORS,
+
+    ...EVENTS_BEHAVIORS,
 
     ...CONTROL_BEHAVIORS,
 

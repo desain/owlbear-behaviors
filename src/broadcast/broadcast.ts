@@ -1,4 +1,4 @@
-import OBR, { type Vector2 } from "@owlbear-rodeo/sdk";
+import OBR, { type Item, type Vector2 } from "@owlbear-rodeo/sdk";
 import { deferCallAll, isObject, isVector2 } from "owlbear-utils";
 import { type BehaviorRegistry } from "../behaviors/BehaviorRegistry";
 import {
@@ -12,10 +12,42 @@ import { CHANNEL_MESSAGE } from "../constants";
 import { Bones } from "../extensions/Bones";
 import { usePlayerStorage } from "../state/usePlayerStorage";
 
-export function sendMessage(name: unknown) {
-    return OBR.broadcast.sendMessage(CHANNEL_MESSAGE, String(name), {
+export function broadcastToAll(message: string) {
+    return OBR.broadcast.sendMessage(CHANNEL_MESSAGE, message, {
         destination: "LOCAL",
     });
+}
+
+const BROADCAST_TO = "BROADCAST_TO";
+export interface BroadcastToMessage {
+    readonly type: typeof BROADCAST_TO;
+    readonly message: string;
+    readonly targets: readonly Item["id"][];
+}
+
+function isBroadcastToMessage(message: unknown): message is BroadcastToMessage {
+    return (
+        isObject(message) &&
+        "type" in message &&
+        message.type === BROADCAST_TO &&
+        "message" in message &&
+        typeof message.message === "string" &&
+        "targets" in message &&
+        Array.isArray(message.targets) &&
+        message.targets.every((t) => typeof t === "string")
+    );
+}
+
+export function broadcastTo(message: string, targets: Item["id"][]) {
+    return OBR.broadcast.sendMessage(
+        CHANNEL_MESSAGE,
+        {
+            type: BROADCAST_TO,
+            message,
+            targets,
+        } satisfies BroadcastToMessage,
+        { destination: "LOCAL" },
+    );
 }
 
 const NEW_SELECTION = "NEW_SELECTION";
@@ -257,8 +289,9 @@ export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
             if (!isGm && isDeselectMessage(data)) {
                 void OBR.player.deselect(data.ids);
             } else if (isGm && typeof data === "string") {
-                // console.log("got behavior broadcast", data);
                 behaviorRegistry.handleBroadcast(data);
+            } else if (isGm && isBroadcastToMessage(data)) {
+                behaviorRegistry.handleBroadcast(data.message, data.targets);
             } else if (isGm && isNewSelectionMessage(data)) {
                 void behaviorRegistry.handleNewSelection(
                     data.newlySelected,

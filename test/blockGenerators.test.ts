@@ -3,6 +3,10 @@ import { beforeAll, describe, expect, it } from "vitest";
 import { compileBehavior } from "../src/behaviors/compileBehavior";
 import {
     BLOCK_ADD_ATTACHMENT,
+    BLOCK_BROADCAST,
+    BLOCK_BROADCAST_TARGET_MENU,
+    BLOCK_BROADCAST_TO,
+    BLOCK_BROADCAST_TO_TAGGED,
     BLOCK_COLOR_PICKER,
     BLOCK_DYNAMIC_VAL,
     BLOCK_EXTENSION_PHASE_CHANGES,
@@ -17,6 +21,7 @@ import {
     BLOCK_REPEAT,
     BLOCK_REPEAT_UNTIL,
     BLOCK_SAY,
+    BLOCK_SENSING_TAG_MENU,
     BLOCK_SET_FONT_FAMILY,
     BLOCK_SET_FONT_SIZE,
     BLOCK_SET_TEXT_COLOR,
@@ -1033,6 +1038,72 @@ describe("Blockly JavaScript Generation", () => {
                 const workspace = new Blockly.Workspace();
                 addImmediatelyWith(workspace, BLOCK_SET_FONT_FAMILY.type);
                 checkCompiles(workspace);
+            });
+        });
+    });
+
+    describe("events blocks", () => {
+        describe("broadcast blocks", () => {
+            describe("basic broadcast block", () => {
+                it("should generate syntactically valid javascript", () => {
+                    const workspace = new Blockly.Workspace();
+                    const broadcast = addImmediatelyWith(
+                        workspace,
+                        BLOCK_BROADCAST.type,
+                    );
+                    addDynamicValToInput(
+                        broadcast,
+                        BLOCK_BROADCAST.args0[0].name,
+                        "hello",
+                    );
+                    checkCompiles(workspace);
+                });
+            });
+
+            describe("broadcast to block", () => {
+                it("should generate syntactically valid javascript", () => {
+                    const workspace = new Blockly.Workspace();
+                    const broadcast = addImmediatelyWith(
+                        workspace,
+                        BLOCK_BROADCAST_TO.type,
+                    );
+                    addDynamicValToInput(
+                        broadcast,
+                        BLOCK_BROADCAST_TO.args0[0].name,
+                        "hello",
+                    );
+                    const menu = workspace.newBlock(
+                        BLOCK_BROADCAST_TARGET_MENU.type,
+                    );
+                    menu.setShadow(true);
+                    broadcast
+                        .getInput(BLOCK_BROADCAST_TO.args0[1].name)
+                        ?.connection?.connect(menu.outputConnection!);
+                    checkCompiles(workspace);
+                });
+            });
+
+            describe("broadcast to tagged block", () => {
+                it("should generate syntactically valid javascript", () => {
+                    const workspace = new Blockly.Workspace();
+                    const broadcast = addImmediatelyWith(
+                        workspace,
+                        BLOCK_BROADCAST_TO_TAGGED.type,
+                    );
+                    addDynamicValToInput(
+                        broadcast,
+                        BLOCK_BROADCAST_TO_TAGGED.args0[0].name,
+                        "hello",
+                    );
+                    const menu = workspace.newBlock(
+                        BLOCK_SENSING_TAG_MENU.type,
+                    );
+                    menu.setShadow(true);
+                    broadcast
+                        .getInput(BLOCK_BROADCAST_TO_TAGGED.args0[1].name)
+                        ?.connection?.connect(menu.outputConnection!);
+                    checkCompiles(workspace);
+                });
             });
         });
     });

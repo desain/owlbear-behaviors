@@ -1050,6 +1050,68 @@ export const BLOCK_BROADCAST = {
     nextStatement: null,
 } as const;
 
+export const BLOCK_BROADCAST_TO = {
+    style: "event_blocks",
+    type: "event_bc2",
+    tooltip: "Broadcast a message to a specific target",
+    message0: "broadcast %1 to %2",
+    args0: [
+        {
+            type: "input_value",
+            name: INPUT_BROADCAST,
+            check: ["String", "Number"],
+        },
+        {
+            type: "input_value",
+            name: "TO",
+            check: ["ItemId", "ItemIdListProxy"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_BROADCAST_TARGET_MENU = {
+    style: "event_blocks",
+    type: "event_bcm",
+    message0: "%1",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "TO",
+            options: [
+                ["all", "ALL"],
+                ["myself", "SELF"],
+                ["my children", "CHILDREN"],
+            ],
+        },
+    ],
+    output: "ItemIdListProxy",
+    inputsInline: true,
+} as const;
+
+export const BLOCK_BROADCAST_TO_TAGGED = {
+    style: "event_blocks",
+    type: "event_bct",
+    tooltip: "Broadcast a message to all tokens with a specific tag",
+    message0: "broadcast %1 to all tagged %2",
+    args0: [
+        {
+            type: "input_value",
+            name: INPUT_BROADCAST,
+            check: ["String", "Number"],
+        },
+        {
+            type: "input_value",
+            name: "TAG",
+            check: ["String", "Number"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+} as const;
+
 export const BLOCK_WHEN_I = {
     style: "event_blocks",
     type: "event_on_property_change",
@@ -1713,7 +1775,6 @@ export const BLOCK_MULTI_JOIN = {
     message0: "%{BKY_TEXT_CREATE_JOIN_TITLE_JOIN} all",
     output: "String",
     mutator: MUTATOR_MULTI_JOIN,
-    inputsInline: false,
 } as const;
 
 /**
@@ -3844,10 +3905,25 @@ export const BLOCK_BROADCAST_MENU = {
     output: "String",
 } as const;
 
-export const BLOCK_TAG_MENU = {
+export const BLOCK_SENSING_TAG_MENU = {
     style: "sensing_blocks",
     extensions: [EXTENSION_TAG],
     type: "menu_tag",
+    tooltip: "Select a tag to apply",
+    message0: "%1",
+    args0: [
+        {
+            type: "input_dummy",
+            name: INPUT_TAG,
+        },
+    ],
+    output: "String",
+} as const;
+
+export const BLOCK_EVENTS_TAG_MENU = {
+    style: "event_blocks",
+    extensions: [EXTENSION_TAG],
+    type: "event_menu_tag",
     tooltip: "Select a tag to apply",
     message0: "%1",
     args0: [
@@ -4080,6 +4156,8 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_IMMEDIATELY,
     BLOCK_RECEIVE_BROADCAST,
     BLOCK_BROADCAST,
+    BLOCK_BROADCAST_TO,
+    BLOCK_BROADCAST_TO_TAGGED,
     BLOCK_BROADCAST_MENU,
     BLOCK_WHEN_I,
     BLOCK_TOUCH,
@@ -4208,8 +4286,10 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_COLOR_PICKER,
     BLOCK_ANGLE,
     BLOCK_LAYER_MENU,
-    BLOCK_TAG_MENU,
+    BLOCK_SENSING_TAG_MENU,
+    BLOCK_EVENTS_TAG_MENU,
     BLOCK_SOUND_MENU,
+    BLOCK_BROADCAST_TARGET_MENU,
     BLOCK_SENSING_ITEM_MENU,
     BLOCK_CONTROL_ITEM_MENU,
 

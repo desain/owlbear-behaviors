@@ -1,6 +1,6 @@
 import { Add, Send } from "@mui/icons-material";
 import { Box, IconButton, List, Tooltip, Typography } from "@mui/material";
-import { sendMessage } from "../broadcast/broadcast";
+import { broadcastToAll } from "../broadcast/broadcast";
 import {
     addBroadcasts,
     promptBroadcast,
@@ -54,7 +54,7 @@ export function BroadcastList() {
                             <Tooltip title="Send Message">
                                 <IconButton
                                     edge="end"
-                                    onClick={() => sendMessage(broadcast)}
+                                    onClick={() => broadcastToAll(broadcast)}
                                     size="small"
                                 >
                                     <Send />

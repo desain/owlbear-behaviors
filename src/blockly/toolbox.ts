@@ -26,6 +26,8 @@ import {
     BLOCK_ATTACH,
     BLOCK_ATTACHED,
     BLOCK_BROADCAST,
+    BLOCK_BROADCAST_TO,
+    BLOCK_BROADCAST_TO_TAGGED,
     BLOCK_CENTER_VIEW,
     BLOCK_CENTER_ZOOM,
     BLOCK_CHANGE_EFFECT_BY,
@@ -135,6 +137,7 @@ import {
     BLOCK_SAY,
     BLOCK_SENSING_ADD_TAGGED_TO_LIST,
     BLOCK_SENSING_OF,
+    BLOCK_SENSING_TAG_MENU,
     BLOCK_SET_ACCESSIBILITY_DESCRIPTION,
     BLOCK_SET_ACCESSIBILITY_NAME,
     BLOCK_SET_EFFECT_TO,
@@ -158,7 +161,6 @@ import {
     BLOCK_SOUND_VOLUME,
     BLOCK_STOP,
     BLOCK_TAG,
-    BLOCK_TAG_MENU,
     BLOCK_TOKEN_NAMED,
     BLOCK_TOUCH,
     BLOCK_TOUCHING,
@@ -178,6 +180,7 @@ import { extensionHeader } from "./getExtensionButton";
 import type { MatchBlockExtraState } from "./mutatorMatch";
 import {
     shadowBroadcastMenu,
+    shadowBroadcastTargetMenu,
     shadowColor,
     shadowDynamic,
     shadowItemMenu,
@@ -185,6 +188,7 @@ import {
     shadowOpacitySlider,
     shadowOther,
     shadowSoundMenu,
+    shadowTagMenu,
     shadowUrl,
 } from "./shadows";
 
@@ -237,7 +241,7 @@ export const GAP50 = { kind: "sep", gap: 50 } as const;
 const SHADOW_TAG_MENU = {
     [INPUT_TAG]: {
         shadow: {
-            type: BLOCK_TAG_MENU.type,
+            type: BLOCK_SENSING_TAG_MENU.type,
         },
     },
 };
@@ -519,7 +523,21 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     blockInfo(BLOCK_IMMEDIATELY),
                     blockInfo(BLOCK_WHEN_I),
                     blockInfo(BLOCK_RECEIVE_BROADCAST),
-                    blockInfo(BLOCK_BROADCAST, shadowBroadcastMenu()),
+                    ...advanced(
+                        [
+                            blockInfo(
+                                BLOCK_BROADCAST_TO,
+                                shadowBroadcastMenu(),
+                                shadowBroadcastTargetMenu(),
+                            ),
+                            blockInfo(
+                                BLOCK_BROADCAST_TO_TAGGED,
+                                shadowBroadcastMenu(),
+                                shadowTagMenu("events"),
+                            ),
+                        ],
+                        [blockInfo(BLOCK_BROADCAST, shadowBroadcastMenu())],
+                    ),
                     blockInfo(BLOCK_TOUCH, shadowOther()),
                     ...devOnly(
                         blockInfo(BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED),

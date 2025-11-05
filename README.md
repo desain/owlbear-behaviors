@@ -60,7 +60,7 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 
 -   **Send messages** between tokens using broadcast blocks
 -   Broadcast messages from the main Behaviors panel as well as from behavior scripts
--   Drag blocks onto the message field in message blocks to dynamically choose or construct tags at runtime
+-   Drag blocks onto the message field in message blocks to dynamically choose or construct messages at runtime
 
 ![Sending a Message](https://owlbear-behaviors.pages.dev/docs/assets/sending-message.gif)
 
@@ -162,13 +162,11 @@ To make a production build run:
 ## To do
 
 -   Advanced blocks setting
-    -   Broadcast to token / my children / tokens tagged
     -   Replace image with image of other
     -   Looks
         -   Set width and height scale independently
 -   Safety
     -   Check token total size before saving against OBR max update size
-    -   Add trycatch for each update, exponential backoff when rate limit exceeded?
 -   Move executor to the background now that background scripts shouldn't be throttled?
 -   Collision system improvements
     -   base it on polygon overlap instead of bounding boxes? turf js?
@@ -190,6 +188,8 @@ To make a production build run:
         -   tell other to? Snail Mod has it as `as (other) {...}`
 -   Fix Blockly bug? [hideIfOwnerIsInWorkspace](https://github.com/google/blockly/blob/develop/core/widgetdiv.ts#L201) should initialize `currentWorkspace` to `ownerWorkspace`, and should reference itself in the loop.
 -   Figure out multiline text inputs - https://www.npmjs.com/package/@blockly/field-multilineinput doesn't display correctly.
+-   Scratch parity
+    -   Delete unused messages
 
 ## Known Bugs
 

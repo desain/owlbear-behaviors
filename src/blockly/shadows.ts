@@ -1,12 +1,15 @@
 import type { HexColor } from "owlbear-utils";
 import {
     BLOCK_BROADCAST_MENU,
+    BLOCK_BROADCAST_TARGET_MENU,
     BLOCK_COLOR_PICKER,
     BLOCK_CONTROL_ITEM_MENU,
     BLOCK_DYNAMIC_VAL,
+    BLOCK_EVENTS_TAG_MENU,
     BLOCK_OPACITY_SLIDER,
     BLOCK_OTHER,
     BLOCK_SENSING_ITEM_MENU,
+    BLOCK_SENSING_TAG_MENU,
     BLOCK_SOUND_MENU,
     BLOCK_URL,
 } from "./blocks";
@@ -45,6 +48,25 @@ export function shadowBroadcastMenu() {
     return {
         shadow: {
             type: BLOCK_BROADCAST_MENU.type,
+        },
+    };
+}
+
+export function shadowBroadcastTargetMenu() {
+    return {
+        shadow: {
+            type: BLOCK_BROADCAST_TARGET_MENU.type,
+        },
+    };
+}
+
+export function shadowTagMenu(category: "sensing" | "events") {
+    return {
+        shadow: {
+            type:
+                category === "sensing"
+                    ? BLOCK_SENSING_TAG_MENU.type
+                    : BLOCK_EVENTS_TAG_MENU.type,
         },
     };
 }
