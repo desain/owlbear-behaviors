@@ -556,10 +556,10 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     GAP50,
                     ...advanced<Blockly.utils.toolbox.BlockInfo>(
                         [
-                            {
-                                kind: "block",
-                                type: "controls_if",
-                            },
+                            // {
+                            //     kind: "block",
+                            //     type: "controls_if",
+                            // },
                             {
                                 ...blockInfo(
                                     BLOCK_MATCH,

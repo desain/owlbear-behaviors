@@ -162,9 +162,13 @@ To make a production build run:
 ## To do
 
 -   Advanced blocks setting
-    -   Replace image with image of other
+    -   Control
+        -   Fancy if with mutator from blockly
     -   Looks
         -   Set width and height scale independently
+        -   Replace image with image of other
+    -   Motion
+        -   Enable/disable attachment constraint
 -   Safety
     -   Check token total size before saving against OBR max update size
 -   Move executor to the background now that background scripts shouldn't be throttled?
@@ -179,6 +183,7 @@ To make a production build run:
     -   Extensions
         -   Initiative Tracker same as Pretty Sordid?
         -   On field change for Daggerheart, Owl Trackers
+        -   Owl trackers: Change max value
         -   Kenku FM?
         -   dddice? get room id from metadata, call API?
         -   Google sheets write
