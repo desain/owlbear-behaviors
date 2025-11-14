@@ -147,6 +147,7 @@ import {
     BLOCK_MATCH_MATCH,
     BLOCK_MATCH_RANGE,
     BLOCK_MIN_MAX,
+    BLOCK_MOTION_CONSTRAINT,
     BLOCK_MOVE_DIRECTION,
     BLOCK_MULTI_JOIN,
     BLOCK_MULTI_JOIN_CONTAINER,
@@ -498,6 +499,22 @@ export const GENERATORS: Record<
         `${SELF}.attachedTo !== undefined`,
         javascript.Order.EQUALITY,
     ],
+
+    [BLOCK_MOTION_CONSTRAINT.type]: (block, generator) => {
+        const action = getDropdownFieldValue(block, BLOCK_MOTION_CONSTRAINT, 0);
+        const constraint = getDropdownFieldValue(
+            block,
+            BLOCK_MOTION_CONSTRAINT,
+            1,
+        );
+        return awaitBehaveStatement(
+            "setAttachmentConstraint",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            action,
+            generator.quote_(constraint),
+        );
+    },
 
     [BLOCK_ROTATE_LEFT.type]: (block, generator) => {
         const degrees = generator.valueToCode(

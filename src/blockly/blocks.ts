@@ -236,6 +236,39 @@ export const BLOCK_DETACH = {
     nextStatement: null,
 } as const;
 
+export const BLOCK_MOTION_CONSTRAINT = {
+    style: "motion_blocks",
+    type: "motion_constraint",
+    tooltip: "Enable or disable a constraint for attached items",
+    message0: "%1 %2 constraint",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "DO",
+            options: [
+                ["disable", "false"],
+                ["enable", "true"],
+            ],
+        },
+        {
+            type: "field_dropdown",
+            name: "CON",
+            options: [
+                ["visible", "VISIBLE"],
+                ["scale", "SCALE"],
+                ["rotation", "ROTATION"],
+                ["position", "POSITION"],
+                ["delete", "DELETE"],
+                ["locked", "LOCKED"],
+                ["copy", "COPY"],
+            ],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
 export const BLOCK_MY_PARENT = {
     style: "motion_blocks",
     type: "motion_my_parent",
@@ -4090,6 +4123,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_Y_POSITION,
     BLOCK_ATTACH,
     BLOCK_DETACH,
+    BLOCK_MOTION_CONSTRAINT,
     BLOCK_MY_PARENT,
     BLOCK_ATTACHED,
     BLOCK_ROTATE_LEFT,

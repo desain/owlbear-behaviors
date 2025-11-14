@@ -16,6 +16,7 @@ import {
     BLOCK_IF,
     BLOCK_IMMEDIATELY,
     BLOCK_MIN_MAX,
+    BLOCK_MOTION_CONSTRAINT,
     BLOCK_MULTI_JOIN,
     BLOCK_REMOVE_ATTACHMENT,
     BLOCK_REPEAT,
@@ -410,6 +411,14 @@ describe("Blockly JavaScript Generation", () => {
             it("should handle empty coordinate inputs gracefully", () => {
                 const workspace = new Blockly.Workspace();
                 addImmediatelyWith(workspace, BLOCK_GOTO.type);
+                checkCompiles(workspace);
+            });
+        });
+
+        describe("motion_constrain block", () => {
+            it("should generate syntactially valid JavaScript", () => {
+                const workspace = new Blockly.Workspace();
+                addImmediatelyWith(workspace, BLOCK_MOTION_CONSTRAINT.type);
                 checkCompiles(workspace);
             });
         });

@@ -167,8 +167,6 @@ To make a production build run:
     -   Looks
         -   Set width and height scale independently
         -   Replace image with image of other
-    -   Motion
-        -   Enable/disable attachment constraint
 -   Safety
     -   Check token total size before saving against OBR max update size
 -   Move executor to the background now that background scripts shouldn't be throttled?

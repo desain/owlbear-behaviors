@@ -7,6 +7,7 @@ import OBR, {
 import {
     ANGLE_DIMETRIC_RADIANS,
     complain,
+    isAttachmentBehavior,
     ORIGIN,
     SQRT_3,
     units,
@@ -478,7 +479,41 @@ export const MOTION_BEHAVIORS = {
                 draft.position = position;
             });
         }
+        signal.throwIfAborted();
+    },
 
+    setAttachmentConstraint: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        enable: boolean,
+        constraintUnknown: unknown,
+    ) => {
+        const constraint = String(constraintUnknown);
+
+        if (!isAttachmentBehavior(constraint)) {
+            console.warn(
+                `[setAttachmentConstraint] invalid constraint: ${constraint}`,
+            );
+            return;
+        }
+
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            const enabled =
+                !self.disableAttachmentBehavior?.includes(constraint);
+            if (enable && !enabled) {
+                // want to enable, so remove from disabled list
+                self.disableAttachmentBehavior =
+                    self.disableAttachmentBehavior?.filter(
+                        (c) => c !== constraint,
+                    );
+            } else if (!enable && enabled) {
+                // add to disabled list
+                self.disableAttachmentBehavior = [
+                    ...(self.disableAttachmentBehavior ?? []),
+                    constraint,
+                ];
+            }
+        });
         signal.throwIfAborted();
     },
 };
