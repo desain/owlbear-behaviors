@@ -1,7 +1,7 @@
 {
     "name": "owlbear-behaviors",
     "type": "module",
-    "version": "1.8.5",
+    "version": "1.9.0",
     "description": "Bring tokens to life with block-based automated behavior inspired by Scratch.",
     "scripts": {
         "dev": "vite",
