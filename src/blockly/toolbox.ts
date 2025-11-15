@@ -352,10 +352,8 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                                           ),
                                   },
                               },
-                              ...devOnly(
-                                  blockInfo(BLOCK_ADD_ATTACHMENT),
-                                  blockInfo(BLOCK_REMOVE_ATTACHMENT),
-                              ),
+                              blockInfo(BLOCK_ADD_ATTACHMENT),
+                              blockInfo(BLOCK_REMOVE_ATTACHMENT),
                           ]
                         : []),
                     GAP50,
@@ -499,7 +497,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         : []),
                     blockInfo(BLOCK_GET_ACCESSIBILITY_NAME),
                     blockInfo(BLOCK_GET_ACCESSIBILITY_DESCRIPTION),
-                    ...devOnly(blockInfo(BLOCK_HAS_ATTACHMENT)),
+                    blockInfo(BLOCK_HAS_ATTACHMENT),
                     blockInfo(BLOCK_VISIBLE),
                 ],
             },
@@ -541,9 +539,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         [blockInfo(BLOCK_BROADCAST, shadowBroadcastMenu())],
                     ),
                     blockInfo(BLOCK_TOUCH, shadowOther()),
-                    ...devOnly(
-                        blockInfo(BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED),
-                    ),
+                    blockInfo(BLOCK_EVENT_WHEN_CONTEXT_MENU_CLICKED),
                 ],
             },
             /* control */ {
