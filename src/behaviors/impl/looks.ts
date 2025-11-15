@@ -247,10 +247,14 @@ export const LOOKS_BEHAVIORS = {
         signal.throwIfAborted();
     },
 
+    /**
+     * @param dimension if unset, both X and Y. If 'X', only x; if 'Y', only y.
+     */
     setSize: async (
         signal: AbortSignal,
         selfIdUnknown: unknown,
         sizeUnknown: unknown,
+        dimension?: unknown,
     ) => {
         const size = Number(sizeUnknown);
         if (!isFinite(size) || isNaN(size)) {
@@ -260,16 +264,24 @@ export const LOOKS_BEHAVIORS = {
 
         const scale = size / 100;
         await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
-            self.scale.x = scale;
-            self.scale.y = scale;
+            if (!dimension || dimension === "X") {
+                self.scale.x = scale;
+            }
+            if (!dimension || dimension === "Y") {
+                self.scale.y = scale;
+            }
         });
         signal.throwIfAborted();
     },
 
+    /**
+     * @param dimension if unset, both X and Y. If 'X', only x; if 'Y', only y.
+     */
     changeSize: async (
         signal: AbortSignal,
         selfIdUnknown: unknown,
         deltaUnknown: unknown,
+        dimension?: unknown,
     ) => {
         const delta = Number(deltaUnknown);
         if (!isFinite(delta) || isNaN(delta)) {
@@ -279,8 +291,12 @@ export const LOOKS_BEHAVIORS = {
 
         const scaledDelta = delta / 100;
         await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
-            self.scale.x = self.scale.x + scaledDelta;
-            self.scale.y = self.scale.y + scaledDelta;
+            if (!dimension || dimension === "X") {
+                self.scale.x = self.scale.x + scaledDelta;
+            }
+            if (!dimension || dimension === "Y") {
+                self.scale.y = self.scale.y + scaledDelta;
+            }
         });
         signal.throwIfAborted();
     },
@@ -371,6 +387,21 @@ export const LOOKS_BEHAVIORS = {
         }
 
         return getText(item);
+    },
+
+    getScale: async (
+        signal: AbortSignal,
+        itemIdUnknown: unknown,
+    ): Promise<number> => {
+        const itemId = String(itemIdUnknown);
+        const item = await ItemProxy.getInstance().get(itemId);
+        signal.throwIfAborted();
+        if (!item) {
+            complain(`[getScale] Item not found: ${itemId}`);
+            return 0;
+        }
+
+        return item.scale.x * 100;
     },
 
     setText: async (

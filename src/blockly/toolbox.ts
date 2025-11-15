@@ -32,6 +32,7 @@ import {
     BLOCK_CENTER_ZOOM,
     BLOCK_CHANGE_EFFECT_BY,
     BLOCK_CHANGE_SIZE,
+    BLOCK_CHANGE_SIZE_XY,
     BLOCK_CLEAR_GRAPHIC_EFFECTS,
     BLOCK_CLOSEST_TAGGED,
     BLOCK_CONTAINS,
@@ -96,6 +97,7 @@ import {
     BLOCK_GET_FILL_OPACITY,
     BLOCK_GET_LAYER,
     BLOCK_GET_SIZE,
+    BLOCK_GET_SIZE_XY,
     BLOCK_GET_STROKE_COLOR,
     BLOCK_GET_STROKE_OPACITY,
     BLOCK_GET_TEXT,
@@ -148,6 +150,7 @@ import {
     BLOCK_SET_FONT_SIZE,
     BLOCK_SET_LAYER,
     BLOCK_SET_SIZE,
+    BLOCK_SET_SIZE_XY,
     BLOCK_SET_STROKE_COLOR,
     BLOCK_SET_STROKE_OPACITY,
     BLOCK_SET_TEXT,
@@ -358,7 +361,13 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         : []),
                     GAP50,
                     blockInfo(BLOCK_SET_SIZE, shadowNumber(100)),
+                    ...advanced([
+                        blockInfo(BLOCK_SET_SIZE_XY, shadowNumber(100)),
+                    ]),
                     blockInfo(BLOCK_CHANGE_SIZE, shadowNumber(10)),
+                    ...advanced([
+                        blockInfo(BLOCK_CHANGE_SIZE_XY, shadowNumber(10)),
+                    ]),
                     GAP50,
                     // Only show effects-based blocks for shapes, curves, and paths
                     ...(isShape(target) || isCurve(target) || isPath(target)
@@ -491,6 +500,7 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                           ]
                         : []),
                     blockInfo(BLOCK_GET_SIZE),
+                    ...advanced([blockInfo(BLOCK_GET_SIZE_XY)]),
                     blockInfo(BLOCK_GET_LAYER),
                     ...(isImage(target) || isText(target)
                         ? [blockInfo(BLOCK_GET_TEXT)]

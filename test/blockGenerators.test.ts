@@ -7,10 +7,12 @@ import {
     BLOCK_BROADCAST_TARGET_MENU,
     BLOCK_BROADCAST_TO,
     BLOCK_BROADCAST_TO_TAGGED,
+    BLOCK_CHANGE_SIZE_XY,
     BLOCK_COLOR_PICKER,
     BLOCK_DYNAMIC_VAL,
     BLOCK_EXTENSION_PHASE_CHANGES,
     BLOCK_EXTENSION_PHASE_OF,
+    BLOCK_GET_SIZE_XY,
     BLOCK_GOTO,
     BLOCK_HAS_ATTACHMENT,
     BLOCK_IF,
@@ -25,10 +27,14 @@ import {
     BLOCK_SENSING_TAG_MENU,
     BLOCK_SET_FONT_FAMILY,
     BLOCK_SET_FONT_SIZE,
+    BLOCK_SET_SIZE_XY,
     BLOCK_SET_TEXT_COLOR,
 } from "../src/blockly/blocks";
 import { BehaviorJavascriptGenerator } from "../src/blockly/generator/BehaviorJavascriptGenerator";
 import { setupBlocklyGlobals } from "../src/blockly/setupBlocklyGlobals";
+
+const SHOULD_GENERATE_VALID_JS =
+    "should generate syntactically valid JavaScript";
 
 function checkCompiles(workspace: Blockly.Workspace) {
     const code = new BehaviorJavascriptGenerator().workspaceToCode(workspace);
@@ -59,13 +65,14 @@ function addImmediatelySayWith(
     say.getInput(BLOCK_SAY.args0[0].name)!.connection!.connect(
         block.outputConnection!,
     );
+    addDynamicValToInput(say, BLOCK_SAY.args0[1].name, 2);
     return block;
 }
 
 function addDynamicValToInput(
     block: Blockly.Block,
     inputName: string,
-    value = "",
+    value: string | number = "",
 ) {
     const input = block.getInput(inputName);
     expect(input).not.toBeNull();
@@ -73,7 +80,7 @@ function addDynamicValToInput(
 
     const dynamicValue = block.workspace.newBlock(BLOCK_DYNAMIC_VAL.type);
     expect(dynamicValue.outputConnection).toBeTruthy();
-    dynamicValue.setFieldValue(value, BLOCK_DYNAMIC_VAL.args0[0].name);
+    dynamicValue.setFieldValue(String(value), BLOCK_DYNAMIC_VAL.args0[0].name);
 
     input!.connection!.connect(dynamicValue.outputConnection!);
 }
@@ -1047,6 +1054,48 @@ describe("Blockly JavaScript Generation", () => {
                 const workspace = new Blockly.Workspace();
                 addImmediatelyWith(workspace, BLOCK_SET_FONT_FAMILY.type);
                 checkCompiles(workspace);
+            });
+        });
+
+        describe("size blocks", () => {
+            describe("set size xy", () => {
+                it(SHOULD_GENERATE_VALID_JS, () => {
+                    const workspace = new Blockly.Workspace();
+                    const block = addImmediatelyWith(
+                        workspace,
+                        BLOCK_SET_SIZE_XY.type,
+                    );
+                    addDynamicValToInput(
+                        block,
+                        BLOCK_SET_SIZE_XY.args0[1].name,
+                        90,
+                    );
+                    checkCompiles(workspace);
+                });
+            });
+
+            describe("change size xy", () => {
+                it(SHOULD_GENERATE_VALID_JS, () => {
+                    const workspace = new Blockly.Workspace();
+                    const block = addImmediatelyWith(
+                        workspace,
+                        BLOCK_CHANGE_SIZE_XY.type,
+                    );
+                    addDynamicValToInput(
+                        block,
+                        BLOCK_CHANGE_SIZE_XY.args0[1].name,
+                        20,
+                    );
+                    checkCompiles(workspace);
+                });
+            });
+
+            describe("get size xy", () => {
+                it(SHOULD_GENERATE_VALID_JS, () => {
+                    const workspace = new Blockly.Workspace();
+                    addImmediatelySayWith(workspace, BLOCK_GET_SIZE_XY.type);
+                    checkCompiles(workspace);
+                });
             });
         });
     });

@@ -165,7 +165,6 @@ To make a production build run:
     -   Control
         -   Fancy if with mutator from blockly
     -   Looks
-        -   Set width and height scale independently
         -   Replace image with image of other
 -   Safety
     -   Check token total size before saving against OBR max update size

@@ -507,6 +507,78 @@ export const BLOCK_GET_SIZE = {
     output: "Number",
 } as const;
 
+export const BLOCK_SET_SIZE_XY = {
+    style: "looks_blocks",
+    type: "looks_setszxy",
+    tooltip:
+        "Set the horizontal or vertical size of this token as a percentage of its original size",
+    message0: "set %1 size to %2 %%",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "XY",
+            options: [
+                ["horizontal", "X"],
+                ["vertical", "Y"],
+            ],
+        },
+        {
+            type: "input_value",
+            name: "SIZE",
+            check: ["Number", "String"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_CHANGE_SIZE_XY = {
+    style: "looks_blocks",
+    type: "looks_chgszxy",
+    tooltip:
+        "Change the horizontal or vertical size of this token by a percentage of its original size",
+    message0: "change %1 size by %2 %%",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "XY",
+            options: [
+                ["horizontal", "X"],
+                ["vertical", "Y"],
+            ],
+        },
+        {
+            type: "input_value",
+            name: "CHANGE",
+            check: ["Number", "String"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    inputsInline: true,
+} as const;
+
+export const BLOCK_GET_SIZE_XY = {
+    style: "looks_blocks",
+    type: "looks_szxy",
+    tooltip:
+        "Get the current horizontal or vertical size of this token as a percentage of its original size",
+    message0: "%1 size",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "DIRECTION",
+            options: [
+                ["horizontal", "X"],
+                ["vertical", "Y"],
+            ],
+        },
+    ],
+    output: "Number",
+    inputsInline: true,
+} as const;
+
 export const BLOCK_VISIBLE = {
     style: "looks_blocks",
     type: "looks_visible",
@@ -4145,8 +4217,11 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_LOCKED,
     BLOCK_SAY,
     BLOCK_SET_SIZE,
+    BLOCK_SET_SIZE_XY,
     BLOCK_CHANGE_SIZE,
+    BLOCK_CHANGE_SIZE_XY,
     BLOCK_GET_SIZE,
+    BLOCK_GET_SIZE_XY,
     BLOCK_REPLACE_IMAGE,
     BLOCK_ADD_ATTACHMENT,
     BLOCK_REMOVE_ATTACHMENT,

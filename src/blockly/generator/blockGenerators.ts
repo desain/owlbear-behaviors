@@ -38,6 +38,7 @@ import {
     BLOCK_CENTER_ZOOM,
     BLOCK_CHANGE_EFFECT_BY,
     BLOCK_CHANGE_SIZE,
+    BLOCK_CHANGE_SIZE_XY,
     BLOCK_CLEAR_GRAPHIC_EFFECTS,
     BLOCK_CLOSEST_TAGGED,
     BLOCK_COLOR_PICKER,
@@ -110,6 +111,7 @@ import {
     BLOCK_GET_FILL_OPACITY,
     BLOCK_GET_LAYER,
     BLOCK_GET_SIZE,
+    BLOCK_GET_SIZE_XY,
     BLOCK_GET_STROKE_COLOR,
     BLOCK_GET_STROKE_OPACITY,
     BLOCK_GET_TEXT,
@@ -183,6 +185,7 @@ import {
     BLOCK_SET_FONT_SIZE,
     BLOCK_SET_LAYER,
     BLOCK_SET_SIZE,
+    BLOCK_SET_SIZE_XY,
     BLOCK_SET_STROKE_COLOR,
     BLOCK_SET_STROKE_OPACITY,
     BLOCK_SET_TEXT,
@@ -651,10 +654,60 @@ export const GENERATORS: Record<
             delta,
         );
     },
+
     [BLOCK_GET_SIZE.type]: () => [
         `100 * Math.max(${SELF}.scale.x, ${SELF}.scale.y)`,
         javascript.Order.MULTIPLICATION,
     ],
+
+    [BLOCK_SET_SIZE_XY.type]: (block, generator) => {
+        const xy = getDropdownFieldValue(block, BLOCK_SET_SIZE_XY, 0);
+        const size = generator.valueToCode(
+            block,
+            BLOCK_SET_SIZE_XY.args0[1].name,
+            javascript.Order.ATOMIC,
+        );
+        return awaitBehaveStatement(
+            "setSize",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            size,
+            generator.quote_(xy),
+        );
+    },
+
+    [BLOCK_CHANGE_SIZE_XY.type]: (block, generator) => {
+        const xy = getDropdownFieldValue(block, BLOCK_CHANGE_SIZE_XY, 0);
+        const delta = generator.valueToCode(
+            block,
+            BLOCK_CHANGE_SIZE_XY.args0[1].name,
+            javascript.Order.ATOMIC,
+        );
+
+        return awaitBehaveStatement(
+            "changeSize",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            delta,
+            generator.quote_(xy),
+        );
+    },
+
+    [BLOCK_GET_SIZE_XY.type]: (block) => {
+        const xy = getDropdownFieldValue(block, BLOCK_GET_SIZE_XY, 0);
+        switch (xy) {
+            case "X":
+                return [
+                    `100 * ${SELF}.scale.x`,
+                    javascript.Order.MULTIPLICATION,
+                ];
+            case "Y":
+                return [
+                    `100 * ${SELF}.scale.y`,
+                    javascript.Order.MULTIPLICATION,
+                ];
+        }
+    },
 
     [BLOCK_REPLACE_IMAGE.type]: (block) => {
         const data = JSON.stringify(
