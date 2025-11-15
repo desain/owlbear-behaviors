@@ -308,11 +308,36 @@ export const LOOKS_BEHAVIORS = {
     ): Promise<void> => {
         await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
             if (!isImage(self)) {
-                complain("replace image called on non-image");
+                complain("[replaceImage] called on non-image");
                 return;
             }
             self.image = image;
             self.grid = grid;
+        });
+        signal.throwIfAborted();
+    },
+
+    takeImageFrom: async (
+        signal: AbortSignal,
+        selfIdUnknown: unknown,
+        targetIdUnknown: unknown,
+    ): Promise<void> => {
+        const targetId = String(targetIdUnknown);
+        const target = await ItemProxy.getInstance().get(targetId);
+        signal.throwIfAborted();
+
+        if (!target || !isImage(target)) {
+            complain(`[takeImageFrom] Target image '${targetId}' not found`);
+            return;
+        }
+
+        await ItemProxy.getInstance().update(String(selfIdUnknown), (self) => {
+            if (!isImage(self)) {
+                complain("[takeImageFrom] called on non-image");
+                return;
+            }
+            self.image = target.image;
+            self.grid = target.grid;
         });
         signal.throwIfAborted();
     },

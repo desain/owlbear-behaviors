@@ -17,9 +17,11 @@ import {
     BLOCK_HAS_ATTACHMENT,
     BLOCK_IF,
     BLOCK_IMMEDIATELY,
+    BLOCK_LOOKS_TAKE_IMAGE_FROM,
     BLOCK_MIN_MAX,
     BLOCK_MOTION_CONSTRAINT,
     BLOCK_MULTI_JOIN,
+    BLOCK_MY_PARENT,
     BLOCK_REMOVE_ATTACHMENT,
     BLOCK_REPEAT,
     BLOCK_REPEAT_UNTIL,
@@ -1096,6 +1098,27 @@ describe("Blockly JavaScript Generation", () => {
                     addImmediatelySayWith(workspace, BLOCK_GET_SIZE_XY.type);
                     checkCompiles(workspace);
                 });
+            });
+        });
+
+        describe("take image from block", () => {
+            it(SHOULD_GENERATE_VALID_JS + " when no input given", () => {
+                const workspace = new Blockly.Workspace();
+                addImmediatelyWith(workspace, BLOCK_LOOKS_TAKE_IMAGE_FROM.type);
+                checkCompiles(workspace);
+            });
+
+            it(SHOULD_GENERATE_VALID_JS + " when token input given", () => {
+                const workspace = new Blockly.Workspace();
+                const block = addImmediatelyWith(
+                    workspace,
+                    BLOCK_LOOKS_TAKE_IMAGE_FROM.type,
+                );
+                const parent = workspace.newBlock(BLOCK_MY_PARENT.type);
+                block
+                    .getInput(BLOCK_LOOKS_TAKE_IMAGE_FROM.args0[0].name)!
+                    .connection!.connect(parent.outputConnection!);
+                checkCompiles(workspace);
             });
         });
     });

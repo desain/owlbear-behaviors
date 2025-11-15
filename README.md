@@ -164,8 +164,6 @@ To make a production build run:
 -   Advanced blocks setting
     -   Control
         -   Fancy if with mutator from blockly
-    -   Looks
-        -   Replace image with image of other
 -   Safety
     -   Check token total size before saving against OBR max update size
 -   Move executor to the background now that background scripts shouldn't be throttled?

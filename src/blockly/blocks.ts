@@ -603,6 +603,24 @@ export const BLOCK_REPLACE_IMAGE = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_LOOKS_TAKE_IMAGE_FROM = {
+    style: "looks_blocks",
+    type: "looks_steal",
+    message0: "take image from %1",
+    args0: [
+        {
+            type: "input_value",
+            name: "ITEM",
+            check: "ItemId",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    tooltip:
+        "Replaces the current token's image with the image from another token.",
+    helpUrl: "",
+} as const;
+
 export const BLOCK_ADD_ATTACHMENT = {
     style: "looks_blocks",
     type: "looks_add_atch",
@@ -4223,6 +4241,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_GET_SIZE,
     BLOCK_GET_SIZE_XY,
     BLOCK_REPLACE_IMAGE,
+    BLOCK_LOOKS_TAKE_IMAGE_FROM,
     BLOCK_ADD_ATTACHMENT,
     BLOCK_REMOVE_ATTACHMENT,
     BLOCK_HAS_ATTACHMENT,

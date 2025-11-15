@@ -144,6 +144,7 @@ import {
     BLOCK_LIST_REPORTER,
     BLOCK_LOCK,
     BLOCK_LOCKED,
+    BLOCK_LOOKS_TAKE_IMAGE_FROM,
     BLOCK_MATCH,
     BLOCK_MATCH_CASE,
     BLOCK_MATCH_MATCH,
@@ -718,6 +719,20 @@ export const GENERATORS: Record<
             PARAMETER_SIGNAL,
             PARAMETER_SELF_ID,
             data,
+        );
+    },
+
+    [BLOCK_LOOKS_TAKE_IMAGE_FROM.type]: (block, generator) => {
+        const itemId = generator.valueToCode(
+            block,
+            BLOCK_LOOKS_TAKE_IMAGE_FROM.args0[0].name,
+            javascript.Order.ATOMIC,
+        );
+        return awaitBehaveStatement(
+            "takeImageFrom",
+            PARAMETER_SIGNAL,
+            PARAMETER_SELF_ID,
+            itemId,
         );
     },
 

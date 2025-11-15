@@ -119,6 +119,7 @@ import {
     BLOCK_LETTER_OF,
     BLOCK_LOCK,
     BLOCK_LOCKED,
+    BLOCK_LOOKS_TAKE_IMAGE_FROM,
     BLOCK_MATCH,
     BLOCK_MIN_MAX,
     BLOCK_MOTION_CONSTRAINT,
@@ -355,6 +356,10 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                                           ),
                                   },
                               },
+                              ...advanced([
+                                  blockInfo(BLOCK_LOOKS_TAKE_IMAGE_FROM),
+                              ]),
+                              GAP50,
                               blockInfo(BLOCK_ADD_ATTACHMENT),
                               blockInfo(BLOCK_REMOVE_ATTACHMENT),
                           ]
