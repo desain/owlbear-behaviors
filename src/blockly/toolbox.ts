@@ -113,6 +113,7 @@ import {
     BLOCK_HOOT,
     BLOCK_IF,
     BLOCK_IF_ELSE,
+    BLOCK_IFS,
     BLOCK_IMMEDIATELY,
     BLOCK_LAYER_MENU,
     BLOCK_LESS_THAN,
@@ -567,29 +568,22 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     blockInfo(BLOCK_REPEAT, shadowNumber(5)),
                     blockInfo(BLOCK_FOREVER),
                     GAP50,
-                    ...advanced<Blockly.utils.toolbox.BlockInfo>(
-                        [
-                            // {
-                            //     kind: "block",
-                            //     type: "controls_if",
-                            // },
-                            {
-                                ...blockInfo(
-                                    BLOCK_MATCH,
-                                    shadowDynamic("apple"),
-                                ),
-                                extraState: {
-                                    cases: [
-                                        {
-                                            exact: "apple",
-                                        },
-                                    ],
-                                    default: false,
-                                } satisfies MatchBlockExtraState,
-                            },
-                        ],
-                        [blockInfo(BLOCK_IF), blockInfo(BLOCK_IF_ELSE)],
-                    ),
+                    blockInfo(BLOCK_IF),
+                    blockInfo(BLOCK_IF_ELSE),
+                    ...advanced([
+                        ...devOnly(blockInfo(BLOCK_IFS)),
+                        {
+                            ...blockInfo(BLOCK_MATCH, shadowDynamic("apple")),
+                            extraState: {
+                                cases: [
+                                    {
+                                        exact: "apple",
+                                    },
+                                ],
+                                default: false,
+                            } satisfies MatchBlockExtraState,
+                        },
+                    ]),
 
                     blockInfo(BLOCK_WAIT_UNTIL),
                     blockInfo(BLOCK_REPEAT_UNTIL),

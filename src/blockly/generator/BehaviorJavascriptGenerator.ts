@@ -56,6 +56,12 @@ export class BehaviorJavascriptGenerator extends javascript.JavascriptGenerator 
             '  throw Error("Exhausted loop iterations in block %1");',
             "}\n",
         ].join("\n");
+        console.log(
+            "removeme prefix",
+            this.STATEMENT_PREFIX,
+            "suffix",
+            this.STATEMENT_SUFFIX,
+        );
     }
 
     /**

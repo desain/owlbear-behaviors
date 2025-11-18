@@ -1661,6 +1661,32 @@ export const BLOCK_IF_ELSE = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_IFS = {
+    style: "control_blocks",
+    type: "control_ifs",
+    message0: "%{BKY_CONTROLS_IF_MSG_IF} %1",
+    args0: [
+        {
+            type: "input_value",
+            name: "IF0",
+            check: "Boolean",
+        },
+    ],
+    message1: "%{BKY_CONTROLS_IF_MSG_THEN} %1",
+    args1: [
+        {
+            type: "input_statement",
+            name: "DO0",
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    helpUrl: "%{BKY_CONTROLS_IF_HELPURL}",
+    // suppressPrefixSuffix: true,
+    mutator: "controls_if_mutator",
+    extensions: ["controls_if_tooltip"],
+} as const;
+
 export const BLOCK_FOREVER = {
     style: "control_blocks",
     type: "control_forever",
@@ -4296,6 +4322,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_STOP,
     BLOCK_IF,
     BLOCK_IF_ELSE,
+    BLOCK_IFS,
     BLOCK_FOREVER,
     BLOCK_REPEAT,
     BLOCK_WAIT_UNTIL,

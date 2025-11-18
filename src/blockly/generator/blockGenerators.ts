@@ -1,4 +1,4 @@
-import type { Block } from "blockly";
+import { type Block } from "blockly";
 import * as javascript from "blockly/javascript";
 import { isHexColor } from "owlbear-utils";
 import type { BEHAVIORS_IMPL } from "../../behaviors/BehaviorImpl";
@@ -127,6 +127,7 @@ import {
     BLOCK_HOOT,
     BLOCK_IF,
     BLOCK_IF_ELSE,
+    BLOCK_IFS,
     BLOCK_IMMEDIATELY,
     BLOCK_JOIN,
     BLOCK_LAYER_MENU,
@@ -255,10 +256,7 @@ export type CodeGenerator = (
  */
 const SELF = `(await ${PARAMETER_ITEM_PROXY}.get(${PARAMETER_SELF_ID}))`;
 
-const variableBlock: CodeGenerator = (
-    block: Block,
-    generator: BehaviorJavascriptGenerator,
-) => {
+const variableBlock: CodeGenerator = (block, generator) => {
     const varId = getStringFieldValue(
         block,
         BLOCK_VARIABLE_REPORTER.args0[0].name,
@@ -267,10 +265,7 @@ const variableBlock: CodeGenerator = (
     return [generator.getVariableReference(varId), javascript.Order.MEMBER];
 };
 
-const variableSetBlock: CodeGenerator = (
-    block: Block,
-    generator: BehaviorJavascriptGenerator,
-) => {
+const variableSetBlock: CodeGenerator = (block, generator) => {
     const varId = getStringFieldValue(
         block,
         BLOCK_VARIABLE_SETTER.args0[0].name,
@@ -283,10 +278,7 @@ const variableSetBlock: CodeGenerator = (
     return `${generator.getVariableReference(varId)} = ${value};\n`;
 };
 
-const variableChangeBlock: CodeGenerator = (
-    block: Block,
-    generator: BehaviorJavascriptGenerator,
-) => {
+const variableChangeBlock: CodeGenerator = (block, generator) => {
     const varRef = generator.getVariableReference(
         getStringFieldValue(block, BLOCK_VARIABLE_CHANGE.args0[0].name),
     );
@@ -1462,6 +1454,9 @@ export const GENERATORS: Record<
             elseStatements,
         );
     },
+
+    [BLOCK_IFS.type]: javascript.javascriptGenerator.forBlock
+        .controls_if as unknown as CodeGenerator,
 
     [BLOCK_FOREVER.type]: (block, generator) => {
         const statements = generator.statementToCode(
