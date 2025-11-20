@@ -10,6 +10,7 @@ import {
     BLOCK_CHANGE_SIZE_XY,
     BLOCK_COLOR_PICKER,
     BLOCK_DYNAMIC_VAL,
+    BLOCK_EXTENSION_DNDBEYOND_STAT,
     BLOCK_EXTENSION_PHASE_CHANGES,
     BLOCK_EXTENSION_PHASE_OF,
     BLOCK_GET_SIZE_XY,
@@ -3905,6 +3906,22 @@ describe("Blockly JavaScript Generation", () => {
             it("should generate syntactically valid JavaScript for 'when phase of automation changes' hat block", () => {
                 const workspace = new Blockly.Workspace();
                 workspace.newBlock(BLOCK_EXTENSION_PHASE_CHANGES.type);
+                checkCompiles(workspace);
+            });
+        });
+
+        describe("D&D beyond block", () => {
+            it(SHOULD_GENERATE_VALID_JS, () => {
+                const workspace = new Blockly.Workspace();
+                const dndb = addImmediatelySayWith(
+                    workspace,
+                    BLOCK_EXTENSION_DNDBEYOND_STAT.type,
+                );
+                addDynamicValToInput(
+                    dndb,
+                    BLOCK_EXTENSION_DNDBEYOND_STAT.args0[1].name,
+                    "https://www.dndbeyond.com/characters/107164636",
+                );
                 checkCompiles(workspace);
             });
         });

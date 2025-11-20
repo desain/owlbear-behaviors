@@ -163,7 +163,9 @@ To make a production build run:
 
 -   Advanced blocks setting
     -   Control
-        -   Fancy if with mutator from blockly
+        -   Fancy if with mutator from blockly (change color)
+    -   Events
+        -   Item menu for players too
 -   Safety
     -   Check token total size before saving against OBR max update size
 -   Move executor to the background now that background scripts shouldn't be throttled?
@@ -182,8 +184,6 @@ To make a production build run:
         -   Kenku FM?
         -   dddice? get room id from metadata, call API?
         -   Google sheets write
-        -   D&D beyond
-            -   my HP, max HP, temp HP, initiative bonus, stats, proficiency, cuagau, skills
     -   Control
         -   tell other to? Snail Mod has it as `as (other) {...}`
 -   Fix Blockly bug? [hideIfOwnerIsInWorkspace](https://github.com/google/blockly/blob/develop/core/widgetdiv.ts#L201) should initialize `currentWorkspace` to `ownerWorkspace`, and should reference itself in the loop.

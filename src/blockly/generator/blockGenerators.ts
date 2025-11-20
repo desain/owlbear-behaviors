@@ -64,6 +64,7 @@ import {
     BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_DICE_PLUS_ROLL,
+    BLOCK_EXTENSION_DNDBEYOND_STAT,
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_FOG_LIT,
     BLOCK_EXTENSION_FOG_REMOVE,
@@ -2690,6 +2691,25 @@ export const GENERATORS: Record<
             PARAMETER_SIGNAL,
             notation,
             generator.quote_(who),
+        );
+    },
+
+    [BLOCK_EXTENSION_DNDBEYOND_STAT.type]: (block, generator) => {
+        const stat = getDropdownFieldValue(
+            block,
+            BLOCK_EXTENSION_DNDBEYOND_STAT,
+            0,
+        );
+        const url = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_DNDBEYOND_STAT.args0[1].name,
+            javascript.Order.NONE,
+        );
+        return awaitBehaveValue(
+            "getDndBeyondStat",
+            PARAMETER_SIGNAL,
+            generator.quote_(stat),
+            url,
         );
     },
 

@@ -1,5 +1,5 @@
 import OBR from "@owlbear-rodeo/sdk";
-import { isHexColor, units, unitsToPixels } from "owlbear-utils";
+import { complain, isHexColor, units, unitsToPixels } from "owlbear-utils";
 import type { BLOCK_EXTENSION_WEATHER_ADD } from "../../blockly/blocks";
 import { Announcement } from "../../extensions/Announcement";
 import { Auras } from "../../extensions/Auras";
@@ -9,6 +9,7 @@ import { Clash } from "../../extensions/Clash";
 import { Codeo } from "../../extensions/Codeo";
 import { Daggerheart } from "../../extensions/Daggerheart";
 import { DicePlus } from "../../extensions/DicePlus";
+import { DndBeyond } from "../../extensions/DndBeyond";
 import { Fog } from "../../extensions/Fog";
 import { Gapi } from "../../extensions/Gapi";
 import { Grimoire } from "../../extensions/Grimoire";
@@ -812,5 +813,87 @@ export const EXTENSIONS_BEHAVIORS = {
         signal.throwIfAborted();
         const phases = Phases.getPhases(metadata);
         return phases[name] ?? 0;
+    },
+
+    getDndBeyondStat: async (
+        signal: AbortSignal,
+        statUnknown: unknown,
+        urlUnknown: unknown,
+    ): Promise<number> => {
+        const url = String(urlUnknown);
+        const characterId = /characters\/(\d+)/.exec(url)?.[1];
+        if (!characterId) {
+            complain(
+                "[D&D Beyond] Failed to parse D&D Beyond character ID from URL " +
+                    url,
+            );
+            return 0;
+        }
+
+        const character = await DndBeyond.getCharacter(characterId);
+        signal.throwIfAborted();
+
+        if (!character) {
+            complain("[D&D Beyond] Failed to load character " + characterId);
+            return 0;
+        }
+
+        const stat = String(statUnknown);
+        switch (stat) {
+            case "LEVEL":
+                return character.classes.reduce(
+                    (acc, klass) => acc + klass.level,
+                    0,
+                );
+            case "AC":
+                return character.ac;
+            case "HP":
+                return character.hp.current;
+            case "MAXHP":
+                return character.hp.max;
+            case "TEMPHP":
+                return character.hp.temp;
+            case "INIT":
+                return character.initiative.modifier;
+            case "PB":
+                return character.proficiencyBonus;
+            case "STR":
+                return character.stats.str.score;
+            case "STR+":
+                return character.stats.str.modifier;
+            case "DEX":
+                return character.stats.dex.score;
+            case "DEX+":
+                return character.stats.dex.modifier;
+            case "CON":
+                return character.stats.con.score;
+            case "CON+":
+                return character.stats.con.modifier;
+            case "INT":
+                return character.stats.int.score;
+            case "INT+":
+                return character.stats.int.modifier;
+            case "WIS":
+                return character.stats.wis.score;
+            case "WIS+":
+                return character.stats.wis.modifier;
+            case "CHA":
+                return character.stats.cha.score;
+            case "CHA+":
+                return character.stats.cha.modifier;
+            case "CP":
+                return character.currencies.cp;
+            case "SP":
+                return character.currencies.sp;
+            case "EP":
+                return character.currencies.ep;
+            case "GP":
+                return character.currencies.gp;
+            case "PP":
+                return character.currencies.pp;
+            default:
+                console.error(`Unknown stat ${stat}`);
+                return 0;
+        }
     },
 };

@@ -54,6 +54,7 @@ import {
     BLOCK_EXTENSION_DAGGERHEART_FEAR,
     BLOCK_EXTENSION_DAGGERHEART_STAT,
     BLOCK_EXTENSION_DICE_PLUS_ROLL,
+    BLOCK_EXTENSION_DNDBEYOND_STAT,
     BLOCK_EXTENSION_FOG_ADD,
     BLOCK_EXTENSION_FOG_LIT,
     BLOCK_EXTENSION_FOG_REMOVE,
@@ -827,6 +828,17 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     ),
                     blockInfo(BLOCK_EXTENSION_FOG_REMOVE),
                     blockInfo(BLOCK_EXTENSION_FOG_LIT),
+
+                    {
+                        kind: "label",
+                        text: "D&D Beyond",
+                    },
+                    blockInfo(
+                        BLOCK_EXTENSION_DNDBEYOND_STAT,
+                        shadowUrl(
+                            "https://www.dndbeyond.com/characters/107164636",
+                        ),
+                    ),
 
                     ...extensionHeader("Game Master's Daggerheart"),
                     blockInfo(BLOCK_EXTENSION_DAGGERHEART_STAT),

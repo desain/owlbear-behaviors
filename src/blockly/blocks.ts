@@ -3095,10 +3095,10 @@ export const BLOCK_EXTENSION_GRIMOIRE_STAT = {
             name: "STAT",
             options: [
                 ["HP", "HP"],
-                ["Max HP", "MAXHP"],
-                ["Temp HP", "TEMPHP"],
+                ["max HP", "MAXHP"],
+                ["temp HP", "TEMPHP"],
                 ["AC", "AC"],
-                ["Initiative", "INIT"],
+                ["initiative", "INIT"],
             ],
         },
     ],
@@ -4001,6 +4001,56 @@ export const BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_EXTENSION_DNDBEYOND_STAT = {
+    style: "extension_blocks",
+    type: "extension_dndb",
+    tooltip: "Get a stat from a D&D Beyond character sheet.",
+    helpUrl: "",
+    message0: "%1 of %2",
+    args0: [
+        {
+            type: "field_dropdown",
+            name: "STAT",
+            options: [
+                ["HP", "HP"],
+                ["max HP", "MAXHP"],
+                ["temp HP", "TEMPHP"],
+                "separator",
+                ["AC", "AC"],
+                ["initiative bonus", "INIT"],
+                ["proficiency bonus", "PB"],
+                ["level", "LVL"],
+                "separator",
+                ["strength score", "STR"],
+                ["strength modifier", "STR+"],
+                ["dexterity score", "DEX"],
+                ["dexterity modifier", "DEX+"],
+                ["constitution score", "CON"],
+                ["constitution modifier", "CON+"],
+                ["intelligence score", "INT"],
+                ["intelligence modifier", "INT+"],
+                ["wisdom score", "WIS"],
+                ["wisdom modifier", "WIS+"],
+                ["charisma score", "CHA"],
+                ["charisma modifier", "CHA+"],
+                "separator",
+                ["copper", "CP"],
+                ["silver", "SP"],
+                ["electrum", "EP"],
+                ["gold", "GP"],
+                ["platinum", "PP"],
+            ],
+        },
+        {
+            type: "input_value",
+            name: "URL",
+            check: "String",
+        },
+    ],
+    output: "Number",
+    inputsInline: true,
+} as const;
+
 // Menus
 export const BLOCK_LAYER_MENU = {
     style: "looks_blocks",
@@ -4434,6 +4484,9 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY,
     BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT,
     BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT,
+
+    // D&D Beyond
+    BLOCK_EXTENSION_DNDBEYOND_STAT,
 
     // Value utility blocks
     BLOCK_DYNAMIC_VAL,
