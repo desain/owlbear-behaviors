@@ -305,6 +305,7 @@ async function copyBehavior(context: ContextMenuContext) {
 
     usePlayerStorage.getState().setClipboard({
         workspace: behaviorData.workspace,
+        [METADATA_KEY_MENU_ITEMS]: item.metadata[METADATA_KEY_MENU_ITEMS],
     });
 
     void OBR.notification.show("Behaviors copied to clipboard", "SUCCESS");
@@ -345,6 +346,8 @@ async function pasteBehavior(context: ContextMenuContext) {
                         workspace: clipboard.workspace,
                         lastModified: Date.now(),
                     };
+                    item.metadata[METADATA_KEY_MENU_ITEMS] =
+                        clipboard[METADATA_KEY_MENU_ITEMS];
                 }
             });
         },

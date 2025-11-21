@@ -142,11 +142,13 @@ export interface OwlbearStore {
 
     readonly clipboard?: {
         readonly workspace: object;
+        readonly [METADATA_KEY_MENU_ITEMS]?: Record<string, boolean>;
     };
     readonly setClipboard: (
         this: void,
         clipboard: {
             readonly workspace: object;
+            readonly [METADATA_KEY_MENU_ITEMS]?: Record<string, boolean>;
         },
     ) => void;
 }
