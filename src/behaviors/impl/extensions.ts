@@ -577,6 +577,25 @@ export const EXTENSIONS_BEHAVIORS = {
         return result;
     },
 
+    writeSheetsValue: async (
+        signal: AbortSignal,
+        cellUnknown: unknown,
+        sheetUnknown: unknown,
+        spreadsheetUrlOrIdUnknown: unknown,
+        contentsUnknown: unknown,
+    ): Promise<void> => {
+        const spreadsheetId = Gapi.getSpreadsheetId(
+            String(spreadsheetUrlOrIdUnknown),
+        );
+        await Gapi.writeSheetsValue(
+            spreadsheetId,
+            String(sheetUnknown),
+            String(cellUnknown),
+            contentsUnknown,
+        );
+        signal.throwIfAborted();
+    },
+
     // Owlbear Codeo
     runScript: async (signal: AbortSignal, scriptNameUnknown: unknown) => {
         await Codeo.runScript(String(scriptNameUnknown));
@@ -804,6 +823,7 @@ export const EXTENSIONS_BEHAVIORS = {
         signal.throwIfAborted();
     },
 
+    // Phases Automated
     getPhase: async (
         signal: AbortSignal,
         nameUnknown: unknown,
@@ -815,6 +835,7 @@ export const EXTENSIONS_BEHAVIORS = {
         return phases[name] ?? 0;
     },
 
+    // D&D Beyond
     getDndBeyondStat: async (
         signal: AbortSignal,
         statUnknown: unknown,

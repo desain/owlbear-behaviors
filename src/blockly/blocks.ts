@@ -3506,6 +3506,45 @@ export const BLOCK_EXTENSION_SHEETS_GET = {
     inputsInline: true,
 } as const;
 
+export const BLOCK_EXTENSION_SHEETS_SET = {
+    style: "extension_blocks",
+    type: "extension_sheets_set",
+    tooltip:
+        "Set a cell in Google Sheets (target sheet must be writeable to the public)",
+    message0: "%1 set cell %2 of %3 in %4 to %5",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://upload.wikimedia.org/wikipedia/commons/a/ae/Google_Sheets_2020_Logo.svg",
+            width: 24,
+            height: 24,
+            alt: "Google Sheets icon",
+        },
+        {
+            type: "input_value",
+            name: "CELL",
+            check: ["String"],
+        },
+        {
+            type: "input_value",
+            name: "SHEET",
+            check: ["String", "Number"],
+        },
+        {
+            type: "input_value",
+            name: "ID",
+            check: ["String"],
+        },
+        {
+            type: "input_value",
+            name: "TO",
+            check: ["String", "Number"],
+        },
+    ],
+    previousStatement: null,
+    nextStatement: null,
+} as const;
+
 export const BLOCK_EXTENSION_WEATHER_ADD = {
     style: "extension_blocks",
     type: "extension_weather_add",
@@ -4465,6 +4504,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_OWL_TRACKERS_SET_SHOW_ON_MAP,
     BLOCK_EXTENSION_CODEO_RUN_SCRIPT,
     BLOCK_EXTENSION_SHEETS_GET,
+    BLOCK_EXTENSION_SHEETS_SET,
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_EXTENSION_WEATHER_REMOVE,
     BLOCK_EXTENSION_WEATHER_HAS,

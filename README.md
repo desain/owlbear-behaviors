@@ -183,7 +183,6 @@ To make a production build run:
         -   Owl trackers: Change max value
         -   Kenku FM?
         -   dddice? get room id from metadata, call API?
-        -   Google sheets write
     -   Control
         -   tell other to? Snail Mod has it as `as (other) {...}`
 -   Fix Blockly bug? [hideIfOwnerIsInWorkspace](https://github.com/google/blockly/blob/develop/core/widgetdiv.ts#L201) should initialize `currentWorkspace` to `ownerWorkspace`, and should reference itself in the loop.

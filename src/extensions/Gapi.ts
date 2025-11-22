@@ -3,6 +3,13 @@ import { isObject } from "owlbear-utils";
 const SPREADSHEET_REGEX =
     /^https?:\/\/docs\.google\.com\/spreadsheets\/d\/([\w-]+)/;
 
+function getSheetsApiUrl(spreadsheetId: string, sheet: string, cell: string) {
+    // create Cloudflare Worker API request URL
+    return `/api/sheets?spreadsheetId=${encodeURIComponent(
+        spreadsheetId,
+    )}&sheet=${encodeURIComponent(sheet)}&cell=${encodeURIComponent(cell)}`;
+}
+
 export const Gapi = {
     getSpreadsheetId: (url: string): string =>
         SPREADSHEET_REGEX.exec(url)?.[1] ?? url,
@@ -12,16 +19,14 @@ export const Gapi = {
         sheet: string,
         cell: string,
     ): Promise<string> => {
-        // create Cloudflare Worker API request URL
-        const url = `/api/sheets?spreadsheetId=${encodeURIComponent(
-            spreadsheetId,
-        )}&sheet=${encodeURIComponent(sheet)}&cell=${encodeURIComponent(cell)}`;
-
         try {
-            const resp = await fetch(url, {
-                signal: AbortSignal.timeout(5000),
-            });
-            const data: unknown = await resp.json();
+            const response = await fetch(
+                getSheetsApiUrl(spreadsheetId, sheet, cell),
+                {
+                    signal: AbortSignal.timeout(5000),
+                },
+            );
+            const data: unknown = await response.json();
             if (
                 isObject(data) &&
                 "contents" in data &&
@@ -35,6 +40,29 @@ export const Gapi = {
         } catch (e) {
             console.warn("Error getting Google Sheets value", e);
             return "";
+        }
+    },
+
+    writeSheetsValue: async (
+        spreadsheetId: string,
+        sheet: string,
+        cell: string,
+        contents: unknown,
+    ) => {
+        try {
+            const response = await fetch(
+                getSheetsApiUrl(spreadsheetId, sheet, cell),
+                {
+                    method: "PUT",
+                    body: JSON.stringify(contents),
+                    signal: AbortSignal.timeout(5000),
+                },
+            );
+            if (!response.ok) {
+                throw Error("Received error response from Sheets");
+            }
+        } catch (e) {
+            console.warn("Error writing Google Sheets value", e);
         }
     },
 };

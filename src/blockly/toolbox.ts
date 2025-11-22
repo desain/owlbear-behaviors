@@ -78,6 +78,7 @@ import {
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
+    BLOCK_EXTENSION_SHEETS_SET,
     BLOCK_EXTENSION_SMOKE_ADD,
     BLOCK_EXTENSION_SMOKE_BLIND,
     BLOCK_EXTENSION_SMOKE_DOOR,
@@ -866,6 +867,17 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                         shadowDynamic("Sheet1"),
                         shadowUrl(
                             "https://docs.google.com/spreadsheets/d/1ZVKsRBdWjpWXt9c7cJSI2-EEiUOvBFDbNjmpa8m-9Gw",
+                        ),
+                    ),
+                    ...devOnly(
+                        blockInfo(
+                            BLOCK_EXTENSION_SHEETS_SET,
+                            shadowDynamic("A1"),
+                            shadowDynamic("Sheet1"),
+                            shadowUrl(
+                                "https://docs.google.com/spreadsheets/d/1ZVKsRBdWjpWXt9c7cJSI2-EEiUOvBFDbNjmpa8m-9Gw",
+                            ),
+                            shadowDynamic(),
                         ),
                     ),
 

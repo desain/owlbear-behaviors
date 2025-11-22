@@ -92,6 +92,7 @@ import {
     BLOCK_EXTENSION_RUMBLE_ROLL,
     BLOCK_EXTENSION_RUMBLE_SAY,
     BLOCK_EXTENSION_SHEETS_GET,
+    BLOCK_EXTENSION_SHEETS_SET,
     BLOCK_EXTENSION_SMOKE_ADD,
     BLOCK_EXTENSION_SMOKE_BLIND,
     BLOCK_EXTENSION_SMOKE_DOOR,
@@ -2985,6 +2986,37 @@ export const GENERATORS: Record<
             cell,
             sheet,
             spreadsheetId,
+        );
+    },
+
+    [BLOCK_EXTENSION_SHEETS_SET.type]: (block, generator) => {
+        const cell = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_SHEETS_SET.args0[1].name,
+            javascript.Order.NONE,
+        );
+        const sheet = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_SHEETS_SET.args0[2].name,
+            javascript.Order.NONE,
+        );
+        const spreadsheetId = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_SHEETS_SET.args0[3].name,
+            javascript.Order.NONE,
+        );
+        const contents = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_SHEETS_SET.args0[4].name,
+            javascript.Order.NONE,
+        );
+        return awaitBehaveStatement(
+            "writeSheetsValue",
+            PARAMETER_SIGNAL,
+            cell,
+            sheet,
+            spreadsheetId,
+            contents,
         );
     },
 
