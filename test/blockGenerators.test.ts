@@ -13,6 +13,7 @@ import {
     BLOCK_EXTENSION_DNDBEYOND_STAT,
     BLOCK_EXTENSION_PHASE_CHANGES,
     BLOCK_EXTENSION_PHASE_OF,
+    BLOCK_EXTENSION_SHEETS_SET,
     BLOCK_GET_SIZE_XY,
     BLOCK_GOTO,
     BLOCK_HAS_ATTACHMENT,
@@ -3923,6 +3924,39 @@ describe("Blockly JavaScript Generation", () => {
                     "https://www.dndbeyond.com/characters/107164636",
                 );
                 checkCompiles(workspace);
+            });
+        });
+
+        describe("google sheets blocks", () => {
+            describe("sheets write block", () => {
+                it(SHOULD_GENERATE_VALID_JS, () => {
+                    const workspace = new Blockly.Workspace();
+                    const write = addImmediatelyWith(
+                        workspace,
+                        BLOCK_EXTENSION_SHEETS_SET.type,
+                    );
+                    addDynamicValToInput(
+                        write,
+                        BLOCK_EXTENSION_SHEETS_SET.args0[1].name,
+                        "A1",
+                    );
+                    addDynamicValToInput(
+                        write,
+                        BLOCK_EXTENSION_SHEETS_SET.args0[2].name,
+                        "Sheet1",
+                    );
+                    addDynamicValToInput(
+                        write,
+                        BLOCK_EXTENSION_SHEETS_SET.args0[3].name,
+                        "URL HERE",
+                    );
+                    addDynamicValToInput(
+                        write,
+                        BLOCK_EXTENSION_SHEETS_SET.args0[4].name,
+                        "Value",
+                    );
+                    checkCompiles(workspace);
+                });
             });
         });
     });

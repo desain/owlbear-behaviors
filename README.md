@@ -161,11 +161,6 @@ To make a production build run:
 
 ## To do
 
--   Advanced blocks setting
-    -   Control
-        -   Fancy if with mutator from blockly (change color)
-    -   Events
-        -   Item menu for players too
 -   Safety
     -   Check token total size before saving against OBR max update size
 -   Move executor to the background now that background scripts shouldn't be throttled?
@@ -175,6 +170,8 @@ To make a production build run:
 -   Make new tags in tags field show up in possible tags list in block immediately
 -   Dragging C blocks around statements in stacks like scratch does [here?](https://github.com/scratchfoundation/scratch-blocks/blob/develop/core/insertion_marker_manager.js#L43)
 -   Blocks
+    -   Control
+        -   Advanced if with mutator from blockly (change color)
     -   Motion
         -   Pathfinding: grid based A\* when not in euclidean mode
     -   Extensions

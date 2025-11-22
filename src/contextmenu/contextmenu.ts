@@ -3,6 +3,7 @@ import { deferCallAll, getId } from "owlbear-utils";
 import logo from "../../assets/logo.svg";
 import { BEHAVIOR_ITEM_TYPES, type BehaviorItem } from "../BehaviorItem";
 import type { BehaviorRegistry } from "../behaviors/BehaviorRegistry";
+import { notifyContextMenuClicked } from "../broadcast/broadcast";
 import {
     CONTEXT_MENU_ADD_TAGS_ID,
     CONTEXT_MENU_COPY_BEHAVIOR_ID,
@@ -267,7 +268,12 @@ function installMenuItemContextMenu(
         ],
         onClick: (context) => {
             const ids = context.items.map(getId);
-            behaviorRegistry.handleContextMenuClicked(ids, name);
+
+            if (usePlayerStorage.getState().role === "GM") {
+                behaviorRegistry.handleContextMenuClicked(ids, name);
+            } else {
+                void notifyContextMenuClicked(ids, name);
+            }
             void OBR.player.deselect(ids);
         },
     });

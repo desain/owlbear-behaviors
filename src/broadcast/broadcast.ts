@@ -266,6 +266,43 @@ export function broadcastStopAllBehaviors() {
     );
 }
 
+const CONTEXT_MENU_CLICKED = "CONTEXT_MENU_CLICKED";
+
+interface ContextMenuClickedMessage {
+    readonly type: typeof CONTEXT_MENU_CLICKED;
+    readonly ids: Item["id"][];
+    readonly name: string;
+}
+
+function isContextMenuClickedMessage(
+    message: unknown,
+): message is ContextMenuClickedMessage {
+    return (
+        isObject(message) &&
+        "type" in message &&
+        message.type === CONTEXT_MENU_CLICKED &&
+        "ids" in message &&
+        Array.isArray(message.ids) &&
+        message.ids.every((id) => typeof id === "string") &&
+        "name" in message &&
+        typeof message.name === "string"
+    );
+}
+
+export function notifyContextMenuClicked(ids: Item["id"][], name: string) {
+    return OBR.broadcast.sendMessage(
+        CHANNEL_MESSAGE,
+        {
+            type: CONTEXT_MENU_CLICKED,
+            ids,
+            name,
+        } satisfies ContextMenuClickedMessage,
+        {
+            destination: "REMOTE",
+        },
+    );
+}
+
 function installBonesListener(behaviorRegistry: BehaviorRegistry) {
     return OBR.broadcast.onMessage(Bones.CHANNEL, ({ data }) => {
         const state = usePlayerStorage.getState();
@@ -293,10 +330,12 @@ export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
             } else if (isGm && isBroadcastToMessage(data)) {
                 behaviorRegistry.handleBroadcast(data.message, data.targets);
             } else if (isGm && isNewSelectionMessage(data)) {
-                void behaviorRegistry.handleNewSelection(
+                behaviorRegistry.handleNewSelection(
                     data.newlySelected,
                     data.deselected,
                 );
+            } else if (isGm && isContextMenuClickedMessage(data)) {
+                behaviorRegistry.handleContextMenuClicked(data.ids, data.name);
             } else if (isPlaySoundMessage(data)) {
                 void playSoundUntilDone(
                     new AbortController().signal,
