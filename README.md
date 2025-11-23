@@ -174,7 +174,10 @@ To make a production build run:
         -   Advanced if with mutator from blockly (change color)
     -   Motion
         -   Pathfinding: grid based A\* when not in euclidean mode
+    -   Operators
+        -   Substring advanced
     -   Extensions
+        -   Figure out auth for Google Sheets writing
         -   Initiative Tracker same as Pretty Sordid?
         -   On field change for Daggerheart, Owl Trackers
         -   Owl trackers: Change max value

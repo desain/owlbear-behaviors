@@ -7,15 +7,16 @@ import OBR, {
 import {
     ANGLE_DIMETRIC_RADIANS,
     complain,
+    getBounds,
+    getWorldPoints,
     isAttachmentBehavior,
+    isBoundableItem,
     ORIGIN,
     SQRT_3,
     units,
     unitsToPixels,
 } from "owlbear-utils";
 import type { BLOCK_MOVE_DIRECTION } from "../../blockly/blocks";
-import { getBounds, isBoundableItem } from "../../collision/getBounds";
-import { getWorldPoints } from "../../collision/getWorldPoints";
 import { findPath } from "../../pathfinding/findPath";
 import { usePlayerStorage } from "../../state/usePlayerStorage";
 import { ItemProxy } from "../ItemProxy";

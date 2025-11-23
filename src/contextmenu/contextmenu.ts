@@ -1,5 +1,5 @@
 import OBR, { type ContextMenuContext } from "@owlbear-rodeo/sdk";
-import { deferCallAll, getId } from "owlbear-utils";
+import { deferCallAll, diffSets, getId } from "owlbear-utils";
 import logo from "../../assets/logo.svg";
 import { BEHAVIOR_ITEM_TYPES, type BehaviorItem } from "../BehaviorItem";
 import type { BehaviorRegistry } from "../behaviors/BehaviorRegistry";
@@ -362,26 +362,4 @@ async function pasteBehavior(context: ContextMenuContext) {
         `Behavior pasted to ${context.items.length} item(s)`,
         "SUCCESS",
     );
-}
-
-export function diffSets<T extends string | number>(
-    a: Set<T>,
-    b: Set<T>,
-): { created: T[]; deleted: T[] } {
-    const created: T[] = [];
-    const deleted: T[] = [];
-
-    for (const t of b) {
-        if (!a.has(t)) {
-            created.push(t);
-        }
-    }
-
-    for (const t of a) {
-        if (!b.has(t)) {
-            deleted.push(t);
-        }
-    }
-
-    return { created, deleted };
 }

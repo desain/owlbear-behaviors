@@ -1,8 +1,14 @@
 import OBR, { type BoundingBox } from "@owlbear-rodeo/sdk";
-import { assertItem, cells, cellsToUnits, getName } from "owlbear-utils";
+import {
+    assertItem,
+    cells,
+    cellsToUnits,
+    getBounds,
+    getName,
+    isBoundableItem,
+} from "owlbear-utils";
 import { isBehaviorItem, type BehaviorItem } from "../../BehaviorItem";
 import { notifyPlayersToDeselect } from "../../broadcast/broadcast";
-import { getBounds, isBoundableItem } from "../../collision/getBounds";
 import { METADATA_KEY_TAGS } from "../../constants";
 import { usePlayerStorage } from "../../state/usePlayerStorage";
 import { ItemProxy } from "../ItemProxy";
@@ -144,9 +150,7 @@ export const SENSING_BEHAVIORS = {
         return closestItem?.id;
     },
 
-    tokenNamed: (
-        nameUnknown: unknown,
-    ): BehaviorItem["id"] | undefined => {
+    tokenNamed: (nameUnknown: unknown): BehaviorItem["id"] | undefined => {
         const name = String(nameUnknown);
         const itemsOfInterest = usePlayerStorage.getState().itemsOfInterest;
 

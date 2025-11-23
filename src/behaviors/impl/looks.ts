@@ -12,6 +12,8 @@ import OBR, {
 import {
     assertItem,
     complain,
+    getBounds,
+    isBoundableItem,
     isLayer,
     isObject,
     isVector2,
@@ -22,7 +24,6 @@ import {
     broadcastSetViewport,
     broadcastShowSpeechBubble,
 } from "../../broadcast/broadcast";
-import { getBounds, isBoundableItem } from "../../collision/getBounds";
 import { METADATA_KEY_EFFECT } from "../../constants";
 import { usePlayerStorage } from "../../state/usePlayerStorage";
 import {
