@@ -4045,8 +4045,15 @@ export const BLOCK_EXTENSION_DNDBEYOND_STAT = {
     type: "extension_dndb",
     tooltip: "Get a stat from a D&D Beyond character sheet.",
     helpUrl: "",
-    message0: "%1 of %2",
+    message0: "%1 %2 of %3",
     args0: [
+        {
+            type: "field_image",
+            src: "https://media.dndbeyond.com/images/web/favicon.png",
+            width: 24,
+            height: 24,
+            alt: "D&D Beyond icon",
+        },
         {
             type: "field_dropdown",
             name: "STAT",
@@ -4084,6 +4091,43 @@ export const BLOCK_EXTENSION_DNDBEYOND_STAT = {
             type: "input_value",
             name: "URL",
             check: "String",
+        },
+    ],
+    output: "Number",
+    inputsInline: true,
+} as const;
+
+export const BLOCK_EXTENSION_TRACKERS_VALUE = {
+    style: "extension_blocks",
+    type: "extension_trck",
+    tooltip: "Get a stat from the Trackers extension.",
+    helpUrl: "https://extensions.owlbear.rodeo/trackers",
+    message0: "%1 %2 of %3's %4",
+    args0: [
+        {
+            type: "field_image",
+            src: "https://trackers.owlbear.rodeo/icon.svg",
+            width: 24,
+            height: 24,
+            alt: "Trackers extension icon",
+        },
+        {
+            type: "field_dropdown",
+            name: "VAL",
+            options: [
+                ["value", "false"],
+                ["max value", "true"],
+            ],
+        },
+        {
+            type: "input_value",
+            name: "PLAYER",
+            check: ["String", "Number"],
+        },
+        {
+            type: "input_value",
+            name: "NAME",
+            check: ["String", "Number"],
         },
     ],
     output: "Number",
@@ -4524,8 +4568,7 @@ export const CUSTOM_JSON_BLOCKS = [
     BLOCK_EXTENSION_PEEKABOO_GET_SOLIDITY,
     BLOCK_EXTENSION_CHARACTER_DISTANCES_SET_HEIGHT,
     BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT,
-
-    // D&D Beyond
+    BLOCK_EXTENSION_TRACKERS_VALUE,
     BLOCK_EXTENSION_DNDBEYOND_STAT,
 
     // Value utility blocks

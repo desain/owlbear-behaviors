@@ -102,6 +102,7 @@ import {
     BLOCK_EXTENSION_SMOKE_VISION_LINE,
     BLOCK_EXTENSION_SMOKE_WHEN_DOOR,
     BLOCK_EXTENSION_SMOKE_WINDOW,
+    BLOCK_EXTENSION_TRACKERS_VALUE,
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_EXTENSION_WEATHER_HAS,
     BLOCK_EXTENSION_WEATHER_REMOVE,
@@ -2699,11 +2700,11 @@ export const GENERATORS: Record<
         const stat = getDropdownFieldValue(
             block,
             BLOCK_EXTENSION_DNDBEYOND_STAT,
-            0,
+            1,
         );
         const url = generator.valueToCode(
             block,
-            BLOCK_EXTENSION_DNDBEYOND_STAT.args0[1].name,
+            BLOCK_EXTENSION_DNDBEYOND_STAT.args0[2].name,
             javascript.Order.NONE,
         );
         return awaitBehaveValue(
@@ -3055,6 +3056,31 @@ export const GENERATORS: Record<
     },
     [BLOCK_EXTENSION_CHARACTER_DISTANCES_GET_HEIGHT.type]: () =>
         awaitBehaveValue("getHeight", PARAMETER_SIGNAL, PARAMETER_SELF_ID),
+
+    [BLOCK_EXTENSION_TRACKERS_VALUE.type]: (block, generator) => {
+        const maxNotCurrent = getDropdownFieldValue(
+            block,
+            BLOCK_EXTENSION_TRACKERS_VALUE,
+            1,
+        );
+        const playerName = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_TRACKERS_VALUE.args0[2].name,
+            javascript.Order.NONE,
+        );
+        const trackerName = generator.valueToCode(
+            block,
+            BLOCK_EXTENSION_TRACKERS_VALUE.args0[3].name,
+            javascript.Order.NONE,
+        );
+        return awaitBehaveValue(
+            "getTrackerValue",
+            PARAMETER_SIGNAL,
+            maxNotCurrent,
+            trackerName,
+            playerName,
+        );
+    },
 
     // Utility blocks
     [BLOCK_OPACITY_SLIDER.type]: (block) => {

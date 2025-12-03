@@ -88,6 +88,7 @@ import {
     BLOCK_EXTENSION_SMOKE_VISION_LINE,
     BLOCK_EXTENSION_SMOKE_WHEN_DOOR,
     BLOCK_EXTENSION_SMOKE_WINDOW,
+    BLOCK_EXTENSION_TRACKERS_VALUE,
     BLOCK_EXTENSION_WEATHER_ADD,
     BLOCK_EXTENSION_WEATHER_HAS,
     BLOCK_EXTENSION_WEATHER_REMOVE,
@@ -975,6 +976,13 @@ export function createToolbox(target: BehaviorItem, grid: GridParsed) {
                     blockInfo(
                         BLOCK_EXTENSION_RUMBLE_ROLL,
                         shadowDynamic("1d20"),
+                    ),
+
+                    ...extensionHeader("Trackers"),
+                    blockInfo(
+                        BLOCK_EXTENSION_TRACKERS_VALUE,
+                        shadowDynamic("GM"),
+                        shadowDynamic("HP"),
                     ),
 
                     ...extensionHeader("Weather"),

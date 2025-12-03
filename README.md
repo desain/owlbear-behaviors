@@ -177,7 +177,6 @@ To make a production build run:
     -   Operators
         -   Substring advanced
     -   Extensions
-        -   Trackers
         -   Tooltips
         -   Figure out auth for Google Sheets writing
         -   Initiative Tracker same as Pretty Sordid?

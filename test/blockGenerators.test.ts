@@ -14,6 +14,7 @@ import {
     BLOCK_EXTENSION_PHASE_CHANGES,
     BLOCK_EXTENSION_PHASE_OF,
     BLOCK_EXTENSION_SHEETS_SET,
+    BLOCK_EXTENSION_TRACKERS_VALUE,
     BLOCK_GET_SIZE_XY,
     BLOCK_GOTO,
     BLOCK_HAS_ATTACHMENT,
@@ -3920,7 +3921,7 @@ describe("Blockly JavaScript Generation", () => {
                 );
                 addDynamicValToInput(
                     dndb,
-                    BLOCK_EXTENSION_DNDBEYOND_STAT.args0[1].name,
+                    BLOCK_EXTENSION_DNDBEYOND_STAT.args0[2].name,
                     "https://www.dndbeyond.com/characters/107164636",
                 );
                 checkCompiles(workspace);
@@ -3957,6 +3958,27 @@ describe("Blockly JavaScript Generation", () => {
                     );
                     checkCompiles(workspace);
                 });
+            });
+        });
+
+        describe("trackers blocks", () => {
+            it(SHOULD_GENERATE_VALID_JS, () => {
+                const workspace = new Blockly.Workspace();
+                const block = addImmediatelySayWith(
+                    workspace,
+                    BLOCK_EXTENSION_TRACKERS_VALUE.type,
+                );
+                addDynamicValToInput(
+                    block,
+                    BLOCK_EXTENSION_TRACKERS_VALUE.args0[2].name,
+                    "Player Name",
+                );
+                addDynamicValToInput(
+                    block,
+                    BLOCK_EXTENSION_TRACKERS_VALUE.args0[3].name,
+                    "Tracker Name",
+                );
+                checkCompiles(workspace);
             });
         });
     });

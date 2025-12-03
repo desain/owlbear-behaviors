@@ -20,6 +20,7 @@ import { Phases } from "../../extensions/Phases";
 import { PrettySordid } from "../../extensions/PrettySordid";
 import { Rumble } from "../../extensions/Rumble";
 import { SmokeAndSpectre } from "../../extensions/SmokeAndSpectre";
+import { Trackers } from "../../extensions/Trackers";
 import { Weather, type WeatherType } from "../../extensions/Weather";
 import { usePlayerStorage } from "../../state/usePlayerStorage";
 import { ItemProxy } from "../ItemProxy";
@@ -916,5 +917,20 @@ export const EXTENSIONS_BEHAVIORS = {
                 console.error(`Unknown stat ${stat}`);
                 return 0;
         }
+    },
+
+    getTrackerValue: async (
+        signal: AbortSignal,
+        maxNotCurrent: boolean,
+        trackerNameUnknown: unknown,
+        playerNameUnknown: unknown,
+    ): Promise<number> => {
+        const trackerName = String(trackerNameUnknown);
+        const playerName = String(playerNameUnknown);
+        const result = maxNotCurrent
+            ? await Trackers.getTrackerMax(playerName, trackerName)
+            : await Trackers.getTrackerValue(playerName, trackerName);
+        signal.throwIfAborted();
+        return result ?? 0;
     },
 };

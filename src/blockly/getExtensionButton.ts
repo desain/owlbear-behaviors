@@ -29,6 +29,7 @@ const LINKS = {
     "Pretty Sordid": official("pretty-sordid"),
     "Rumble!": official("rumble"),
     "Smoke & Spectre!": official("smoke"),
+    Trackers: official("trackers"),
     Weather: official("weather"),
     "Dice+": rogue("https://dice-plus.missinglinkdev.com/manifest.json"),
 };
