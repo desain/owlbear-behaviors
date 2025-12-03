@@ -2,7 +2,7 @@
 
 ## Getting Started
 
-![Creating your first behavior](https://owlbear-behaviors.pages.dev/docs/assets/creating-first-behavior.gif)
+![Creating your first behavior](https://owlbear-behaviors.nicholassdesai.workers.dev/docs/assets/creating-first-behavior.gif)
 
 1. **Right-click any token** on your Owlbear Rodeo map to open the context menu
 2. **Select "Edit Behaviors"** to open the visual block editor
@@ -10,7 +10,7 @@
 4. **Connect blocks** together to build complex behaviors
 5. **Save your work** and watch your token come to life!
 
-![Testing the behavior](https://owlbear-behaviors.pages.dev/docs/assets/testing-behavior.gif)
+![Testing the behavior](https://owlbear-behaviors.nicholassdesai.workers.dev/docs/assets/testing-behavior.gif)
 
 ## Basic Concepts
 
@@ -21,17 +21,17 @@ Scripts in Behaviors are built by dragging blocks together.
 Here are the different kinds of blocks:
 
 -   **Hat blocks**: Trigger when something happens (like "when selected" or "when message received"). When the trigger occurrs, the blocks stacked underneath the hat block will run.
-    -   Example: ![Hat block example](https://owlbear-behaviors.pages.dev/docs/assets/hat-block-example.svg)
+    -   Example: ![Hat block example](https://owlbear-behaviors.nicholassdesai.workers.dev/docs/assets/hat-block-example.svg)
 -   **Stack blocks**: These blocks make your token do something (such as move, change appearance, or play sound). They can be stacked on top of each other, and run from top to bottom.
-    -   Example: ![Stack block example](https://owlbear-behaviors.pages.dev/docs/assets/stack-block-example.svg)
+    -   Example: ![Stack block example](https://owlbear-behaviors.nicholassdesai.workers.dev/docs/assets/stack-block-example.svg)
 -   **Cap blocks**: These blocks are like stack blocks, but never move on to the next block.
-    -   Example: ![Cap block example](https://owlbear-behaviors.pages.dev/docs/assets/cap-block-example.svg)
+    -   Example: ![Cap block example](https://owlbear-behaviors.nicholassdesai.workers.dev/docs/assets/cap-block-example.svg)
 -   **C blocks**: Some blocks are C-shaped, and contain spaces to put other blocks inside them, such as conditionals and loops.
-    -   Example: ![C block example](https://owlbear-behaviors.pages.dev/docs/assets/c-block-example.svg)
+    -   Example: ![C block example](https://owlbear-behaviors.nicholassdesai.workers.dev/docs/assets/c-block-example.svg)
 -   **Reporter blocks**: These rounded blocks output a value, and can be plugged into other blocks to alter their behavior.
-    -   Example: ![Reporter block example](https://owlbear-behaviors.pages.dev/docs/assets/reporter-block-example.svg)
+    -   Example: ![Reporter block example](https://owlbear-behaviors.nicholassdesai.workers.dev/docs/assets/reporter-block-example.svg)
 -   **Boolean blocks**: Like reporter blocks, these hexagonal blocks output a value, but the value is either `true` or `false`. They can be used in control flow to check conditions.
-    -   Example: ![Boolean block example](https://owlbear-behaviors.pages.dev/docs/assets/boolean-block-example.svg)
+    -   Example: ![Boolean block example](https://owlbear-behaviors.nicholassdesai.workers.dev/docs/assets/boolean-block-example.svg)
 
 ### Tags
 
@@ -48,7 +48,7 @@ Tokens can be labelled with tags, which are bits of text attached to a token.
 -   Broadcast messages from the main Behaviors panel as well as from behavior scripts
 -   Drag blocks onto the message field in message blocks to dynamically choose or construct messages at runtime
 
-![Sending a Message](https://owlbear-behaviors.pages.dev/docs/assets/sending-message.gif)
+![Sending a Message](https://owlbear-behaviors.nicholassdesai.workers.dev/docs/assets/sending-message.gif)
 
 ### Sounds
 
@@ -109,4 +109,4 @@ To share behavior scripts between tokens, you have a few options:
 -   **Backpack**. You can drag scripts to the backpack icon in the top right of your block workspace to put them in your backpack, and click the backpack to open it while editing any token. Block stacks saved to your backpack are saved to your browser's local storage, so they'll persist across scenes and even rooms.
 -   **Prefabs**. To share tokens with behaviors between scenes, save the token as a prefab with the Prefabs extension. When you insert the prefab, the behaviors come with it.
 
-![Using the Backpack](https://owlbear-behaviors.pages.dev/docs/assets/backpack.gif)
+![Using the Backpack](https://owlbear-behaviors.nicholassdesai.workers.dev/docs/assets/backpack.gif)

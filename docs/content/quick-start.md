@@ -10,13 +10,13 @@ Welcome to Behaviors! Here's a guide to get you started.
 4. Add a "say" block from the Looks category and connect it below the hat block
 5. Type a message like "Hello World!" in the say block
 
-![Creating your first behavior](https://owlbear-behaviors.pages.dev/docs/assets/creating-first-behavior.gif)
+![Creating your first behavior](https://owlbear-behaviors.nicholassdesai.workers.dev/docs/assets/creating-first-behavior.gif)
 
 ## Step 2: Test It Out
 
 Save the script and and watch your token say your message!
 
-![Testing the behavior](https://owlbear-behaviors.pages.dev/docs/assets/testing-behavior.gif)
+![Testing the behavior](https://owlbear-behaviors.nicholassdesai.workers.dev/docs/assets/testing-behavior.gif)
 
 ## Step 3: Try Something More Advanced
 

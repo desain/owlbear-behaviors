@@ -624,7 +624,7 @@ describe("Blockly JavaScript Generation", () => {
                                                             width: 150,
                                                             height: 150,
                                                             mime: "image/png",
-                                                            url: "https://owlbear-behaviors.pages.dev/default.png",
+                                                            url: "https://owlbear-behaviors.nicholassdesai.workers.dev/default.png",
                                                         },
                                                         grid: {
                                                             dpi: 150,

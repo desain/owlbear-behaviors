@@ -10,7 +10,9 @@ const rootDir = resolve(__dirname, "..");
 // Check if we're building for production (when CF_PAGES is set) or development
 const isProduction =
     process.env.CF_PAGES === "1" || process.argv.includes("--production");
-const baseUrl = isProduction ? "https://owlbear-behaviors.pages.dev" : "";
+const baseUrl = isProduction
+    ? "https://owlbear-behaviors.nicholassdesai.workers.dev"
+    : "";
 
 function readMarkdownFile(filename) {
     const path = resolve(rootDir, "docs", "content", filename);
@@ -23,7 +25,7 @@ function processImageUrls(content) {
     }
     // For development, replace absolute URLs with relative paths
     return content.replace(
-        /https:\/\/owlbear-behaviors\.pages\.dev\/docs\/assets\//g,
+        /https:\/\/owlbear-behaviors\.nicholassdesai\.workers\.dev\/docs\/assets\//g,
         "/docs/assets/",
     );
 }
