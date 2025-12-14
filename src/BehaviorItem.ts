@@ -21,6 +21,10 @@ import {
     type HasParameterizedMetadata,
 } from "owlbear-utils";
 import {
+    isSerializedWorkspace,
+    type SerializedWorkspace,
+} from "./blockly/serialization/workspaceAdapter";
+import {
     METADATA_KEY_BEHAVIORS,
     METADATA_KEY_CLONE,
     METADATA_KEY_MENU_ITEMS,
@@ -29,7 +33,7 @@ import {
 
 export interface BehaviorData {
     lastModified: number;
-    workspace: object;
+    workspace: SerializedWorkspace;
 }
 function isBehaviorData(data: unknown): data is BehaviorData {
     return (
@@ -37,7 +41,7 @@ function isBehaviorData(data: unknown): data is BehaviorData {
         "lastModified" in data &&
         typeof data.lastModified === "number" &&
         "workspace" in data &&
-        typeof data.workspace === "object"
+        isSerializedWorkspace(data.workspace)
     );
 }
 

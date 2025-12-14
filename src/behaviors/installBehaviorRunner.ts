@@ -1,5 +1,5 @@
 import OBR from "@owlbear-rodeo/sdk";
-import { deferCallAll, diffItems, Watcher } from "owlbear-utils";
+import { deferCallAll, diffItems, vector2Equals, Watcher } from "owlbear-utils";
 import type { BehaviorItem } from "../BehaviorItem";
 import "../blockly/blocks";
 import { CollisionEngine } from "../collision/CollisionEngine";
@@ -72,10 +72,7 @@ function handleItemsChange(
 
         // Check if properties changed
         if (oldItem) {
-            if (
-                oldItem.position.x !== item.position.x ||
-                oldItem.position.y !== item.position.y
-            ) {
+            if (!vector2Equals(oldItem.position, item.position)) {
                 moved.push(item.id);
                 propertyChanges.push([item.id, "position", item.position]);
             }

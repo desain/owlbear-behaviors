@@ -4,6 +4,10 @@ import * as Blockly from "blockly";
 import { executeObrFunction } from "owlbear-utils";
 import { type BehaviorItem } from "../BehaviorItem";
 import { BehaviorJavascriptGenerator } from "../blockly/generator/BehaviorJavascriptGenerator";
+import {
+    loadBehaviorsWorkspace,
+    type SerializedWorkspace,
+} from "../blockly/serialization/workspaceAdapter";
 import type { Collision } from "../collision/CollisionEngine";
 import { FIELD_BROADCAST, FIELD_TAG, METADATA_KEY_CLONE } from "../constants";
 import type { BonesRoll } from "../extensions/Bones";
@@ -24,7 +28,7 @@ export type BehaviorGlobals = Record<string, VariableValue | VariableValue[]>;
 export interface NewBehaviorConfig {
     readonly item: BehaviorItem;
     readonly lastModified: number;
-    readonly serializedWorkspace: object;
+    readonly serializedWorkspace: SerializedWorkspace;
 }
 
 function executeTriggerHandler(
@@ -121,7 +125,7 @@ export class BehaviorRegistry {
 
         // Create a workspace and load blocks
         const workspace = new Blockly.Workspace();
-        Blockly.serialization.workspaces.load(serializedWorkspace, workspace);
+        loadBehaviorsWorkspace(serializedWorkspace, workspace);
         void addMissingResources(workspace);
 
         // Generate code

@@ -358,6 +358,7 @@ async function pasteBehavior(context: ContextMenuContext) {
             });
         },
     );
+
     await OBR.notification.show(
         `Behavior pasted to ${context.items.length} item(s)`,
         "SUCCESS",

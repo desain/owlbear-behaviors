@@ -139,3 +139,6 @@ dist
 #wrangler
 .wrangler
 .dev.vars*
+
+.gemini/
+gha-creds-*.json

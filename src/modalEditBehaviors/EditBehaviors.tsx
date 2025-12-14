@@ -27,6 +27,10 @@ import { isShowEditProcedure } from "../blockly/EventShowEditProcedure";
 import { FixedWidthContinuousFlyout } from "../blockly/FixedWidthContinuousFlyout";
 import { installGetExtensionCallback } from "../blockly/getExtensionButton";
 import { handleNewSceneMetadata } from "../blockly/handleNewSceneMetadata";
+import {
+    blocklyToBehaviorsWorkspace,
+    loadBehaviorsWorkspace,
+} from "../blockly/serialization/workspaceAdapter";
 import { setupBlocklyGlobals } from "../blockly/setupBlocklyGlobals";
 import { createBlocklyTheme, GRID_COLOR } from "../blockly/theme";
 import { createToolbox } from "../blockly/toolbox";
@@ -194,7 +198,7 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
 
             // Load workspace content
             if (item.metadata[METADATA_KEY_BEHAVIORS]) {
-                Blockly.serialization.workspaces.load(
+                loadBehaviorsWorkspace(
                     item.metadata[METADATA_KEY_BEHAVIORS].workspace,
                     workspace,
                 );
@@ -279,9 +283,7 @@ export const EditBehaviors: React.FC<EditBehaviorsProps> = ({
                             item.metadata[METADATA_KEY_BEHAVIORS] = {
                                 lastModified: Date.now(),
                                 workspace:
-                                    Blockly.serialization.workspaces.save(
-                                        workspace,
-                                    ),
+                                    blocklyToBehaviorsWorkspace(workspace),
                             };
                         } else {
                             delete item.metadata[METADATA_KEY_BEHAVIORS];

@@ -1,15 +1,16 @@
 import OBR, { type Item, type Metadata, type Theme } from "@owlbear-rodeo/sdk";
 import { enableMapSet } from "immer";
-import type {
-    ExtractNonFunctions,
-    GridParams,
-    GridParsed,
-    Role,
+import {
+    type ExtractNonFunctions,
+    type GridParams,
+    type GridParsed,
+    type Role,
 } from "owlbear-utils";
 import { create } from "zustand";
 import { persist, subscribeWithSelector } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { isBehaviorItem, type BehaviorItem } from "../BehaviorItem";
+import type { SerializedWorkspace } from "../blockly/serialization/workspaceAdapter";
 import {
     LOCAL_STORAGE_STORE_NAME,
     METADATA_KEY_MENU_ITEMS,
@@ -141,13 +142,13 @@ export interface OwlbearStore {
     */
 
     readonly clipboard?: {
-        readonly workspace: object;
+        readonly workspace: SerializedWorkspace;
         readonly [METADATA_KEY_MENU_ITEMS]?: Record<string, boolean>;
     };
     readonly setClipboard: (
         this: void,
         clipboard: {
-            readonly workspace: object;
+            readonly workspace: SerializedWorkspace;
             readonly [METADATA_KEY_MENU_ITEMS]?: Record<string, boolean>;
         },
     ) => void;
