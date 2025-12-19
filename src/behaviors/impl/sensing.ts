@@ -8,7 +8,7 @@ import {
     isBoundableItem,
 } from "owlbear-utils";
 import { isBehaviorItem, type BehaviorItem } from "../../BehaviorItem";
-import { notifyPlayersToDeselect } from "../../broadcast/broadcast";
+import { notifyAllToDeselect } from "../../broadcast/broadcast";
 import { METADATA_KEY_TAGS } from "../../constants";
 import { usePlayerStorage } from "../../state/usePlayerStorage";
 import { ItemProxy } from "../ItemProxy";
@@ -97,14 +97,7 @@ export const SENSING_BEHAVIORS = {
         return items.map((item) => item.id);
     },
 
-    deselect: async (ids?: string[]) => {
-        const isGm = usePlayerStorage.getState().role === "GM";
-        if (isGm) {
-            await OBR.player.deselect(ids);
-        } else {
-            await notifyPlayersToDeselect(ids);
-        }
-    },
+    deselect: notifyAllToDeselect,
 
     findClosestTagged: async (
         signal: AbortSignal,

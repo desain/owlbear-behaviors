@@ -111,12 +111,12 @@ function isDeselectMessage(message: unknown): message is DeselectMessage {
     );
 }
 
-export function notifyPlayersToDeselect(ids?: string[]) {
+export function notifyAllToDeselect(ids?: string[]) {
     return OBR.broadcast.sendMessage(
         CHANNEL_MESSAGE,
         { type: DESELECT, ids } satisfies DeselectMessage,
         {
-            destination: "REMOTE",
+            destination: "ALL",
         },
     );
 }
@@ -323,7 +323,7 @@ export function installBroadcastListener(behaviorRegistry: BehaviorRegistry) {
         ({ data }) => {
             const state = usePlayerStorage.getState();
             const isGm = state.role === "GM";
-            if (!isGm && isDeselectMessage(data)) {
+            if (isDeselectMessage(data)) {
                 void OBR.player.deselect(data.ids);
             } else if (isGm && typeof data === "string") {
                 behaviorRegistry.handleBroadcast(data);
