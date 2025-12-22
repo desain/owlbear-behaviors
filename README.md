@@ -162,7 +162,7 @@ To make a production build run:
 ## To do
 
 -   Safety
-    -   Check token total size before saving against OBR max update size
+    -   Check token total size before saving against OBR max update size (1MB?)
 -   Move executor to the background now that background scripts shouldn't be throttled?
 -   Collision system improvements
     -   base it on polygon overlap instead of bounding boxes? turf js?
@@ -184,6 +184,7 @@ To make a production build run:
         -   Owl trackers: Change max value
         -   Kenku FM?
         -   dddice? get room id from metadata, call API?
+        -   Advanced blocks for dice rollers that set the name
     -   Control
         -   tell other to? Snail Mod has it as `as (other) {...}`
 -   Fix Blockly bug? [hideIfOwnerIsInWorkspace](https://github.com/google/blockly/blob/develop/core/widgetdiv.ts#L201) should initialize `currentWorkspace` to `ownerWorkspace`, and should reference itself in the loop.
